@@ -1,0 +1,11 @@
+struct myVertexOutput {
+	float2 texture_coords : TEXCOORD;
+	float4 color : COLOR;
+};
+
+float4 main(myVertexOutput I, uniform sampler2D colorMap):COLOR
+{
+	return tex2D(colorMap, I.texture_coords.xy) * I.color;
+}
+
+

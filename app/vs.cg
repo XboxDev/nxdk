@@ -1,0 +1,42 @@
+struct myVertexInput{
+	float4 texcoord : TEXCOORD;
+	float4 normalvec: NORMAL;
+	float4 position : POSITION;
+};
+
+struct myVertexOutput{
+	float4 tex : TEXCOORD;
+	float4 col : COLOR;
+	float4 pos : POSITION;
+};
+
+myVertexOutput main(	myVertexInput I,
+			uniform float4x4 LocalScreen,
+			uniform float4x4 LocalLight,
+			uniform float4 LightDirection,
+			uniform float4 LightColor,
+			uniform float4 Scales,
+			uniform float4 Decals
+			)
+{
+	myVertexOutput result;
+	float4 color,normal,position;
+	float  intensity;
+	
+	normal = mul(I.normalvec, LocalLight); //order of mul() parameters is important!
+	intensity = dot(normal, LightDirection);
+	intensity = max(intensity,0);
+
+	color = LightColor * intensity;
+
+	position.xyz = I.position.xyz;
+	position.w = 1.0f; //essential, don't remove it!
+	position = mul(position, LocalScreen); //order of mul() parameters is important!
+	position.xyz = position.xyz / position.w;
+	
+	result.tex = I.texcoord;
+	result.col = color;
+	result.pos = Decals + position * Scales;
+	
+	return result;
+}
