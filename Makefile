@@ -64,4 +64,4 @@ tools: cxbe vp20compiler fp20compiler extract-xiso
 
 .PHONY: clean tools cxbe vp20compiler fp20compiler extract-xiso
 clean:
-	rm -f default.iso bin/default.xbe app/main.exe $(OBJS) $(SHADERINT) $(SHADEROBJ)
+	rm -f default.iso bin/default.xbe app/main.exe app/main.exe.manifest $(OBJS) $(SHADERINT) $(SHADEROBJ)
