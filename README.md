@@ -36,8 +36,7 @@ Now you can compile your application and nxdk:
     git submodule init
     git submodule update
     make tools
-    ln -s samples/0ldskoo1 app
-    make
+    make -C samples/0ldskoo1
 
 Credits
 -------

@@ -1,10 +1,10 @@
-SHADERINT += \
-	app/vs.vp \
-	app/ps.fp
+SHADEROBJ = \
+	$(CURDIR)/vs.inl \
+	$(CURDIR)/ps.inl
 
-SHADEROBJ += \
-	app/vs.inl \
-	app/ps.inl
+INCLUDES = $(wildcard $(CURDIR)/*.h)
+SRCS = $(wildcard $(CURDIR)/*.c)
+NXDK_DIR = $(CURDIR)/../..
+include $(NXDK_DIR)/Makefile
 
-INCLUDES += $(wildcard app/*.h) $(SHADEROBJ)
-SRCS += $(wildcard app/*.c)
+$(CURDIR)/graphics.obj : $(SHADEROBJ)

@@ -1,32 +1,32 @@
 USB_SRCS := \
-	lib/usb/host/ohci-hcd.c \
-	lib/usb/core/message.c \
-	lib/usb/core/hcd.c \
-	lib/usb/core/hcd-pci.c \
-	lib/usb/core/hub.c \
-	lib/usb/core/usb.c \
-	lib/usb/core/config.c \
-	lib/usb/core/urb.c \
-	lib/usb/core/buffer_simple.c \
-	lib/usb/core/usb-debug.c \
-	lib/usb/sys/BootUSB.c \
-	lib/usb/sys/linuxwrapper.c \
-	lib/usb/sys/xpad.c \
-	lib/usb/sys/xremote.c \
-	lib/usb/sys/usbkey.c \
-	lib/usb/sys/usbmouse.c \
-	lib/usb/misc/misc.c \
-	lib/usb/misc/pci.c \
-	lib/usb/misc/malloc.c
+	$(NXDK_DIR)/lib/usb/host/ohci-hcd.c \
+	$(NXDK_DIR)/lib/usb/core/message.c \
+	$(NXDK_DIR)/lib/usb/core/hcd.c \
+	$(NXDK_DIR)/lib/usb/core/hcd-pci.c \
+	$(NXDK_DIR)/lib/usb/core/hub.c \
+	$(NXDK_DIR)/lib/usb/core/usb.c \
+	$(NXDK_DIR)/lib/usb/core/config.c \
+	$(NXDK_DIR)/lib/usb/core/urb.c \
+	$(NXDK_DIR)/lib/usb/core/buffer_simple.c \
+	$(NXDK_DIR)/lib/usb/core/usb-debug.c \
+	$(NXDK_DIR)/lib/usb/sys/BootUSB.c \
+	$(NXDK_DIR)/lib/usb/sys/linuxwrapper.c \
+	$(NXDK_DIR)/lib/usb/sys/xpad.c \
+	$(NXDK_DIR)/lib/usb/sys/xremote.c \
+	$(NXDK_DIR)/lib/usb/sys/usbkey.c \
+	$(NXDK_DIR)/lib/usb/sys/usbmouse.c \
+	$(NXDK_DIR)/lib/usb/misc/misc.c \
+	$(NXDK_DIR)/lib/usb/misc/pci.c \
+	$(NXDK_DIR)/lib/usb/misc/malloc.c
 
 INCLUDES += \
-	$(wildcard lib/xboxkrnl/*.h) \
-	$(wildcard lib/xboxrt/*.h) \
-	$(wildcard lib/hal/*.h) \
-	$(wildcard lib/pbkit/*.h)
+	$(wildcard $(NXDK_DIR)/lib/xboxkrnl/*.h) \
+	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.h) \
+	$(wildcard $(NXDK_DIR)/lib/hal/*.h) \
+	$(wildcard $(NXDK_DIR)/lib/pbkit/*.h)
 
 SRCS += \
-	$(wildcard lib/xboxrt/*.c) \
-	$(wildcard lib/hal/*.c) \
-	$(wildcard lib/pbkit/*.c) \
+	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.c) \
+	$(wildcard $(NXDK_DIR)/lib/hal/*.c) \
+	$(wildcard $(NXDK_DIR)/lib/pbkit/*.c) \
 	$(USB_SRCS)
