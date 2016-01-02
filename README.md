@@ -17,14 +17,20 @@ Getting Started
 ### Prerequisites
 You will need the following tools:
 - GNU make
-- [clang](http://clang.llvm.org/) and [lld](http://lld.llvm.org/)
+- [clang](http://clang.llvm.org/)
 - [GNU bison](https://www.gnu.org/software/bison/) and [flex](http://flex.sourceforge.net/)
 - [wine](https://www.winehq.org/), to invoke the NVIDIA Cg compiler
+- [lld](http://lld.llvm.org/) or the [MinGW](http://www.mingw.org/) flavor of GNU ld.
 
 #### OS X
 On OSX with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
 
     brew install wine llvm --with-lld --with-clang
+
+#### Linux (Ubuntu)
+On Ubuntu, the requried packages can be downloaded from the standard repositories:
+
+    sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64
 
 ### Download NXDK
 
@@ -48,8 +54,8 @@ can be executed on your Xbox (or XQEMU emulator).
 
 To generate an ISO file that can be burned to a disc, or passed to the XQEMU
 emulator via the `-drive index=1,media=cdrom,file=/path/to/your.iso` parameter,
-specify define the `GEN_XISO` variable with the name of the ISO to be created in
-your project Makefile. For example:
+define the `GEN_XISO` variable with the name of the ISO to be created in your
+project Makefile. For example:
 
     GEN_XISO=$(XBE_TITLE).iso
 
@@ -62,9 +68,7 @@ You can include additional files in the ISO (they must reside in the output
     bin/example.txt:
         echo "Hello" > $@
 
-    clean: $(ISO_DEPS)
-
-For easy ISO generation, you can also just specify it when you run `make`:
+For easy ISO generation, you can also just define it when you run `make`:
 
     make -C samples/0ldskoo1 GEN_XISO=0ldskoo1.iso
 

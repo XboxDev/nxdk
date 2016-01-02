@@ -10,10 +10,19 @@ ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
 endif
 
-TARGET       = $(OUTPUT_DIR)/default.xbe
-LLDLINK      = /usr/local/opt/llvm/bin/lld -flavor link
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+LD           = x86_64-w64-mingw32-ld
+CC           = clang
+CXX          = clang++
+endif
+ifeq ($(UNAME_S),Darwin)
+LD           = /usr/local/opt/llvm/bin/lld -flavor link
 CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
+endif
+
+TARGET       = $(OUTPUT_DIR)/default.xbe
 CGC          = wine $(NXDK_DIR)/tools/cg/cgc.exe
 CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
 VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
@@ -57,10 +66,14 @@ $(GEN_XISO): $(OUTPUT_DIR)/default.xbe
 	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@
 endif
 
-main.exe: $(OBJS)
-	@echo "[ LLD      ] $@"
-	$(VE) $(LLDLINK) -subsystem:windows -dll -out:'$@' \
-	-entry:XboxCRT $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib $(OBJS)
+main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
+	@echo "[ LD       ] $@"
+ifeq ($(UNAME_S),Linux)
+	$(VE) $(LD) -m i386pe -shared --entry=_XboxCRT -o $@ $^
+endif
+ifeq ($(UNAME_S),Darwin)
+	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
+endif
 
 %.obj: %.c $(INCLUDES)
 	@echo "[ CC       ] $@"
