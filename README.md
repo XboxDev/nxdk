@@ -62,11 +62,20 @@ project Makefile. For example:
 You can include additional files in the ISO (they must reside in the output
  directory) like this:
 
-    ISO_DEPS = bin/example.txt
-    $(GEN_XISO): $(ISO_DEPS)
+    ...
+    ISO_DEPS = $(OUTPUT_DIR)/example.txt
+    GEN_XISO = $(XBE_TITLE).iso
 
-    bin/example.txt:
+    include $(NXDK_DIR)/Makefile
+
+    $(GEN_XISO): $(ISO_DEPS)
+    $(OUTPUT_DIR)/example.txt:
         echo "Hello" > $@
+
+    clean: clean_iso_deps
+    .PHONY: clean_iso_deps
+    clean_iso_deps:
+        rm -f $(ISO_DEPS)
 
 For easy ISO generation, you can also just define it when you run `make`:
 

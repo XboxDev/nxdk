@@ -63,7 +63,7 @@ $(OUTPUT_DIR):
 ifneq ($(GEN_XISO),)
 $(GEN_XISO): $(OUTPUT_DIR)/default.xbe
 	@echo "[ XISO     ] $@"
-	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@
+	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(STDOUT_TO_NULL)
 endif
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
