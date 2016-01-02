@@ -1,13 +1,11 @@
-LLDLINK = /usr/local/opt/llvm/bin/lld -flavor link
-CC = /usr/local/opt/llvm/bin/clang
-CXX = /usr/local/opt/llvm/bin/clang++
-
-CGC = wine tools/cg/cgc.exe
-
-CXBE = tools/cxbe/cxbe
+LLDLINK      = /usr/local/opt/llvm/bin/lld -flavor link
+CC           = /usr/local/opt/llvm/bin/clang
+CXX          = /usr/local/opt/llvm/bin/clang++
+CGC          = wine tools/cg/cgc.exe
+CXBE         = tools/cxbe/cxbe
 VP20COMPILER = tools/vp20compiler/vp20compiler
 FP20COMPILER = tools/fp20compiler/fp20compiler
-
+EXTRACT_XISO = tools/extract-xiso/extract-xiso
 
 CFLAGS = -target i386-pc-win32 -march=pentium3 \
     -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
@@ -56,6 +54,11 @@ SRCS := $(wildcard xboxrt/*.c) \
         $(USB_SRCS)
 OBJS = $(SRCS:.c=.obj)
 
+all: default.iso
+
+default.iso: bin/default.xbe
+	$(EXTRACT_XISO) -c bin $@
+
 bin/default.xbe: app/main.exe
 	mkdir -p bin
 	$(CXBE) -OUT:bin/default.xbe -TITLE:0ldskoo1 app/main.exe
@@ -87,6 +90,11 @@ vp20compiler:
 fp20compiler:
 	$(MAKE) -C tools/fp20compiler
 
-.PHONY: clean cxbe vp20compiler fp20compiler
+extract-xiso:
+	$(MAKE) -C tools/extract-xiso
+
+tools: cxbe vp20compiler fp20compiler extract-xiso
+
+.PHONY: clean tools cxbe vp20compiler fp20compiler extract-xiso
 clean:
-	rm -f bin/default.xbe app/main.exe $(OBJS) $(SHADERINT) $(SHADEROBJ)
+	rm -f default.iso bin/default.xbe app/main.exe $(OBJS) $(SHADERINT) $(SHADEROBJ)

@@ -29,10 +29,13 @@ You need:
 
 On OSX with [Homebrew](http://brew.sh/), this might do the job (XCode ships with make and bison and flex):
 
-    brew install wine llvm --with-lld
+    brew install wine llvm --with-lld --with-clang
 
 Now you can compile your application and nxdk:
 
+    git submodule init
+    git submodule update
+    make tools
     make
 
 Credits

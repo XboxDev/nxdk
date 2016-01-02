@@ -1,0 +1,3 @@
+[submodule "tools/extract-xiso"]
+	path = tools/extract-xiso
+	url = https://github.com/mborgerson/extract-xiso.git

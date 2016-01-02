@@ -5,3 +5,12 @@
 
 _*.cpp
 _*.h
+
+app/main.exe.manifest
+app/ps.fp
+app/vs.vp
+bin/
+default.iso
+tools/cxbe/cxbe
+tools/fp20compiler/fp20compiler
+tools/vp20compiler/vp20compiler
