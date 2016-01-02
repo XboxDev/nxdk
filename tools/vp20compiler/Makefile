@@ -16,4 +16,8 @@ $(MAIN): $(OBJS)
 
 .PHONY: clean
 clean:
-	rm -f *.o
+	rm -f $(OBJS)
+
+.PHONY: distclean
+distclean: clean
+	rm -f $(MAIN)
