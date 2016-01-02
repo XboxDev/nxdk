@@ -1,12 +1,10 @@
 .DS_Store
 *.exe
+*.exe.manifest
 *.obj
 *.o
+*.xbe
+*.inl
 
 _*.cpp
 _*.h
-
-bin/
-tools/cxbe/cxbe
-tools/fp20compiler/fp20compiler
-tools/vp20compiler/vp20compiler
