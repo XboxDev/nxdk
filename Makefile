@@ -31,7 +31,8 @@ EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 CFLAGS       = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
-               -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
+               -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
+               -Wno-ignored-attributes
 
 include $(NXDK_DIR)/lib/Makefile
 OBJS = $(SRCS:.c=.obj)
