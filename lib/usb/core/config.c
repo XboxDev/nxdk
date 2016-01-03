@@ -254,7 +254,7 @@ static int usb_parse_interface(struct usb_interface *interface, unsigned char *b
 	return parsed;
 }
 
-int usb_parse_configuration(struct usb_host_config *config, char *buffer)
+int usb_parse_configuration(struct usb_host_config *config, unsigned char *buffer)
 {
 	int i, retval, size;
 	struct usb_descriptor_header *header;
@@ -288,7 +288,7 @@ int usb_parse_configuration(struct usb_host_config *config, char *buffer)
 
 	for (i = 0; i < config->desc.bNumInterfaces; i++) {
 		int numskipped, len;
-		char *begin;
+		unsigned char *begin;
 
 		/* Skip over the rest of the Class Specific or Vendor */
 		/*  Specific descriptors */
@@ -487,7 +487,7 @@ int usb_get_configuration(struct usb_device *dev)
 			goto err;
 		}
 
-		dev->rawdescriptors[cfgno] = bigbuffer;
+		dev->rawdescriptors[cfgno] = (char *)bigbuffer;
 
 		result = usb_parse_configuration(&dev->config[cfgno], bigbuffer);
 		if (result > 0)

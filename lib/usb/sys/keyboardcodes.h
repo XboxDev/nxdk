@@ -555,7 +555,7 @@ static unsigned char ucUSBtoAsciiShifted[256] =
 'Z', //XKEY_Z,
 '!', //XKEY_1,
 '"', //XKEY_2,
-'£', //XKEY_3,
+'\xA3', //XKEY_3, (£)
 '$', //XKEY_4,
 '%', //XKEY_5,
 '^', //XKEY_6,
@@ -573,10 +573,10 @@ static unsigned char ucUSBtoAsciiShifted[256] =
 '{', //XKEY_LBRACE,
 '}', //XKEY_RBRACE,
 '|', //XKEY_BACKSLASH,
-'¬', //XKEY_GRAVE,
+'\xAC', //XKEY_GRAVE, (¬)
 ':', //XKEY_SEMICOLON,
 '@', //XKEY_QUOTE,
-'¬', //XKEY_GRAVE,
+'\xAC', //XKEY_GRAVE, (¬)
 '<', //XKEY_COMMA,
 '>', //XKEY_PERIOD,
 '?', //XKEY_SLASH,
