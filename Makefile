@@ -34,6 +34,10 @@ CFLAGS       = -target i386-pc-win32 -march=pentium3 \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
                -Wno-ignored-attributes
 
+ifeq ($(DEBUG),y)
+CFLAGS += -g
+endif
+
 include $(NXDK_DIR)/lib/Makefile
 OBJS = $(SRCS:.c=.obj)
 
