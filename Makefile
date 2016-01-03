@@ -52,7 +52,7 @@ else
 STDOUT_TO_NULL=>/dev/null
 endif
 
-DEPS := $(SRCS:.c=.d)
+DEPS := $(SRCS:.c=.c.d)
 
 all: $(TARGET)
 
@@ -82,21 +82,22 @@ endif
 	@echo "[ CC       ] $@"
 	$(VE) $(CC) $(CFLAGS) -c -o '$@' '$<'
 
-%.d: %.c
+%.c.d: %.c
 	@echo "[ DEP      ] $@"
 	$(VE) set -e; rm -f $@; \
-	$(CC) -M -MG -MT '$*.obj $@' -MF $@ $(CFLAGS) $<
+	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(CFLAGS) $<; \
+	echo "\n$@ : $^\n" >> $@
 
 %.inl: %.vs.cg
 	@echo "[ CG       ] $@"
-	$(VE) $(CGC) -profile vp20 -o $@.$$$$ $< ; \
-	$(VP20COMPILER) $@.$$$$ > $@ ; \
+	$(VE) $(CGC) -profile vp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(VP20COMPILER) $@.$$$$ > $@ && \
 	rm -rf $@.$$$$
 
 %.inl: %.ps.cg
 	@echo "[ CG       ] $@"
-	$(VE) $(CGC) -profile fp20 -o $@.$$$$ $< ; \
-	$(FP20COMPILER) $@.$$$$ > $@ ; \
+	$(VE) $(CGC) -profile fp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(FP20COMPILER) $@.$$$$ > $@ && \
 	rm -rf $@.$$$$
 
 tools: $(TOOLS)
