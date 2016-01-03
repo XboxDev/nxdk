@@ -1,8 +1,8 @@
-NXDK - *the new open source xdk*
+NXDK - *the new open source XDK*
 ================================
 **Note:** This is a custom fork of NXDK. The official NXDK repository can be found [here](https://github.com/xqemu/nxdk). Documentation below applies to this fork. 
 
-NXDK is a software development kit for the original Xbox, and compatible with the XQEMU emulator. NXDK is a revitalization of [OpenXDK](http://opeNXDK.maturion.de/).
+NXDK is a software development kit for the original Xbox, compatible with the XQEMU emulator. NXDK is a revitalization of [OpenXDK](http://opeNXDK.maturion.de/).
 
 Notable features:
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
@@ -21,6 +21,7 @@ You will need the following tools:
 - [GNU bison](https://www.gnu.org/software/bison/) and [flex](http://flex.sourceforge.net/)
 - [wine](https://www.winehq.org/), to invoke the NVIDIA Cg compiler
 - [lld](http://lld.llvm.org/) or the [MinGW](http://www.mingw.org/) flavor of GNU ld.
+- [Git](http://git-scm.com/)
 
 #### OS X
 On OSX with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
@@ -30,18 +31,17 @@ On OSX with [Homebrew](http://brew.sh/), this should do the job (XCode ships wit
 #### Linux (Ubuntu)
 On Ubuntu, the requried packages can be downloaded from the standard repositories:
 
-    sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64
+    sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64 git
 
 ### Download NXDK
-
     git clone https://github.com/mborgerson/nxdk.git
     cd nxdk
-    git submodule init
-    git submodule update
+
+NXDK comes with a set of tools necessary for building. Build them with:
+
     make tools
 
 ### Build Samples
-
 To build the 0ldskoo1 sample, you can run:
 
     cd samples/0ldskoo1
@@ -51,7 +51,6 @@ This will generate a single executable, default.xbe, in the bin/ directory which
 can be executed on your Xbox (or XQEMU emulator).
 
 ### Generate XISO
-
 To generate an ISO file that can be burned to a disc, or passed to the XQEMU
 emulator via the `-drive index=1,media=cdrom,file=/path/to/your.iso` parameter,
 define the `GEN_XISO` variable with the name of the ISO to be created in your
@@ -83,13 +82,14 @@ For easy ISO generation, you can also just define it when you run `make`:
 
 Next Steps
 ----------
-Copy one of the sample directories to get started. In the directory, you can
-simply run `make`.
+Copy one of the sample directories to get started. You can copy it anywhere you
+like, but make sure that the `NXDK_DIR` variable in the Makefile points to
+correct place. Then, in the directory, you can simply run `make`.
 
 Credits
 -------
-- [OpenXDK](http://openxdk.maturion.de/) is inspiration for NXDK, and large parts are reused. (License: GPLv2)
-- Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit) by openxdkman are included, with modifications. (License: Academic Free License)
+- [OpenXDK](http://openxdk.maturion.de/) is the inspiration for NXDK, and large parts of it have been reused. (License: GPLv2)
+- Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit), by openxdkman, are included, with modifications. (License: Academic Free License)
 - A very barebones libc is included based on [lib43](https://github.com/lunixbochs/lib43) (License: MIT)
 - vp20compiler is based on nvvertparse.c from [Mesa](http://www.mesa3d.org/) (License: MIT)
 - fp20compiler is based on nvparse from the [NVIDIA SDK 9.52](https://www.nvidia.com/object/sdk-9.html).
