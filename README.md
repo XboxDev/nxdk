@@ -1,8 +1,6 @@
 NXDK - *the new open source XDK*
 ================================
-**Note:** This is a custom fork of NXDK. The official NXDK repository can be found [here](https://github.com/xqemu/nxdk). Documentation below applies to this fork. 
-
-NXDK is a software development kit for the original Xbox, compatible with the XQEMU emulator. NXDK is a revitalization of [OpenXDK](http://opeNXDK.maturion.de/).
+NXDK is a software development kit for the original Xbox. NXDK is a revitalization of [OpenXDK](http://opeNXDK.maturion.de/).
 
 Notable features:
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
@@ -34,7 +32,7 @@ On Ubuntu, the requried packages can be downloaded from the standard repositorie
     sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64 git
 
 ### Download NXDK
-    git clone https://github.com/mborgerson/nxdk.git
+    git clone https://github.com/xqemu/nxdk.git
     cd nxdk
 
 NXDK comes with a set of tools necessary for building. Build them with:
