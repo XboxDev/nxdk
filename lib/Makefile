@@ -19,12 +19,6 @@ USB_SRCS := \
 	$(NXDK_DIR)/lib/usb/misc/pci.c \
 	$(NXDK_DIR)/lib/usb/misc/malloc.c
 
-INCLUDES += \
-	$(wildcard $(NXDK_DIR)/lib/xboxkrnl/*.h) \
-	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.h) \
-	$(wildcard $(NXDK_DIR)/lib/hal/*.h) \
-	$(wildcard $(NXDK_DIR)/lib/pbkit/*.h)
-
 SRCS += \
 	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.c) \
 	$(wildcard $(NXDK_DIR)/lib/hal/*.c) \

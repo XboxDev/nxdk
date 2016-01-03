@@ -52,6 +52,8 @@ else
 STDOUT_TO_NULL=>/dev/null
 endif
 
+DEPS := $(SRCS:.c=.d)
+
 all: $(TARGET)
 
 $(OUTPUT_DIR)/default.xbe: $(OUTPUT_DIR) main.exe
@@ -76,9 +78,14 @@ ifeq ($(UNAME_S),Darwin)
 	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
 endif
 
-%.obj: %.c $(INCLUDES)
+%.obj: %.c
 	@echo "[ CC       ] $@"
 	$(VE) $(CC) $(CFLAGS) -c -o '$@' '$<'
+
+%.d: %.c
+	@echo "[ DEP      ] $@"
+	$(VE) set -e; rm -f $@; \
+	$(CC) -M -MG -MT '$*.obj $@' -MF $@ $(CFLAGS) $<
 
 %.inl: %.vs.cg
 	@echo "[ CG       ] $@"
@@ -115,7 +122,7 @@ extract-xiso:
 clean:
 	$(VE)rm -f $(TARGET) \
 	           main.exe main.exe.manifest \
-	           $(OBJS) $(SHADEROBJ) \
+	           $(OBJS) $(SHADER_OBJS) \
 	           $(GEN_XISO)
 
 .PHONY: distclean 
@@ -125,3 +132,6 @@ distclean: clean
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(STDOUT_TO_NULL)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(STDOUT_TO_NULL)
 	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
+	$(VE)rm -f $(DEPS)
+
+-include $(DEPS)
