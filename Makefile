@@ -96,16 +96,20 @@ tools: $(TOOLS)
 .PHONY: tools $(TOOLS)
 
 cxbe:
-	$(MAKE) -C $(NXDK_DIR)/tools/cxbe
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe $(STDOUT_TO_NULL)
 
 vp20compiler:
-	$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler $(STDOUT_TO_NULL)
 
 fp20compiler:
-	$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler $(STDOUT_TO_NULL)
 
 extract-xiso:
-	$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(STDOUT_TO_NULL)
 
 .PHONY: clean 
 clean:
@@ -116,8 +120,8 @@ clean:
 
 .PHONY: distclean 
 distclean: clean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(STDOUT_TO_NULL)
 	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
