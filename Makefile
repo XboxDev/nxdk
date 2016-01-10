@@ -45,6 +45,10 @@ ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
 endif
 
+ifneq ($(NXDK_NET),)
+include $(NXDK_DIR)/lib/net/Makefile
+endif
+
 V = 0
 VE_0 := @
 VE_1 :=
