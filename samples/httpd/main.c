@@ -9,7 +9,7 @@
 #include "pktdrv.h"
 #include <hal/input.h>
 #include <hal/xbox.h>
-#include <pbkit/pbKit.h>
+#include <pbkit/pbkit.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <xboxrt/debug.h>
 
