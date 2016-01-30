@@ -1,14 +1,14 @@
-NXDK - *the new open source XDK*
+nxdk - *the new open source xdk*
 ================================
-NXDK is a software development kit for the original Xbox. NXDK is a revitalization of [OpenXDK](http://opeNXDK.maturion.de/).
+nxdk is a software development kit for the original Xbox. nxdk is a revitalization of [OpenXDK](http://openxdk.maturion.de/).
 
 Notable features:
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
-- 3D graphics! NXDK includes and expands on pbkit, a library for interfacing with the Xbox GPU.
+- 3D graphics! nxdk includes and expands on pbkit, a library for interfacing with the Xbox GPU.
 
 Status
 ------
-NXDK is currently in early stages of development.
+nxdk is currently in early stages of development.
 
 Getting Started
 ---------------
@@ -22,7 +22,7 @@ You will need the following tools:
 - [Git](http://git-scm.com/)
 
 #### OS X
-On OSX with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
+On OS X with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
 
     brew install wine llvm --with-lld --with-clang
 
@@ -31,11 +31,11 @@ On Ubuntu, the requried packages can be downloaded from the standard repositorie
 
     sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64 git
 
-### Download NXDK
+### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
     cd nxdk
 
-NXDK comes with a set of tools necessary for building. Build them with:
+nxdk comes with a set of tools necessary for building. Build them with:
 
     make tools
 
@@ -86,7 +86,7 @@ correct place. Then, in the directory, you can simply run `make`.
 
 Credits
 -------
-- [OpenXDK](http://openxdk.maturion.de/) is the inspiration for NXDK, and large parts of it have been reused. (License: GPLv2)
+- [OpenXDK](http://openxdk.maturion.de/) is the inspiration for nxdk, and large parts of it have been reused. (License: GPLv2)
 - Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit), by openxdkman, are included, with modifications. (License: Academic Free License)
 - A very barebones libc is included based on [lib43](https://github.com/lunixbochs/lib43) (License: MIT)
 - vp20compiler is based on nvvertparse.c from [Mesa](http://www.mesa3d.org/) (License: MIT)
@@ -106,3 +106,4 @@ Code Overview
 * `tools/vp20compiler` - Translates vertex program assembly to Xbox microcode.
 * `tools/extract-xiso` - Generates and extracts ISO images compatible with the Xbox (and XQEMU).
 * `samples/` - Sample applications to get started.
+
