@@ -121,10 +121,7 @@ fp20compiler:
 
 extract-xiso:
 	@echo "[ BUILD    ] $@"
-	$(VE)cd $(NXDK_DIR); \
-	git submodule init $(NXDK_DIR)/tools/extract-xiso && \
-	git submodule update $(NXDK_DIR)/tools/extract-xiso && \
-	$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(STDOUT_TO_NULL)
 
 .PHONY: clean 
 clean:

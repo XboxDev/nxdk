@@ -34,6 +34,8 @@ On Ubuntu, the requried packages can be downloaded from the standard repositorie
 ### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
     cd nxdk
+    git submodule init
+    git submodule update --recursive
 
 nxdk comes with a set of tools necessary for building. Build them with:
 
