@@ -55,6 +55,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
 
 	usb_submit_urb(urb,GFP_ATOMIC);
 	usb_set_intfdata(intf,usbmouse);
+	return 0;
 }
 
 

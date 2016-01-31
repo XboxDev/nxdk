@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 #include <cassert>
 
 #include "nvparse_errors.h"

@@ -55,4 +55,8 @@ clean:
 	rm -f _ps1.0_parser.cpp _ps1.0_parser.h _ps1.0_lexer.cpp
 	rm -f _rc1.0_parser.cpp _rc1.0_parser.h _rc1.0_lexer.cpp
 	rm -f _ts1.0_parser.cpp _ts1.0_parser.h _ts1.0_lexer.cpp
-	rm -f *.o
+	rm -f $(OBJS)
+
+.PHONY: distclean
+distclean: clean
+	rm -f $(MAIN)

@@ -1,92 +1,142 @@
-LLDLINK = /usr/local/opt/llvm/bin/lld -flavor link
-CC = /usr/local/opt/llvm/bin/clang
-CXX = /usr/local/opt/llvm/bin/clang++
+ifeq ($(NXDK_DIR),)
+NXDK_DIR = $(shell pwd)
+endif
 
-CGC = wine tools/cg/cgc.exe
+ifeq ($(XBE_TITLE),)
+XBE_TITLE = nxdk_app
+endif
 
-CXBE = tools/cxbe/cxbe
-VP20COMPILER = tools/vp20compiler/vp20compiler
-FP20COMPILER = tools/fp20compiler/fp20compiler
+ifeq ($(OUTPUT_DIR),)
+OUTPUT_DIR = bin
+endif
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+LD           = x86_64-w64-mingw32-ld
+CC           = clang
+CXX          = clang++
+endif
+ifeq ($(UNAME_S),Darwin)
+LD           = /usr/local/opt/llvm/bin/lld -flavor link
+CC           = /usr/local/opt/llvm/bin/clang
+CXX          = /usr/local/opt/llvm/bin/clang++
+endif
 
-CFLAGS = -target i386-pc-win32 -march=pentium3 \
-    -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
-    -I. -Ixboxrt
+TARGET       = $(OUTPUT_DIR)/default.xbe
+CGC          = wine $(NXDK_DIR)/tools/cg/cgc.exe
+CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
+VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
+FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
+EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/extract-xiso
+TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
+CFLAGS       = -target i386-pc-win32 -march=pentium3 \
+               -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
+               -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
+               -Wno-ignored-attributes
 
-SHADERINT = \
-	app/vs.vp \
-	app/ps.fp
+ifeq ($(DEBUG),y)
+CFLAGS += -g
+endif
 
-SHADEROBJ = \
-	app/vs.inl \
-	app/ps.inl
-
-USB_SRCS = \
-    usb/host/ohci-hcd.c \
-    usb/core/message.c \
-    usb/core/hcd.c \
-    usb/core/hcd-pci.c \
-    usb/core/hub.c \
-    usb/core/usb.c \
-    usb/core/config.c \
-    usb/core/urb.c \
-    usb/core/buffer_simple.c \
-    usb/core/usb-debug.c \
-    usb/sys/BootUSB.c \
-    usb/sys/linuxwrapper.c \
-    usb/sys/xpad.c \
-    usb/sys/xremote.c \
-    usb/sys/usbkey.c \
-    usb/sys/usbmouse.c \
-    usb/misc/misc.c \
-    usb/misc/pci.c \
-    usb/misc/malloc.c
-
-INCLUDES := $(wildcard xboxkrnl/*.h) \
-            $(wildcard xboxrt/*.h) \
-            $(wildcard hal/*.h) \
-            $(wildcard pbkit/*.h) \
-            $(wildcard app/*.h) \
-            $(SHADEROBJ)
-
-SRCS := $(wildcard xboxrt/*.c) \
-        $(wildcard hal/*.c) \
-        $(wildcard pbkit/*.c) \
-        $(wildcard app/*.c) \
-        $(USB_SRCS)
+include $(NXDK_DIR)/lib/Makefile
 OBJS = $(SRCS:.c=.obj)
 
-bin/default.xbe: app/main.exe
-	mkdir -p bin
-	$(CXBE) -OUT:bin/default.xbe -TITLE:0ldskoo1 app/main.exe
+ifneq ($(GEN_XISO),)
+TARGET += $(GEN_XISO)
+endif
 
-app/main.exe: $(OBJS)
-	$(LLDLINK) -subsystem:windows -dll -out:'$@' -entry:XboxCRT xboxkrnl/libxboxkrnl.lib $(OBJS)
+V = 0
+VE_0 := @
+VE_1 :=
+VE = $(VE_$(V))
 
-%.obj: %.c ${INCLUDES}
-	$(CC) $(CFLAGS) -c -o '$@' '$<'
+ifeq ($(V),1)
+STDOUT_TO_NULL=
+else
+STDOUT_TO_NULL=>/dev/null
+endif
 
-app/vs.vp: app/vs.cg
-	$(CGC) -profile vp20 -o '$@' '$<'
+DEPS := $(SRCS:.c=.c.d)
 
-app/ps.fp: app/ps.cg
-	$(CGC) -profile fp20 -o '$@' '$<'
+all: $(TARGET)
 
-%.inl: %.vp
-	$(VP20COMPILER) '$<' > '$@'
+$(OUTPUT_DIR)/default.xbe: $(OUTPUT_DIR) main.exe
+	@echo "[ CXBE     ] $@"
+	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $^ $(STDOUT_TO_NULL)
 
-%.inl: %.fp
-	$(FP20COMPILER) '$<' > '$@'
+$(OUTPUT_DIR):
+	@mkdir -p $(OUTPUT_DIR);
+
+ifneq ($(GEN_XISO),)
+$(GEN_XISO): $(OUTPUT_DIR)/default.xbe
+	@echo "[ XISO     ] $@"
+	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(STDOUT_TO_NULL)
+endif
+
+main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
+	@echo "[ LD       ] $@"
+ifeq ($(UNAME_S),Linux)
+	$(VE) $(LD) -m i386pe -shared --entry=_XboxCRT -o $@ $^
+endif
+ifeq ($(UNAME_S),Darwin)
+	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
+endif
+
+%.obj: %.c
+	@echo "[ CC       ] $@"
+	$(VE) $(CC) $(CFLAGS) -c -o '$@' '$<'
+
+%.c.d: %.c
+	@echo "[ DEP      ] $@"
+	$(VE) set -e; rm -f $@; \
+	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(CFLAGS) $<; \
+	echo "\n$@ : $^\n" >> $@
+
+%.inl: %.vs.cg
+	@echo "[ CG       ] $@"
+	$(VE) $(CGC) -profile vp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(VP20COMPILER) $@.$$$$ > $@ && \
+	rm -rf $@.$$$$
+
+%.inl: %.ps.cg
+	@echo "[ CG       ] $@"
+	$(VE) $(CGC) -profile fp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(FP20COMPILER) $@.$$$$ > $@ && \
+	rm -rf $@.$$$$
+
+tools: $(TOOLS)
+.PHONY: tools $(TOOLS)
 
 cxbe:
-	$(MAKE) -C tools/cxbe
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe $(STDOUT_TO_NULL)
 
 vp20compiler:
-	$(MAKE) -C tools/vp20compiler
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler $(STDOUT_TO_NULL)
 
 fp20compiler:
-	$(MAKE) -C tools/fp20compiler
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler $(STDOUT_TO_NULL)
 
-.PHONY: clean cxbe vp20compiler fp20compiler
+extract-xiso:
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(STDOUT_TO_NULL)
+
+.PHONY: clean 
 clean:
-	rm -f bin/default.xbe app/main.exe $(OBJS) $(SHADERINT) $(SHADEROBJ)
+	$(VE)rm -f $(TARGET) \
+	           main.exe main.exe.manifest \
+	           $(OBJS) $(SHADER_OBJS) \
+	           $(GEN_XISO)
+
+.PHONY: distclean 
+distclean: clean
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(STDOUT_TO_NULL)
+	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
+	$(VE)rm -f $(DEPS)
+
+-include $(DEPS)
