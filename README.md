@@ -17,19 +17,19 @@ You will need the following tools:
 - GNU make
 - [clang](http://clang.llvm.org/)
 - [GNU bison](https://www.gnu.org/software/bison/) and [flex](http://flex.sourceforge.net/)
-- [wine](https://www.winehq.org/), to invoke the NVIDIA Cg compiler
-- [lld](http://lld.llvm.org/) or the [MinGW](http://www.mingw.org/) flavor of GNU ld.
+- [lld](http://lld.llvm.org/)
 - [Git](http://git-scm.com/)
 
 #### OS X
 On OS X with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
 
-    brew install wine llvm --with-lld --with-clang
+    brew install llvm --with-lld --with-clang
 
 #### Linux (Ubuntu)
-On Ubuntu, the requried packages can be downloaded from the standard repositories:
 
-    sudo apt-get install build-essential flex bison g++ clang wine binutils-mingw-w64 git
+    sudo apt-get install build-essential flex bison clang git
+
+Then install lld from an [LLVM nightly package](http://apt.llvm.org/)
 
 ### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
