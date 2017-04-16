@@ -12,18 +12,19 @@ endif
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-LD           = x86_64-w64-mingw32-ld
+LD           = lld-link
 CC           = clang
 CXX          = clang++
+CGC          = cgc
 endif
 ifeq ($(UNAME_S),Darwin)
 LD           = /usr/local/opt/llvm/bin/lld -flavor link
 CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
+CGC          = wine $(NXDK_DIR)/tools/cg/cgc.exe
 endif
 
 TARGET       = $(OUTPUT_DIR)/default.xbe
-CGC          = wine $(NXDK_DIR)/tools/cg/cgc.exe
 CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
 VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
 FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
@@ -80,7 +81,7 @@ endif
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 ifeq ($(UNAME_S),Linux)
-	$(VE) $(LD) -m i386pe -shared --entry=_XboxCRT -o $@ $^
+	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
 endif
 ifeq ($(UNAME_S),Darwin)
 	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
