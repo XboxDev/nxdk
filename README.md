@@ -89,7 +89,7 @@ Credits
 - A very barebones libc is included based on [lib43](https://github.com/lunixbochs/lib43) (License: MIT)
 - vp20compiler is based on nvvertparse.c from [Mesa](http://www.mesa3d.org/) (License: MIT)
 - fp20compiler is based on nvparse from the [NVIDIA SDK 9.52](https://www.nvidia.com/object/sdk-9.html).
-- A (Windows) copy of the NVIDIA Cg compiler 1.3 from the NVIDIA SDK is bundled.
+- The [NVIDIA Cg compiler](https://developer.nvidia.com/cg-toolkit) is bundled.
 - extract-xiso developed by in et al. (License: BSD)
 
 Code Overview
