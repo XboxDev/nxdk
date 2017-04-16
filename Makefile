@@ -15,13 +15,13 @@ ifeq ($(UNAME_S),Linux)
 LD           = lld-link
 CC           = clang
 CXX          = clang++
-CGC          = cgc
+CGC          = $(NXDK_DIR)/tools/cg/linux/cgc
 endif
 ifeq ($(UNAME_S),Darwin)
 LD           = /usr/local/opt/llvm/bin/lld -flavor link
 CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
-CGC          = wine $(NXDK_DIR)/tools/cg/cgc.exe
+CGC          = $(NXDK_DIR)/tools/cg/mac/cgc
 endif
 
 TARGET       = $(OUTPUT_DIR)/default.xbe
