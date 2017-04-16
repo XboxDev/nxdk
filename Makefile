@@ -56,18 +56,18 @@ VE_1 :=
 VE = $(VE_$(V))
 
 ifeq ($(V),1)
-STDOUT_TO_NULL=
+QUIET=
 else
-STDOUT_TO_NULL=>/dev/null
+QUIET=>/dev/null
 endif
 
 DEPS := $(SRCS:.c=.c.d)
 
 all: $(TARGET)
 
-$(OUTPUT_DIR)/default.xbe: $(OUTPUT_DIR) main.exe
+$(OUTPUT_DIR)/default.xbe: $(OUTPUT_DIR) main.exe $(CXBE)
 	@echo "[ CXBE     ] $@"
-	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $^ $(STDOUT_TO_NULL)
+	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $^ $(QUIET)
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR);
@@ -75,17 +75,12 @@ $(OUTPUT_DIR):
 ifneq ($(GEN_XISO),)
 $(GEN_XISO): $(OUTPUT_DIR)/default.xbe
 	@echo "[ XISO     ] $@"
-	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(STDOUT_TO_NULL)
+	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(QUIET)
 endif
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
-ifeq ($(UNAME_S),Linux)
 	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
-endif
-ifeq ($(UNAME_S),Darwin)
-	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
-endif
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
@@ -97,36 +92,40 @@ endif
 	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(CFLAGS) $<; \
 	echo "\n$@ : $^\n" >> $@
 
-%.inl: %.vs.cg
+%.inl: %.vs.cg $(VP20COMPILER)
 	@echo "[ CG       ] $@"
-	$(VE) $(CGC) -profile vp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(VE) $(CGC) -profile vp20 -o $@.$$$$ $< $(QUIET) && \
 	$(VP20COMPILER) $@.$$$$ > $@ && \
 	rm -rf $@.$$$$
 
-%.inl: %.ps.cg
+%.inl: %.ps.cg $(FP20COMPILER)
 	@echo "[ CG       ] $@"
-	$(VE) $(CGC) -profile fp20 -o $@.$$$$ $< $(STDOUT_TO_NULL) && \
+	$(VE) $(CGC) -profile fp20 -o $@.$$$$ $< $(QUIET) && \
 	$(FP20COMPILER) $@.$$$$ > $@ && \
 	rm -rf $@.$$$$
 
 tools: $(TOOLS)
 .PHONY: tools $(TOOLS)
 
-cxbe:
+cxbe: $(CXBE)
+$(CXBE):
 	@echo "[ BUILD    ] $@"
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe $(QUIET)
 
-vp20compiler:
+vp20compiler: $(VP20COMPILER)
+$(VP20COMPILER):
 	@echo "[ BUILD    ] $@"
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler $(QUIET)
 
-fp20compiler:
+fp20compiler: $(FP20COMPILER)
+$(FP20COMPILER):
 	@echo "[ BUILD    ] $@"
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler $(QUIET)
 
-extract-xiso:
+extract-xiso: $(EXTRACT_XISO)
+$(EXTRACT_XISO):
 	@echo "[ BUILD    ] $@"
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(QUIET)
 
 .PHONY: clean 
 clean:
@@ -137,10 +136,10 @@ clean:
 
 .PHONY: distclean 
 distclean: clean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean $(STDOUT_TO_NULL)
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(STDOUT_TO_NULL)
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(STDOUT_TO_NULL)
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(STDOUT_TO_NULL)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean $(QUIET)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(QUIET)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(QUIET)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(QUIET)
 	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
 	$(VE)rm -f $(DEPS)
 

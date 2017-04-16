@@ -37,10 +37,6 @@ Then install lld from an [LLVM nightly package](http://apt.llvm.org/)
     git submodule init
     git submodule update --recursive
 
-nxdk comes with a set of tools necessary for building. Build them with:
-
-    make tools
-
 ### Build Samples
 To build the 0ldskoo1 sample, you can run:
 
