@@ -6,7 +6,7 @@
 #include <xboxrt/debug.h>
 #include <xboxkrnl/xboxkrnl.h> //for MmFreeContiguousMemory
 
-#include <pbkit/pbKit.h>
+#include <pbkit/pbkit.h>
 
 
 #include "string.h"
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "math3D.h"
+#include "math3d.h"
 
 #include "graphics.h"
 

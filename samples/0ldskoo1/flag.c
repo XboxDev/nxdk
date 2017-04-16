@@ -2,12 +2,12 @@
 #include <string.h>
 #include <math.h>
 
-#include <xboxkrnl/xboxkrnl.H>
+#include <xboxkrnl/xboxkrnl.h>
 #include <pbkit/pbkit.h>
 
 #include "graphics.h"
 
-#include "math3D.h"
+#include "math3d.h"
 
 #include "flag_tris.h"
 #include "flag_tex.h"

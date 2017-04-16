@@ -91,7 +91,7 @@ sys_now(void)
   asm __volatile__ ("rdtsc; divl %1"
                     : "=a" (now)
                     : "r" (freq)
-                    : "%eax", "%edx");
+                    : "%edx");
   return now;
 }
 

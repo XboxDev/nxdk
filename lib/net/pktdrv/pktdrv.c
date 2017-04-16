@@ -721,7 +721,9 @@ void Pktdrv_Quit(void)
 //Returns 1 if everything is ok
 int Pktdrv_Init(void)
 {
-	int 	n,len,type;
+	int 	n;
+	SIZE_T	len;
+	DWORD	type;
 	ULONG 	buffers_addr;
 	ULONG	buffers_physaddr;
 	ULONG	status;
@@ -885,7 +887,7 @@ int Pktdrv_Init(void)
 	g_running=1;
 
 	//XBOX specific (nForce specific)
-	if (PhyInitialize(0,0)<0) //Initialize transceiver
+	if (PhyInitialize(0,0)!=0) //Initialize transceiver
 	{
 		debugPrint("PhyInitialize error\n");
 		Pktdrv_Quit();
