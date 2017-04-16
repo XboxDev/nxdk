@@ -1,5 +1,5 @@
 #include <xboxrt/debug.h>
-#include <pbkit/pbKit.h>
+#include <pbkit/pbkit.h>
 #include <hal/xbox.h>
 #include "stdio.h"
 

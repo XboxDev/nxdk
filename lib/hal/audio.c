@@ -118,7 +118,7 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	pac97device->mmio[0x12C>>2] |= 2;
 	
 	// wait until the chip is finished resetting...
-	while(!pac97device->mmio[0x130>>2]&0x100)
+	while(!(pac97device->mmio[0x130>>2]&0x100))
 		;
 
 	// clear all interrupts
