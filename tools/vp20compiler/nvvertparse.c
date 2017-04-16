@@ -1361,7 +1361,6 @@ int parse_nv_vertex_program(const char *str,
       // target = GL_VERTEX_STATE_PROGRAM_NV;
       parseState.pos = programString + 8;
       parseState.isStateProgram = TRUE;
-      assert(false);
    }
    else {
       /* invalid header */

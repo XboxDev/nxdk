@@ -467,6 +467,16 @@ void translate(const char* str)
                     assert(false);
                 }
                 vsh_set_field(vsh_ins, FLD_OUT_ADDRESS, out_reg);
+            } else if (ins.DstReg.File == PROGRAM_ENV_PARAM) {
+                vsh_set_field(vsh_ins, FLD_OUT_O_MASK, vsh_mask(ins.DstReg.WriteMask));
+                if (mac) {
+                    vsh_set_field(vsh_ins, FLD_OUT_MUX, OMUX_MAC);
+                } else if (ilu) {
+                    vsh_set_field(vsh_ins, FLD_OUT_MUX, OMUX_ILU);
+                }
+                vsh_set_field(vsh_ins, FLD_OUT_ORB, OUTPUT_C);
+                // TODO: the index needs ajustment?
+                vsh_set_field(vsh_ins, FLD_OUT_ADDRESS, ins.DstReg.Index);
             } else {
                 assert(false);
             }
