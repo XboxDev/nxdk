@@ -65,9 +65,9 @@ DEPS := $(SRCS:.c=.c.d)
 
 all: $(TARGET)
 
-$(OUTPUT_DIR)/default.xbe: $(OUTPUT_DIR) main.exe $(CXBE)
+$(OUTPUT_DIR)/default.xbe: main.exe $(OUTPUT_DIR) $(CXBE)
 	@echo "[ CXBE     ] $@"
-	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $^ $(QUIET)
+	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $< $(QUIET)
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR);
