@@ -163,5 +163,19 @@ void free(void *ptr) {
     VirtualFree(ptr, 0, 0);
 }
 
+void *calloc(size_t count, size_t size)
+{
+    void *data = malloc(count * size);
+    memset(data, 0, count * size);
+    return data;
+}
 
-
+void *realloc(void *ptr, size_t size)
+{
+    void *new = malloc(size);
+    if (ptr != NULL) {
+        memcpy(new, ptr, size);
+        free(ptr);
+    }
+    return new;
+}

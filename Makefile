@@ -50,6 +50,10 @@ ifneq ($(NXDK_NET),)
 include $(NXDK_DIR)/lib/net/Makefile
 endif
 
+ifneq ($(NXDK_SDL),)
+include $(NXDK_DIR)/lib/sdl/Makefile
+endif
+
 V = 0
 VE_0 := @
 VE_1 :=

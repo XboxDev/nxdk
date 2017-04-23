@@ -4,3 +4,7 @@
 [submodule "lib/net/lwip"]
 	path = lib/net/lwip
 	url = git://git.savannah.nongnu.org/lwip.git
+[submodule "lib/sdl/SDL2"]
+	path = lib/sdl/SDL2
+	url = https://github.com/mborgerson/nxdk-sdl.git
+	branch = nxdk
