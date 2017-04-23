@@ -83,16 +83,7 @@ int errno;
 u32_t
 sys_now(void)
 {
-  unsigned int now, freq = 733000;
-
-  /* Read TSC into EDX:EAX, then divide TSC by processor freq / 1000 to
-   * get elapsed milliseconds since reset (roughly).
-   */
-  asm __volatile__ ("rdtsc; divl %1"
-                    : "=a" (now)
-                    : "r" (freq)
-                    : "%edx");
-  return now;
+  return KeTickCount;
 }
 
 void
