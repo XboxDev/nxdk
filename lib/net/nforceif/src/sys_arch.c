@@ -401,12 +401,10 @@ sys_sem_signal(struct sys_sem **s)
 static void
 sys_sem_free_internal(struct sys_sem *sem)
 {
-  // FIXME! This will leak.
-
-  // NTSTATUS status = NtClose((void*)sem->handle);
-  // if (NT_SUCCESS(status)) {
-  //     abort();
-  // }
+  NTSTATUS status = NtClose((void*)sem->handle);
+  if (!NT_SUCCESS(status)) {
+      abort();
+  }
   free(sem);
 }
 
