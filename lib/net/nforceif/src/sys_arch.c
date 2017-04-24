@@ -83,16 +83,7 @@ int errno;
 u32_t
 sys_now(void)
 {
-  unsigned int now, freq = 733000;
-
-  /* Read TSC into EDX:EAX, then divide TSC by processor freq / 1000 to
-   * get elapsed milliseconds since reset (roughly).
-   */
-  asm __volatile__ ("rdtsc; divl %1"
-                    : "=a" (now)
-                    : "r" (freq)
-                    : "%edx");
-  return now;
+  return KeTickCount;
 }
 
 void
@@ -410,12 +401,10 @@ sys_sem_signal(struct sys_sem **s)
 static void
 sys_sem_free_internal(struct sys_sem *sem)
 {
-  // FIXME! This will leak.
-
-  // NTSTATUS status = NtClose((void*)sem->handle);
-  // if (NT_SUCCESS(status)) {
-  //     abort();
-  // }
+  NTSTATUS status = NtClose((void*)sem->handle);
+  if (!NT_SUCCESS(status)) {
+      abort();
+  }
   free(sem);
 }
 
