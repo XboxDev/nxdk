@@ -12,3 +12,6 @@
 	path = lib/pdclib
 	url = https://github.com/XboxDev/nxdk-pdclib.git
 	branch = nxdk
+[submodule "lib/sdl/SDL_ttf"]
+	path = lib/sdl/SDL_ttf
+	url = https://github.com/SDL-mirror/SDL_ttf
