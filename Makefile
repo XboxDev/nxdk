@@ -23,6 +23,12 @@ CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
 CGC          = $(NXDK_DIR)/tools/cg/mac/cgc
 endif
+ifneq (,$(findstring MSYS_NT,$(UNAME_S)))
+LD           = lld-link
+CC           = clang
+CXX          = clang++
+CGC          = $(NXDK_DIR)/tools/cg/win/cgc
+endif
 
 TARGET       = $(OUTPUT_DIR)/default.xbe
 CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
