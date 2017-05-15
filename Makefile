@@ -77,7 +77,7 @@ $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR);
 
 ifneq ($(GEN_XISO),)
-$(GEN_XISO): $(OUTPUT_DIR)/default.xbe
+$(GEN_XISO): $(OUTPUT_DIR)/default.xbe $(EXTRACT_XISO)
 	@echo "[ XISO     ] $@"
 	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(QUIET)
 endif
