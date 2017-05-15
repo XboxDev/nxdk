@@ -102,19 +102,19 @@ void main(void)
         p = pb_begin();
 
         /* Set shader constants cursor at C0 */
-        pb_push1(p, NV20_TCL_PRIMITIVE_3D_VP_UPLOAD_CONST_ID, 96); p+=2;
+        pb_push1(p, NV097_SET_TRANSFORM_CONSTANT_LOAD, 96); p+=2;
 
         /* Send the transformation matrix */
-        pb_push(p++, NV20_TCL_PRIMITIVE_3D_VP_UPLOAD_CONST_X, 16);
+        pb_push(p++, NV097_SET_TRANSFORM_CONSTANT, 16);
         memcpy(p, m_viewport, 16*4); p+=16;
 
         pb_end(p);
         p = pb_begin();
 
         /* Clear all attributes */
-        pb_push(p++,NV097_SET_VERTEX_DATA_ARRAY_FORMAT,16);
+        pb_push(p++, NV097_SET_VERTEX_DATA_ARRAY_FORMAT,16);
         for(i = 0; i < 16; i++) {
-            *(p++) = 2;
+            *(p++) = NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F;
         }
         pb_end(p);
 
@@ -196,20 +196,28 @@ static void init_shader(void)
     p = pb_begin();
 
     /* Set run address of shader */
-    pb_push(p++, NV097_SET_TRANSFORM_PROGRAM_START, 1); *(p++)=0;
+    pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_START, 0);
+    p += 2;
 
     /* Set execution mode */
-    pb_push(p++, NV097_SET_TRANSFORM_EXECUTION_MODE, 2);
-    *(p++) = SHADER_TYPE_EXTERNAL;
-    *(p++) = SHADER_SUBTYPE_REGULAR;
+    pb_push1(p, NV097_SET_TRANSFORM_EXECUTION_MODE,
+        MASK(NV097_SET_TRANSFORM_EXECUTION_MODE_MODE, NV097_SET_TRANSFORM_EXECUTION_MODE_MODE_PROGRAM)
+        | MASK(NV097_SET_TRANSFORM_EXECUTION_MODE_RANGE_MODE, NV097_SET_TRANSFORM_EXECUTION_MODE_RANGE_MODE_PRIV));
+    p += 2;
+
+    pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_CXT_WRITE_EN, 0);
+    p += 2;
 
     /* Set cursor and begin copying program */
-    pb_push(p++, NV097_SET_TRANSFORM_PROGRAM_LOAD, 1); *(p++)=0;
+    pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_LOAD, 0);
+    p += 2;
+
     for (i=0; i<sizeof(vs_program)/8; i++) {
-        pb_push(p++,NV097_SET_TRANSFORM_PROGRAM,4);
+        pb_push(p++, NV097_SET_TRANSFORM_PROGRAM, 4);
         memcpy(p, &vs_program[i*4], 4*4);
         p+=4;
     }
+
     pb_end(p);
 
     /* Setup fragment shader */
@@ -237,8 +245,10 @@ static void draw_arrays(unsigned int mode, int start, int count)
 {
     uint32_t *p = pb_begin();
     pb_push1(p, NV097_SET_BEGIN_END, mode); p += 2;
+
     pb_push(p++,0x40000000|NV097_DRAW_ARRAYS,1); //bit 30 means all params go to same register 0x1810
-    *(p++)=((count-1)<<24) | start;
+    *(p++) = MASK(NV097_DRAW_ARRAYS_COUNT, (count-1)) | MASK(NV097_DRAW_ARRAYS_START_INDEX, start);
+
     pb_push1(p,NV097_SET_BEGIN_END, NV097_SET_BEGIN_END_OP_END); p += 2;
     pb_end(p);
 }
