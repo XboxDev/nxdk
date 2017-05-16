@@ -31,6 +31,13 @@ On OS X with [Homebrew](http://brew.sh/), this should do the job (XCode ships wi
 
 Then install lld from an [LLVM nightly package](http://apt.llvm.org/)
 
+#### Windows
+Install [MSYS2](http://www.msys2.org/)
+
+In MSYS2 Shell:
+
+    pacman -S make git gcc bison flex llvm clang
+
 ### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
     cd nxdk

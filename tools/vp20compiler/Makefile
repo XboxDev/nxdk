@@ -8,7 +8,7 @@ SRCS = nvvertparse.c \
 
 OBJS = $(SRCS:.c=.o)
 
-CFLAGS = -std=c99
+CFLAGS = -std=gnu99
 
 $(MAIN): $(OBJS)
 	$(CC) -o '$@' $(OBJS)

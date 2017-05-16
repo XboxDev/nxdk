@@ -8,3 +8,4 @@
 *.d
 _*.cpp
 _*.h
+!tools/cg/win/cgc.exe
