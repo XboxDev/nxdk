@@ -30,14 +30,16 @@ VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
 FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
 EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
-CFLAGS       = -target i386-pc-win32 -march=pentium3 \
+NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
-               -Wno-ignored-attributes
+               -Wno-ignored-attributes -DNXDK
 
 ifeq ($(DEBUG),y)
-CFLAGS += -g
+NXDK_CFLAGS += -g
 endif
+
+NXDK_CFLAGS += $(CFLAGS)
 
 include $(NXDK_DIR)/lib/Makefile
 OBJS = $(SRCS:.c=.obj)
@@ -88,12 +90,12 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
-	$(VE) $(CC) $(CFLAGS) -c -o '$@' '$<'
+	$(VE) $(CC) $(NXDK_CFLAGS) -c -o '$@' '$<'
 
 %.c.d: %.c
 	@echo "[ DEP      ] $@"
 	$(VE) set -e; rm -f $@; \
-	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(CFLAGS) $<; \
+	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(NXDK_CFLAGS) $<; \
 	echo "\n$@ : $^\n" >> $@
 
 %.inl: %.vs.cg $(VP20COMPILER)
