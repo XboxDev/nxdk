@@ -76,26 +76,60 @@ struct parse_state {
    unsigned int numInst;                 /* number of instructions parsed */
 };
 
+/**
+ * Find the line number and column for 'pos' within 'string'.
+ * Return a copy of the line which contains 'pos'.  Free the line with
+ * free().
+ * \param string  the program string
+ * \param pos     the position within the string
+ * \param line    returns the line number corresponding to 'pos'.
+ * \param col     returns the column number corresponding to 'pos'.
+ * \return copy of the line containing 'pos'.
+ */
+const unsigned char *
+_mesa_find_line_column(const unsigned char *string, const unsigned char *pos,
+                       int *line, int *col)
+{
+   const unsigned char *lineStart = string;
+   const unsigned char *p = string;
+   unsigned char *s;
+   int len;
+   *line = 1;
+   while (p != pos) {
+      if (*p == (unsigned char) '\n') {
+         (*line)++;
+         lineStart = p + 1;
+      }
+      p++;
+   }
+   *col = (pos - lineStart) + 1;
+   /* return copy of this line */
+   while (*p != 0 && *p != '\n')
+      p++;
+   len = p - lineStart;
+   s = (unsigned char *) malloc(len + 1);
+   memcpy(s, lineStart, len);
+   s[len] = 0;
+   return s;
+}
+
 
 /*
  * Called whenever we find an error during parsing.
  */
 static void
-record_error(struct parse_state *parseState, const char *msg, int lineNo)
+record_error(struct parse_state *parseState, const char *msg, const char* file,
+             int lineNo)
 {
-#ifdef DEBUG
    int line, column;
    const unsigned char *lineStr;
    lineStr = _mesa_find_line_column(parseState->start,
                                     parseState->pos, &line, &column);
    // _mesa_debug(parseState->ctx,
    fprintf(stderr,
-               "nvfragparse.c(%d): line %d, column %d:%s (%s)\n",
-               lineNo, line, column, (char *) lineStr, msg);
+               "%s(%d): line %d, column %d: %s (%s)\n",
+               file, lineNo, line, column, (char *) lineStr, msg);
    free((void *) lineStr);
-#else
-   (void) lineNo;
-#endif
 
    /* Check that no error was already recorded.  Only record the first one. */
    // if (parseState->ctx->Program.ErrorString[0] == 0) {
@@ -103,28 +137,28 @@ record_error(struct parse_state *parseState, const char *msg, int lineNo)
    //                            parseState->pos - parseState->start,
    //                            msg);
    // }
-   assert(false);
+   exit(1);
 }
 
 
-#define RETURN_ERROR                                                    \
-do {                                                                    \
-   record_error(parseState, "Unexpected end of input.", __LINE__);      \
-   return FALSE;                                                     \
+#define RETURN_ERROR                                                         \
+do {                                                                         \
+   record_error(parseState, "Unexpected end of input.", __FILE__, __LINE__); \
+   return FALSE;                                                             \
 } while(0)
 
-#define RETURN_ERROR1(msg)                                              \
-do {                                                                    \
-   record_error(parseState, msg, __LINE__);                             \
-   return FALSE;                                                     \
+#define RETURN_ERROR1(msg)                                                   \
+do {                                                                         \
+   record_error(parseState, msg, __FILE__, __LINE__);                        \
+   return FALSE;                                                             \
 } while(0)
 
-#define RETURN_ERROR2(msg1, msg2)                                       \
-do {                                                                    \
-   char err[1000];                                                      \
-   sprintf(err, "%s %s", msg1, msg2);                           \
-   record_error(parseState, err, __LINE__);                             \
-   return FALSE;                                                     \
+#define RETURN_ERROR2(msg1, msg2)                                            \
+do {                                                                         \
+   char err[1000];                                                           \
+   sprintf(err, "%s %s", msg1, msg2);                                        \
+   record_error(parseState, err, __FILE__, __LINE__);                        \
+   return FALSE;                                                             \
 } while(0)
 
 
@@ -1327,7 +1361,6 @@ int parse_nv_vertex_program(const char *str,
       // target = GL_VERTEX_STATE_PROGRAM_NV;
       parseState.pos = programString + 8;
       parseState.isStateProgram = TRUE;
-      assert(false);
    }
    else {
       /* invalid header */

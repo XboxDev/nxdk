@@ -6,6 +6,7 @@
 
 #include <xboxkrnl/types.h>
 
+#include "outer.h"
 #include "nv_objects.h"
 #include "nv_regs.h"
 
@@ -53,6 +54,9 @@ void    pb_reset(void); //forces a jump to push buffer head (do it at frame star
 int pb_finished(void);  //prepare screen swapping at VBlank (do it at frame end)
                 //if it returns 1 it failed (too early, just wait & retry)
                 //that means you can draw more details in your scene
+
+void pb_wait_until_gr_not_busy(void);
+DWORD pb_wait_until_tiles_not_busy(void);
 
 DWORD   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
 void    pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages

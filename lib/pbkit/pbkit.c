@@ -695,7 +695,7 @@ static DWORD pb_gr_handler(void)
 }
 
 
-static void pb_wait_until_gr_not_busy(void)
+void pb_wait_until_gr_not_busy(void)
 {
     DWORD       status;
 
@@ -1064,7 +1064,7 @@ static void pb_uninstall_gpu_interrupt(void)
 
 
 
-static DWORD pb_wait_until_tiles_not_busy(void)
+DWORD pb_wait_until_tiles_not_busy(void)
 {
     DWORD old_dma_push;
 
