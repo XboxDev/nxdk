@@ -92,7 +92,7 @@ correct place. Then, in the directory, you can simply run `make`.
 Credits
 -------
 - [OpenXDK](http://openxdk.maturion.de/) is the inspiration for nxdk, and large parts of it have been reused. (License: GPLv2)
-- Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit), by openxdkman, are included, with modifications. (License: Academic Free License)
+- Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit), by openxdkman, are included, with modifications. (License: LGPL)
 - A very barebones libc is included based on [lib43](https://github.com/lunixbochs/lib43) (License: MIT)
 - vp20compiler is based on nvvertparse.c from [Mesa](http://www.mesa3d.org/) (License: MIT)
 - fp20compiler is based on nvparse from the [NVIDIA SDK 9.52](https://www.nvidia.com/object/sdk-9.html).
