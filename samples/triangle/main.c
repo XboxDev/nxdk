@@ -121,7 +121,7 @@ void main(void)
         /* Set vertex position attribute */
         set_attrib_pointer(0, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(ColoredVertex), &alloc_vertices[0]);
-        
+
         /* Set vertex diffuse color attribute */
         set_attrib_pointer(3, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(ColoredVertex), &alloc_vertices[3]);
@@ -166,7 +166,7 @@ void main(void)
     MmFreeContiguousMemory(alloc_vertices);
     pb_show_debug_screen();
     pb_kill();
-    HalReturnToFirmware(ReturnFirmwareQuickReboot);
+    HalReturnToFirmware(HalQuickRebootRoutine);
 }
 
 /* Construct a viewport transformation matrix */
