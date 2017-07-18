@@ -488,7 +488,7 @@ static void PktdrvSendPacket(unsigned char *buffer, int length)
 		//p points to next free entry of Tx ring descriptor
 		p=g_s->TxBufferNext;
 		MmLockUnlockBufferPages(
-				(ULONG)buffer,
+				(PVOID)buffer,
 				length,
 				0);
 
@@ -722,8 +722,8 @@ void Pktdrv_Quit(void)
 int Pktdrv_Init(void)
 {
 	int 	n;
-	SIZE_T	len;
-	DWORD	type;
+	ULONG	len;
+	ULONG	type;
 	ULONG 	buffers_addr;
 	ULONG	buffers_physaddr;
 	ULONG	status;

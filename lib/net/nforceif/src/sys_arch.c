@@ -39,7 +39,7 @@
 #include <hal/xbox.h>
 
 #if !NO_SYS
-#include "xboxkrnl/nt.h"
+#include "xboxkrnl/xboxkrnl.h"
 #include <xboxrt/stdlib.h>
 
 static struct sys_sem *sys_sem_new_internal(u8_t count);
