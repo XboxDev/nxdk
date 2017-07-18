@@ -2,23 +2,16 @@
 #define HAL_FILEIO_H
 
 #include "xboxkrnl/xboxkrnl.h"
+#include "winerror.h"
 
 #define	INVALID_HANDLE_VALUE                    -1
 
-// desiredAccess 		
-#define DELETE                                  0x00010000
-#define SYNCHRONIZE                             0x00100000
-#define GENERIC_ALL                             0x10000000
-#define GENERIC_EXECUTE                         0x20000000
-#define GENERIC_WRITE                           0x40000000
-#define GENERIC_READ                            0x80000000
-
-// sharedMode 
+// sharedMode
 #define FILE_SHARE_READ                         0x00000001
 #define FILE_SHARE_WRITE                        0x00000002
 #define FILE_SHARE_DELETE                       0x00000004
 
-// createDisposition 
+// createDisposition
 #define CREATE_NEW                              0x00000001
 #define CREATE_ALWAYS                           0x00000002
 #define OPEN_EXISTING                           0x00000003
@@ -58,7 +51,7 @@
 #define	FILE_CURRENT                            0x00000001
 #define	FILE_END                                0x00000002
 
-typedef struct _XBOX_FIND_DATA 
+typedef struct _XBOX_FIND_DATA
 {
   unsigned int dwFileAttributes;
   long long  ftCreationTime;
@@ -70,9 +63,9 @@ typedef struct _XBOX_FIND_DATA
 
 
 int XConvertDOSFilenameToXBOX(
-	char *dosFilename, 
+	char *dosFilename,
 	char *xboxFilename);
-	
+
 int XCreateFile(
 	int *handle,
 	char *filename,
@@ -88,7 +81,7 @@ int XReadFile(
 	unsigned int *numberOfBytesRead);
 
 int XWriteFile(
-	int handle, 
+	int handle,
 	void *buffer,
 	unsigned int numberOfBytesToWrite,
 	unsigned int *numberOfBytesWritten);
@@ -97,7 +90,7 @@ int XCloseHandle(
 	int handle);
 
 int XGetFileSize(
-	int handle, 
+	int handle,
 	unsigned int *filesize);
 
 int XSetFilePointer(
@@ -109,18 +102,18 @@ int XSetFilePointer(
 int XRenameFile(
 	char *oldFilename,
 	char *newFilename);
-	
+
 int XCreateDirectory(
 	char *directoryName);
-	
+
 int XDeleteFile(
 	char *fileName);
-	
+
 int XDeleteDirectory(
 	char *directoryName);
 
 int XMountDrive(
-	char driveLetter, 
+	char driveLetter,
 	char *directoryName);
 
 unsigned int XFindFirstFile(

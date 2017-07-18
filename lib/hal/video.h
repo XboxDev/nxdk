@@ -1,7 +1,7 @@
 #ifndef HAL_VIDEO_H
 #define HAL_VIDEO_H
 
-#include <xboxkrnl/types.h>
+#include <xboxkrnl/xboxkrnl.h>
 
 // Defines for frame buffer
 #define VIDEO_BASE				0xFD000000
@@ -52,7 +52,7 @@ structure. If no matching video mode is found the function will return FALSE.
 Repeatedly calling the function allows all matching video modes to be read out.
 If a value of 0 is provided for the refresh rate the current refresh rate is used.
 If a value of 0 is provided for the bpp a default value of 32bpp is used.
-*/ 
+*/
 BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p);
 
 void XVideoWaitForVBlank();

@@ -9,5 +9,5 @@ void XboxCRT(void) {
     main();
 
     /* If user application returns, just reboot. */
-    HalReturnToFirmware(ReturnFirmwareReboot);
+    HalReturnToFirmware(HalQuickRebootRoutine);
 }

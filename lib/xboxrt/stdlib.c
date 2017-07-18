@@ -144,13 +144,13 @@ int sprintf(char * str, const char * fmt, ...) {
 }
 
 
-static void* VirtualAlloc(void *lpAddress, unsigned long dwSize, unsigned int flAllocationType, unsigned int flProtect)
+static void* VirtualAlloc(void *lpAddress, unsigned int dwSize, unsigned int flAllocationType, unsigned int flProtect)
 {
     NtAllocateVirtualMemory(&lpAddress, 0, &dwSize, flAllocationType, flProtect);
     return lpAddress;
 }
 
-static int VirtualFree(void *lpAddress, unsigned long dwSize, unsigned int dwFreeType)
+static int VirtualFree(void *lpAddress, unsigned int dwSize, unsigned int dwFreeType)
 {
     return NtFreeVirtualMemory(lpAddress, &dwSize, dwFreeType);
 }
