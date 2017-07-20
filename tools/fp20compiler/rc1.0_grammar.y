@@ -1,6 +1,6 @@
 %start WholeEnchilada
 %{
-void yyerror(char* s);
+void yyerror(const char* s);
 int yylex ( void );
 
 #ifdef _WIN32
@@ -676,7 +676,7 @@ Register : constVariable
 		;
 
 %%
-void yyerror(char* s)
+void yyerror(const char* s)
 {
      errors.set("unrecognized token");
 }
