@@ -15,7 +15,7 @@
 #ifndef _PBKIT_H_
 #define _PBKIT_H_
 
-#include <xboxkrnl/types.h>
+#include <xboxkrnl/xboxkrnl.h>
 
 #include "outer.h"
 #include "nv_objects.h"
