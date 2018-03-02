@@ -131,3 +131,122 @@ char * strrchr(const char * s, int c)
        } while (--p >= s);
        return NULL;
 }
+
+// From http://clc-wiki.net/wiki/C_standard_library:string.h:strcspn
+size_t strcspn(const char *s1, const char *s2)
+{
+    size_t ret=0;
+    while(*s1)
+        if(strchr(s2,*s1))
+            return ret;
+        else
+            s1++,ret++;
+    return ret;
+}
+
+// From http://clc-wiki.net/wiki/C_standard_library:string.h:strspn
+size_t strspn(const char *s1, const char *s2)
+{
+    size_t ret=0;
+    while(*s1 && strchr(s2,*s1++))
+        ret++;
+    return ret;
+}
+
+// Public domain strtok_r() by Charlie Gordon
+char* strtok_r(
+    char *str,
+    const char *delim,
+    char **nextp)
+{
+    char *ret;
+
+    if (str == NULL)
+    {
+        str = *nextp;
+    }
+
+    str += strspn(str, delim);
+
+    if (*str == '\0')
+    {
+        return NULL;
+    }
+
+    ret = str;
+
+    str += strcspn(str, delim);
+
+    if (*str)
+    {
+        *str++ = '\0';
+    }
+
+    *nextp = str;
+
+    return ret;
+}
+
+// Adapted from pdclib implementation - Ref:
+// https://bitbucket.org/pdclib/pdclib/src/c8dc861df697a6c8bddbcbf331d9b6fcae6e2f4d/functions/string/strtok.c
+char * strtok( char * s1, const char * s2 )
+{
+    static char * tmp = NULL;
+    const char * p = s2;
+
+    if ( s1 != NULL )
+    {
+        /* new string */
+        tmp = s1;
+    }
+    else
+    {
+        /* old string continued */
+        if ( tmp == NULL )
+        {
+            /* No old string, no new string, nothing to do */
+            return NULL;
+        }
+        s1 = tmp;
+    }
+
+    /* skipping leading s2 characters */
+    while ( *p && *s1 )
+    {
+        if ( *s1 == *p )
+        {
+            /* found seperator; skip and start over */
+            ++s1;
+            p = s2;
+            continue;
+        }
+        ++p;
+    }
+
+    if ( ! *s1 )
+    {
+        /* no more to parse */
+        return ( tmp = NULL );
+    }
+
+    /* skipping non-s2 characters */
+    tmp = s1;
+    while ( *tmp )
+    {
+        p = s2;
+        while ( *p )
+        {
+            if ( *tmp == *p++ )
+            {
+                /* found seperator; overwrite with '\0', position tmp, return */
+                *tmp++ = '\0';
+                return s1;
+            }
+        }
+        ++tmp;
+    }
+
+    /* parsed to end of string */
+    tmp = NULL;
+    return s1;
+}

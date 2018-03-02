@@ -25,4 +25,7 @@ int strnicmp(const char *s1, const char *s2, size_t n);
 char * strchr(const char * s, int c);
 char * strrchr(const char * s, int c);
 
+char *strtok( char * s1, const char * s2 );
+char *strtok_r(char *str, const char *delim, char **nextp);
+
 #endif
