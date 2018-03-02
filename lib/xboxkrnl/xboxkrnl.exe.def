@@ -24,6 +24,7 @@ EXPORTS
     ExFreePool@4                             @  17 NONAME
     ExInitializeReadWriteLock@4              @  18 NONAME
     ExInterlockedAddLargeInteger@16          @  19 NONAME
+    @ExInterlockedAddLargeStatistic@8        @  20 NONAME
     @ExInterlockedCompareExchange64@12       @  21 NONAME
     ExMutantObjectType                       @  22 NONAME DATA
     ExQueryPoolBlockSize@4                   @  23 NONAME
