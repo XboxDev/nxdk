@@ -43,6 +43,7 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
 
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g
+LDFLAGS += /debug
 endif
 
 NXDK_CFLAGS += $(CFLAGS)
@@ -92,7 +93,7 @@ endif
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
-	$(VE) $(LD) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
+	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
