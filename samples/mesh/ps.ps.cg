@@ -1,0 +1,14 @@
+struct vOut {
+	float4 col  : COLOR;
+	float2 tex0 : TEXCOORD0;
+};
+
+float4 main(
+	vOut              I,
+	uniform sampler2D colorMap,
+	uniform sampler2D normalMap
+	) : COLOR
+{
+	float4 color = tex2D(colorMap, I.tex0.xy);
+	return color * I.col;
+}

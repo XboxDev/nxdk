@@ -1,0 +1,61 @@
+struct vIn {
+	float4 tex  : TEXCOORD;
+	float4 norm : NORMAL;
+	float4 pos  : POSITION;
+};
+
+struct vOut {
+	float4 pos  : POSITION;
+	float4 col  : COLOR;
+	float4 tex0 : TEXCOORD0;
+};
+
+vOut main(
+	vIn              I,
+	uniform float4x4 m_model,
+	uniform float4x4 m_view,
+	uniform float4x4 m_proj,
+	uniform float4   camera_pos,
+	uniform float4   light_pos,
+	uniform float4   light_color,
+	uniform float    light_ambient
+	)
+{
+	vOut   result;
+	float  light_diffuse;
+	float  light_specular;
+	float  light_intensity;
+	float3 light_dir;
+	float4 pos;
+	float3 norm;
+
+	/* Transform position and normal */
+	pos = mul(float4(I.pos.xyz, 1.0), m_model);
+	norm = normalize(mul(float4(I.norm.xyz, 0.0f), m_model).xyz);
+
+	/* Calculate light direction */
+	light_dir = normalize(light_pos.xyz - pos.xyz);
+
+	/* Calculate diffuse light intensity */
+	light_diffuse = max(dot(norm.xyz, light_dir), 0);
+
+	/* Calculate specular light intensity */
+	float3 view_dir = normalize(camera_pos.xyz - pos.xyz);
+	float3 ref_dir = reflect(-light_dir, norm);
+	light_specular = pow(max(dot(view_dir, ref_dir), 0.0), 64);
+
+	/* Calculate total light intensity */
+	light_intensity = light_ambient + light_diffuse + light_specular;
+	light_intensity = saturate(light_intensity);
+
+	/* Transform pos to screen space */
+	pos = mul(pos, m_view);
+	pos = mul(pos, m_proj);
+	pos.xyz = pos.xyz / pos.w;
+
+	result.pos  = pos;
+	result.tex0 = I.tex;
+	result.col  = light_intensity * light_color;
+
+	return result;
+}
