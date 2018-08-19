@@ -1,4 +1,5 @@
 #include "string.h"
+#include "stdlib.h"
 #include "ctype.h"
 
 int memcmp(const void *p1, const void *p2, int num) {
@@ -47,18 +48,16 @@ void *memset(void *ptr, int val, int num) {
 
 
 size_t strlen(const char *s1) {
-    size_t i = 0;
-    do i++; while (s1[i] != '\0');
-    return i;
+  size_t i = 0;
+  while (s1[i] != '\0') { i++; }
+  return i;
 }
 
-#if 0
-void *strdup(const char *s1) {
-    void *out = malloc(strlen(s1));
+char *strdup(const char *s1) {
+    char *out = malloc(strlen(s1) + 1);
     strcpy(out, s1);
     return out;
 }
-#endif
 
 int strcmp(const char *s1, const char *s2) {
     return strncmp(s1, s2, SIZE_MAX);
