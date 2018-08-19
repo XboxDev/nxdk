@@ -1332,20 +1332,20 @@ typedef struct _IRP
 
 struct _DEVICE_OBJECT;
 
-typedef VOID (*PDRIVER_STARTIO) (
+typedef NTAPI VOID (*PDRIVER_STARTIO) (
     IN struct _DEVICE_OBJECT *DeviceObject,
-    IN PIRP *Irp
+    IN struct _IRP *Irp
 );
 
-typedef VOID (*PDRIVER_DELETEDEVICE) (
+typedef NTAPI VOID (*PDRIVER_DELETEDEVICE) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTSTATUS (*PDRIVER_DISMOUNTVOLUME) (
+typedef NTAPI NTSTATUS (*PDRIVER_DISMOUNTVOLUME) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTSTATUS (*PDRIVER_DISPATCH) (
+typedef NTAPI NTSTATUS (*PDRIVER_DISPATCH) (
     IN struct _DEVICE_OBJECT *DeviceObject,
     IN struct _IRP *Irp
 );
