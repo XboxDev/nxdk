@@ -4348,7 +4348,8 @@ XBAPI VOID FASTCALL KfLowerIrql
 
 XBAPI VOID FASTCALL IofCompleteRequest
 (
-    IN PDEVICE_OBJECT DeviceObject
+    IN PIRP Irp,
+    IN CCHAR PriorityBoost
 );
 
 XBAPI NTSTATUS FASTCALL IofCallDriver
