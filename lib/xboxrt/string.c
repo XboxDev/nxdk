@@ -2,17 +2,16 @@
 #include "stdlib.h"
 #include "ctype.h"
 
-int memcmp(const void *p1, const void *p2, int num) {
-    unsigned char *c1 = (unsigned char *)p1;
-    unsigned char *c2 = (unsigned char *)p2;
-    for (int i = 0; i < num; i++) {
-        if (c1[i] < c2[i]) {
-            return -1;
-        } else if (c1[i] > c2[i]) {
-            return 1;
-        }
-    }
+#include <xboxkrnl/xboxkrnl.h>
+
+int memcmp(const void *p1, const void *p2, size_t num) {
+  SIZE_T first_difference = RtlCompareMemory(p1, p2, num);
+  if (first_difference == num) {
     return 0;
+  }
+  unsigned char *c1 = (unsigned char *)p1;
+  unsigned char *c2 = (unsigned char *)p2;
+  return (int)c1[first_difference] - (int)c2[first_difference];
 }
 
 void *memchr(const void *ptr, int c, int n) {
@@ -25,25 +24,20 @@ void *memchr(const void *ptr, int c, int n) {
     return 0;
 }
 
-void *memcpy(void *dst, const void *src, int num) {
-    char *cdst = dst;
-    const char *csrc = src;
-    for (int i = 0; i < num; i++) {
-        *cdst++ = *csrc++;
-    }
-    return dst;
+void *memmove(void *dst, const void *src, size_t num) {
+  RtlMoveMemory(dst, src, num);
+  return dst;
 }
 
-void *memmove(void *dst, const void *src, int num) {
-    return memcpy(dst, src, num);
+void *memcpy(void *dst, const void *src, size_t num) {
+  //FIXME: This could be done faster using RtlCopyMemory.
+  //       However, the kernel doesn't expose that and I'm lazy.
+  return memmove(dst, src, num);
 }
 
-void *memset(void *ptr, int val, int num) {
-    unsigned char *cptr = ptr;
-    for (int i = 0; i < num; i++) {
-        *cptr++ = val;
-    }
-    return ptr;
+void *memset(void *ptr, int val, size_t num) {
+  RtlFillMemory(ptr, num, val);
+  return ptr;
 }
 
 
