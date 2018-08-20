@@ -153,7 +153,7 @@ static void* VirtualAlloc(void *lpAddress, unsigned int dwSize, unsigned int flA
 
 static int VirtualFree(void *lpAddress, unsigned int dwSize, unsigned int dwFreeType)
 {
-    return NtFreeVirtualMemory(lpAddress, &dwSize, dwFreeType);
+    return NtFreeVirtualMemory(&lpAddress, &dwSize, dwFreeType);
 }
 
 void * malloc(size_t size) {
@@ -161,7 +161,7 @@ void * malloc(size_t size) {
 }
 
 void free(void *ptr) {
-    VirtualFree(ptr, 0, 0);
+    VirtualFree(ptr, 0, MEM_RELEASE);
 }
 
 void *calloc(size_t count, size_t size)
