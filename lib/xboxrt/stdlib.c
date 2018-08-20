@@ -175,7 +175,19 @@ void *realloc(void *ptr, size_t size)
 {
     void *new = malloc(size);
     if (ptr != NULL) {
-        memcpy(new, ptr, size);
+
+        // Retrieve the old size
+        MEMORY_BASIC_INFORMATION information;
+        NtQueryVirtualMemory(ptr, &information);
+
+        // Calculate how many bytes can be copied from old to new buffer
+        size_t old_size = information.RegionSize;
+        if (old_size > size) {
+          old_size = size;
+        }
+
+        // Copy data and remove old allocation
+        memcpy(new, ptr, old_size);
         free(ptr);
     }
     return new;
