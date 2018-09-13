@@ -6,5 +6,5 @@
 	url = git://git.savannah.nongnu.org/lwip.git
 [submodule "lib/sdl/SDL2"]
 	path = lib/sdl/SDL2
-	url = https://github.com/mborgerson/nxdk-sdl.git
+	url = https://github.com/XboxDev/nxdk-sdl.git
 	branch = nxdk
