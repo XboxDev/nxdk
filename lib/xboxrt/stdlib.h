@@ -16,4 +16,6 @@ void *realloc(void *ptr, size_t size);
 
 long strtol(const char *nptr, char **endptr, register int base);
 
+int atoi(const char *nptr);
+
 #endif

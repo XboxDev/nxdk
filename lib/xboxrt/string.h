@@ -4,15 +4,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-int memcmp(const void *p1, const void *p2, int num);
+int memcmp(const void *p1, const void *p2, size_t num);
 void *memchr(const void *ptr, int c, int n);
-void *memcpy(void *dst, const void *src, int num);
-void *memmove(void *dst, const void *src, int num);
-void *memset(void *ptr, int val, int num);
+void *memcpy(void *dst, const void *src, size_t num);
+void *memmove(void *dst, const void *src, size_t num);
+void *memset(void *ptr, int val, size_t num);
 
 char *strcat(char *s1, const char *s2);
 char *strcpy(char *dst, const char *src);
-// void *strdup(const char *s1);
+char *strdup(const char *s1);
 char *strncat(char *s1, const char *s2, size_t n);
 char *strncpy(char *dst, const char *src, size_t n);
 char *strupr(char *s1);

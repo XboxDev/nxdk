@@ -34,7 +34,7 @@ extern "C"
 #define CONST const
 
 typedef unsigned int SIZE_T, *PSIZE_T;
-typedef int BOOLEAN, *PBOOLEAN, BOOL;
+typedef unsigned char BOOLEAN, *PBOOLEAN, BOOL;
 typedef void VOID, *PVOID, *LPVOID;
 typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT, CSHORT;
@@ -1332,20 +1332,20 @@ typedef struct _IRP
 
 struct _DEVICE_OBJECT;
 
-typedef VOID (*PDRIVER_STARTIO) (
+typedef NTAPI VOID (*PDRIVER_STARTIO) (
     IN struct _DEVICE_OBJECT *DeviceObject,
-    IN PIRP *Irp
+    IN struct _IRP *Irp
 );
 
-typedef VOID (*PDRIVER_DELETEDEVICE) (
+typedef NTAPI VOID (*PDRIVER_DELETEDEVICE) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTSTATUS (*PDRIVER_DISMOUNTVOLUME) (
+typedef NTAPI NTSTATUS (*PDRIVER_DISMOUNTVOLUME) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTSTATUS (*PDRIVER_DISPATCH) (
+typedef NTAPI NTSTATUS (*PDRIVER_DISPATCH) (
     IN struct _DEVICE_OBJECT *DeviceObject,
     IN struct _IRP *Irp
 );
@@ -4348,7 +4348,8 @@ XBAPI VOID FASTCALL KfLowerIrql
 
 XBAPI VOID FASTCALL IofCompleteRequest
 (
-    IN PDEVICE_OBJECT DeviceObject
+    IN PIRP Irp,
+    IN CCHAR PriorityBoost
 );
 
 XBAPI NTSTATUS FASTCALL IofCallDriver
