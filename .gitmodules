@@ -1,6 +1,6 @@
 [submodule "tools/extract-xiso"]
 	path = tools/extract-xiso
-	url = https://github.com/mborgerson/extract-xiso.git
+	url = https://github.com/XboxDev/extract-xiso.git
 [submodule "lib/net/lwip"]
 	path = lib/net/lwip
 	url = git://git.savannah.nongnu.org/lwip.git
