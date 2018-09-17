@@ -24,6 +24,9 @@ CXX          = /usr/local/opt/llvm/bin/clang++
 CGC          = $(NXDK_DIR)/tools/cg/mac/cgc
 endif
 ifneq (,$(findstring MSYS_NT,$(UNAME_S)))
+$(error Please use a MinGW64 shell)
+endif
+ifneq (,$(findstring MINGW,$(UNAME_S)))
 LD           = lld-link
 CC           = clang
 CXX          = clang++
