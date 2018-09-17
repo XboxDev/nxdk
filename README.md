@@ -34,9 +34,13 @@ Then install lld from an [LLVM nightly package](http://apt.llvm.org/)
 #### Windows
 Install [MSYS2](http://www.msys2.org/)
 
-In MSYS2 Shell:
+In a MSYS2 MinGW64 Shell, run:
 
-    pacman -S make git gcc bison flex llvm clang
+    pacman -S make git bison flex mingw-w64-x86_64-gcc mingw-w64-x86_64-llvm \
+    mingw-w64-x86_64-clang mingw-w64-x86_64-lld
+
+> Using a regular MSYS2 shell will fail later on as the required building system is not
+> supported there.
 
 ### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
