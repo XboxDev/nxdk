@@ -13,12 +13,14 @@ endif
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 LD           = lld -flavor link
+AS           = clang
 CC           = clang
 CXX          = clang++
 CGC          = $(NXDK_DIR)/tools/cg/linux/cgc
 endif
 ifeq ($(UNAME_S),Darwin)
 LD           = /usr/local/opt/llvm/bin/lld -flavor link
+AS           = /usr/local/opt/llvm/bin/clang
 CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
 CGC          = $(NXDK_DIR)/tools/cg/mac/cgc
@@ -28,6 +30,7 @@ $(error Please use a MinGW64 shell)
 endif
 ifneq (,$(findstring MINGW,$(UNAME_S)))
 LD           = lld-link
+AS           = clang
 CC           = clang
 CXX          = clang++
 CGC          = $(NXDK_DIR)/tools/cg/win/cgc
@@ -43,6 +46,8 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
                -Wno-ignored-attributes -DNXDK
+NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
+               -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g
@@ -52,7 +57,7 @@ endif
 NXDK_CFLAGS += $(CFLAGS)
 
 include $(NXDK_DIR)/lib/Makefile
-OBJS = $(SRCS:.c=.obj)
+OBJS = $(addsuffix .obj, $(basename $(SRCS)))
 
 ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
@@ -77,7 +82,7 @@ else
 QUIET=>/dev/null
 endif
 
-DEPS := $(SRCS:.c=.c.d)
+DEPS := $(filter %.c.d, $(SRCS:.c=.c.d))
 
 all: $(TARGET)
 
@@ -101,6 +106,10 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 %.obj: %.c
 	@echo "[ CC       ] $@"
 	$(VE) $(CC) $(NXDK_CFLAGS) -c -o '$@' '$<'
+
+%.obj: %.s
+	@echo "[ AS       ] $@"
+	$(VE) $(AS) $(NXDK_ASFLAGS) -c -o '$@' '$<'
 
 %.c.d: %.c
 	@echo "[ DEP      ] $@"
