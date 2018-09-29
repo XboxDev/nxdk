@@ -2399,6 +2399,13 @@ XBAPI VOID NTAPI RtlCaptureContext
     OUT PCONTEXT ContextRecord
 );
 
+/**
+ * Reports a failed assertion to an attached debugger.
+ * @param FailedAssertion A string containing the expression that made the assertion fail
+ * @param FileName A string containing the name of the file containing the assertion
+ * @param LineNumber The linenumber containing the assertion
+ * @param Message An optional message (will also be shown by the debugger)
+ */
 XBAPI VOID NTAPI RtlAssert
 (
     IN PVOID FailedAssertion,
