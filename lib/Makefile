@@ -21,6 +21,8 @@ USB_SRCS := \
 
 SRCS += \
 	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.c) \
+	$(shell find $(NXDK_DIR)/lib/xlibc/src/ -name "*.c") \
+	$(shell find $(NXDK_DIR)/lib/xlibc/src/ -name "*.s") \
 	$(wildcard $(NXDK_DIR)/lib/xlibc-rt/*.c) \
 	$(wildcard $(NXDK_DIR)/lib/xlibc-rt/*.s) \
 	$(wildcard $(NXDK_DIR)/lib/hal/*.c) \
