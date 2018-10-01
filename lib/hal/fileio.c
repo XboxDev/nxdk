@@ -4,7 +4,7 @@
 #include <hal/fileio.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <xboxrt/debug.h>
-#include <xboxrt/stdbool.h>
+#include <stdbool.h>
 
 // #define DEBUG
 
