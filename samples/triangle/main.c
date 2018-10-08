@@ -14,9 +14,6 @@
 #include <xboxkrnl/xboxkrnl.h>
 #include <xboxrt/debug.h>
 
-/* Restart after a number of milliseconds (0 for never) */
-const int reboot_after = 10*1000;
-
 static uint32_t *alloc_vertices;
 static uint32_t  num_vertices;
 static float     m_viewport[4][4];
@@ -156,13 +153,9 @@ void main(void)
             frames = 0;
             last = now;
         }
-
-        /* Exit the demo after timeout */
-        if ((reboot_after > 0) && ((now-start) > reboot_after)) {
-            break;
-        }
     }
 
+    /* Unreachable cleanup code */
     MmFreeContiguousMemory(alloc_vertices);
     pb_show_debug_screen();
     pb_kill();
