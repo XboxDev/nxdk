@@ -496,6 +496,18 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             printf("OK (0x%.08X)\n", ep);
         }
 
+        {
+            printf("Xbe::Xbe: Relocating TLS directory...");
+
+            uint32 tls_directory = x_Exe->m_OptionalHeader.m_image_data_directory[IMAGE_DIRECTORY_ENTRY_TLS].m_virtual_addr;
+            if (!tls_directory)
+                m_Header.dwTLSAddr = 0;
+            else
+                m_Header.dwTLSAddr = tls_directory + m_Header.dwPeBaseAddr;
+
+            printf("OK (0x%.08X)\n", m_Header.dwTLSAddr);
+        }
+
         // header write cursor
         uint32 hwc = m_Header.dwBaseAddr + sizeof(m_Header);
 
@@ -780,8 +792,6 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
     // pass 4
     {
         m_Header.dwSizeofImage = m_SectionHeader[m_Header.dwSections-1].dwVirtualAddr + m_SectionHeader[m_Header.dwSections-1].dwVirtualSize - m_Header.dwBaseAddr;
-
-        m_Header.dwTLSAddr = 0;
 
         // relocate to base : 0x00010000
         {
