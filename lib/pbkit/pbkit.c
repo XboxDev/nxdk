@@ -229,8 +229,11 @@ static  float           pb_BiasTable[7]={
                     1.907f,
                     2.0f    };
 
+static HAL_SHUTDOWN_REGISTRATION pb_shutdown_registration;
+
 //forward references
 static void pb_load_gr_ctx(int ctx_id);
+static NTAPI VOID pb_shutdown_notification_routine (PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration);
 
 
 //private pb_text_screen functions
@@ -2629,6 +2632,8 @@ void pb_kill(void)
 
     int         counter;
 
+    HalRegisterShutdownNotification(&pb_shutdown_registration, FALSE);
+
 #ifdef DBG
 //  debugPrint("Waiting until Dma is not busy\n");
 #endif
@@ -3805,6 +3810,14 @@ int pb_init(void)
     pb_front_index=0;       //frame buffer #0 is the front buffer for now
     pb_show_front_screen();     //show it
 
+    pb_shutdown_registration.NotificationRoutine = pb_shutdown_notification_routine;
+    pb_shutdown_registration.Priority = 0;
+    HalRegisterShutdownNotification(&pb_shutdown_registration, TRUE);
+
     return 0;
 }
 
+static NTAPI VOID pb_shutdown_notification_routine (PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration)
+{
+	pb_kill();
+}
