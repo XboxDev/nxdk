@@ -1496,11 +1496,14 @@ typedef NTAPI VOID (*PHAL_SHUTDOWN_NOTIFICATION) (
     IN struct _HAL_SHUTDOWN_REGISTRATION *ShutdownRegistration
 );
 
+/**
+ * Describes a shutdown notification, containing a function pointer and a priority
+ **/
 typedef struct _HAL_SHUTDOWN_REGISTRATION
 {
-    PHAL_SHUTDOWN_NOTIFICATION NotificationRoutine;
-    LONG Priority;
-    LIST_ENTRY ListEntry;
+    PHAL_SHUTDOWN_NOTIFICATION NotificationRoutine; /**< Function pointer which will be called on shutdown **/
+    LONG Priority; /**< Priority of the notification.The higher the priority, the earliert the callback function is called **/
+    LIST_ENTRY ListEntry; /**< Used to put the notifications into a linked list **/
 } HAL_SHUTDOWN_REGISTRATION, *PHAL_SHUTDOWN_REGISTRATION;
 
 typedef VOID (*pfXcSHAInit) (PUCHAR pbSHAContext);
@@ -3509,6 +3512,10 @@ XBAPI LONG NTAPI KeResetEvent
     IN PRKEVENT Event
 );
 
+/**
+ * Removes a DPC object from the deferred procedure call queue
+ * @param Dpc A pointer to the DPC object
+ **/
 XBAPI BOOLEAN NTAPI KeRemoveQueueDpc
 (
     IN PRKDPC Dpc
@@ -3586,6 +3593,10 @@ XBAPI LONG NTAPI KePulseEvent
 
 XBAPI VOID NTAPI KeLeaveCriticalRegion (void);
 
+/**
+ * Checks whether the code is executed in a DPC context
+ * @return TRUE if the code is running in a DPC context, FALSE otherwise
+ **/
 XBAPI BOOLEAN NTAPI KeIsExecutingDpc (void);
 
 XBAPI volatile KSYSTEM_TIME KeInterruptTime;
@@ -3673,6 +3684,13 @@ XBAPI VOID NTAPI KeInitializeEvent
     IN BOOLEAN State
 );
 
+/**
+ * Initializes a DPC object describing the parameters for a deferred procedure
+ * call
+ * @param Dpc Pointer to a DPC struct that gets initialized
+ * @param DeferredRoutine Pointer to the function that gets called by the DPC
+ * @param DeferredContext An arbitrary user-defined pointer that gets passed to the procedure when called
+ **/
 XBAPI VOID NTAPI KeInitializeDpc
 (
     OUT KDPC *Dpc,
@@ -3725,6 +3743,10 @@ XBAPI NTSTATUS NTAPI KeDelayExecutionThread
     IN PLARGE_INTEGER Interval
 );
 
+/**
+ * Connects an interrupt object, allowing it to receive interrupts
+ * @return FALSE if the interrupt is already connected or cannot be connected, TRUE if it was conected successfully
+ **/
 XBAPI BOOLEAN NTAPI KeConnectInterrupt
 (
     IN PKINTERRUPT Interrupt
@@ -4001,6 +4023,12 @@ XBAPI VOID DECLSPEC_NORETURN NTAPI HalReturnToFirmware
     IN FIRMWARE_REENTRY Routine
 );
 
+/**
+ * Registers or unregisters a shutdown notification which contains a function
+ * pointer that will be called on shutdown
+ * @param ShutdownRegistration Pointer to a HAL_SHUTDOWN_REGISTRATION describing the notification settings
+ * @param Register TRUE to register the notification, FALSE to unregister
+ */
 XBAPI VOID NTAPI HalRegisterShutdownNotification
 (
     IN PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration,
