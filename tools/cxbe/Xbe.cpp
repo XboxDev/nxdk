@@ -444,7 +444,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             else
             {
                 m_Header.dwLibraryVersionsAddr = mrc;
-                mrc += m_Header.dwLibraryVersions * static_cast<uint32_t>(sizeof(*m_LibraryVersion));
+                mrc += m_Header.dwLibraryVersions * static_cast<uint32>(sizeof(*m_LibraryVersion));
             }
         }
 
@@ -700,17 +700,17 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             szBuffer = m_HeaderEx + hwc - (m_Header.dwBaseAddr + sizeof(m_Header));
         }
 
-        // Write library versions
+        // Write (placeholder) library versions
         {
             m_LibraryVersion = new LibraryVersion[m_Header.dwLibraryVersions];
 
-            for(uint32_t v = 0; v < m_Header.dwLibraryVersions; ++v)
+            for(uint32 v = 0; v < m_Header.dwLibraryVersions; ++v)
             {
                 char tmp[9];
 
-                std::snprintf(tmp, sizeof(tmp), "CXBE%d", v);
+                snprintf(tmp, sizeof(tmp), "CXBE%d", v);
 
-                for(uint32_t c = 0; c < 8; ++c)
+                for(uint32 c = 0; c < 8; ++c)
                 {
                     m_LibraryVersion[v].szName[c] = tmp[c];
                 }
