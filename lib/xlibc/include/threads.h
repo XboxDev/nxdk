@@ -10,9 +10,9 @@
 extern "C" {
 #endif
 
-#define thread_local _Thread_local;
+#define thread_local _Thread_local
 #define ONCE_FLAG_INIT 0
-//#define TSS_DTOR_ITERATIONS ? FIXME
+#define TSS_DTOR_ITERATIONS 4
 
 typedef int once_flag;
 
@@ -80,10 +80,10 @@ int thrd_join (thrd_t thr, int *res);
 int thrd_sleep (const struct timespec *duration, struct timespec *remaining);
 void thrd_yield (void);
 
-int tss_create (tss_t *key, tss_dtor_t dtor) __unimplemented;
-void tss_delete (tss_t key) __unimplemented;
-void *tss_get (tss_t key) __unimplemented;
-int tss_set (tss_t key, void *val) __unimplemented;
+int tss_create (tss_t *key, tss_dtor_t dtor);
+void tss_delete (tss_t key);
+void *tss_get (tss_t key);
+int tss_set (tss_t key, void *val);
 
 #ifdef __cplusplus
 }

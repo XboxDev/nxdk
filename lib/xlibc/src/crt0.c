@@ -8,6 +8,8 @@ extern int main (int argc, char **argv);
 
 static int main_wrapper ()
 {
+    _xlibc_tss_init();
+
     char *_argv=0;
     return main(0,&_argv);
 }
