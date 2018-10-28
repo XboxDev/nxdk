@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <cstring>
+#include <cstdio>
 
 // construct via Xbe file
 Xbe::Xbe(const char *x_szFilename)
@@ -389,9 +390,10 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
         // TODO: generate valid addr if necessary
         m_Header.dwNonKernelImportDirAddr = 0;
 
+        // Need one or more library version, otherwise VerifierX on XDKs crashes
+        m_Header.dwLibraryVersions = 1;
+
         // TODO: generate these values
-        m_Header.dwLibraryVersions = 0;
-        m_Header.dwLibraryVersionsAddr = 0;
         m_Header.dwKernelLibraryVersionAddr = 0;
         m_Header.dwXAPILibraryVersionAddr = 0;
     }
@@ -433,8 +435,17 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             }
         }
 
-        // TODO: make room for library versions
+        // make room for library versions
         {
+            if (m_Header.dwLibraryVersions == 0)
+            {
+                m_Header.dwLibraryVersionsAddr = 0;
+            }
+            else
+            {
+                m_Header.dwLibraryVersionsAddr = mrc;
+                mrc += m_Header.dwLibraryVersions * static_cast<uint32>(sizeof(*m_LibraryVersion));
+            }
         }
 
         // make room for debug path / debug file names
@@ -686,6 +697,36 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             }
 
             hwc = hwc_secn;
+            szBuffer = m_HeaderEx + hwc - (m_Header.dwBaseAddr + sizeof(m_Header));
+        }
+
+        // Write (placeholder) library versions
+        {
+            m_LibraryVersion = new LibraryVersion[m_Header.dwLibraryVersions];
+
+            for(uint32 v = 0; v < m_Header.dwLibraryVersions; ++v)
+            {
+                char tmp[9];
+
+                snprintf(tmp, sizeof(tmp), "CXBE%d", v);
+
+                for(uint32 c = 0; c < 8; ++c)
+                {
+                    m_LibraryVersion[v].szName[c] = tmp[c];
+                }
+                m_LibraryVersion[v].wMajorVersion = 0;
+                m_LibraryVersion[v].wMinorVersion = 0;
+                m_LibraryVersion[v].wBuildVersion = 0;
+                m_LibraryVersion[v].dwFlags.QFEVersion = 0;
+                m_LibraryVersion[v].dwFlags.Approved = 0;
+                m_LibraryVersion[v].dwFlags.bDebugBuild = 0;
+
+                // write library version
+                memcpy(szBuffer, &m_LibraryVersion[v], sizeof(*m_LibraryVersion));
+
+                szBuffer += sizeof(*m_LibraryVersion);
+                hwc += sizeof(*m_LibraryVersion);
+            }
         }
 
         // write debug path / debug file names
