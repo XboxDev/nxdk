@@ -21,4 +21,7 @@ _longjmp:
     movl 12(%ecx), %esi
     movl 16(%ecx), %esp
     movl 20(%ecx), %edx
-    jmp *%edx
+    testl %eax, %eax
+    jnz .r
+    incl %eax
+.r: jmp *%edx
