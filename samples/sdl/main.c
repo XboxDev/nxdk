@@ -18,20 +18,6 @@
 #include "string.h"
 #include <SDL.h>
 
-int _fltused = 1;
-
-void _aullrem(void) {
-    debugPrint("%s unimplemented!\n", __func__);
-    XSleep(5000);
-    XReboot();
-}
-
-void _aulldiv(void) {
-    debugPrint("%s unimplemented!\n", __func__);
-    XSleep(5000);
-    XReboot();
-}
-
 int _exit(int x)
 {
     debugPrint("_exit called\n");
