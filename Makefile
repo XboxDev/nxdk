@@ -45,6 +45,7 @@ TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
+               -I$(NXDK_DIR)/lib/xlibc-rt \
                -isystem $(NXDK_DIR)/lib/xlibc/include \
                -Wno-ignored-attributes -DNXDK
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
