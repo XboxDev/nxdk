@@ -1,0 +1,14 @@
+image: ubuntu1804
+
+install:
+    - sh: git submodule update --init --recursive
+    - sh: sudo apt-get update >/dev/null
+    - sh: sudo apt-get install -y build-essential flex bison clang lld >/dev/null
+
+build_script:
+    - sh: ./.ci_build_samples.sh
+
+artifacts:
+    - path: samples
+      name: nxdk-samples
+      type: zip
