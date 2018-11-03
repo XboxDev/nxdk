@@ -1,8 +1,16 @@
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/video.h>
+#include <threads.h>
+#include <_tss.h>
 #include <_tls.h>
 
 extern int main (int argc, char **argv);
+
+static int main_wrapper ()
+{
+    char *_argv=0;
+    return main(0,&_argv);
+}
 
 void XboxCRTEntry ()
 {
@@ -16,8 +24,9 @@ void XboxCRTEntry ()
     tlssize += 4;
     *((DWORD *)_tls_used.AddressOfIndex) = (int)tlssize / -4;
 
-    char *_argv=0;
-    main(0,&_argv);
+    thrd_t main_thread;
+    thrd_create(&main_thread, main_wrapper, NULL);
+    thrd_join(main_thread, NULL);
 
     HalReturnToFirmware(HalQuickRebootRoutine);
 }
