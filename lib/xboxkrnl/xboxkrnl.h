@@ -34,7 +34,8 @@ extern "C"
 #define CONST const
 
 typedef unsigned int SIZE_T, *PSIZE_T;
-typedef unsigned char BOOLEAN, *PBOOLEAN, BOOL;
+typedef unsigned char BOOLEAN, *PBOOLEAN;
+typedef int BOOL, *PBOOL;
 typedef void VOID, *PVOID, *LPVOID;
 typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT, CSHORT;
