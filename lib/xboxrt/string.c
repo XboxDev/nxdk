@@ -47,6 +47,16 @@ size_t strlen(const char *s1) {
   return i;
 }
 
+size_t strnlen( const char * s, size_t maxlen )
+{
+    for( size_t len = 0; len != maxlen; len++ )
+    {
+        if(s[len] == '\0')
+            return len;
+    }
+    return maxlen;
+}
+
 char *strdup(const char *s1) {
     char *out = malloc(strlen(s1) + 1);
     strcpy(out, s1);
