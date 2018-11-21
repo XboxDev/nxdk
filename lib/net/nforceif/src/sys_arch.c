@@ -102,13 +102,6 @@ sys_jiffies(void)
 }
 #endif
 
-void abort(void)
-{
-  debugPrint("Aborted!\n");
-  XSleep(5000);
-  XReboot();
-}
-
 #if !NO_SYS
 
 sys_thread_t

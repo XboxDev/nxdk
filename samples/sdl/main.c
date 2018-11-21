@@ -27,11 +27,6 @@ int _exit(int x)
     return 0;
 }
 
-int rand(void)
-{
-    return (int)XGetTickCount();
-}
-
 static const struct {
   unsigned int   width;
   unsigned int   height;

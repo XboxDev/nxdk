@@ -49,8 +49,9 @@ TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt \
-               -isystem $(NXDK_DIR)/lib/xlibc/include \
-               -Wno-ignored-attributes -DNXDK
+               -isystem $(NXDK_DIR)/lib/pdclib/include \
+               -I$(NXDK_DIR)/lib/pdclib/platform/xbox/include \
+               -Wno-ignored-attributes -DNXDK -D__STDC__=1
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 
@@ -106,7 +107,7 @@ endif
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
-	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRT -stack:$(NXDK_STACKSIZE) $^
+	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRTEntry -stack:$(NXDK_STACKSIZE) $^
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
