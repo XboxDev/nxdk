@@ -6,6 +6,11 @@
 *.xbe
 *.inl
 *.d
+*.i
+*.bc
+*.pdb
 _*.cpp
 _*.h
+samples/**/*.iso
+samples/**/*.lib
 !tools/cg/win/cgc.exe
