@@ -87,11 +87,11 @@ static char *getCurrentDirString()
  *   \\.\D:\foo\bar.txt                ==> d:\foo\bar.txt
  *   \??\c:\foo\bar.txt                ==> c:\foo\bar.txt
  */
-int XConvertDOSFilenameToXBOX(char *dosFilename, char *xboxFilename)
+int XConvertDOSFilenameToXBOX(const char *dosFilename, char *xboxFilename)
 {
 	// path contains the qualified pathname from the root
 	// directory without the leading slash.  eg. "foo\bar.txt"
-	char *path;
+	const char *path;
 
 	// partition points to a literal string representing
 	// the fully qualified device name
@@ -153,7 +153,7 @@ int XConvertDOSFilenameToXBOX(char *dosFilename, char *xboxFilename)
 
 int XCreateFile(
 	int *handle,
-	char *filename,
+	const char *filename,
 	unsigned int desiredAccess,
 	unsigned int sharedMode,
 	unsigned int creationDisposition,
@@ -456,8 +456,8 @@ int XSetFilePointer(
 }
 
 int XRenameFile(
-	char *oldFilename,
-	char *newFilename)
+	const char *oldFilename,
+	const char *newFilename)
 {
 	ANSI_STRING             xboxFilename;
 	IO_STATUS_BLOCK         ioStatusBlock;
@@ -567,7 +567,7 @@ int XCreateDirectory(char *directoryName)
 	}
 }
 
-int XDeleteFile(char *fileName)
+int XDeleteFile(const char *fileName)
 {
 	ANSI_STRING                  xboxFilename;
 	IO_STATUS_BLOCK              ioStatusBlock;
@@ -624,7 +624,7 @@ int XDeleteFile(char *fileName)
 	}
 }
 
-int XDeleteDirectory(char *directoryName)
+int XDeleteDirectory(const char *directoryName)
 {
 	ANSI_STRING                  xboxFilename;
 	IO_STATUS_BLOCK              ioStatusBlock;
