@@ -8,3 +8,7 @@
 	path = lib/sdl/SDL2
 	url = https://github.com/XboxDev/nxdk-sdl.git
 	branch = nxdk
+[submodule "lib/pdclib"]
+	path = lib/pdclib
+	url = https://github.com/XboxDev/nxdk-pdclib.git
+	branch = nxdk
