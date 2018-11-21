@@ -1,6 +1,8 @@
 #ifndef _GRAPHICS_H_
 #define _GRAPHICS_H_
 
+#include <stdint.h>
+
 #define USE_V_BATCHES //first speed optimization, enqueue a vertex batch order (like dma-tag 'ref' on ps2)
 
 //#define USE_I_BATCHES //technic simulation, enqueue index batch order (saves a lots of memory, just simulated here) 

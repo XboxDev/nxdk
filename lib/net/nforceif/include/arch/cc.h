@@ -35,8 +35,8 @@
 #define LWIP_ARCH_CC_H
 
 /* Include some files for defining library routines */
-#include <xboxrt/string.h>
-#include <xboxrt/debug.h>
+#include <string.h>
+#include <debug.h>
 #include <hal/xbox.h>
 
 #define printf debugPrint

@@ -4,6 +4,7 @@
  */
 #include <hal/video.h>
 #include <hal/xbox.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <pbkit/pbkit.h>
 #include <stdint.h>

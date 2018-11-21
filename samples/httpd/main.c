@@ -11,7 +11,7 @@
 #include <hal/xbox.h>
 #include <pbkit/pbkit.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <xboxrt/debug.h>
+#include <debug.h>
 
 #define USE_DHCP         1
 #define PKT_TMR_INTERVAL 5 /* ms */

@@ -40,7 +40,7 @@
 
 #if !NO_SYS
 #include "xboxkrnl/xboxkrnl.h"
-#include <xboxrt/stdlib.h>
+#include <stdlib.h>
 
 static struct sys_sem *sys_sem_new_internal(u8_t count);
 static void sys_sem_free_internal(struct sys_sem *sem);
