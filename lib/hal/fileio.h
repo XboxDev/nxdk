@@ -63,12 +63,12 @@ typedef struct _XBOX_FIND_DATA
 
 
 int XConvertDOSFilenameToXBOX(
-	char *dosFilename,
+	const char *dosFilename,
 	char *xboxFilename);
 
 int XCreateFile(
 	int *handle,
-	char *filename,
+	const char *filename,
 	unsigned int desiredAccess,
 	unsigned int sharedMode,
 	unsigned int creationDisposition,
@@ -100,17 +100,17 @@ int XSetFilePointer(
 	int moveMethod);
 
 int XRenameFile(
-	char *oldFilename,
-	char *newFilename);
+	const char *oldFilename,
+	const char *newFilename);
 
 int XCreateDirectory(
 	char *directoryName);
 
 int XDeleteFile(
-	char *fileName);
+	const char *fileName);
 
 int XDeleteDirectory(
-	char *directoryName);
+	const char *directoryName);
 
 int XMountDrive(
 	char driveLetter,
