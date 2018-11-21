@@ -5,7 +5,7 @@
 
 #include "httpserver.h"
 
-#include <xboxrt/string.h>
+#include <string.h>
 #include <hal/xbox.h>
 
 #if LWIP_NETCONN
