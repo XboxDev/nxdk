@@ -376,7 +376,8 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
 
         // various PE copies
         {
-            m_Header.dwPeStackCommit = 0x00010000; //x_Exe->m_OptionalHeader.m_sizeof_stack_commit;
+            // StackCommit actually means StackReserve
+            m_Header.dwPeStackCommit = x_Exe->m_OptionalHeader.m_sizeof_stack_reserve;
             m_Header.dwPeHeapReserve = x_Exe->m_OptionalHeader.m_sizeof_heap_reserve;
             m_Header.dwPeHeapCommit  = x_Exe->m_OptionalHeader.m_sizeof_heap_commit;
             m_Header.dwPeSizeofImage = x_Exe->m_OptionalHeader.m_sizeof_image;
