@@ -428,8 +428,7 @@ int XSetFilePointer(
 		status = XGetFileSize(handle, &filesize);
 		if (!NT_SUCCESS(status))
 			return RtlNtStatusToDosError(status);
-		targetPointer.u.HighPart = 0;
-		targetPointer.u.LowPart -= distanceToMove;
+		targetPointer.QuadPart = (unsigned long long)filesize-distanceToMove;
 		break;
 	default:
 		return ERROR_INVALID_PARAMETER;
