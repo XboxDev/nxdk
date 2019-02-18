@@ -10,6 +10,10 @@ ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
 endif
 
+ifeq ($(NXDK_STACKSIZE),)
+NXDK_STACKSIZE = 65536
+endif
+
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 LD           = lld -flavor link
@@ -102,7 +106,7 @@ endif
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
-	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRT $^
+	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRT -stack:$(NXDK_STACKSIZE) $^
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
