@@ -29,6 +29,7 @@ FREETYPE_SRCS += $(FREETYPE_DIR)/src/base/ftsystem.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/truetype/truetype.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/raster/raster.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/autofit/autofit.c
+FREETYPE_SRCS += $(FREETYPE_DIR)/src/sfnt/sfnt.c
 
 SRCS += $(SDL_SRCS) $(SDL_TTF_SRCS) $(FREETYPE_SRCS)
 CFLAGS += -I$(NXDK_DIR)/lib/sdl \
