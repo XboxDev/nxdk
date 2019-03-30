@@ -28,6 +28,7 @@ FREETYPE_SRCS += $(FREETYPE_DIR)/src/base/ftinit.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/base/ftsystem.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/truetype/truetype.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/raster/raster.c
+FREETYPE_SRCS += $(FREETYPE_DIR)/src/smooth/smooth.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/autofit/autofit.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/sfnt/sfnt.c
 
