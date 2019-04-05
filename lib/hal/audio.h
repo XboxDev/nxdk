@@ -1,6 +1,11 @@
 #ifndef HAL_AUDIO_H
 #define HAL_AUDIO_H
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 // This is the signature for the function that the audio
 // subsystem will call back to when it has run out of data
 typedef void (*XAudioCallback)(void *pac97Device, void *data);
@@ -33,5 +38,9 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 void XAudioPlay();
 void XAudioPause();
 void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, int isFinal);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

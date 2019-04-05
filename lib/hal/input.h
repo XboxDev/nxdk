@@ -5,6 +5,11 @@
 #include "mouse.h"
 #include "keyboard.h"
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 /* General input functions */
 void XInput_Init(void);
 void XInput_Init_Polling(void);
@@ -19,5 +24,9 @@ int XInputGetKeystroke(XKEYBOARD_STROKE *pStroke);
 
 /* Mouse specific functions */
 XMOUSE_INPUT XInputGetMouseData(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
