@@ -54,13 +54,16 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -Wno-ignored-attributes -DNXDK -D__STDC__=1
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
+NXDK_CXXFLAGS = $(NXDK_CFLAGS)
 
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g
+NXDK_CXXFLAGS += -g
 LDFLAGS += /debug
 endif
 
 NXDK_CFLAGS += $(CFLAGS)
+NXDK_CXXFLAGS += $(CXXFLAGS)
 
 include $(NXDK_DIR)/lib/Makefile
 OBJS = $(addsuffix .obj, $(basename $(SRCS)))
@@ -89,6 +92,7 @@ QUIET=>/dev/null
 endif
 
 DEPS := $(filter %.c.d, $(SRCS:.c=.c.d))
+DEPS += $(filter %.cpp.d, $(SRCS:.cpp=.cpp.d))
 
 all: $(TARGET)
 
@@ -109,6 +113,10 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRTEntry -stack:$(NXDK_STACKSIZE) $^
 
+%.obj: %.cpp
+	@echo "[ CXX      ] $@"
+	$(VE) $(CXX) $(NXDK_CXXFLAGS) -c -o '$@' '$<'
+
 %.obj: %.c
 	@echo "[ CC       ] $@"
 	$(VE) $(CC) $(NXDK_CFLAGS) -c -o '$@' '$<'
@@ -121,6 +129,12 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ DEP      ] $@"
 	$(VE) set -e; rm -f $@; \
 	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(NXDK_CFLAGS) $<; \
+	echo "\n$@ : $^\n" >> $@
+
+%.cpp.d: %.cpp
+	@echo "[ DEP      ] $@"
+	$(VE) set -e; rm -f $@; \
+	$(CXX) -M -MM -MG -MT '$*.obj' -MF $@ $(NXDK_CXXFLAGS) $<; \
 	echo "\n$@ : $^\n" >> $@
 
 %.inl: %.vs.cg $(VP20COMPILER)
