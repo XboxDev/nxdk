@@ -895,12 +895,12 @@ typedef struct _KQUEUE
     LIST_ENTRY ThreadListHead;
 } KQUEUE, *PKQUEUE, *RESTRICTED_POINTER PRKQUEUE;
 
-struct KTHREAD;
+struct _KTHREAD;
 
 typedef struct _KWAIT_BLOCK
 {
     LIST_ENTRY WaitListEntry;
-    struct KTHREAD *Thread;
+    struct _KTHREAD *Thread;
     PVOID Object;
     struct _KWAIT_BLOCK *NextWaitBlock;
     SHORT WaitKey;
@@ -912,7 +912,7 @@ typedef struct _KAPC
     SHORT Type;
     CHAR ApcMode;
     UCHAR Inserted;
-    struct KTHREAD *Thread;
+    struct _KTHREAD *Thread;
     LIST_ENTRY ApcListEntry;
     PVOID KernelRoutine;
     PVOID RundownRoutine;
