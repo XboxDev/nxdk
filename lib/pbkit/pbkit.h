@@ -15,6 +15,11 @@
 #ifndef _PBKIT_H_
 #define _PBKIT_H_
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 #include <xboxkrnl/xboxkrnl.h>
 
 #include "outer.h"
@@ -106,5 +111,10 @@ void    pb_fill(int x,int y,int w,int h, DWORD color);  //rectangle fill
 void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax);
 
 int pb_busy(void);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
