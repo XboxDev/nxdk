@@ -5,6 +5,10 @@
 #ifndef XBOXRT_DEBUG
 #define XBOXRT_DEBUG
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
 
 #define WHITE   0x00FFFFFF
 #define BLACK   0x00000000
@@ -25,5 +29,10 @@ void debugPrintBinary( int num );
 void debugPrintHex(const char *buffer, int length);
 void debugClearScreen( void );
 void advanceScreen( void );
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
