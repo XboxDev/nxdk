@@ -3,6 +3,11 @@
 
 #include <xboxkrnl/xboxkrnl.h>
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 // Defines for frame buffer
 #define VIDEO_BASE				0xFD000000
 #define VIDEO_FRAMEBUFFER			0x03c00000
@@ -59,5 +64,9 @@ void XVideoWaitForVBlank();
 void XVideoSetDisplayStart(unsigned int offset);
 unsigned char* XVideoGetVideoBase();
 int XVideoVideoMemorySize();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

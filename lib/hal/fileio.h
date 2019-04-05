@@ -4,6 +4,11 @@
 #include "xboxkrnl/xboxkrnl.h"
 #include "winerror.h"
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 #define	INVALID_HANDLE_VALUE                    -1
 
 // sharedMode
@@ -127,5 +132,9 @@ int XFindNextFile(
 
 int XFindClose(
 	unsigned int handle);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

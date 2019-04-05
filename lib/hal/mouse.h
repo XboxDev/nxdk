@@ -1,6 +1,11 @@
 #ifndef HAL_MOUSE_H
 #define HAL_MOUSE_H
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 struct xmouse_data
 {
 	unsigned char	buttons;
@@ -25,5 +30,9 @@ typedef struct _XMOUSE_INPUT
 } XMOUSE_INPUT;
 
 extern XMOUSE_INPUT g_Mouse;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

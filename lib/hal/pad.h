@@ -1,6 +1,11 @@
 #ifndef HAL_PAD_H
 #define HAL_PAD_H
 
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
 struct xpad_data
 {
 	unsigned char hPresent;
@@ -58,5 +63,9 @@ typedef struct _XPAD_INPUT
 
 extern XPAD_INPUT g_Pads[4];
 extern XPAD_INPUT g_DefaultPad;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
