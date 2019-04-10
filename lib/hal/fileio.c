@@ -6,6 +6,9 @@
 #include <xboxrt/debug.h>
 #include <stdbool.h>
 
+// Defines the allowed size for a FILE_DIRECTORY_INFORMATION entry
+#define FIND_DATA_SIZE (sizeof(FILE_DIRECTORY_INFORMATION) + 1024)
+
 // #define DEBUG
 
 static char *currentDirString = NULL;
@@ -733,7 +736,8 @@ unsigned int XFindFirstFile(
 #endif
 
 	IO_STATUS_BLOCK IoStatusBlock;
-	FILE_DIRECTORY_INFORMATION FileInformation;
+	BYTE FileInfoRaw[FIND_DATA_SIZE];
+	PFILE_DIRECTORY_INFORMATION FileInformation = (PFILE_DIRECTORY_INFORMATION)FileInfoRaw;
 	HANDLE handle = NULL;
 	ANSI_STRING FileMask;
 	ANSI_STRING FileName;
@@ -768,27 +772,27 @@ unsigned int XFindFirstFile(
 		return INVALID_HANDLE_VALUE;
 
 	// and now actually do the looping over each file...
-	memset(&FileInformation, 0, sizeof(FILE_DIRECTORY_INFORMATION));
+	memset(FileInformation, 0, FIND_DATA_SIZE);
 	status = NtQueryDirectoryFile(
 		handle,
 		NULL,
 		NULL,
 		NULL,
 		&IoStatusBlock,
-		&FileInformation,
-		sizeof(FILE_DIRECTORY_INFORMATION),
+		FileInformation,
+		FIND_DATA_SIZE,
 		FileInformationClass,
 		&FileMask,
 		true);
 	if (!NT_SUCCESS(status))
 		return INVALID_HANDLE_VALUE;
 
-	findFileData->dwFileAttributes = FileInformation.FileAttributes;
-	findFileData->ftCreationTime = FileInformation.CreationTime.QuadPart;
-	findFileData->ftLastAccessTime = FileInformation.LastAccessTime.QuadPart;
-	findFileData->ftLastWriteTime = FileInformation.LastWriteTime.QuadPart;
-	findFileData->nFileSize = FileInformation.AllocationSize.QuadPart;
-	strcpy(findFileData->cFileName, FileInformation.FileName);
+	findFileData->dwFileAttributes = FileInformation->FileAttributes;
+	findFileData->ftCreationTime = FileInformation->CreationTime.QuadPart;
+	findFileData->ftLastAccessTime = FileInformation->LastAccessTime.QuadPart;
+	findFileData->ftLastWriteTime = FileInformation->LastWriteTime.QuadPart;
+	findFileData->nFileSize = FileInformation->AllocationSize.QuadPart;
+	strcpy(findFileData->cFileName, FileInformation->FileName);
 
 	return (unsigned int)handle;
 }
@@ -802,34 +806,35 @@ int XFindNextFile(
 #endif
 
 	IO_STATUS_BLOCK IoStatusBlock;
-	FILE_DIRECTORY_INFORMATION FileInformation;
+	BYTE FileInfoRaw[FIND_DATA_SIZE];
+	PFILE_DIRECTORY_INFORMATION FileInformation = (PFILE_DIRECTORY_INFORMATION)FileInfoRaw;
 	ANSI_STRING FileMask;
 	ANSI_STRING FileName;
 	FILE_INFORMATION_CLASS FileInformationClass = FileDirectoryInformation;
 	OBJECT_ATTRIBUTES Attributes;
 
 	// and now actually do the looping over each file...
-	memset(&FileInformation, 0, sizeof(FILE_DIRECTORY_INFORMATION));
+	memset(FileInformation, 0, FIND_DATA_SIZE);
 	NTSTATUS status = NtQueryDirectoryFile(
 		(HANDLE)handle,
 		NULL,
 		NULL,
 		NULL,
 		&IoStatusBlock,
-		&FileInformation,
-		sizeof(FILE_DIRECTORY_INFORMATION),
+		FileInformation,
+		FIND_DATA_SIZE,
 		FileInformationClass,
 		&FileMask,
 		false);
 	if (!NT_SUCCESS(status))
 		return ERROR_NO_MORE_FILES;
 
-	findFileData->dwFileAttributes = FileInformation.FileAttributes;
-	findFileData->ftCreationTime = FileInformation.CreationTime.QuadPart;
-	findFileData->ftLastAccessTime = FileInformation.LastAccessTime.QuadPart;
-	findFileData->ftLastWriteTime = FileInformation.LastWriteTime.QuadPart;
-	findFileData->nFileSize = FileInformation.AllocationSize.QuadPart;
-	strcpy(findFileData->cFileName, FileInformation.FileName);
+	findFileData->dwFileAttributes = FileInformation->FileAttributes;
+	findFileData->ftCreationTime = FileInformation->CreationTime.QuadPart;
+	findFileData->ftLastAccessTime = FileInformation->LastAccessTime.QuadPart;
+	findFileData->ftLastWriteTime = FileInformation->LastWriteTime.QuadPart;
+	findFileData->nFileSize = FileInformation->AllocationSize.QuadPart;
+	strcpy(findFileData->cFileName, FileInformation->FileName);
 
 	return STATUS_SUCCESS;
 }
