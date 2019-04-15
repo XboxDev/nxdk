@@ -1,4 +1,5 @@
 XBE_TITLE=0ldskoo1
+GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(wildcard $(CURDIR)/*.c)
 SHADER_OBJS = ps.inl vs.inl
 NXDK_DIR = $(CURDIR)/../..
