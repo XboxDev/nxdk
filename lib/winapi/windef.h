@@ -3,4 +3,6 @@
 
 #include <xboxkrnl/xboxdef.h>
 
+#define MAX_PATH 260
+
 #endif
