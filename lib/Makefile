@@ -27,5 +27,6 @@ SRCS += \
 	$(wildcard $(NXDK_DIR)/lib/xlibc-rt/*.c) \
 	$(wildcard $(NXDK_DIR)/lib/xlibc-rt/*.s) \
 	$(wildcard $(NXDK_DIR)/lib/hal/*.c) \
+	$(wildcard $(NXDK_DIR)/lib/winapi/*.c) \
 	$(wildcard $(NXDK_DIR)/lib/pbkit/*.c) \
 	$(USB_SRCS)
