@@ -89,6 +89,12 @@ static char *getCurrentDirString()
  */
 int XConvertDOSFilenameToXBOX(const char *dosFilename, char *xboxFilename)
 {
+	// Allow Xbox filenames directly
+	if (!memcmp(dosFilename, "\\Device\\", 8)) {
+		strcpy(xboxFilename, dosFilename);
+		return STATUS_SUCCESS;
+	}
+
 	// path contains the qualified pathname from the root
 	// directory without the leading slash.  eg. "foo\bar.txt"
 	const char *path;
