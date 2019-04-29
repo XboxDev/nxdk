@@ -75,7 +75,9 @@ static char *getCurrentDirString()
 
 /**
  * Converts a DOS-style path (eg. "c:/foo/bar.txt") to a XBOX-style
- * path (eg. "\Device\Harddisk0\Partition2\foo\bar.txt")
+ * path (eg. "\Device\Harddisk0\Partition2\foo\bar.txt").
+ * Returns early if the path is alread in XBOX-style - will use the
+ * input path as-is.
  *
  * We handle the following scenarios (back/forward slashes are handled
  * in all cases):
