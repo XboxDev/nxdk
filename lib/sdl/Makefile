@@ -13,6 +13,7 @@ SDL_SRCS += $(wildcard $(SDL_DIR)/src/timer/*.c)
 SDL_SRCS += $(wildcard $(SDL_DIR)/src/timer/dummy/*.c)
 SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/*.c)
 SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/xbox/*.c)
+SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/yuv2rgb/*.c)
 SDL_SRCS += $(wildcard $(SDL_DIR)/src/libm/*.c)
 SDL_SRCS += $(wildcard $(SDL_DIR)/src/atomic/*.c)
 
