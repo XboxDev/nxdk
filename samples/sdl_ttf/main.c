@@ -9,10 +9,6 @@
 const extern int SCREEN_WIDTH;
 const extern int SCREEN_HEIGHT;
 
-// SDL requires this symbol to exist
-void _exit() {
-}
-
 void main() {
   int initialized_pbkit = -1;
   int initialized_SDL   = -1;
