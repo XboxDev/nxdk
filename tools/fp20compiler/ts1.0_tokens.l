@@ -6,7 +6,7 @@ alphanum [0-9a-zA-Z_]
 #include <stdlib.h>
 #include "ts1.0_inst.h"
 #include "ts1.0_inst_list.h"
-#include "_ts1.0_parser.h"
+#include "_ts1.0_parser.hpp"
 #ifdef _WIN32
 # include <windows.h>
 #endif
