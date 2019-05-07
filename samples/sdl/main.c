@@ -18,13 +18,13 @@
 #include "string.h"
 #include <SDL.h>
 
-int _exit(int x)
+static void printSDLErrorAndReboot(void)
 {
-    debugPrint("_exit called\n");
-    debugPrint( " SDL_Error: %s\n", SDL_GetError() );
+    debugPrint("SDL_Error: %s\n", SDL_GetError());
+    debugPrint("Rebooting in 5 seconds.\n");
     XSleep(5000);
+    pb_kill();
     XReboot();
-    return 0;
 }
 
 static const struct {
@@ -182,14 +182,6 @@ const extern int SCREEN_HEIGHT;
 
 static SDL_Rect *positions, *velocities;
 
-/* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
-static void
-quit(int rc)
-{
-    SDL_VideoQuit();
-    _exit(rc);
-}
-
 SDL_Texture *
 LoadSprite(SDL_Renderer *renderer, char *file)
 {
@@ -284,9 +276,8 @@ void demo(void)
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     if (SDL_VideoInit(NULL) < 0) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL video: %s\n",
-                SDL_GetError());
-        _exit(1);
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL video.\n");
+        printSDLErrorAndReboot();
     }
 
     driver = SDL_GetCurrentVideoDriver();
@@ -298,15 +289,17 @@ void demo(void)
         SDL_WINDOW_SHOWN);
     if(window == NULL)
     {
-        debugPrint( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
-        _exit(1);
+        debugPrint( "Window could not be created!\n");
+        SDL_VideoQuit();
+        printSDLErrorAndReboot();
     }
 
     /* Create the renderer */
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create renderer: %s\n", SDL_GetError());
-        _exit(5);
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create renderer.\n");
+        SDL_VideoQuit();
+        printSDLErrorAndReboot();
     }
 
     /* Clear the window, load the sprite and go! */
@@ -315,7 +308,8 @@ void demo(void)
 
     sprite = LoadSprite(renderer, "icon.bmp");
     if (!sprite) {
-        quit(6);
+        SDL_VideoQuit();
+        printSDLErrorAndReboot();
     }
 
     /* Allocate memory for the sprite info */
@@ -325,7 +319,8 @@ void demo(void)
     velocities = (SDL_Rect *) SDL_malloc(NUM_SPRITES * sizeof(SDL_Rect));
     if (!positions || !velocities) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Out of memory!\n");
-        quit(2);
+        SDL_VideoQuit();
+        printSDLErrorAndReboot();
     }
 
     for (i = 0; i < NUM_SPRITES; ++i) {
@@ -365,7 +360,7 @@ void demo(void)
         MoveSprites(renderer, sprite);
     }
 
-    quit(0);
+    SDL_VideoQuit();
 }
 
 void main(void)
