@@ -175,7 +175,7 @@ $(EXTRACT_XISO):
 .PHONY: clean 
 clean:
 	$(VE)rm -f $(TARGET) \
-	           main.exe main.exe.manifest \
+	           main.exe main.exe.manifest main.lib \
 	           $(OBJS) $(SHADER_OBJS) \
 	           $(GEN_XISO)
 
