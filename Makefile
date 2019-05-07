@@ -166,7 +166,7 @@ $(EXTRACT_XISO):
 clean:
 	$(VE)rm -f $(TARGET) \
 	           main.exe main.exe.manifest main.lib \
-	           $(OBJS) $(SHADER_OBJS) \
+	           $(OBJS) $(SHADER_OBJS) $(DEPS) \
 	           $(GEN_XISO)
 
 .PHONY: distclean 
@@ -176,6 +176,5 @@ distclean: clean
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(QUIET)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(QUIET)
 	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
-	$(VE)rm -f $(DEPS)
 
 -include $(DEPS)
