@@ -2,9 +2,9 @@ MAIN = fp20compiler
 CXXFLAGS= -DYY_NO_UNPUT -Wall -g
 
 INCLUDES = $(wildcard *.h) \
-	_ps1.0_parser.h \
-	_rc1.0_parser.h \
-	_ts1.0_parser.h
+	_ps1.0_parser.hpp \
+	_rc1.0_parser.hpp \
+	_ts1.0_parser.hpp
 
 SRCS = main.cpp \
 	nvparse_errors.cpp \
@@ -29,17 +29,14 @@ $(MAIN): $(OBJS)
 %.o: %.cpp ${INCLUDES}
 	$(CXX) $(CXXFLAGS) -c -o '$@' '$<'
 
-_ps1.0_parser.cpp _ps1.0_parser.h: ps1.0_grammar.y
-	bison -d -o _ps1.0_parser.c -p ps10_ ps1.0_grammar.y
-	mv -f _ps1.0_parser.c _ps1.0_parser.cpp
+_ps1.0_parser.cpp _ps1.0_parser.hpp: ps1.0_grammar.y
+	bison -d -o _ps1.0_parser.cpp -p ps10_ ps1.0_grammar.y
 
-_rc1.0_parser.cpp _rc1.0_parser.h: rc1.0_grammar.y
-	bison -d -o _rc1.0_parser.c -p rc10_ rc1.0_grammar.y
-	mv -f _rc1.0_parser.c _rc1.0_parser.cpp
+_rc1.0_parser.cpp _rc1.0_parser.hpp: rc1.0_grammar.y
+	bison -d -o _rc1.0_parser.cpp -p rc10_ rc1.0_grammar.y
 
-_ts1.0_parser.cpp _ts1.0_parser.h: ts1.0_grammar.y
-	bison -d -o _ts1.0_parser.c -p ts10_ ts1.0_grammar.y
-	mv -f _ts1.0_parser.c _ts1.0_parser.cpp
+_ts1.0_parser.cpp _ts1.0_parser.hpp: ts1.0_grammar.y
+	bison -d -o _ts1.0_parser.cpp -p ts10_ ts1.0_grammar.y
 
 _ps1.0_lexer.cpp: ps1.0_tokens.l
 	flex -Pps10_ -o_ps1.0_lexer.cpp ps1.0_tokens.l
@@ -52,9 +49,9 @@ _ts1.0_lexer.cpp: ts1.0_tokens.l
 
 .PHONY: clean
 clean:
-	rm -f _ps1.0_parser.cpp _ps1.0_parser.h _ps1.0_lexer.cpp
-	rm -f _rc1.0_parser.cpp _rc1.0_parser.h _rc1.0_lexer.cpp
-	rm -f _ts1.0_parser.cpp _ts1.0_parser.h _ts1.0_lexer.cpp
+	rm -f _ps1.0_parser.cpp _ps1.0_parser.hpp _ps1.0_lexer.cpp
+	rm -f _rc1.0_parser.cpp _rc1.0_parser.hpp _rc1.0_lexer.cpp
+	rm -f _ts1.0_parser.cpp _ts1.0_parser.hpp _ts1.0_lexer.cpp
 	rm -f $(OBJS)
 
 .PHONY: distclean

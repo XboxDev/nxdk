@@ -7,7 +7,7 @@ alphanum [0-9a-zA-Z_]
 
 #include <stdlib.h>
 #include "rc1.0_combiners.h"
-#include "_rc1.0_parser.h"
+#include "_rc1.0_parser.hpp"
 
 #include "nvparse_errors.h"
 #include "nvparse_externs.h"

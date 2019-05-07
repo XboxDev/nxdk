@@ -14,7 +14,7 @@ alphanum [0-9a-zA-Z_]
 using namespace std;
 using namespace ps10;
 
-#include "_ps1.0_parser.h"
+#include "_ps1.0_parser.hpp"
 
 #include "nvparse_errors.h"
 #include "nvparse_externs.h"
