@@ -345,9 +345,9 @@ enum {
 
 
 //Register access macros for XBOX
-#define REG(x)	(*((DWORD *)((ULONG_PTR)PktdrvMmioBase+(x))))
-#define REGW(x)	(*((WORD *)((ULONG_PTR)PktdrvMmioBase+(x))))
-#define REGB(x)	(*((BYTE *)((ULONG_PTR)PktdrvMmioBase+(x))))
+#define REG(x)	(*((DWORD volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
+#define REGW(x)	(*((WORD volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
+#define REGB(x)	(*((BYTE volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
 
 
 
