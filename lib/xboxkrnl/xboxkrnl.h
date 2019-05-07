@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <xboxkrnl/xboxdef.h>
+
 /* stop clang from crying */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wlanguage-extension-token"
@@ -33,15 +35,6 @@ extern "C"
 
 #define CONST const
 
-typedef unsigned int SIZE_T, *PSIZE_T;
-typedef unsigned char BOOLEAN, *PBOOLEAN;
-typedef int BOOL, *PBOOL;
-typedef void VOID, *PVOID, *LPVOID;
-typedef unsigned char UCHAR, *PUCHAR;
-typedef unsigned short USHORT, *PUSHORT, CSHORT;
-typedef unsigned long ULONG, *PULONG;
-typedef unsigned long long ULONGLONG;
-
 #ifndef NULL
     #define NULL ((PVOID)0)
 #endif
@@ -51,13 +44,6 @@ typedef unsigned long long ULONGLONG;
 #ifndef FALSE
     #define FALSE 0
 #endif
-
-typedef char CHAR, *PCHAR, CCHAR, *LPCH, *PCH, OCHAR, *POCHAR;
-typedef short SHORT, *PSHORT;
-typedef long LONG, *PLONG;
-typedef long long LONGLONG, *PLONGLONG;
-
-typedef signed char SCHAR, *PSCHAR;
 
 typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) ((NTSTATUS)(Status) >= 0)
