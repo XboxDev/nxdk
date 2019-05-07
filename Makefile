@@ -109,33 +109,23 @@ $(GEN_XISO): $(OUTPUT_DIR)/default.xbe $(EXTRACT_XISO)
 	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(QUIET)
 endif
 
+$(SRCS): $(SHADER_OBJS)
+
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRTEntry -stack:$(NXDK_STACKSIZE) $^
 
 %.obj: %.cpp
 	@echo "[ CXX      ] $@"
-	$(VE) $(CXX) $(NXDK_CXXFLAGS) -c -o '$@' '$<'
+	$(VE) $(CXX) $(NXDK_CXXFLAGS) -MD -MT '$@' -MF '$(patsubst %.cpp,%.cpp.d,$<)' -c -o '$@' '$<'
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
-	$(VE) $(CC) $(NXDK_CFLAGS) -c -o '$@' '$<'
+	$(VE) $(CC) $(NXDK_CFLAGS) -MD -MT '$@' -MF '$(patsubst %.c,%.c.d,$<)' -c -o '$@' '$<'
 
 %.obj: %.s
 	@echo "[ AS       ] $@"
 	$(VE) $(AS) $(NXDK_ASFLAGS) -c -o '$@' '$<'
-
-%.c.d: %.c
-	@echo "[ DEP      ] $@"
-	$(VE) set -e; rm -f $@; \
-	$(CC) -M -MM -MG -MT '$*.obj' -MF $@ $(NXDK_CFLAGS) $<; \
-	echo "\n$@ : $^\n" >> $@
-
-%.cpp.d: %.cpp
-	@echo "[ DEP      ] $@"
-	$(VE) set -e; rm -f $@; \
-	$(CXX) -M -MM -MG -MT '$*.obj' -MF $@ $(NXDK_CXXFLAGS) $<; \
-	echo "\n$@ : $^\n" >> $@
 
 %.inl: %.vs.cg $(VP20COMPILER)
 	@echo "[ CG       ] $@"
