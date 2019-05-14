@@ -78,6 +78,7 @@ include $(NXDK_DIR)/lib/net/Makefile
 endif
 
 ifneq ($(NXDK_SDL),)
+include $(NXDK_DIR)/lib/sdl/SDL2/Makefile.xbox
 include $(NXDK_DIR)/lib/sdl/Makefile
 endif
 

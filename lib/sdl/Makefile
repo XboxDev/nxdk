@@ -1,22 +1,3 @@
-# Include SDL sources
-SDL_DIR = $(NXDK_DIR)/lib/sdl/SDL2
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/cpuinfo/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/events/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/file/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/render/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/render/software/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/stdlib/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/thread/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/thread/generic/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/timer/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/timer/dummy/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/xbox/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/video/yuv2rgb/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/libm/*.c)
-SDL_SRCS += $(wildcard $(SDL_DIR)/src/atomic/*.c)
-
 SDL_TTF_DIR = $(NXDK_DIR)/lib/sdl/SDL_ttf
 SDL_TTF_SRCS += $(SDL_TTF_DIR)/SDL_ttf.c
 
@@ -33,9 +14,8 @@ FREETYPE_SRCS += $(FREETYPE_DIR)/src/smooth/smooth.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/autofit/autofit.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/sfnt/sfnt.c
 
-SRCS += $(SDL_SRCS) $(SDL_TTF_SRCS) $(FREETYPE_SRCS)
+SRCS += $(SDL_TTF_SRCS) $(FREETYPE_SRCS)
 CFLAGS += -I$(NXDK_DIR)/lib/sdl \
-          -I$(SDL_DIR)/include \
           -I$(SDL_TTF_DIR) \
           -I$(FREETYPE_DIR)/include \
           -DXBOX
