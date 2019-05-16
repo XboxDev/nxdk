@@ -42,6 +42,9 @@
 extern unsigned long times(void *);
 
 //temporary dirty interface
+void* PktdrvMmioBase = (void*)0xFEF00000;
+unsigned int PktdrvInterrupt = 4;
+
 extern int something_to_send;
 extern unsigned char *packet_to_send;
 extern unsigned int size_of_packet_to_send;
@@ -342,10 +345,9 @@ enum {
 
 
 //Register access macros for XBOX
-#define	BASE	0xFEF00000
-#define REG(x)	(*((DWORD *)(BASE+(x))))
-#define REGW(x)	(*((WORD *)(BASE+(x))))
-#define REGB(x)	(*((BYTE *)(BASE+(x))))
+#define REG(x)	(*((DWORD volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
+#define REGW(x)	(*((WORD volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
+#define REGB(x)	(*((BYTE volatile *)((ULONG_PTR)PktdrvMmioBase+(x))))
 
 
 
@@ -742,7 +744,7 @@ int Pktdrv_Init(void)
 	}
 	
 
-	g_s->Vector=HalGetInterruptVector(4,&g_s->IrqLevel); 
+	g_s->Vector=HalGetInterruptVector(PktdrvInterrupt,&g_s->IrqLevel);
 	
 	KeInitializeDpc(&g_s->MyPktdrvDpcObject,&MyPktdrvDpc,&g_s->MyContext); 
 

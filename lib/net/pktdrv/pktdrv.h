@@ -1,6 +1,9 @@
 #ifndef _Pktdrv_
 #define _Pktdrv_
 
+extern void* PktdrvMmioBase;
+extern unsigned int PktdrvInterrupt;
+
 int Pktdrv_Init(void);
 void Pktdrv_Quit(void);
 int Pktdrv_ReceivePackets(void);
