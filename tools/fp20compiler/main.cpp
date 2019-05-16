@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    FILE* fh = fopen(argv[1], "r");
+    FILE* fh = fopen(argv[1], "rb");
     if (!fh) {
         fprintf(stderr, "unable to open %s\n", argv[1]);
         exit(1);
@@ -75,13 +75,14 @@ int main(int argc, char** argv) {
     fseek(fh, 0L, SEEK_END);
     long size = ftell(fh);
     rewind(fh);
-    char* buffer = (char*)malloc(size);
+    char* buffer = (char*)malloc(size+1);
     if (buffer == NULL) {
         fprintf(stderr, "failed to allocate buffer\n");
         exit(1);
     }
 
     fread(buffer, size, 1, fh);
+    buffer[size] = '\0';
 
     translate(buffer);
 
