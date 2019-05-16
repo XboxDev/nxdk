@@ -3,13 +3,12 @@
 
 #include "xboxkrnl/xboxkrnl.h"
 #include "winerror.h"
+#include <winbase.h>
 
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
-
-#define	INVALID_HANDLE_VALUE                    -1
 
 // sharedMode
 #define FILE_SHARE_READ                         0x00000001
