@@ -121,18 +121,6 @@ int XMountDrive(
 	char driveLetter,
 	char *directoryName);
 
-unsigned int XFindFirstFile(
-	char *directoryName,
-	char *mask,
-	PXBOX_FIND_DATA findFileData);
-
-int XFindNextFile(
-	unsigned int handle,
-	PXBOX_FIND_DATA findFileData);
-
-int XFindClose(
-	unsigned int handle);
-
 #ifdef __cplusplus
 }
 #endif
