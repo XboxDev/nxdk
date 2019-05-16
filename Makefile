@@ -60,7 +60,7 @@ NXDK_CXXFLAGS = $(NXDK_CFLAGS)
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g
 NXDK_CXXFLAGS += -g
-LDFLAGS += /debug
+LDFLAGS += -debug
 endif
 
 NXDK_CFLAGS += $(CFLAGS)
