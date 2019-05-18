@@ -89,51 +89,5 @@ int main(int argc, char** argv) {
     fclose(fh);
     free(buffer);
 
-//     translate("!!TS1.0\n"
-// "texture_2d();\n"
-// "texture_2d();\n");
-
-//     translate("!!RC1.0\n"
-// "{\n"
-// "  rgb\n"
-// "  {\n"
-// "    discard = tex0.rgb * col0.rgb;\n"
-// "    discard = tex1.rgb * col0.rgb;\n"
-// "    col0 = sum();\n"
-// "  }\n"
-// "  alpha\n"
-// "  {\n"
-// "    discard = tex0.a * col0.a;\n"
-// "    discard = tex1.a * col0.a;\n"
-// "    col0 = sum();\n"
-// "  }\n"
-// "}\n"
-// "out.rgb = unsigned(col0.rgb);\n"
-// "out.a = unsigned(col0.a);\n");
-
-//     translate("!!RC1.0\n"
-// "const0 = ( 1.000000, 0.000000, 0.000000, 0.000000 );\n"
-// "out.rgb = unsigned(const0.rgb);\n"
-// "out.a = unsigned_invert(zero.a);\n");
-
-
-
-// translate("!!TS1.0\n"
-// "texture_2d();");
-
-// translate("!!RC1.0\n"
-// "{\n"
-// "  rgb\n"
-// "  {\n"
-// "    col0 = tex0.rgb * col0.rgb;\n"
-// "  }\n"
-// "  alpha\n"
-// "  {\n"
-// "    col0 = tex0.a * col0.a;\n"
-// "  }\n"
-// "}\n"
-// "out.rgb = unsigned(col0.rgb);\n"
-// "out.a = unsigned(col0.a);\n");
-
     return 0;
 }
