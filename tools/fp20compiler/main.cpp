@@ -34,30 +34,111 @@ nvparse_errors errors;
 int line_number;
 char * myin = 0;
 
+static char* copy_string(const char* str, size_t length) {
+    char* buffer = (char*)malloc(length + 1);
+    memcpy(buffer, str, length);
+    buffer[length] = '\0';
+    return buffer;
+}
+
+static char* find_at_line_start(const char* haystack, const char* cursor,
+                                const char* needle) {
+    cursor = strstr(cursor, needle);
+    while (cursor != NULL) {
+
+        // Accept if candidate is at beginning of file or line
+        if ((cursor == haystack) || (cursor[-1] == '\n')) {
+            return (char*)cursor;
+        }
+
+        cursor = strstr(cursor + 1, needle);
+    }
+    return NULL;
+}
+
 void translate(const char* s) {
-    char* ns = strdup(s);
 
-    // printf("-- %s\b", s);
+    // Look for the first shader magic
+    const char* shader_magic = find_at_line_start(s, s, "!!");
 
-    char* ts_start = strstr(ns, "!!TS1.0");
-    if (ts_start) {
-        char* ts_end = strstr(ts_start, "// End of program");
-        assert(ts_end);
-        *ts_end = 0;
-
-        ts10_init(ts_start);
-        ts10_parse();
-
-        *ts_end = '/';
+    // Warn the user if we couldn't find any shader at all
+    if (shader_magic == NULL) {
+        fprintf(stderr, "no shaders found\n");
     }
 
-    char* rc_start = strstr(ns, "!!RC1.0");
-    if (rc_start) {
-        rc10_init(rc_start);
-        rc10_parse();
-    }
+    // Loop until we can't find a shader anymore
+    while (shader_magic != NULL) {
 
-    free(ns);
+        // Find end of shader magic line (whitespace or comment)
+        const char* shader_magic_end = shader_magic+2;
+        while (1) {
+            shader_magic_end += strcspn(shader_magic_end, " \t\n\r#;/*");
+
+            // Check for start of C style comment or single-line comment
+            if (shader_magic_end[0] == '/') {
+                if ((shader_magic_end[1] != '*') &&
+                    (shader_magic_end[1] != '/')) {
+                    shader_magic_end++;
+                    continue;
+                }
+            }
+
+            // Check for end of C style comment
+            if (shader_magic_end[0] == '*') {
+                if (shader_magic_end[1] != '/') {
+                    shader_magic_end++;
+                    continue;
+                }
+            }
+
+            break;
+        }
+
+        // Copy the magic
+        size_t shader_magic_len = shader_magic_end - shader_magic;
+        char* shader_magic_str = copy_string(shader_magic, shader_magic_len);
+
+        // Shader magic marks shader start
+        const char* shader = shader_magic;
+
+        // The next shader magic will mark the end of current shader; find it
+        const char* next_shader_magic;
+        if (*shader_magic_end != '\0') {
+            next_shader_magic = find_at_line_start(s, shader_magic_end+1, "!!");
+        } else {
+            next_shader_magic = NULL;
+        }
+
+        // Find shader end; also respect case where no other shader follows
+        const char* shader_end;
+        if (next_shader_magic != NULL) {
+            shader_end = next_shader_magic;
+        } else {
+            shader_end = &shader_magic_end[strlen(shader_magic_end)];
+        }
+
+        // Copy the shader
+        size_t shader_len = shader_end - shader;
+        char* shader_str = copy_string(shader, shader_len);
+
+        // Process shader
+        if (is_ts10(shader_str)) {
+            ts10_init(shader_str);
+            ts10_parse();
+        } else if (is_rc10(shader_str)) {
+            rc10_init(shader_str);
+            rc10_parse();
+        } else {
+            fprintf(stderr, "unknown shader type \"%s\"\n", shader_magic_str);
+        }
+
+        // Free temporary string copies
+        free(shader_str);
+        free(shader_magic_str);
+
+        // Continue with next shader by jumping to its magic
+        shader_magic = next_shader_magic;
+    }
 }
 
 int main(int argc, char** argv) {
