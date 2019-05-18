@@ -1,11 +1,12 @@
 #include <xboxrt/debug.h>
 #include <pbkit/pbkit.h>
+#include <hal/video.h>
 #include <hal/xbox.h>
 #include "stdio.h"
 
 void main(void)
 {
-    int i;
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
     switch(pb_init())
     {

@@ -3,10 +3,12 @@
 #include <hal/winerror.h>
 #include <xboxrt/debug.h>
 #include <pbkit/pbkit.h>
+#include <hal/video.h>
 #include <hal/xbox.h>
 
 int main()
 {
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     int ret = pb_init();
     if (ret != 0) {
         XSleep(2000);

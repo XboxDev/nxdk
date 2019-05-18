@@ -365,6 +365,7 @@ void demo(void)
 
 void main(void)
 {
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     if (pb_init() != 0)
     {
         XSleep(2000);

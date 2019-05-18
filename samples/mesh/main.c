@@ -73,6 +73,8 @@ void main(void)
     int       fps, frames, frames_total;
     float     m_viewport[4][4];
 
+    XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+
     pb_extra_buffers(2);
     if ((status = pb_init())) {
         debugPrint("pb_init Error %d\n", status);
