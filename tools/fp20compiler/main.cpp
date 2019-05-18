@@ -34,27 +34,68 @@ nvparse_errors errors;
 int line_number;
 char * myin = 0;
 
+static char* find_at_line_start(char* haystack, char* cursor, const char* needle) {
+    cursor = strstr(cursor, needle);
+    while (cursor != NULL) {
+
+        // Accept if candidate is at beginning of file or line
+        if ((cursor == haystack) || (cursor[-1] == '\n')) {
+            return cursor;
+        }
+
+        cursor = strstr(cursor + 1, needle);
+    }
+    return NULL;
+}
+
 void translate(const char* s) {
     char* ns = strdup(s);
 
-    // printf("-- %s\b", s);
+    // Look for the first shader magic
+    char* shader_start = find_at_line_start(ns, ns, "!!");
 
-    char* ts_start = strstr(ns, "!!TS1.0");
-    if (ts_start) {
-        char* ts_end = strstr(ts_start, "// End of program");
-        assert(ts_end);
-        *ts_end = 0;
-
-        ts10_init(ts_start);
-        ts10_parse();
-
-        *ts_end = '/';
+    // Warn the user if we couldn't find any shader at all
+    if (shader_start == NULL) {
+        fprintf(stderr, "no shaders found\n");
     }
 
-    char* rc_start = strstr(ns, "!!RC1.0");
-    if (rc_start) {
-        rc10_init(rc_start);
-        rc10_parse();
+    // Loop until we can't find a shader anymore
+    while (shader_start != NULL) {
+
+        // Find end of shader magic line
+        char* line_end = strchr(shader_start, '\n');
+
+        // The next shader magic marks the end of the current shader; find it
+        char* next_shader_start;
+        if (line_end == NULL) {
+            next_shader_start = NULL;
+        } else {
+            next_shader_start = find_at_line_start(ns, line_end + 1, "!!");
+        }
+
+        // If another shader exists, modify it to end current shader string
+        if (next_shader_start) { *next_shader_start = '\0'; }
+
+        // Process shader
+        if (is_ts10(shader_start)) {
+            ts10_init(shader_start);
+            ts10_parse();
+        } else if (is_rc10(shader_start)) {
+            rc10_init(shader_start);
+            rc10_parse();
+        } else {
+            if (line_end) { *line_end = '\0'; }
+            fprintf(stderr, "unknown shader type \"%s\"\n", shader_start);
+            if (line_end) { *line_end = '\n'; }
+        }
+
+        // Recover next magic (was modified to mark end of current shader)
+        if (next_shader_start) { *next_shader_start = '!'; }
+
+
+        // Continue with next shader
+        shader_start = next_shader_start;
+
     }
 
     free(ns);
