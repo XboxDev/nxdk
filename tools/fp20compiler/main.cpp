@@ -62,13 +62,13 @@ void translate(const char* s) {
 
 int main(int argc, char** argv) {
     if (argc != 2) {
-        fprintf(stderr, "usage: %s fpfile\n", argv[0]);
+        fprintf(stderr, "usage: %s <fpfile>\n", argv[0]);
         exit(1);
     }
 
     FILE* fh = fopen(argv[1], "rb");
     if (!fh) {
-        fprintf(stderr, "unable to open %s\n", argv[1]);
+        fprintf(stderr, "unable to open \"%s\"\n", argv[1]);
         exit(1);
     }
 
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
     rewind(fh);
     char* buffer = (char*)malloc(size+1);
     if (buffer == NULL) {
-        fprintf(stderr, "failed to allocate buffer\n");
+        fprintf(stderr, "failed to allocate buffer for file\n");
         exit(1);
     }
 
