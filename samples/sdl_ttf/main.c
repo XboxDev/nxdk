@@ -17,6 +17,8 @@ void main() {
   SDL_Renderer *renderer = NULL;
   SDL_Texture  *texture  = NULL;
 
+  XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+
   initialized_pbkit = pb_init();
   if (initialized_pbkit != 0) {
     debugPrint("pb_init() failed!");

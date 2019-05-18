@@ -8,6 +8,7 @@
 #include "netif/etharp.h"
 #include "pktdrv.h"
 #include <hal/input.h>
+#include <hal/video.h>
 #include <hal/xbox.h>
 #include <pbkit/pbkit.h>
 #include <xboxkrnl/xboxkrnl.h>
@@ -66,6 +67,8 @@ void main(void)
 	tcpip_init(tcpip_init_done, &init_complete);
 	sys_sem_wait(&init_complete);
 	sys_sem_free(&init_complete);
+
+	XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
 	pb_init();
 	pb_show_debug_screen();
