@@ -3,6 +3,8 @@
 
 #include <xboxkrnl/xboxdef.h>
 
+#define WINAPI __stdcall
+
 #define MAX_PATH 260
 
 #endif
