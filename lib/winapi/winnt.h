@@ -1,6 +1,8 @@
 #ifndef __WINNT_H__
 #define __WINNT_H__
 
+typedef LONG HRESULT;
+
 typedef CHAR *LPSTR;
 
 #ifdef UNICODE
