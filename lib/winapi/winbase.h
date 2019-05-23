@@ -3,6 +3,7 @@
 
 #include <windef.h>
 #include <minwinbase.h>
+#include <winnt.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -32,6 +33,14 @@ typedef struct _WIN32_FIND_DATAA {
 
 DWORD GetLastError (void);
 void SetLastError (DWORD error);
+
+void WINAPI OutputDebugStringA (LPCTSTR lpOutputString);
+
+#ifndef UNICODE
+#define OutputDebugString OutputDebugStringA
+#else
+#error nxdk does not support the Unicode API
+#endif
 
 #ifdef __cplusplus
 }
