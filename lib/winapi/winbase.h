@@ -10,7 +10,7 @@ extern "C"
 {
 #endif
 
-#define	INVALID_HANDLE_VALUE                    ((HANDLE)-1)
+#define INVALID_HANDLE_VALUE ((HANDLE)-1)
 
 typedef struct _WIN32_FIND_DATAA {
     DWORD dwFileAttributes;
