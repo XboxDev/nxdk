@@ -774,6 +774,9 @@ typedef struct _OBJECT_ATTRIBUTES
     (p)->ObjectName = n; \
 }
 
+#define ObDosDevicesDirectory() ((HANDLE)-3)
+#define ObWin32NamedObjectsDirectory() ((HANDLE)-4)
+
 typedef enum _EVENT_TYPE
 {
     NotificationEvent = 0,
