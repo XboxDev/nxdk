@@ -127,6 +127,8 @@ typedef enum _MODE {
     MaximumMode
 } MODE;
 
+#define RTL_CONSTANT_STRING(s) {sizeof(s) - sizeof((s)[0]), sizeof(s), (s)}
+
 /**
  * This struct defines a counted string used for ANSI-strings
  */
