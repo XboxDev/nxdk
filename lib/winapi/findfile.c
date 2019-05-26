@@ -39,18 +39,10 @@ HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
     struct FileInfo fileInformation;
     HANDLE handle;
     size_t maskOffset;
-    // Reserve a buffer large enough for XConvertDOSFilenameToXBOX results
-    char fullPath[MAX_PATH+29];
 
     assert(strlen(lpFileName) < MAX_PATH);
 
-    status = XConvertDOSFilenameToXBOX(lpFileName, fullPath);
-    if (!NT_SUCCESS(status)) {
-        SetLastError(status);
-        return INVALID_HANDLE_VALUE;
-    }
-
-    RtlInitAnsiString(&dirPath, fullPath);
+    RtlInitAnsiString(&dirPath, lpFileName);
 
     for (maskOffset = dirPath.Length; maskOffset > 0; maskOffset--) {
         if (dirPath.Buffer[maskOffset - 1] == '\\')
@@ -74,7 +66,7 @@ HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
         mask.Length = 0;
     }
 
-    InitializeObjectAttributes(&attributes, &dirPath, OBJ_CASE_INSENSITIVE, NULL, NULL);
+    InitializeObjectAttributes(&attributes, &dirPath, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
 
     status = NtOpenFile(&handle, FILE_LIST_DIRECTORY | SYNCHRONIZE, &attributes, &ioStatusBlock, FILE_SHARE_READ, FILE_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT);
 
