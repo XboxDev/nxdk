@@ -39,6 +39,7 @@
 #include "lwip/stats.h"
 #include "lwip/snmp.h"
 #include "lwip/ethip6.h"
+#include "lwip/mld6.h"
 #include "netif/etharp.h"
 #include "netif/ppp/pppoe.h"
 
