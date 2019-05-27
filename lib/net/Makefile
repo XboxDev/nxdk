@@ -3,6 +3,7 @@ LWIPDIR = $(NXDK_DIR)/lib/net/lwip/src
 include $(LWIPDIR)/Filelists.mk
 LWIPSRCS := $(COREFILES) \
             $(CORE4FILES) \
+            $(CORE6FILES) \
             $(NETIFFILES) \
             $(APIFILES)
 
