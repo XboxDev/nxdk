@@ -41,6 +41,7 @@
 #define LWIP_LWIPOPTS_H
 
 #define LWIP_IPV4 1
+#define LWIP_IPV6 1
 #define LWIP_DEBUG 1
 extern int errno;
 
