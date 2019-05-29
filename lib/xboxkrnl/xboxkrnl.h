@@ -157,8 +157,8 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
  */
 typedef struct _LIST_ENTRY
 {
-	struct _LIST_ENTRY *Flink; /**< Points to the next entry of the list or the header if there is no next entry */
-	struct _LIST_ENTRY *Blink; /**< Points to the previous entry of the list or the header if there is no previous entry */
+    struct _LIST_ENTRY *Flink; /**< Points to the next entry of the list or the header if there is no next entry */
+    struct _LIST_ENTRY *Blink; /**< Points to the previous entry of the list or the header if there is no previous entry */
 } LIST_ENTRY, *PLIST_ENTRY;
 
 /*
@@ -266,17 +266,17 @@ typedef union _LARGE_INTEGER
  */
 typedef union _ULARGE_INTEGER
 {
-	struct
-	{
-		ULONG LowPart; /**< The low-order 32 bits. */
-		ULONG HighPart; /**< The high-order 32 bits. */ /**< The high-order 32 bits. */
-	};
-	struct
-	{
-		ULONG LowPart; /**< The low-order 32 bits. */
-		ULONG HighPart; /**< The high-order 32 bits. */
-	} u;
-	ULONGLONG QuadPart; /**< An unsigned 64-bit integer. */
+    struct
+    {
+        ULONG LowPart; /**< The low-order 32 bits. */
+        ULONG HighPart; /**< The high-order 32 bits. */ /**< The high-order 32 bits. */
+    };
+    struct
+    {
+        ULONG LowPart; /**< The low-order 32 bits. */
+        ULONG HighPart; /**< The high-order 32 bits. */
+    } u;
+    ULONGLONG QuadPart; /**< An unsigned 64-bit integer. */
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
 /**
@@ -778,8 +778,8 @@ typedef struct _OBJECT_ATTRIBUTES
 
 typedef enum _EVENT_TYPE
 {
-	NotificationEvent = 0,
-	SynchronizationEvent
+    NotificationEvent = 0,
+    SynchronizationEvent
 } EVENT_TYPE;
 
 /**
@@ -787,30 +787,30 @@ typedef enum _EVENT_TYPE
  */
 typedef struct _MM_STATISTICS
 {
-	ULONG Length; /**< Length of MM_STATISTICS in bytes */
-	ULONG TotalPhysicalPages;
-	ULONG AvailablePages;
-	ULONG VirtualMemoryBytesCommitted;
-	ULONG VirtualMemoryBytesReserved;
-	ULONG CachePagesCommitted;
-	ULONG PoolPagesCommitted;
-	ULONG StackPagesCommitted;
-	ULONG ImagePagesCommitted;
+    ULONG Length; /**< Length of MM_STATISTICS in bytes */
+    ULONG TotalPhysicalPages;
+    ULONG AvailablePages;
+    ULONG VirtualMemoryBytesCommitted;
+    ULONG VirtualMemoryBytesReserved;
+    ULONG CachePagesCommitted;
+    ULONG PoolPagesCommitted;
+    ULONG StackPagesCommitted;
+    ULONG ImagePagesCommitted;
 } MM_STATISTICS, *PMM_STATISTICS;
 
 typedef struct _LAUNCH_DATA_HEADER
 {
-	DWORD dwLaunchDataType;
-	DWORD dwTitleId;
-	CHAR szLaunchPath[520];
-	DWORD dwFlags;
+    DWORD dwLaunchDataType;
+    DWORD dwTitleId;
+    CHAR szLaunchPath[520];
+    DWORD dwFlags;
 } LAUNCH_DATA_HEADER, *PLAUNCH_DATA_HEADER;
 
 typedef struct _LAUNCH_DATA_PAGE
 {
-	LAUNCH_DATA_HEADER Header;
-	UCHAR Pad[492];
-	UCHAR LaunchData[3072];
+    LAUNCH_DATA_HEADER Header;
+    UCHAR Pad[492];
+    UCHAR LaunchData[3072];
 } LAUNCH_DATA_PAGE, *PLAUNCH_DATA_PAGE;
 
 #define LDT_LAUNCH_DASHBOARD 1
@@ -818,24 +818,24 @@ typedef struct _LAUNCH_DATA_PAGE
 
 typedef struct _DISPATCHER_HEADER
 {
-	UCHAR Type;
-	UCHAR Absolute;
-	UCHAR Size;
-	UCHAR Inserted;
-	LONG SignalState;
-	LIST_ENTRY WaitListHead;
+    UCHAR Type;
+    UCHAR Absolute;
+    UCHAR Size;
+    UCHAR Inserted;
+    LONG SignalState;
+    LIST_ENTRY WaitListHead;
 } DISPATCHER_HEADER;
 
 typedef struct _KDPC
 {
-	CSHORT Type;
-	BOOLEAN Inserted;
-	UCHAR Padding;
-	LIST_ENTRY DpcListEntry;
-	PVOID DeferredRoutine;
-	PVOID DeferredContext;
-	PVOID SystemArgument1;
-	PVOID SystemArgument2;
+    CSHORT Type;
+    BOOLEAN Inserted;
+    UCHAR Padding;
+    LIST_ENTRY DpcListEntry;
+    PVOID DeferredRoutine;
+    PVOID DeferredContext;
+    PVOID SystemArgument1;
+    PVOID SystemArgument2;
 } KDPC, *PKDPC, *RESTRICTED_POINTER PRKDPC;
 
 /**
@@ -844,11 +844,11 @@ typedef struct _KDPC
  */
 typedef struct _KTIMER
 {
-	DISPATCHER_HEADER Header;
-	ULARGE_INTEGER DueTime;
-	LIST_ENTRY TimerListEntry;
-	PKDPC Dpc;
-	LONG Period;
+    DISPATCHER_HEADER Header;
+    ULARGE_INTEGER DueTime;
+    LIST_ENTRY TimerListEntry;
+    PKDPC Dpc;
+    LONG Period;
 } KTIMER, *PKTIMER;
 
 typedef struct _KPROCESS
@@ -916,7 +916,7 @@ typedef struct _KSEMAPHORE
 
 typedef struct _KTHREAD
 {
-	DISPATCHER_HEADER Header;
+    DISPATCHER_HEADER Header;
     LIST_ENTRY MutantListHead;
     ULONG KernelTime;
     PVOID StackBase;
@@ -961,8 +961,8 @@ typedef struct _KTHREAD
 
 typedef enum _TIMER_TYPE
 {
-	NotificationTimer,
-	SynchronizationTimer
+    NotificationTimer,
+    SynchronizationTimer
 } TIMER_TYPE;
 
 typedef struct _KINTERRUPT
@@ -970,7 +970,7 @@ typedef struct _KINTERRUPT
     PVOID ServiceRoutine;
     PVOID ServiceContext;
     ULONG BusInterruptLevel;
-	ULONG Irql;
+    ULONG Irql;
     UCHAR Connected;
     UCHAR ShareVector;
     UCHAR Mode;
@@ -988,12 +988,12 @@ typedef struct _KSYSTEM_TIME
 
 typedef enum _FIRMWARE_REENTRY
 {
-	HalHaltRoutine,
-	HalRebootRoutine,
-	HalQuickRebootRoutine,
-	HalKdRebootRoutine,
-	HalFatalErrorRebootRoutine,
-	HalMaximumRoutine
+    HalHaltRoutine,
+    HalRebootRoutine,
+    HalQuickRebootRoutine,
+    HalKdRebootRoutine,
+    HalFatalErrorRebootRoutine,
+    HalMaximumRoutine
 } FIRMWARE_REENTRY;
 
 typedef struct _XBEIMAGE_SECTION
