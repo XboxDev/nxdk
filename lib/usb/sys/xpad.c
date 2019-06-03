@@ -13,6 +13,8 @@
 #include "../usb_wrapper.h"
 #include "usb/include/config.h"
 
+#include <xboxkrnl/xboxkrnl.h>
+
 // history for the Rising - falling events
 unsigned char xpad_button_history[7];
 
@@ -72,8 +74,8 @@ static void xpad_irq(struct urb *urb, struct pt_regs *regs)
 
 static int GetPadNum(const char* szDevPath)
 {
-	int pos			= strlen(szDevPath) - 3;
-	int portchar	= szDevPath[pos];
+	int pos = (XboxHardwareInfo.Flags & XBOX_HW_FLAG_INTERNAL_USB_HUB) ? 2 : 0;
+	int portchar = szDevPath[pos];
 
 	switch(portchar)
 	{
