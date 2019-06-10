@@ -122,19 +122,21 @@ low_level_init(struct netif *netif)
 
   /* Do whatever else is needed to initialize interface. */
 
+  // This is a temporary buffer, independent of hardware; cache is fine
   g_rx_buffer=(unsigned char *)MmAllocateContiguousMemoryEx(
       1520,
       0,    //lowest acceptable
       0xFFFFFFFF, //highest acceptable
       0,      //no need to align to specific boundaries multiple
-      4);   //non cached, non ordered
+      PAGE_READWRITE);
 
+  // This will be passed to the hardware, so it must be uncached
   g_tx_buffer=(unsigned char *)MmAllocateContiguousMemoryEx(
       1520,
       0,    //lowest acceptable
       0xFFFFFFFF, //highest acceptable
       0,      //no need to align to specific boundaries multiple
-      4);   //non cached, non ordered
+      PAGE_READWRITE | PAGE_NOCACHE);
 
   if (!g_rx_buffer || !g_tx_buffer)
   {
