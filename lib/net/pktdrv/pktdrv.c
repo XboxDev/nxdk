@@ -352,29 +352,6 @@ enum {
 
 
 
-typedef enum _MEMORY_CACHING_TYPE_ORIG {
-    MmFrameBufferCached = 2
-} MEMORY_CACHING_TYPE_ORIG;
-
-typedef enum _MEMORY_CACHING_TYPE {
-    MmNonCached = 0,
-    MmCached = 1,
-    MmWriteCombined = MmFrameBufferCached,
-    MmHardwareCoherentCached,
-    MmNonCachedUnordered,       // IA64
-    MmUSWCCached,
-    MmMaximumCacheType
-} MEMORY_CACHING_TYPE;
-/*
-	MmNonCached : The requested memory should not be cached by the processor. 
-	MmCached : The processor should cache the requested memory. 
-	MmWriteCombined : The requested memory should not be cached by the processor, 
-	 but writes to the memory can be combined by the processor. 
-*/
-
-
-
-
 //Checks for possible received packets
 static int PktdrvRecvInterrupt(void)
 {
@@ -775,14 +752,14 @@ int Pktdrv_Init(void)
 		0,		//lowest acceptable
 		0x10000,	//highest acceptable
 		0,  		//no need to align to specific boundaries multiple
-		MmNonCachedUnordered);	//4
+		PAGE_READWRITE | PAGE_NOCACHE);
 	if (!buffers_addr)
 		buffers_addr=(ULONG)MmAllocateContiguousMemoryEx(
 			buffers_total_size,
 			0,		//lowest acceptable
 			0xFFFFFFFF,	//highest acceptable
 			0,  		//no need to align to specific boundaries multiple
-			MmNonCachedUnordered);	//4
+			PAGE_READWRITE | PAGE_NOCACHE);
 	if (!buffers_addr) 
 	{
 		debugPrint("Can't allocate DMA reception buffers\n");
