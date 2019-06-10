@@ -296,6 +296,24 @@ void translate(const char* str)
 
 //     printf("num_instructions: %u\n", num_instructions);
 
+    const char* cur = str;
+    const char* end = &str[strlen(str) - 1];
+    while(cur < end) {
+
+        const char* lf = strchr(cur + 1, '\n');
+        const char* cr = strchr(cur + 1, '\r');
+        if (lf == NULL) { lf = end; }
+        if (cr == NULL) { cr = end; }
+        const char* line_end = (lf < cr ? lf : cr) + 1;
+
+        if (*cur == '#') {
+            printf("//%.*s\n", line_end - &cur[1] - 1, &cur[1]);
+        }
+
+        cur = line_end;
+
+    }
+
     uint32_t vsh_buf[136*4];
     memset(vsh_buf, 0, sizeof(vsh_buf));
 
