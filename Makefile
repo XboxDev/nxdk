@@ -58,8 +58,8 @@ NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
 NXDK_CXXFLAGS = $(NXDK_CFLAGS)
 
 ifeq ($(DEBUG),y)
-NXDK_CFLAGS += -g
-NXDK_CXXFLAGS += -g
+NXDK_CFLAGS += -g -gdwarf-4
+NXDK_CXXFLAGS += -g -gdwarf-4
 LDFLAGS += -debug
 endif
 
