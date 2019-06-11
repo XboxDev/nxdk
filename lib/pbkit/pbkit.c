@@ -3569,13 +3569,13 @@ int pb_init(void)
 
     pb_DSSize=Size;
 
-    //multiply size by number of physical frame buffers in order to obtain global size
-    DSSize=Size*FrameBufferCount;
+    // We use one shared depthbuffer
+    DSSize=Size;
 
     //Huge alignment enforcement (16 Kb aligned!) for the global size
     DSSize=(DSSize+0x3FFF)&0xFFFFC000;
 
-    DSAddr=(DWORD)MmAllocateContiguousMemoryEx(FBSize,0,0x03FFB000,0x4000,0x404);
+    DSAddr=(DWORD)MmAllocateContiguousMemoryEx(DSSize,0,0x03FFB000,0x4000,0x404);
         //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment OPTIONAL,ProtectionType
 
     pb_DepthStencilAddr=DSAddr;
