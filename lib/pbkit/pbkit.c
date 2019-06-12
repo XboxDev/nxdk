@@ -1839,101 +1839,16 @@ void pb_target_back_buffer(void)
     DWORD           height;
     DWORD           pitch;
     DWORD           pitch_depth_stencil;
-
-    DWORD           dma_flags;
-    DWORD           dma_addr;
-    DWORD           dma_limit;
-
-    int         flag;
-    int         depth_stencil;
     
     width=pb_FrameBuffersWidth;
     height=pb_FrameBuffersHeight;
     pitch=pb_FrameBuffersPitch;
     pitch_depth_stencil=pb_DepthStencilPitch;
 
-    //DMA channel 9 is used by GPU in order to render pixels
-    dma_addr=pb_FBAddr[pb_back_index]&0x03FFFFFF;
-    dma_limit=height*pitch-1; //(last byte)
-    dma_flags=DMA_CLASS_3D|0x0000B000;
-    dma_addr|=3;
-
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9); p+=2;
-    pb_end(p);
-
-    //DMA channel 11 is used by GPU in order to bitblt images
-    dma_addr=pb_FBAddr[pb_back_index]&0x03FFFFFF;
-    dma_limit=height*pitch-1; //(last byte)
-    dma_flags=DMA_CLASS_3D|0x0000B000;
-    dma_addr|=3;
-    
-    p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
-    pb_end(p);
-
-    depth_stencil=1;
-
-    if (depth_stencil!=-1) //don't care
-    if (pb_DepthStencilLast!=depth_stencil) //changed?
-    {
-        //DMA channel 10 is used by GPU in order to render depth stencil
-        if (depth_stencil)
-        {
-            dma_addr=pb_DSAddr&0x03FFFFFF;
-            dma_limit=height*pitch_depth_stencil-1; //(last byte)
-            dma_flags=DMA_CLASS_3D|0x0000B000;
-            dma_addr|=3;
-            flag=1;
-        }
-        else
-        {
-            dma_addr=0;
-            dma_limit=0;
-            dma_flags=DMA_CLASS_3D|0x0000B000;
-            dma_addr|=3;
-            flag=0;
-            pitch_depth_stencil=pitch;
-        }
-        
-        p=pb_begin();
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); p+=2; //ZEnable=TRUE or FALSE (But don't use W, see below)
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1); p+=2;   //StencilEnable=TRUE
-        pb_end(p);
-
-        pb_DepthStencilLast=depth_stencil;
-    }
-
-    p=pb_begin();
-    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0); p+=4;
+    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),
+        /* NV20_TCL_PRIMITIVE_3D_COLOR_OFFSET */ pb_FBAddr[pb_back_index]&0x03FFFFFF,
+        /* NV20_TCL_PRIMITIVE_3D_DEPTH_OFFSET */ pb_DSAddr&0x03FFFFFF); p+=4;
     pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16); p+=3;
     //Default (0x00100001)
     //We use W (0x00010000)
@@ -1954,13 +1869,6 @@ void pb_target_extra_buffer(int index_buffer)
     DWORD           pitch;
     DWORD           pitch_depth_stencil;
 
-    DWORD           dma_flags;
-    DWORD           dma_addr;
-    DWORD           dma_limit;
-
-    int         flag;
-    int         depth_stencil;
-
     if (index_buffer>=pb_ExtraBuffersCount)
     {
         debugPrint("pb_target_extra_buffer: buffer index out of range\n");
@@ -1972,88 +1880,10 @@ void pb_target_extra_buffer(int index_buffer)
     pitch=pb_FrameBuffersPitch;
     pitch_depth_stencil=pb_DepthStencilPitch;
 
-    //DMA channel 9 is used by GPU in order to render pixels
-    dma_addr=pb_EXAddr[index_buffer]&0x03FFFFFF;
-    dma_limit=height*pitch-1; //(last byte)
-    dma_flags=DMA_CLASS_3D|0x0000B000;
-    dma_addr|=3;
-
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9); p+=2;
-    pb_end(p);
-
-    //DMA channel 11 is used by GPU in order to bitblt images
-    dma_addr=pb_EXAddr[index_buffer]&0x03FFFFFF;
-    dma_limit=height*pitch-1; //(last byte)
-    dma_flags=DMA_CLASS_3D|0x0000B000;
-    dma_addr|=3;
-
-    p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
-    pb_end(p);
-    
-    depth_stencil=1;
-    
-    if (depth_stencil!=-1) //don't care
-    if (pb_DepthStencilLast!=depth_stencil) //changed?
-    {
-        //DMA channel 10 is used by GPU in order to render depth stencil
-        if (depth_stencil)
-        {
-            dma_addr=pb_DSAddr&0x03FFFFFF;
-            dma_limit=height*pitch_depth_stencil-1; //(last byte)
-            dma_flags=DMA_CLASS_3D|0x0000B000;
-            dma_addr|=3;
-            flag=1;
-        }
-        else
-        {
-            dma_addr=0;
-            dma_limit=0;
-            dma_flags=DMA_CLASS_3D|0x0000B000;
-            dma_addr|=3;
-            flag=0;
-            pitch_depth_stencil=pitch;
-        }
-        
-        p=pb_begin();
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); p+=2; //ZEnable=TRUE or FALSE (But don't use W, see below)
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1); p+=2;   //StencilEnable=TRUE
-        pb_end(p);
-
-        pb_DepthStencilLast=depth_stencil;
-    }
-
-    p=pb_begin();
-    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0); p+=4;
+    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),
+        /* NV20_TCL_PRIMITIVE_3D_COLOR_OFFSET */ pb_EXAddr[index_buffer]&0x03FFFFFF,
+        /* NV20_TCL_PRIMITIVE_3D_DEPTH_OFFSET */ pb_DSAddr&0x03FFFFFF); p+=4;
     pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16); p+=3;
     //Default (0x00100001)
     //We use W (0x00010000)
