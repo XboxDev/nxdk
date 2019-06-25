@@ -49,9 +49,9 @@ In a MSYS2 MinGW64 Shell, run:
     git submodule update --recursive
 
 ### Build Samples
-To build the 0ldskoo1 sample, you can run:
+To build the mesh sample, you can run:
 
-    cd samples/0ldskoo1
+    cd samples/mesh
     make
 
 This will generate a single executable, default.xbe, in the bin/ directory which
@@ -85,7 +85,7 @@ You can include additional files in the ISO (they must reside in the output
 
 For easy ISO generation, you can also just define it when you run `make`:
 
-    make -C samples/0ldskoo1 GEN_XISO=0ldskoo1.iso
+    make -C samples/mesh GEN_XISO=mesh.iso
 
 Next Steps
 ----------
