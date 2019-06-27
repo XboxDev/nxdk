@@ -2,6 +2,8 @@
 #include <hal/xbox.h>
 #include <hal/video.h>
 #include <string.h>
+#include <assert.h>
+#include <stdbool.h>
 
 
 // Registers
@@ -26,8 +28,9 @@
 #define VIDEO_REGION_PAL			0x00000300
 
 // Defines for pixel formats
-#define VIDEO_BPP_16				0x00000011
-#define VIDEO_BPP_32				0x00000012
+#define VIDEO_A1R5G5B5				0x00000010
+#define VIDEO_R5G6B5				0x00000011
+#define VIDEO_A8R8G8B8				0x00000012
 
 
 unsigned char*	_fb;
@@ -259,15 +262,32 @@ VIDEO_MODE XVideoGetMode(void)
 void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 {
 	ULONG Step = 0;
-	DWORD dwFormat = (bpp == 32) ? VIDEO_BPP_32 : VIDEO_BPP_16;
-	int screenSize = width * height * (bpp/8);
+	DWORD dwFormat = 0;
+	int bytesPerPixel = (bpp+7)/8;
+	int pitch = width * bytesPerPixel;
+	int screenSize = pitch * height;
+
+	switch(bpp) {
+	case 15:
+		dwFormat = VIDEO_A1R5G5B5;
+		break;
+	case 16:
+		dwFormat = VIDEO_R5G6B5;
+		break;
+	case 32:
+		dwFormat = VIDEO_A8R8G8B8;
+		break;
+	default:
+		assert(false);
+		break;
+	}
 
 	XVideoSetVideoEnable(FALSE);
 
 	do
 	{
 		Step = AvSetDisplayMode((PVOID)VIDEO_BASE, Step, 
-			dwMode, dwFormat, width*(bpp/8), VIDEO_FRAMEBUFFER);
+			dwMode, dwFormat, pitch, VIDEO_FRAMEBUFFER);
 	} while(Step);
 
 	XVideoSetFlickerFilter(5);
@@ -291,7 +311,7 @@ BOOL XVideoSetMode(int width, int height, int bpp, int refresh)
 	DWORD dwAdapter		= dwEnc & 0x000000FF;
 	DWORD dwStandard	= dwEnc & 0x0000FF00;
 
-	if(bpp != 16 && bpp != 32)
+	if(bpp != 15 && bpp != 16 && bpp != 32)
 		bpp = 32;
 
 	if(refresh > 0)
