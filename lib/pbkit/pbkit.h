@@ -21,6 +21,9 @@ extern "C"
 #endif
 
 #include <xboxkrnl/xboxkrnl.h>
+#if !defined(__cplusplus)
+#include <stdbool.h>
+#endif
 
 #include "outer.h"
 #include "nv_objects.h"
@@ -89,6 +92,7 @@ void    pb_end(DWORD *pEnd);    //end a block with this (triggers the data sendi
 
 void    pb_extra_buffers(int n);//requests additional back buffers (default is 0) (call it before pb_init)
 void    pb_size(DWORD size);    //sets push buffer size (default is 512Kb) (call it before pb_init)
+void    pb_set_color_format(unsigned int fmt, bool swizzled); // sets color surface format (call it before pb_init)
 int     pb_init(void);      //returns 0 if everything went well (starts Dma engine)
 void    pb_kill(void);      //stops Dma engine and releases push buffer
 
