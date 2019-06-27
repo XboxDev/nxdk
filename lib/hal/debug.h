@@ -19,6 +19,9 @@ extern "C"
 #define WHITE_16BPP   0xFFFF
 #define BLACK_16BPP  0x0000
 
+#define WHITE_15BPP   0x7FFF
+#define BLACK_15BPP  0x0000
+
 /**
  * Prints a message to whatever debug facilities might
  * be available.
