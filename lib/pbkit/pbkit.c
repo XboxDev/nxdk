@@ -20,6 +20,8 @@
 #include <hal/io.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/debug.h>
+#include <stdbool.h>
+#include <assert.h>
 
 #include "pbkit.h"
 #include "outer.h"
@@ -79,6 +81,8 @@ struct s_CtxDma
     DWORD               isGr;
 };
 
+static unsigned int pb_ColorFmt = NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8;
+static unsigned int pb_DepthFmt = NV097_SET_SURFACE_FORMAT_ZETA_Z24S8;
 
 static  int         pb_running=0;
 
@@ -2544,9 +2548,22 @@ void pb_fill(int x, int y, int w, int h, DWORD color)
     y1=y;
     x2=x+w;
     y2=y+h;
-    
-    //if you supply 32 bits color and res is 16 bits, apply function below
-    //color=((color>>8)&0xF800)|((color>>5)&0x07E0)|((color>>3)&0x001F);
+
+    switch(pb_ColorFmt) {
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_Z1R5G5B5:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_O1R5G5B5:
+        color=((color>>16)&0x8000)|((color>>7)&0x7C00)|((color>>5)&0x03E0)|((color>>3)&0x001F);
+        break;
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_R5G6B5:
+        color=((color>>8)&0xF800)|((color>>5)&0x07E0)|((color>>3)&0x001F);
+        break;
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8:
+        // Nothing to do, input is A8R8G8B8
+        break;
+    default:
+        assert(false);
+        break;
+    }
 
     p=pb_begin();
     pb_push(p++,NV20_TCL_PRIMITIVE_3D_CLEAR_VALUE_HORIZ,2);     //sets rectangle coordinates
@@ -2761,7 +2778,10 @@ void pb_kill(void)
 }
 
 
-
+void pb_set_color_format(unsigned int fmt, bool swizzled) {
+    pb_ColorFmt = fmt;
+    assert(swizzled == false);
+}
 
 int pb_init(void)
 {
@@ -3450,9 +3470,44 @@ int pb_init(void)
     pb_DepthStencilLast=-2;
 
     vm=XVideoGetMode();
-    if (vm.bpp==32) pb_GPUFrameBuffersFormat=0x128;//A8R8G8B8
-    else pb_GPUFrameBuffersFormat=0x113;        //R5G6B5 (0x123 if D24S8 used, bpp 16 untested)
-    pb_ZScale=16777215.0f;              //D24S8
+
+    int ColorBpp = 0;
+    switch(pb_ColorFmt) {
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_Z1R5G5B5:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_O1R5G5B5:
+        assert(vm.bpp == 15);
+        // The effective width, due to padding, is still 16 bpp
+        ColorBpp = 16;
+        break;
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_R5G6B5:
+        assert(vm.bpp == 16);
+        ColorBpp = 16;
+        break;
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X8R8G8B8_Z8R8G8B8:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X8R8G8B8_O8R8G8B8:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1A7R8G8B8_Z1A7R8G8B8:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1A7R8G8B8_O1A7R8G8B8:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8:
+        assert(vm.bpp == 32);
+        ColorBpp = 32;
+        break;
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_B8:
+    case NV097_SET_SURFACE_FORMAT_COLOR_LE_G8B8:
+        // These formats aren't suitable for display framebuffers
+        assert(false);
+        break;
+    default:
+        assert(false);
+        break;
+    }
+
+    int DepthBpp = 32;
+    assert(pb_DepthFmt == NV097_SET_SURFACE_FORMAT_ZETA_Z24S8);
+    pb_ZScale = (float)0xFFFFFF;
+
+    // Activate pitched surface with chosen format
+    pb_GPUFrameBuffersFormat = 0x100 | (pb_DepthFmt << 4) | pb_ColorFmt;
+
     Width=vm.width;
     Height=vm.height;
 
@@ -3476,7 +3531,7 @@ int pb_init(void)
     //pitch is the gap between start of a pixel line and start of next pixel line
     //(not necessarily the size of a pixel line, because of hardware optimization)
 
-    Pitch=(((vm.bpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
+    Pitch=(((ColorBpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
     pb_FrameBuffersPitch=Pitch;
 
     //look for a standard listed pitch value greater or equal to theoretical one
@@ -3549,7 +3604,7 @@ int pb_init(void)
     //pitch is the gap between start of a pixel line and start of next pixel line
     //(not necessarily the size of a pixel line, because of hardware optimization)
 
-    Pitch=(((vm.bpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
+    Pitch=(((DepthBpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
     pb_DepthStencilPitch=Pitch;
 
     //look for a standard listed pitch value greater or equal to theoretical one
@@ -3604,7 +3659,7 @@ int pb_init(void)
         //pitch is the gap between start of a pixel line and start of next pixel line
         //(not necessarily the size of a pixel line, because of hardware optimization)
 
-        Pitch=(((vm.bpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
+        Pitch=(((ColorBpp*HSize)>>3)+0x3F)&0xFFFFFFC0; //64 units aligned
 
         //look for a standard listed pitch value greater or equal to theoretical one
         for(i=0;i<16;i++)
