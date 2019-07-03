@@ -209,7 +209,11 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	
 	DWORD dwAdapter = dwEnc & 0x000000FF;
 	DWORD dwStandard = dwEnc & 0x0000FF00;
-	
+
+	bool allow_480p = dwEnc & VIDEO_MODE_480P;
+	bool allow_720p = dwEnc & VIDEO_MODE_720P;
+	bool allow_1080i = dwEnc & VIDEO_MODE_1080I;
+
 	VIDEO_MODE_SETTING *pVidMode;
 	if (bpp == 0)
 	{
@@ -238,6 +242,27 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 		if(pVidMode->refresh != refresh)
 			continue;
 
+		if(dwAdapter == AV_PACK_HDTV)
+		{
+			bool is_hd = pVidMode->dwMode & 0x80000000;
+
+			/* If 480p support is enabled, reject 480i modes
+			   (forces a 480p mode to be picked) */
+			if(allow_480p && (pVidMode->height == 480 && !is_hd))
+				continue;
+
+			/* If 480p support is disabled, reject those modes */
+			if(!allow_480p && (pVidMode->height == 480 && is_hd))
+				continue;
+
+			/* If 720p support is disabled, reject those modes */
+			if(!allow_720p && (pVidMode->height == 720 && is_hd))
+				continue;
+
+			/* If 1080i support is disabled, reject those modes */
+			if(!allow_1080i && (pVidMode->height == 1080 && is_hd))
+				continue;
+		}
 		break;
 	}
 	
