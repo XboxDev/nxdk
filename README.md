@@ -20,27 +20,7 @@ You will need the following tools:
 - [lld](http://lld.llvm.org/)
 - [Git](http://git-scm.com/)
 
-#### OS X
-On OS X with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
-
-    brew install llvm --with-lld --with-clang
-
-#### Linux (Ubuntu)
-
-    sudo apt-get install build-essential flex bison clang git
-
-Then install lld from an [LLVM nightly package](http://apt.llvm.org/)
-
-#### Windows
-Install [MSYS2](http://www.msys2.org/)
-
-In a MSYS2 MinGW64 Shell, run:
-
-    pacman -S make git bison flex mingw-w64-x86_64-gcc mingw-w64-x86_64-llvm \
-    mingw-w64-x86_64-clang mingw-w64-x86_64-lld
-
-> Using a regular MSYS2 shell will fail later on as the required building system is not
-> supported there.
+OS-specific instructions for installing these prerequisites can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Install-the-Prerequisites)
 
 ### Download nxdk
     git clone https://github.com/xqemu/nxdk.git
@@ -49,43 +29,7 @@ In a MSYS2 MinGW64 Shell, run:
     git submodule update --recursive
 
 ### Build Samples
-To build the mesh sample, you can run:
-
-    cd samples/mesh
-    make
-
-This will generate a single executable, default.xbe, in the bin/ directory which
-can be executed on your Xbox (or XQEMU emulator).
-
-### Generate XISO
-To generate an ISO file that can be burned to a disc, or passed to the XQEMU
-emulator via the `-drive index=1,media=cdrom,file=/path/to/your.iso` parameter,
-define the `GEN_XISO` variable with the name of the ISO to be created in your
-project Makefile. For example:
-
-    GEN_XISO=$(XBE_TITLE).iso
-
-You can include additional files in the ISO (they must reside in the output
- directory) like this:
-
-    ...
-    ISO_DEPS = $(OUTPUT_DIR)/example.txt
-    GEN_XISO = $(XBE_TITLE).iso
-
-    include $(NXDK_DIR)/Makefile
-
-    $(GEN_XISO): $(ISO_DEPS)
-    $(OUTPUT_DIR)/example.txt:
-        echo "Hello" > $@
-
-    clean: clean_iso_deps
-    .PHONY: clean_iso_deps
-    clean_iso_deps:
-        rm -f $(ISO_DEPS)
-
-For easy ISO generation, you can also just define it when you run `make`:
-
-    make -C samples/mesh GEN_XISO=mesh.iso
+Samples are easily built by running the Makefile in one of the sample directories. Details can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Build-a-Sample). nxdk also supports automatic [creation of ISO files](https://github.com/XboxDev/nxdk/wiki/Create-an-XISO).
 
 Next Steps
 ----------
@@ -97,7 +41,9 @@ Credits
 -------
 - [OpenXDK](https://web.archive.org/web/20170624051336/http://openxdk.sourceforge.net:80/) is the inspiration for nxdk, and large parts of it have been reused. (License: GPLv2)
 - Large parts of [pbkit](http://forums.xbox-scene.com/index.php?/topic/573524-pbkit), by openxdkman, are included, with modifications. (License: LGPL)
-- A very barebones libc is included based on [lib43](https://github.com/lunixbochs/lib43) (License: MIT)
+- A network stack is included based on [lwIP](http://savannah.nongnu.org/projects/lwip/) (License: Modified BSD)
+- A libc is included based on [PDCLib](https://github.com/DevSolar/pdclib) (License: CC0)
+- Large parts of the runtime library are derived from LLVM's [compiler-rt](https://compiler-rt.llvm.org/) library (License: MIT)
 - vp20compiler is based on nvvertparse.c from [Mesa](http://www.mesa3d.org/) (License: MIT)
 - fp20compiler is based on nvparse from the [NVIDIA SDK 9.52](https://www.nvidia.com/object/sdk-9.html).
 - The [NVIDIA Cg compiler](https://developer.nvidia.com/cg-toolkit) is bundled.
@@ -105,14 +51,18 @@ Credits
 
 Code Overview
 -------------
-* `lib/hal/` - Barebones Hardware Abstraction Layer for the Xbox, from OpenXDK.
-* `lib/pbkit/` - A low level library for interfacing with the Xbox GPU.
-* `lib/usb/` - USB support from OpenXDK. Hacked together parts of an old Linux OHCI stack.
-* `lib/xboxkrnl` - Stubs and import library for the interfacing with the Xbox kernel.
-* `lib/xboxrt` - A very simple libc implementation.
+* `lib/hal` - Barebones Hardware Abstraction Layer for the Xbox, from OpenXDK.
+* `lib/net` - Network stack for the Xbox based on lwIP.
+* `lib/pdclib` - Xbox port of PDCLib, a CC0-licensed C standard library.
+* `lib/pbkit` - A low level library for interfacing with the Xbox GPU.
+* `lib/sdl` - Xbox ports of SDL2 and SDL_ttf.
+* `lib/usb` - USB support from OpenXDK. Hacked together parts of an old Linux OHCI stack.
+* `lib/winapi` - Xbox specific implementations of common useful WinAPI-functions.
+* `lib/xboxkrnl` - Header and import library for interfacing with the Xbox kernel.
+* `lib/xboxrt` - Miscellaneous functionality for debugging etc.
+* `lib/xlibc-rt` - Implementations of supportive functions required at runtime.
 * `tools/cxbe` - Simple converter for PE executables to the Xbox executable format, from OpenXDK.
 * `tools/fp20compiler` - Translates register combiner descriptions to Xbox pushbuffer commands.
 * `tools/vp20compiler` - Translates vertex program assembly to Xbox microcode.
 * `tools/extract-xiso` - Generates and extracts ISO images compatible with the Xbox (and XQEMU).
 * `samples/` - Sample applications to get started.
-
