@@ -290,15 +290,6 @@ typedef struct _TIME_FIELDS
     SHORT Weekday; /**< Specifies a value from 0 to 6 (Sunday to Saturday) */
 } TIME_FIELDS, *PTIME_FIELDS;
 
-typedef struct _OVERLAPPED
-{
-    ULONG_PTR Internal;
-    ULONG_PTR InternalHigh;
-    DWORD Offset;
-    DWORD OffsetHigh;
-    HANDLE hEvent;
-} OVERLAPPED, *LPOVERLAPPED;
-
 typedef enum _WAIT_TYPE
 {
     WaitAll = 0,
