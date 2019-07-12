@@ -47,6 +47,9 @@ extern "C"
 
 typedef LONG NTSTATUS;
 #define NT_SUCCESS(Status) ((NTSTATUS)(Status) >= 0)
+#define NT_INFORMATION(Status) ((((ULONG)(Status)) >> 30) == 1)
+#define NT_WARNING(Status) ((((ULONG)(Status)) >> 30) == 2)
+#define NT_ERROR(Status) ((((ULONG)(Status)) >> 30) == 3)
 #define STATUS_SUCCESS ((NTSTATUS)0x00000000L)
 #define STATUS_INVALID_PARAMETER ((NTSTATUS)0xC000000DL)
 #define STATUS_INVALID_HANDLE ((NTSTATUS)0xC0000008L)
