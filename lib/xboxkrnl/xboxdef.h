@@ -28,6 +28,9 @@ typedef unsigned int SIZE_T, *PSIZE_T;
 typedef int BOOL, *PBOOL;
 typedef const char *PCSZ, *PCSTR, *LPCSTR;
 
+typedef ULONG ULONG_PTR;
+typedef LONG LONG_PTR;
+
 typedef struct _STRING {
     USHORT Length;
     USHORT MaximumLength;
