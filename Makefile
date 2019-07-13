@@ -44,7 +44,7 @@ TARGET       = $(OUTPUT_DIR)/default.xbe
 CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
 VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
 FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
-EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/extract-xiso
+EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/build/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
@@ -163,7 +163,10 @@ $(FP20COMPILER):
 extract-xiso: $(EXTRACT_XISO)
 $(EXTRACT_XISO):
 	@echo "[ BUILD    ] $@"
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso $(QUIET)
+	$(VE)(mkdir $(NXDK_DIR)/tools/extract-xiso/build; \
+	cd $(NXDK_DIR)/tools/extract-xiso/build && \
+	cmake -G "Unix Makefiles" .. $(QUIET) && \
+	$(MAKE) $(QUIET))
 
 .PHONY: clean 
 clean:
@@ -174,7 +177,7 @@ clean:
 
 .PHONY: distclean 
 distclean: clean
-	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/extract-xiso clean $(QUIET)
+	$(VE)rm -rf $(NXDK_DIR)/tools/extract-xiso/build
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(QUIET)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(QUIET)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(QUIET)

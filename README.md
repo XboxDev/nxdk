@@ -19,6 +19,7 @@ You will need the following tools:
 - [GNU bison](https://www.gnu.org/software/bison/) and [flex](http://flex.sourceforge.net/)
 - [lld](http://lld.llvm.org/)
 - [Git](http://git-scm.com/)
+- [CMake](https://cmake.org/)
 
 OS-specific instructions for installing these prerequisites can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Install-the-Prerequisites)
 
