@@ -65,6 +65,7 @@ int XConvertDOSFilenameToXBOX(
 	const char *dosFilename,
 	char *xboxFilename);
 
+__attribute__((deprecated))
 int XCreateFile(
 	int *handle,
 	const char *filename,
@@ -73,41 +74,50 @@ int XCreateFile(
 	unsigned int creationDisposition,
 	unsigned int flagsAndAttributes);
 
+__attribute__((deprecated))
 int XReadFile(
 	int handle,
 	void *buffer,
 	unsigned int numberOfBytesToRead,
 	unsigned int *numberOfBytesRead);
 
+__attribute__((deprecated))
 int XWriteFile(
 	int handle,
 	void *buffer,
 	unsigned int numberOfBytesToWrite,
 	unsigned int *numberOfBytesWritten);
 
+__attribute__((deprecated))
 int XCloseHandle(
 	int handle);
 
+__attribute__((deprecated))
 int XGetFileSize(
 	int handle,
 	unsigned int *filesize);
 
+__attribute__((deprecated))
 int XSetFilePointer(
 	int handle,
 	int distanceToMove,
 	int *newFilePointer,
 	int moveMethod);
 
+__attribute__((deprecated))
 int XRenameFile(
 	const char *oldFilename,
 	const char *newFilename);
 
+__attribute__((deprecated))
 int XCreateDirectory(
 	char *directoryName);
 
+__attribute__((deprecated))
 int XDeleteFile(
 	const char *fileName);
 
+__attribute__((deprecated))
 int XDeleteDirectory(
 	const char *directoryName);
 
