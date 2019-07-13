@@ -239,44 +239,6 @@ typedef struct _RTL_CRITICAL_SECTION
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
 /**
- * MS's way to represent a 64-bit signed int on platforms that may not support
- * them directly.
- */
-typedef union _LARGE_INTEGER
-{
-    struct
-    {
-        ULONG LowPart; /**< The low-order 32 bits. */
-        LONG HighPart; /**< The high-order 32 bits. */
-    };
-    struct
-    {
-        ULONG LowPart; /**< The low-order 32 bits. */
-        LONG HighPart; /**< The high-order 32 bits. */
-    } u;
-    LONGLONG QuadPart; /**< A signed 64-bit integer. */
-} LARGE_INTEGER, *PLARGE_INTEGER;
-
-/**
- * MS's way to represent a 64-bit unsigned int on platforms that may not support
- * them directly.
- */
-typedef union _ULARGE_INTEGER
-{
-    struct
-    {
-        ULONG LowPart; /**< The low-order 32 bits. */
-        ULONG HighPart; /**< The high-order 32 bits. */ /**< The high-order 32 bits. */
-    };
-    struct
-    {
-        ULONG LowPart; /**< The low-order 32 bits. */
-        ULONG HighPart; /**< The high-order 32 bits. */
-    } u;
-    ULONGLONG QuadPart; /**< An unsigned 64-bit integer. */
-} ULARGE_INTEGER, *PULARGE_INTEGER;
-
-/**
  * Time information
  */
 typedef struct _TIME_FIELDS
