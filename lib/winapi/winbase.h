@@ -12,6 +12,11 @@ extern "C"
 
 #define INVALID_HANDLE_VALUE ((HANDLE)-1)
 
+#define FILE_BEGIN 0
+#define FILE_CURRENT 1
+#define FILE_END 2
+#define INVALID_SET_FILE_POINTER ((DWORD)-1)
+
 typedef struct _WIN32_FIND_DATAA {
     DWORD dwFileAttributes;
     FILETIME ftCreationTime;

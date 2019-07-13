@@ -1,5 +1,7 @@
 #include <fileapi.h>
+#include <hal/winerror.h>
 #include <assert.h>
+#include <stdbool.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 BOOL ReadFile (HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
@@ -68,5 +70,75 @@ BOOL WriteFile (HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
         }
         SetLastError(RtlNtStatusToDosError(status));
         return FALSE;
+    }
+}
+
+DWORD SetFilePointer (HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_POSITION_INFORMATION positionInfo;
+    LARGE_INTEGER distance;
+
+    if (lpDistanceToMoveHigh) {
+        distance.HighPart = *lpDistanceToMoveHigh;
+        distance.LowPart = lDistanceToMove;
+    } else {
+        distance.QuadPart = lDistanceToMove;
+    }
+
+    switch (dwMoveMethod) {
+        default:
+            assert(false);
+        case FILE_BEGIN:
+            positionInfo.CurrentByteOffset = distance;
+            break;
+        case FILE_CURRENT:
+            status = NtQueryInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
+
+            if (!NT_SUCCESS(status)) {
+                SetLastError(RtlNtStatusToDosError(status));
+                return INVALID_SET_FILE_POINTER;
+            }
+
+            positionInfo.CurrentByteOffset.QuadPart += distance.QuadPart;
+            break;
+        case FILE_END:
+            FILE_NETWORK_OPEN_INFORMATION networkInfo;
+
+            status = NtQueryInformationFile(hFile, &ioStatusBlock, &networkInfo, sizeof(networkInfo), FileNetworkOpenInformation);
+
+            if (!NT_SUCCESS(status)) {
+                SetLastError(RtlNtStatusToDosError(status));
+                return INVALID_SET_FILE_POINTER;
+            }
+
+            positionInfo.CurrentByteOffset.QuadPart = networkInfo.EndOfFile.QuadPart + distance.QuadPart;
+            break;
+    }
+
+    // check for negative file pointer position
+    if (positionInfo.CurrentByteOffset.QuadPart < 0) {
+        SetLastError(ERROR_NEGATIVE_SEEK);
+        return INVALID_SET_FILE_POINTER;
+    }
+
+    // we're limited to 32-bit if lpDistanceToMoveHigh is not present
+    if (!lpDistanceToMoveHigh && positionInfo.CurrentByteOffset.HighPart != 0) {
+        // docs aren't clear which error has to be set in this case, so we just do what ReactOS does
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return INVALID_SET_FILE_POINTER;
+    }
+
+    status = NtSetInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
+
+    if (NT_SUCCESS(status)) {
+        if (lpDistanceToMoveHigh) {
+            *lpDistanceToMoveHigh = positionInfo.CurrentByteOffset.HighPart;
+        }
+        return positionInfo.CurrentByteOffset.LowPart;
+    } else {
+        SetLastError(RtlNtStatusToDosError(status));
+        return INVALID_SET_FILE_POINTER;
     }
 }
