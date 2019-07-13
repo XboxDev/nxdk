@@ -19,6 +19,7 @@ You will need the following tools:
 - [GNU bison](https://www.gnu.org/software/bison/) and [flex](http://flex.sourceforge.net/)
 - [lld](http://lld.llvm.org/)
 - [Git](http://git-scm.com/)
+- [CMake](https://cmake.org/)
 
 #### OS X
 On OS X with [Homebrew](http://brew.sh/), this should do the job (XCode ships with make and bison and flex):
