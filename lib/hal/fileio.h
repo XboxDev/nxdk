@@ -50,11 +50,6 @@ extern "C"
 #define FILE_ATTRIBUTE_VALID_FLAGS              0x00007fb7
 #define FILE_ATTRIBUTE_VALID_SET_FLAGS          0x000031a7
 
-// moveMethods for XSetFilePointer
-#define	FILE_BEGIN                              0x00000000
-#define	FILE_CURRENT                            0x00000001
-#define	FILE_END                                0x00000002
-
 typedef struct _XBOX_FIND_DATA
 {
   unsigned int dwFileAttributes;
