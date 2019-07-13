@@ -142,3 +142,57 @@ DWORD SetFilePointer (HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMove
         return INVALID_SET_FILE_POINTER;
     }
 }
+
+BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_POSITION_INFORMATION positionInfo;
+
+    switch (dwMoveMethod) {
+        default:
+            assert(false);
+        case FILE_BEGIN:
+            positionInfo.CurrentByteOffset = liDistanceToMove;
+            break;
+        case FILE_CURRENT:
+            status = NtQueryInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
+
+            if(!NT_SUCCESS(status)) {
+                SetLastError(RtlNtStatusToDosError(status));
+                return FALSE;
+            }
+
+            positionInfo.CurrentByteOffset.QuadPart += liDistanceToMove.QuadPart;
+            break;
+        case FILE_END:
+            FILE_NETWORK_OPEN_INFORMATION networkInfo;
+            status = NtQueryInformationFile(hFile, &ioStatusBlock, &networkInfo, sizeof(networkInfo), FileNetworkOpenInformation);
+
+            if (!NT_SUCCESS(status)) {
+                SetLastError(RtlNtStatusToDosError(status));
+                return FALSE;
+            }
+
+            positionInfo.CurrentByteOffset.QuadPart = networkInfo.EndOfFile.QuadPart + liDistanceToMove.QuadPart;
+            break;
+    }
+
+    // check for negative file pointer position
+    if (positionInfo.CurrentByteOffset.QuadPart < 0) {
+        SetLastError(ERROR_NEGATIVE_SEEK);
+        return FALSE;
+    }
+
+    status = NtSetInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
+
+    if (NT_SUCCESS(status)) {
+        if (lpNewFilePointer) {
+            *lpNewFilePointer = positionInfo.CurrentByteOffset;
+        }
+        return TRUE;
+    } else {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+}
