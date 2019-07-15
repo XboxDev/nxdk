@@ -2,7 +2,97 @@
 #include <hal/winerror.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <string.h>
 #include <xboxkrnl/xboxkrnl.h>
+
+HANDLE CreateFileA (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING path;
+    IO_STATUS_BLOCK ioStatusBlock;
+    OBJECT_ATTRIBUTES attributes;
+    ULONG creationDisposition;
+    ULONG creationFlags = 0;
+
+    // no extended attributes on the Xbox
+    assert(hTemplateFile == NULL);
+
+    if (!lpFileName || !lpFileName[0]) {
+        SetLastError(ERROR_PATH_NOT_FOUND);
+        return INVALID_HANDLE_VALUE;
+    }
+    assert(strlen(lpFileName) < MAX_PATH);
+    RtlInitAnsiString(&path, lpFileName);
+
+    InitializeObjectAttributes(&attributes, &path, 0, ObDosDevicesDirectory(), NULL);
+
+    if (!(dwFlagsAndAttributes & FILE_FLAG_POSIX_SEMANTICS)) {
+        attributes.Attributes |= OBJ_CASE_INSENSITIVE;
+    }
+
+    switch (dwCreationDisposition) {
+        case CREATE_NEW:
+            creationDisposition = FILE_CREATE;
+            break;
+        case CREATE_ALWAYS:
+            creationDisposition = FILE_OVERWRITE_IF;
+            break;
+        case OPEN_EXISTING:
+            creationDisposition = FILE_OPEN;
+            break;
+        case OPEN_ALWAYS:
+            creationDisposition = FILE_OPEN_IF;
+            break;
+        case TRUNCATE_EXISTING:
+            creationDisposition = FILE_OVERWRITE;
+            if (!(dwDesiredAccess & GENERIC_WRITE)) {
+                SetLastError(ERROR_INVALID_PARAMETER);
+                return INVALID_HANDLE_VALUE;
+            }
+            break;
+        default:
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return INVALID_HANDLE_VALUE;
+    }
+
+    if (dwFlagsAndAttributes & FILE_FLAG_DELETE_ON_CLOSE) {
+        creationFlags |= FILE_DELETE_ON_CLOSE;
+        dwDesiredAccess |= DELETE;
+    }
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_WRITE_THROUGH) ? FILE_NO_INTERMEDIATE_BUFFERING : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING) ? FILE_NO_INTERMEDIATE_BUFFERING : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_OVERLAPPED) ? 0 : FILE_SYNCHRONOUS_IO_NONALERT;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_RANDOM_ACCESS) ? FILE_RANDOM_ACCESS : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_SEQUENTIAL_SCAN) ? FILE_SEQUENTIAL_ONLY : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_BACKUP_SEMANTICS) ? FILE_OPEN_FOR_BACKUP_INTENT : 0;
+
+    status  = NtCreateFile(&handle, dwDesiredAccess | FILE_READ_ATTRIBUTES | SYNCHRONIZE, &attributes, &ioStatusBlock, NULL, dwFlagsAndAttributes, dwShareMode, creationDisposition, creationFlags);
+
+    if (!NT_SUCCESS(status)) {
+        if (status == STATUS_OBJECT_NAME_COLLISION) {
+            SetLastError(ERROR_FILE_EXISTS);
+        } else if (status == STATUS_FILE_IS_A_DIRECTORY) {
+            if (lpFileName[path.Length-1] == '\\') {
+                SetLastError(ERROR_PATH_NOT_FOUND);
+            } else {
+                SetLastError(ERROR_ACCESS_DENIED);
+            }
+        } else {
+            SetLastError(RtlNtStatusToDosError(status));
+        }
+
+        return INVALID_HANDLE_VALUE;
+    }
+
+    if (((dwCreationDisposition == CREATE_ALWAYS) && (ioStatusBlock.Information == FILE_OVERWRITTEN)) || ((dwCreationDisposition == OPEN_ALWAYS) && (ioStatusBlock.Information == FILE_OPENED))) {
+        SetLastError(ERROR_ALREADY_EXISTS);
+    } else {
+        SetLastError(ERROR_SUCCESS);
+    }
+
+    return handle;
+}
 
 BOOL ReadFile (HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
 {
