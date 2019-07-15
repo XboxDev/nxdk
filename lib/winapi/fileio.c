@@ -286,3 +286,36 @@ BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTE
         return FALSE;
     }
 }
+
+DWORD GetFileSize (HANDLE hFile, LPDWORD lpFileSizeHigh)
+{
+    LARGE_INTEGER fileSize;
+
+    if (GetFileSizeEx(hFile, &fileSize)) {
+        if (lpFileSizeHigh) {
+            *lpFileSizeHigh = fileSize.HighPart;
+        }
+        assert(lpFileSizeHigh || (fileSize.HighPart == 0));
+        return fileSize.LowPart;
+    } else {
+        return INVALID_FILE_SIZE;
+    }
+}
+
+BOOL GetFileSizeEx (HANDLE hFile, PLARGE_INTEGER lpFileSize)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_NETWORK_OPEN_INFORMATION openInfo;
+
+    assert(lpFileSize != NULL);
+
+    status = NtQueryInformationFile(hFile, &ioStatusBlock, &openInfo, sizeof(openInfo), FileNetworkOpenInformation);
+    if (NT_SUCCESS(status)) {
+        *lpFileSize = openInfo.EndOfFile;
+        return TRUE;
+    } else {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+}

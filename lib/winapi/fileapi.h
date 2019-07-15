@@ -22,6 +22,9 @@ BOOL WriteFile (HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
 DWORD SetFilePointer (HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod);
 BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
 
+DWORD GetFileSize (HANDLE hFile, LPDWORD lpFileSizeHigh);
+BOOL GetFileSizeEx (HANDLE hFile, PLARGE_INTEGER lpFileSize);
+
 HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindNextFileA (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindClose (HANDLE hFindFile);
