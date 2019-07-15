@@ -30,12 +30,14 @@ BOOL FindNextFileA (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindClose (HANDLE hFindFile);
 
 BOOL DeleteFileA (LPCTSTR lpFileName);
+BOOL RemoveDirectoryA (LPCSTR lpPathName);
 
 #ifndef UNICODE
 #define CreateFile CreateFileA
 #define FindFirstFile FindFirstFileA
 #define FindNextFile FindNextFileA
 #define DeleteFile(...) DeleteFileA(__VA_ARGS__)
+#define RemoveDirectory(...) RemoveDirectoryA(__VA_ARGS__)
 #else
 #error nxdk does not support the Unicode API
 #endif
