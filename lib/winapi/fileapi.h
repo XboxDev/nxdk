@@ -32,6 +32,7 @@ BOOL FindClose (HANDLE hFindFile);
 BOOL DeleteFileA (LPCTSTR lpFileName);
 BOOL RemoveDirectoryA (LPCSTR lpPathName);
 BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
+BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 
 #ifndef UNICODE
 #define CreateFile CreateFileA
@@ -40,6 +41,7 @@ BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttrib
 #define DeleteFile(...) DeleteFileA(__VA_ARGS__)
 #define RemoveDirectory(...) RemoveDirectoryA(__VA_ARGS__)
 #define CreateDirectory(...) CreateDirectoryA(__VA_ARGS__)
+#define MoveFile(...) MoveFileA(__VA_ARGS__)
 #else
 #error nxdk does not support the Unicode API
 #endif
