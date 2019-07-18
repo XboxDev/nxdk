@@ -253,7 +253,7 @@ int XCreateFile(
 		&ioStatusBlock,
 		NULL,
 		flagsAndAttributes,
-		0,
+		sharedMode,
 		creationDisposition,
 		flags);
 
