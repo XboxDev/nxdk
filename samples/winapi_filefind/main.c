@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fileapi.h>
-#include <hal/winerror.h>
+#include <winerror.h>
 #include <xboxrt/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
