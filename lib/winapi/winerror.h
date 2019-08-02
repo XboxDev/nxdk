@@ -1,5 +1,5 @@
-#ifndef WINERROR_H
-#define WINERROR_H
+#ifndef __WINERROR_H__
+#define __WINERROR_H__
 
 #define ERROR_SUCCESS 0L
 #define NO_ERROR 0L

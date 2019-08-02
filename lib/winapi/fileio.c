@@ -1,5 +1,5 @@
 #include <fileapi.h>
-#include <hal/winerror.h>
+#include <winerror.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <string.h>

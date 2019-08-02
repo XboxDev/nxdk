@@ -4,7 +4,7 @@
 #include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/fileio.h>
-#include <hal/winerror.h>
+#include <winerror.h>
 #include <fileapi.h>
 
 struct FileInfo {
