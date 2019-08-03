@@ -77,4 +77,36 @@ typedef union _ULARGE_INTEGER
     ULONGLONG QuadPart; /**< An unsigned 64-bit integer. */
 } ULARGE_INTEGER, *PULARGE_INTEGER;
 
+/**
+ * Header or descriptor for an entry in a doubly linked list.
+ * Initialized by InitializeListHead, members shouldn't be updated manually.
+ */
+typedef struct _LIST_ENTRY
+{
+    struct _LIST_ENTRY *Flink; /**< Points to the next entry of the list or the header if there is no next entry */
+    struct _LIST_ENTRY *Blink; /**< Points to the previous entry of the list or the header if there is no previous entry */
+} LIST_ENTRY, *PLIST_ENTRY;
+
+/**
+ * Struct for modelling critical sections in the XBOX-kernel
+ */
+typedef struct _RTL_CRITICAL_SECTION
+{
+    union {
+        struct {
+            UCHAR Type;
+            UCHAR Absolute;
+            UCHAR Size;
+            UCHAR Inserted;
+            LONG SignalState;
+            LIST_ENTRY WaitListHead;
+        } Event;
+        ULONG RawEvent[4];
+    } Synchronization;
+
+    LONG LockCount;
+    LONG RecursionCount;
+    PVOID OwningThread;
+} RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
+
 #endif

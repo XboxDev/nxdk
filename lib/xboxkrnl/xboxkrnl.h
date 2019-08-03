@@ -150,16 +150,6 @@ typedef struct _UNICODE_STRING
 
 typedef CONST UNICODE_STRING *PCUNICODE_STRING;
 
-/**
- * Header or descriptor for an entry in a doubly linked list.
- * Initialized by InitializeListHead, members shouldn't be updated manually.
- */
-typedef struct _LIST_ENTRY
-{
-    struct _LIST_ENTRY *Flink; /**< Points to the next entry of the list or the header if there is no next entry */
-    struct _LIST_ENTRY *Blink; /**< Points to the previous entry of the list or the header if there is no previous entry */
-} LIST_ENTRY, *PLIST_ENTRY;
-
 /*
     VOID InitializeListHead (
         PLIST_ENTRY ListHead
@@ -217,28 +207,6 @@ typedef struct _LIST_ENTRY
 #define PushEntryList (ListHead, Entry) \
     (Entry)->Next = (ListHead)->Next; \
     (ListHead)->Next = (Entry);
-
-/**
- * Struct for modelling critical sections in the XBOX-kernel
- */
-typedef struct _RTL_CRITICAL_SECTION
-{
-    union {
-        struct {
-            UCHAR Type;
-            UCHAR Absolute;
-            UCHAR Size;
-            UCHAR Inserted;
-            LONG SignalState;
-            LIST_ENTRY WaitListHead;
-        } Event;
-        ULONG RawEvent[4];
-    } Synchronization;
-
-    LONG LockCount;
-    LONG RecursionCount;
-    PVOID OwningThread;
-} RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
 /**
  * Time information
@@ -2111,6 +2079,8 @@ XBAPI VOID NTAPI RtlInitializeCriticalSection
 (
     IN PRTL_CRITICAL_SECTION CriticalSection
 );
+
+#define RtlDeleteCriticalSection(CriticalSection) ((void)CriticalSection)
 
 XBAPI VOID NTAPI RtlInitUnicodeString
 (

@@ -5,6 +5,7 @@
 #include <handleapi.h>
 #include <memoryapi.h>
 #include <processthreadsapi.h>
+#include <synchapi.h>
 #include <winbase.h>
 #include <winerror.h>
 
