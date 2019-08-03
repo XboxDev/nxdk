@@ -1,5 +1,6 @@
 #include <synchapi.h>
 #include <stdbool.h>
+#include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 VOID InitializeCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
@@ -41,5 +42,24 @@ DWORD SleepEx (DWORD dwMilliseconds, BOOL bAlertable)
         if (status != STATUS_ALERTED) {
             return status == STATUS_USER_APC ? WAIT_IO_COMPLETION : 0;
         }
+    }
+}
+
+DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds, BOOL bAlertable)
+{
+    LARGE_INTEGER duration;
+    duration.QuadPart = ((LONGLONG)dwMilliseconds) * -10000;
+
+    while (true) {
+        NTSTATUS status = NtWaitForSingleObjectEx(hHandle, UserMode, bAlertable, &duration);
+
+        if (status == STATUS_ALERTED) continue;
+
+        if (!NT_SUCCESS(status)) {
+            SetLastError(RtlNtStatusToDosError(status));
+            return WAIT_FAILED;
+        }
+
+        return status;
     }
 }
