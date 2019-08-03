@@ -16,6 +16,11 @@ VOID EnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 
+#define WAIT_IO_COMPLETION 0x000000C0L
+
+VOID Sleep (DWORD dwMilliseconds);
+DWORD SleepEx (DWORD dwMilliseconds, BOOL bAlertable);
+
 #ifdef __cplusplus
 }
 #endif

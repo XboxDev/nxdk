@@ -9,6 +9,8 @@ extern "C"
 
 void XReboot();
 int  XGetTickCount();
+
+__attribute__((deprecated))
 void XSleep(int milliseconds);
 
 void XLaunchXBE(char *xbePath);
