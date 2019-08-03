@@ -4,6 +4,7 @@
 #include <fileapi.h>
 #include <handleapi.h>
 #include <memoryapi.h>
+#include <processthreadsapi.h>
 #include <winbase.h>
 #include <winerror.h>
 
