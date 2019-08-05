@@ -7,6 +7,7 @@
 #define FAR far
 
 #define WINAPI __stdcall
+#define CALLBACK WINAPI
 
 #define MAX_PATH 260
 

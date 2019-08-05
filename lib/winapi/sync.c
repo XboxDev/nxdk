@@ -1,5 +1,7 @@
 #include <synchapi.h>
+#include <assert.h>
 #include <stdbool.h>
+#include <processthreadsapi.h>
 #include <winbase.h>
 #include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>
@@ -36,6 +38,138 @@ BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
 VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
 {
     RtlLeaveCriticalSection(lpCriticalSection);
+}
+
+#define INITONCE_MASK (((uintptr_t)1 << INIT_ONCE_CTX_RESERVED_BITS) - 1)
+#define INITONCE_UNINITIALIZED 0
+#define INITONCE_IN_PROGRESS 1
+#define INITONCE_ASYNC_IN_PROGRESS 2
+#define INITONCE_DONE 3
+
+BOOL InitOnceBeginInitialize (LPINIT_ONCE lpInitOnce, DWORD dwFlags, PBOOL fPending, LPVOID *lpContext)
+{
+    assert(fPending != NULL);
+
+    if (dwFlags & INIT_ONCE_CHECK_ONLY) {
+        if (dwFlags & INIT_ONCE_ASYNC) {
+            *fPending = FALSE;
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+        }
+        if (((ULONG_PTR)lpInitOnce->Ptr & INITONCE_MASK) != INITONCE_DONE) {
+            *fPending = TRUE;
+            SetLastError(ERROR_GEN_FAILURE);
+            return FALSE;
+        }
+
+        if (lpContext) {
+            *lpContext = (LPVOID)((ULONG_PTR)lpInitOnce->Ptr & ~INITONCE_MASK);
+        }
+        // success
+        *fPending = FALSE;
+        return TRUE;
+    }
+
+    while (true) {
+        switch ((ULONG_PTR)__atomic_load_n(&lpInitOnce->Ptr, __ATOMIC_ACQUIRE) & INITONCE_MASK) {
+            case INITONCE_UNINITIALIZED:
+                if (__sync_bool_compare_and_swap(&lpInitOnce->Ptr, (PVOID)INITONCE_UNINITIALIZED, (dwFlags & INIT_ONCE_ASYNC) ? (PVOID)INITONCE_ASYNC_IN_PROGRESS : (PVOID)INITONCE_IN_PROGRESS)) {
+                    *fPending = TRUE;
+                    return TRUE;
+                }
+                break;
+            case INITONCE_IN_PROGRESS:
+                if (dwFlags & INIT_ONCE_ASYNC) {
+                    SetLastError(ERROR_INVALID_PARAMETER);
+                    *fPending = TRUE;
+                    return FALSE;
+                }
+                SwitchToThread();
+                break;
+            case INITONCE_ASYNC_IN_PROGRESS:
+                if (!(dwFlags & INIT_ONCE_ASYNC)) {
+                    SetLastError(ERROR_INVALID_PARAMETER);
+                    *fPending = TRUE;
+                    return FALSE;
+                }
+                *fPending = TRUE;
+                return TRUE;
+            case INITONCE_DONE:
+                if (lpContext) {
+                    *lpContext = (PVOID)((ULONG_PTR)lpInitOnce->Ptr & ~INITONCE_MASK);
+                }
+                *fPending = FALSE;
+                return TRUE;
+        }
+    }
+}
+
+BOOL InitOnceExecuteOnce (PINIT_ONCE InitOnce, PINIT_ONCE_FN InitFn, PVOID Parameter, LPVOID *Context)
+{
+    if ((((ULONG_PTR)Context) & INITONCE_MASK) != INITONCE_UNINITIALIZED) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    BOOL fPending;
+    BOOL ret;
+    ret = InitOnceBeginInitialize(InitOnce, 0, &fPending, Context);
+    if (!fPending) {
+        return ret;
+    }
+
+    if (InitFn(InitOnce, Parameter, Context)) {
+        return InitOnceComplete(InitOnce, 0, Context ? *Context : NULL);
+    }
+
+    BOOL success = InitOnceComplete(InitOnce, INIT_ONCE_INIT_FAILED, NULL);
+    assert(success);
+    return FALSE;
+}
+
+BOOL InitOnceComplete (LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext)
+{
+    if (((ULONG_PTR)lpContext & INITONCE_MASK) != INITONCE_UNINITIALIZED) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    if (dwFlags & INIT_ONCE_INIT_FAILED) {
+        if (lpContext || (dwFlags & INIT_ONCE_ASYNC)) {
+            SetLastError(ERROR_INVALID_PARAMETER);
+            return FALSE;
+        }
+    } else {
+        lpContext = (PVOID)((ULONG_PTR)lpContext | INITONCE_DONE);
+    }
+
+    while (true) {
+        PVOID cur_val = lpInitOnce->Ptr;
+
+        switch ((ULONG_PTR)lpInitOnce->Ptr & INITONCE_MASK) {
+            case INITONCE_IN_PROGRESS:
+                if (__sync_val_compare_and_swap(&lpInitOnce->Ptr, cur_val, lpContext) != cur_val) {
+                    break; // failed to swap the value, try again
+                }
+
+                // init done, waiters continue because they were spinning in InitOnceBeginInitialize
+                return TRUE;
+            case INITONCE_ASYNC_IN_PROGRESS:
+                if(!(dwFlags & INIT_ONCE_ASYNC)) {
+                    SetLastError(ERROR_INVALID_PARAMETER);
+                    return FALSE;
+                }
+
+                if (__sync_val_compare_and_swap(&lpInitOnce->Ptr, cur_val, lpContext) == cur_val) {
+                    // async init done
+                    return TRUE;
+                }
+                break;
+            default:
+                SetLastError(ERROR_GEN_FAILURE);
+                return FALSE;
+        }
+    }
 }
 
 VOID Sleep (DWORD dwMilliseconds)
