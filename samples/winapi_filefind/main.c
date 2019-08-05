@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <fileapi.h>
-#include <winerror.h>
+#include <windows.h>
 #include <xboxrt/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
@@ -16,7 +15,7 @@ int mount_drive_c ()
     status = IoCreateSymbolicLink(&MountPath, &DrivePath);
     if (!NT_SUCCESS(status)) {
         debugPrint("Failed to mount C: drive!\n");
-        XSleep(5000);
+        Sleep(5000);
         return -1;
     }
 
@@ -28,7 +27,7 @@ int main()
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     int ret = pb_init();
     if (ret != 0) {
-        XSleep(2000);
+        Sleep(2000);
         return -1;
     }
 
@@ -50,7 +49,7 @@ int main()
     hFind = FindFirstFile("C:\\*.*", &findFileData);
     if (hFind == INVALID_HANDLE_VALUE) {
         debugPrint("FindFirstHandle() failed!\n");
-        XSleep(5000);
+        Sleep(5000);
         return -1;
     }
 
@@ -76,7 +75,7 @@ int main()
     FindClose(hFind);
 
     while (1) {
-        XSleep(2000);
+        Sleep(2000);
     }
 
     pb_kill();

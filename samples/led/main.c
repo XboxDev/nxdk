@@ -1,5 +1,5 @@
 #include <hal/led.h>
-#include <hal/xbox.h>
+#include <windows.h>
 
 void main(void)
 {
@@ -10,6 +10,6 @@ void main(void)
 
     // If we quit, the LED might get reset, so we loop forever
     while(1) {
-        XSleep(1000);
+        Sleep(1000);
     }
 }

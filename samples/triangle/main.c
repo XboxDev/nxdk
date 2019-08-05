@@ -13,6 +13,7 @@
 #include <strings.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <xboxrt/debug.h>
+#include <windows.h>
 
 static uint32_t *alloc_vertices;
 static uint32_t  num_vertices;
@@ -56,7 +57,7 @@ void main(void)
 
     if ((status = pb_init())) {
         debugPrint("pb_init Error %d\n", status);
-        XSleep(2000);
+        Sleep(2000);
         XReboot();
         return;
     }

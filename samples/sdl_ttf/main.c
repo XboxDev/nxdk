@@ -4,6 +4,7 @@
 #include <hal/video.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <windows.h>
 #include <stdbool.h>
 
 const extern int SCREEN_WIDTH;
@@ -22,7 +23,7 @@ void main() {
   initialized_pbkit = pb_init();
   if (initialized_pbkit != 0) {
     debugPrint("pb_init() failed!");
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
   pb_show_debug_screen();
@@ -30,14 +31,14 @@ void main() {
   initialized_SDL = SDL_VideoInit(NULL);
   if (initialized_SDL != 0) {
     debugPrint("SDL_VideoInit failed: %s", SDL_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
   initialized_TTF = TTF_Init();
   if (initialized_TTF != 0) {
     debugPrint("TTF_Init failed: %s", TTF_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
@@ -51,14 +52,14 @@ void main() {
                             SDL_WINDOW_SHOWN);
   if (window == NULL) {
     debugPrint("Window creation failed: %s", SDL_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
   renderer = SDL_CreateRenderer(window, -1, 0);
   if (renderer == NULL) {
     debugPrint("CreateRenderer failed: %s\n", SDL_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
@@ -67,7 +68,7 @@ void main() {
   font = TTF_OpenFont(font_path, font_size);
   if (font == NULL) {
     debugPrint("Couldn't load font: %s", TTF_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
@@ -76,7 +77,7 @@ void main() {
   TTF_CloseFont(font);
   if (surface == NULL) {
     debugPrint("TTF_RenderText failed: %s", TTF_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 
@@ -84,7 +85,7 @@ void main() {
   SDL_FreeSurface(surface);
   if (texture == NULL) {
     debugPrint("Couldn't create texture: %s\n", SDL_GetError());
-    XSleep(2000);
+    Sleep(2000);
     goto cleanup;
   }
 

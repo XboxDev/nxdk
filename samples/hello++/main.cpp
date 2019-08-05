@@ -1,7 +1,7 @@
 #include <xboxrt/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
-#include <hal/xbox.h>
+#include <windows.h>
 
 class NumberClass{
 private:
@@ -17,7 +17,7 @@ int main() {
 
   int ret = pb_init();
   if (ret != 0) {
-    XSleep(2000);
+    Sleep(2000);
     return -1;
   }
 
@@ -25,11 +25,11 @@ int main() {
 
   NumberClass defaultFive;
   NumberClass customSix(6);
-  
+
   while (true) {
     debugPrint("Value of defaultFive: %i\n", defaultFive.getValue());
     debugPrint("Value of customSix  : %i\n", customSix.getValue());
-    XSleep(2000);
+    Sleep(2000);
   }
 
   pb_kill();
