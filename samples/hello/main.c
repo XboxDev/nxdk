@@ -2,6 +2,7 @@
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
+#include <windows.h>
 #include "stdio.h"
 
 void main(void)
@@ -12,7 +13,7 @@ void main(void)
     {
         case 0: break;
         default:
-            XSleep(2000);
+            Sleep(2000);
             XReboot();
             return;
     }
@@ -21,7 +22,7 @@ void main(void)
 
     while(1) {
         debugPrint("Hello NXDK!\n");
-        XSleep(2000);
+        Sleep(2000);
     }
 
     pb_kill();

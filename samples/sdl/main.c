@@ -14,6 +14,7 @@
 #include <pbkit/pbkit.h>
 #include <hal/xbox.h>
 #include <hal/video.h>
+#include <windows.h>
 #include "stdio.h"
 #include "string.h"
 #include <SDL.h>
@@ -22,7 +23,7 @@ static void printSDLErrorAndReboot(void)
 {
     debugPrint("SDL_Error: %s\n", SDL_GetError());
     debugPrint("Rebooting in 5 seconds.\n");
-    XSleep(5000);
+    Sleep(5000);
     pb_kill();
     XReboot();
 }
@@ -368,7 +369,7 @@ void main(void)
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     if (pb_init() != 0)
     {
-        XSleep(2000);
+        Sleep(2000);
         XReboot();
         return;
     }

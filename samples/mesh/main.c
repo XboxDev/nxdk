@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <xboxrt/debug.h>
 #include "math3d.h"
@@ -78,7 +79,7 @@ void main(void)
     pb_extra_buffers(2);
     if ((status = pb_init())) {
         debugPrint("pb_init Error %d\n", status);
-        XSleep(2000);
+        Sleep(2000);
         XReboot();
         return;
     }
