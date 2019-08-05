@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 DWORD GetCurrentThreadId (VOID);
+DWORD GetThreadId (HANDLE Thread);
 BOOL SwitchToThread (VOID);
 
 #ifdef __cplusplus
