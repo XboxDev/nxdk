@@ -18,6 +18,10 @@ VOID EnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 
+BOOL InitOnceExecuteOnce (PINIT_ONCE InitOnce, PINIT_ONCE_FN InitFn, PVOID Context, LPVOID *Parameter);
+BOOL InitOnceBeginInitialize (LPINIT_ONCE lpInitOnce, DWORD dwFlags, PBOOL fPending, LPVOID *lpContext);
+BOOL InitOnceComplete (LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext);
+
 #define WAIT_ABANDONED ((DWORD)0x00000080L) // same as STATUS_ABANDONED_WAIT_0
 #define WAIT_IO_COMPLETION ((DWORD)0x000000C0L) // same as STATUS_USER_APC
 #define WAIT_OBJECT_0 ((DWORD)0x00000000L) // same as STATUS_WAIT_0
