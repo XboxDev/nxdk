@@ -40,6 +40,112 @@ VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
     RtlLeaveCriticalSection(lpCriticalSection);
 }
 
+#define SRW_GLOBAL_LOCK_MASK ((uintptr_t)0x40000000)
+#define SRW_READER_LOCK_MASK ((uintptr_t)0x80000000)
+#define SRW_READER_COUNT_MASK ~(SRW_GLOBAL_LOCK_MASK | SRW_READER_LOCK_MASK)
+
+static bool TryAcquireLockMask (uintptr_t *lock, uintptr_t mask)
+{
+    uintptr_t unlocked_val = *lock & ~mask;
+    return __sync_bool_compare_and_swap(lock, unlocked_val, unlocked_val | mask);
+}
+
+static void ReleaseLockMask (uintptr_t *lock, uintptr_t mask)
+{
+    __sync_fetch_and_and(lock, ~mask);
+}
+
+void AcquireSRWLockExclusive (PSRWLOCK SRWLock)
+{
+    // Grab the global lock (second-highest bit)
+    while (!TryAcquireLockMask(&SRWLock->Ptr, SRW_GLOBAL_LOCK_MASK)) {
+        SwitchToThread();
+    }
+}
+
+void AcquireSRWLockShared (PSRWLOCK SRWLock)
+{
+    // Grab the reader lock
+    while (!TryAcquireLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK)) {
+        SwitchToThread();
+    }
+
+    // Increase reader count by one
+    uintptr_t prev_val = __atomic_fetch_add(&SRWLock->Ptr, 1, __ATOMIC_ACQ_REL);
+    if ((prev_val & SRW_READER_COUNT_MASK) == 0) {
+        // If we're the first reader, grab the global lock, too
+        AcquireSRWLockExclusive(SRWLock);
+    }
+
+    // Release the reader lock
+    ReleaseLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK);
+}
+
+void InitializeSRWLock (PSRWLOCK SRWLock)
+{
+    __atomic_store_n(&SRWLock->Ptr, 0, __ATOMIC_RELEASE);
+}
+
+void ReleaseSRWLockExclusive (PSRWLOCK SRWLock)
+{
+    // Release the global lock (second-highest bit)
+    ReleaseLockMask(&SRWLock->Ptr, SRW_GLOBAL_LOCK_MASK);
+}
+
+void ReleaseSRWLockShared (PSRWLOCK SRWLock)
+{
+    // Grab the reader lock
+    while (!TryAcquireLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK)) {
+        SwitchToThread();
+    }
+
+    // Decrease reader count by one
+    uintptr_t prev_val = __atomic_fetch_sub(&SRWLock->Ptr, 1, __ATOMIC_ACQ_REL);
+    assert((prev_val & SRW_READER_COUNT_MASK) != 0);
+    if ((prev_val & SRW_READER_COUNT_MASK) == 1) {
+        // If we're the last reader, release the global lock
+        ReleaseSRWLockExclusive(SRWLock);
+    }
+
+    // Release the reader lock
+    ReleaseLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK);
+}
+
+BOOLEAN TryAcquireSRWLockExclusive (PSRWLOCK SRWLock)
+{
+    // Try once to grab the global lock, return whether we succeeded
+    return TryAcquireLockMask(&SRWLock->Ptr, SRW_GLOBAL_LOCK_MASK);
+}
+
+BOOLEAN TryAcquireSRWLockShared (PSRWLOCK SRWLock)
+{
+    bool success;
+
+    // Grab the reader lock
+    while (!TryAcquireLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK)) {
+        SwitchToThread();
+    }
+
+    // Increase reader count by one
+    uintptr_t prev_val = __atomic_fetch_add(&SRWLock->Ptr, 1, __ATOMIC_ACQ_REL);
+    if ((prev_val & SRW_READER_COUNT_MASK) == 0) {
+        // If we're the first reader, try grab the global lock
+        success = TryAcquireSRWLockExclusive(SRWLock);
+    } else {
+        success = TRUE;
+    }
+
+    if (!success) {
+        // If we didn't succeed, we decrement the reader count again
+        __atomic_fetch_sub(&SRWLock->Ptr, 1, __ATOMIC_ACQ_REL);
+    }
+
+    // Release the reader lock
+    ReleaseLockMask(&SRWLock->Ptr, SRW_READER_LOCK_MASK);
+
+    return success;
+}
+
 #define INITONCE_MASK (((uintptr_t)1 << INIT_ONCE_CTX_RESERVED_BITS) - 1)
 #define INITONCE_UNINITIALIZED 0
 #define INITONCE_IN_PROGRESS 1

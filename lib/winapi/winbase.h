@@ -46,6 +46,16 @@ typedef struct _INIT_ONCE
 #define INIT_ONCE_INIT_FAILED 0x00000004UL
 typedef BOOL (CALLBACK *PINIT_ONCE_FN) (PINIT_ONCE, PVOID, PVOID *);
 
+typedef struct  _SRWLOCK
+{
+    // highest bit: reader lock (0=free, 1=locked)
+    // second-highest bit: global lock (0=free, 1=locked)
+    // remainder: blocking readers
+    DWORD_PTR Ptr;
+} SRWLOCK, *PSRWLOCK;
+
+#define SRWLOCK_INIT {0}
+
 #define FILE_BEGIN 0
 #define FILE_CURRENT 1
 #define FILE_END 2

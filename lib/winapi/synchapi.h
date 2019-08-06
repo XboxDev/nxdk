@@ -1,6 +1,7 @@
 #ifndef __SYNCHAPI_H__
 #define __SYNCHAPI_H__
 
+#include <stdint.h>
 #include <windef.h>
 #include <winbase.h>
 
@@ -17,6 +18,14 @@ VOID DeleteCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID EnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
+
+void AcquireSRWLockExclusive (PSRWLOCK SRWLock);
+void AcquireSRWLockShared (PSRWLOCK SRWLock);
+void InitializeSRWLock (PSRWLOCK SRWLock);
+void ReleaseSRWLockExclusive (PSRWLOCK SRWLock);
+void ReleaseSRWLockShared (PSRWLOCK SRWLock);
+BOOLEAN TryAcquireSRWLockExclusive (PSRWLOCK SRWLock);
+BOOLEAN TryAcquireSRWLockShared (PSRWLOCK SRWLock);
 
 BOOL InitOnceExecuteOnce (PINIT_ONCE InitOnce, PINIT_ONCE_FN InitFn, PVOID Context, LPVOID *Parameter);
 BOOL InitOnceBeginInitialize (LPINIT_ONCE lpInitOnce, DWORD dwFlags, PBOOL fPending, LPVOID *lpContext);
