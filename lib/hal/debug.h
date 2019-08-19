@@ -2,8 +2,8 @@
 //	Debug output scrolling code submitted by Robin Mulloy
 //
 //
-#ifndef XBOXRT_DEBUG
-#define XBOXRT_DEBUG
+#ifndef HAL_DEBUG_H
+#define HAL_DEBUG_H
 
 #if defined(__cplusplus)
 extern "C"

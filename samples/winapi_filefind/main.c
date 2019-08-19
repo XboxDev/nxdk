@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
 #include <hal/xbox.h>

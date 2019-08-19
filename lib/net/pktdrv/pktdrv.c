@@ -24,7 +24,7 @@
 //mess with fpu unless you save and restore fpu processor state)
 
 #include <hal/xbox.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 #include "string.h"

@@ -1,4 +1,4 @@
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/video.h>
 #include <windows.h>

@@ -19,7 +19,7 @@
 #include <hal/xbox.h>
 #include <hal/io.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 
 #include "pbkit.h"
 #include "outer.h"
