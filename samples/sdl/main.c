@@ -10,7 +10,7 @@
   freely.
 */
 /* Simple program:  Create a native window and attach an SDL renderer */
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <pbkit/pbkit.h>
 #include <hal/xbox.h>
 #include <hal/video.h>

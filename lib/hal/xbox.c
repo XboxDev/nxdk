@@ -5,7 +5,7 @@
 #include <xboxkrnl/xboxkrnl.h>
 
 #include <stdio.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 
 #define KernelMode 0
 

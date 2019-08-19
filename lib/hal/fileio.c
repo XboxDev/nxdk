@@ -3,7 +3,7 @@
 #include <string.h>
 #include <hal/fileio.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <stdbool.h>
 
 // #define DEBUG

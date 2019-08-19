@@ -20,7 +20,6 @@ USB_SRCS := \
 	$(NXDK_DIR)/lib/usb/misc/malloc.c
 
 SRCS += \
-	$(wildcard $(NXDK_DIR)/lib/xboxrt/*.c) \
 	$(shell find $(NXDK_DIR)/lib/pdclib/functions/ -name "*.c") \
 	$(shell find $(NXDK_DIR)/lib/pdclib/platform/xbox/ -name "*.c") \
 	$(shell find $(NXDK_DIR)/lib/pdclib/platform/xbox/ -name "*.s") \
@@ -30,3 +29,5 @@ SRCS += \
 	$(wildcard $(NXDK_DIR)/lib/winapi/*.c) \
 	$(wildcard $(NXDK_DIR)/lib/pbkit/*.c) \
 	$(USB_SRCS)
+
+include $(NXDK_DIR)/lib/xboxrt/Makefile

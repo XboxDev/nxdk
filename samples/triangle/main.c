@@ -12,7 +12,7 @@
 #include <string.h>
 #include <strings.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include <windows.h>
 
 static uint32_t *alloc_vertices;

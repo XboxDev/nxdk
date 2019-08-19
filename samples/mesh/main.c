@@ -14,7 +14,7 @@
 #include <strings.h>
 #include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <xboxrt/debug.h>
+#include <hal/debug.h>
 #include "math3d.h"
 
 static uint32_t *alloc_vertices;
