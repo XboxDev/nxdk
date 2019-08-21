@@ -6,7 +6,7 @@
 typedef struct _FILETIME {
     DWORD dwLowDateTime;
     DWORD dwHighDateTime;
-} FILETIME;
+} FILETIME, *LPFILETIME;
 
 typedef struct _OVERLAPPED
 {
