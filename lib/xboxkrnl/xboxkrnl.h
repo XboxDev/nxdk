@@ -103,7 +103,6 @@ typedef LONG NTSTATUS;
 #define AV_PACK_VGA 0x00000005
 #define AV_PACK_SVIDEO 0x00000006
 
-typedef PVOID HANDLE, *PHANDLE;
 typedef ULONG PHYSICAL_ADDRESS, *PPHYSICAL_ADDRESS;
 typedef UCHAR KIRQL, *PKIRQL;
 typedef ULONG ULONG_PTR;
@@ -115,8 +114,6 @@ typedef ULONG DEVICE_TYPE;
 typedef ULONG LOGICAL;
 
 typedef unsigned char BYTE;
-typedef unsigned short WORD, WCHAR, *PWSTR;
-typedef unsigned int DWORD, *PDWORD, *LPDWORD;
 typedef const char *PCSZ, *PCSTR, *LPCSTR;
 typedef char *PSZ, *PSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
