@@ -21,6 +21,8 @@ typedef unsigned long DWORD, *PDWORD, *LPDWORD;
 typedef unsigned long ULONG, *PULONG;
 typedef unsigned long long ULONGLONG;
 
+#define MAXDWORD 0xFFFFFFFFUL
+
 typedef unsigned int SIZE_T, *PSIZE_T;
 
 typedef int BOOL, *PBOOL;
