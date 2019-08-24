@@ -37,7 +37,7 @@
 /* Include some files for defining library routines */
 #include <string.h>
 #include <debug.h>
-#include <hal/xbox.h>
+#include <windows.h>
 
 #define printf debugPrint
 #define fflush(...) 
@@ -92,7 +92,7 @@ typedef unsigned long mem_ptr_t;
                                      x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
 #endif
 
-#define LWIP_RAND() ((u32_t)XGetTickCount()) /* Not really random... */
+#define LWIP_RAND() ((u32_t)GetTickCount()) /* Not really random... */
 
 struct sio_status_s;
 typedef struct sio_status_s sio_status_t;

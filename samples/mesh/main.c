@@ -103,7 +103,7 @@ void main(void)
     num_indices = sizeof(indices)/sizeof(indices[0]);
 
     /* Setup to determine frames rendered every second */
-    start = now = last = XGetTickCount();
+    start = now = last = GetTickCount();
     frames_total = frames = fps = 0;
 
     /* Create view matrix (our camera is static) */
@@ -260,7 +260,7 @@ void main(void)
         frames_total++;
 
         /* Latch FPS counter every second */
-        now = XGetTickCount();
+        now = GetTickCount();
         if ((now-last) > 1000) {
             fps = frames;
             frames = 0;
