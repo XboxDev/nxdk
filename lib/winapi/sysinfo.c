@@ -11,6 +11,11 @@ void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime)
     lpSystemTimeAsFileTime->dwHighDateTime = systemTime.HighPart;
 }
 
+DWORD GetTickCount (void)
+{
+    return KeTickCount;
+}
+
 void GetSystemInfo (LPSYSTEM_INFO lpSystemInfo)
 {
     assert(lpSystemInfo != NULL);

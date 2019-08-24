@@ -8,6 +8,8 @@ extern "C"
 #endif
 
 void XReboot();
+
+__attribute__((deprecated))
 int  XGetTickCount();
 
 __attribute__((deprecated))
