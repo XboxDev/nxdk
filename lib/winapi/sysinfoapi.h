@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
+DWORD GetTickCount (void);
 
 // Unprovided fields are intentionally disabled to catch code trying to access them
 typedef struct _SYSTEM_INFO
