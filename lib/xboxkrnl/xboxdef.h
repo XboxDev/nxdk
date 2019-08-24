@@ -31,6 +31,8 @@ typedef const char *PCSZ, *PCSTR, *LPCSTR;
 typedef ULONG ULONG_PTR;
 typedef LONG LONG_PTR;
 
+typedef ULONG_PTR DWORD_PTR;
+
 typedef struct _STRING {
     USHORT Length;
     USHORT MaximumLength;
