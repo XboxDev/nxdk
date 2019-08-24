@@ -76,7 +76,7 @@ void main(void)
     matrix_viewport(m_viewport, 0, 0, width, height, 0, 65536.0f);
 
     /* Setup to determine frames rendered every second */
-    start = now = last = XGetTickCount();
+    start = now = last = GetTickCount();
     frames_total = frames = fps = 0;
 
     while(1) {
@@ -150,7 +150,7 @@ void main(void)
         frames_total++;
 
         /* Latch FPS counter every second */
-        now = XGetTickCount();
+        now = GetTickCount();
         if ((now-last) > 1000) {
             fps = frames;
             frames = 0;
