@@ -12,5 +12,5 @@
 _*.cpp
 _*.h
 samples/**/*.iso
-samples/**/*.lib
+*.lib
 !tools/cg/win/cgc.exe
