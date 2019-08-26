@@ -17,6 +17,7 @@ endif
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 LD           = lld -flavor link
+LIB          = llvm-lib
 AS           = clang
 CC           = clang
 CXX          = clang++
@@ -24,6 +25,7 @@ CGC          = $(NXDK_DIR)/tools/cg/linux/cgc
 endif
 ifeq ($(UNAME_S),Darwin)
 LD           = /usr/local/opt/llvm/bin/lld -flavor link
+LIB          = /usr/local/opt/llvm/bin/llvm-lib
 AS           = /usr/local/opt/llvm/bin/clang
 CC           = /usr/local/opt/llvm/bin/clang
 CXX          = /usr/local/opt/llvm/bin/clang++
@@ -34,6 +36,7 @@ $(error Please use a MinGW64 shell)
 endif
 ifneq (,$(findstring MINGW,$(UNAME_S)))
 LD           = lld-link
+LIB          = llvm-lib
 AS           = clang
 CC           = clang
 CXX          = clang++
@@ -67,12 +70,14 @@ endif
 NXDK_CFLAGS += $(CFLAGS)
 NXDK_CXXFLAGS += $(CXXFLAGS)
 
-include $(NXDK_DIR)/lib/Makefile
-OBJS = $(addsuffix .obj, $(basename $(SRCS)))
-
 ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
 endif
+
+all: $(TARGET)
+
+include $(NXDK_DIR)/lib/Makefile
+OBJS = $(addsuffix .obj, $(basename $(SRCS)))
 
 ifneq ($(NXDK_NET),)
 include $(NXDK_DIR)/lib/net/Makefile
@@ -97,8 +102,6 @@ endif
 DEPS := $(filter %.c.d, $(SRCS:.c=.c.d))
 DEPS += $(filter %.cpp.d, $(SRCS:.cpp=.cpp.d))
 
-all: $(TARGET)
-
 $(OUTPUT_DIR)/default.xbe: main.exe $(OUTPUT_DIR) $(CXBE)
 	@echo "[ CXBE     ] $@"
 	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $< $(QUIET)
@@ -117,6 +120,10 @@ $(SRCS): $(SHADER_OBJS)
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRTEntry -stack:$(NXDK_STACKSIZE) -safeseh:no $^
+
+%.lib:
+	@echo "[ LIB      ] $@"
+	$(VE) $(LIB) -out:'$@' $^
 
 %.obj: %.cpp
 	@echo "[ CXX      ] $@"
@@ -169,7 +176,7 @@ $(EXTRACT_XISO):
 	$(MAKE) $(QUIET))
 
 .PHONY: clean 
-clean:
+clean: $(CLEANRULES)
 	$(VE)rm -f $(TARGET) \
 	           main.exe main.exe.manifest main.lib \
 	           $(OBJS) $(SHADER_OBJS) $(DEPS) \
