@@ -4202,7 +4202,7 @@ XBAPI ULONG NTAPI DbgPrompt
  */
 XBAPI ULONG CDECL DbgPrint
 (
-    PCH Format,
+    PCSTR Format,
     ...
 );
 
