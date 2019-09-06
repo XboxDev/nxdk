@@ -81,6 +81,7 @@ void    pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1); //s
 void    pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
 void    pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
 void    pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+void    pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
 void    pb_push(DWORD *p, DWORD command, DWORD nparam);
 void    pb_push1(DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages (targets SUBCH_3D (0))
 void    pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
