@@ -2294,6 +2294,30 @@ void pb_end(DWORD *pEnd)
 }
 
 
+void pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
+{
+#ifdef DBG
+    if (p!=pb_PushNext)
+    {
+        debugPrint("pb_push_to: new write address invalid or not following previous write addresses\n");
+        assert(false);
+    }
+    if (pb_BeginEndPair==0)
+    {
+        debugPrint("pb_push_to: missing pb_begin earlier\n");
+        assert(false);
+    }
+    pb_PushIndex += 1 + nparam;
+    pb_PushNext += 1 + nparam;
+    if (pb_PushIndex>128)
+    {
+        debugPrint("pb_push_to: begin-end block musn't exceed 128 dwords\n");
+        assert(false);
+    }
+#endif
+
+    *(p+0)=EncodeMethod(subchannel,command,nparam);
+}
 
 void pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
 {
@@ -2357,6 +2381,10 @@ void pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD p
     *(p+4)=param4;
 }
 
+void pb_push(DWORD *p, DWORD command, DWORD nparam)
+{
+    pb_pushto(SUBCH_3D,p,command,nparam);
+}
 
 void pb_push1(DWORD *p, DWORD command, DWORD param1)
 {
