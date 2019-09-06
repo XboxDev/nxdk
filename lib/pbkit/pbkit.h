@@ -77,18 +77,18 @@ DWORD pb_wait_until_tiles_not_busy(void);
 
 DWORD   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
 void    pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam);
-void    pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages
-void    pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
-void    pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-void    pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-void    pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
+DWORD   *pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1);
+DWORD   *pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
+DWORD   *pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
+DWORD   *pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+DWORD   *pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
 void    pb_push(DWORD *p, DWORD command, DWORD nparam);
-void    pb_push1(DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages (targets SUBCH_3D (0))
-void    pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
-void    pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-void    pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-void    pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
-void    pb_push_transposed_matrix(DWORD *p, DWORD command, float *m);
+DWORD   *pb_push1(DWORD *p, DWORD command, DWORD param1);
+DWORD   *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
+DWORD   *pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
+DWORD   *pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+DWORD   *pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
+DWORD   *pb_push_transposed_matrix(DWORD *p, DWORD command, float *m);
 void    pb_end(DWORD *pEnd);    //end a block with this (triggers the data sending to GPU)
 
 void    pb_extra_buffers(int n);//requests additional back buffers (default is 0) (call it before pb_init)

@@ -2319,83 +2319,48 @@ void pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
     *(p+0)=EncodeMethod(subchannel,command,nparam);
 }
 
-void pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
+DWORD *pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push1to: new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push1to: missing pb_begin earlier\n");
-    pb_PushIndex+=2;
-    pb_PushNext+=2;
-    if (pb_PushIndex>128) debugPrint("pb_push1to: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(subchannel,command,1);
+    pb_pushto(subchannel,p,command,1);
     *(p+1)=param1;
+    return p+2;
 }
 
-void pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2)
+DWORD *pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push2to : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push2to : missing pb_begin earlier\n");
-    pb_PushIndex+=3;
-    pb_PushNext+=3;
-    if (pb_PushIndex>128) debugPrint("pb_push2to: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(subchannel,command,2);
+    pb_pushto(subchannel,p,command,2);
     *(p+1)=param1;
     *(p+2)=param2;
+    return p+3;
 }
 
-void pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
+DWORD *pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push3to : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push3to : missing pb_begin earlier\n");
-    pb_PushIndex+=4;
-    pb_PushNext+=4;
-    if (pb_PushIndex>128) debugPrint("pb_push3to: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(subchannel,command,3);
+    pb_pushto(subchannel,p,command,3);
     *(p+1)=param1;
     *(p+2)=param2;
     *(p+3)=param3;
+    return p+4;
 }
 
-void pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
+DWORD *pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push4to : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push4to : missing pb_begin earlier\n");
-    pb_PushIndex+=5;
-    pb_PushNext+=5;
-    if (pb_PushIndex>128) debugPrint("pb_push4to: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(subchannel,command,4);
+    pb_pushto(subchannel,p,command,4);
     *(p+1)=param1;
     *(p+2)=param2;
     *(p+3)=param3;
     *(p+4)=param4;
+    return p+5;
 }
 
-void pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
+DWORD *pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push4fto : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push4fto : missing pb_begin earlier\n");
-    pb_PushIndex+=5;
-    pb_PushNext+=5;
-    if (pb_PushIndex>128) debugPrint("pb_push4fto: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(subchannel,command,4);
+    pb_pushto(subchannel,p,command,4);
     *((float *)(p+1))=param1;
     *((float *)(p+2))=param2;
     *((float *)(p+3))=param3;
     *((float *)(p+4))=param4;
+    return p+5;
 }
 
 void pb_push(DWORD *p, DWORD command, DWORD nparam)
@@ -2403,96 +2368,34 @@ void pb_push(DWORD *p, DWORD command, DWORD nparam)
     pb_pushto(SUBCH_3D,p,command,nparam);
 }
 
-void pb_push1(DWORD *p, DWORD command, DWORD param1)
+DWORD *pb_push1(DWORD *p, DWORD command, DWORD param1)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push1: new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push1: missing pb_begin earlier\n");
-    pb_PushIndex+=2;
-    pb_PushNext+=2;
-    if (pb_PushIndex>128) debugPrint("pb_push1: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(SUBCH_3D,command,1);
-    *(p+1)=param1;
+    return pb_push1to(SUBCH_3D,p,command,param1);
 }
 
-void pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2)
+DWORD *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push2 : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push2 : missing pb_begin earlier\n");
-    pb_PushIndex+=3;
-    pb_PushNext+=3;
-    if (pb_PushIndex>128) debugPrint("pb_push2: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(SUBCH_3D,command,2);
-    *(p+1)=param1;
-    *(p+2)=param2;
+    return pb_push2to(SUBCH_3D,p,command,param1,param2);
 }
 
-void pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
+DWORD *pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push3 : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push3 : missing pb_begin earlier\n");
-    pb_PushIndex+=4;
-    pb_PushNext+=4;
-    if (pb_PushIndex>128) debugPrint("pb_push3: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(SUBCH_3D,command,3);
-    *(p+1)=param1;
-    *(p+2)=param2;
-    *(p+3)=param3;
+    return pb_push3to(SUBCH_3D,p,command,param1,param2,param3);
 }
 
-void pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
+DWORD *pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push4 : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push4 : missing pb_begin earlier\n");
-    pb_PushIndex+=5;
-    pb_PushNext+=5;
-    if (pb_PushIndex>128) debugPrint("pb_push4: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(SUBCH_3D,command,4);
-    *(p+1)=param1;
-    *(p+2)=param2;
-    *(p+3)=param3;
-    *(p+4)=param4;
+    return pb_push4to(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
-void pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
+DWORD *pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push4f : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push4f : missing pb_begin earlier\n");
-    pb_PushIndex+=5;
-    pb_PushNext+=5;
-    if (pb_PushIndex>128) debugPrint("pb_push4f: begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p+0)=EncodeMethod(SUBCH_3D,command,4);
-    *((float *)(p+1))=param1;
-    *((float *)(p+2))=param2;
-    *((float *)(p+3))=param3;
-    *((float *)(p+4))=param4;
+    return pb_push4fto(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
-void pb_push_transposed_matrix(DWORD *p, DWORD command, float *m)
+DWORD *pb_push_transposed_matrix(DWORD *p, DWORD command, float *m)
 {
-#ifdef DBG
-    if (p!=pb_PushNext) debugPrint("pb_push_transposed_matrix : new write address invalid or not following previous write addresses\n");
-    if (pb_BeginEndPair==0) debugPrint("pb_push_transposed_matrix : missing pb_begin earlier\n");
-    pb_PushIndex+=17;
-    pb_PushNext+=17;
-    if (pb_PushIndex>128) debugPrint("pb_push_transposed_matrix : begin-end block musn't exceed 128 dwords\n");
-#endif
-
-    *(p++)=EncodeMethod(SUBCH_3D,command,16);
+    pb_pushto(SUBCH_3D,p++,command,16);
 
     *((float *)p++)=m[_11];
     *((float *)p++)=m[_21];
@@ -2513,9 +2416,9 @@ void pb_push_transposed_matrix(DWORD *p, DWORD command, float *m)
     *((float *)p++)=m[_24];
     *((float *)p++)=m[_34];
     *((float *)p++)=m[_44];
+
+    return p;
 }
-
-
 
 
 
