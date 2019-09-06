@@ -76,12 +76,12 @@ void pb_wait_until_gr_not_busy(void);
 DWORD pb_wait_until_tiles_not_busy(void);
 
 DWORD   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
-void    pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam);
-DWORD   *pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1);
-DWORD   *pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
-DWORD   *pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-DWORD   *pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-DWORD   *pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
+void    pb_push_to(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam);
+DWORD   *pb_push1_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1);
+DWORD   *pb_push2_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
+DWORD   *pb_push3_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
+DWORD   *pb_push4_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+DWORD   *pb_push4f_to(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
 void    pb_push(DWORD *p, DWORD command, DWORD nparam);
 DWORD   *pb_push1(DWORD *p, DWORD command, DWORD param1);
 DWORD   *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
