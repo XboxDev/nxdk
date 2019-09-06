@@ -2264,7 +2264,16 @@ void pb_end(DWORD *pEnd)
 #endif
 
 #ifdef DBG
-    if (pb_BeginEndPair==0) debugPrint("pb_end without a pb_start\n");
+    if (pEnd!=pb_PushNext)
+    {
+        debugPrint("pb_end: input pointer invalid or not following previous write addresses\n");
+        assert(false);
+    }
+    if (pb_BeginEndPair==0)
+    {
+        debugPrint("pb_end without a pb_start\n");
+        assert(false);
+    }
     pb_BeginEndPair=0;
 #endif
 
