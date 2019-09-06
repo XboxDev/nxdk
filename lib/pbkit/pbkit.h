@@ -53,8 +53,6 @@ extern "C"
 #define SUBCH_3                 3
 #define SUBCH_4                 4
 
-//fastest way to write a method for subchannel 3D (0)
-#define pb_push(p,command,nparam)       *(p)=((nparam<<18)+command)
 
 void    pb_show_front_screen(void); //shows scene (allows VBL synced screen swapping)
 void    pb_show_debug_screen(void); //shows debug screen (default openxdk+SDL buffer)
@@ -78,10 +76,12 @@ void pb_wait_until_gr_not_busy(void);
 DWORD pb_wait_until_tiles_not_busy(void);
 
 DWORD   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
+void    pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam);
 void    pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages
 void    pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
 void    pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
 void    pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+void    pb_push(DWORD *p, DWORD command, DWORD nparam);
 void    pb_push1(DWORD *p, DWORD command, DWORD param1); //slow functions but with debug messages (targets SUBCH_3D (0))
 void    pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
 void    pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
