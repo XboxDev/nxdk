@@ -1891,7 +1891,7 @@ void pb_target_back_buffer(void)
     pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
     pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
     pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
+    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
     pb_end(p);
 
     depth_stencil=1;
@@ -2011,7 +2011,7 @@ void pb_target_extra_buffer(int index_buffer)
     pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
     pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
     pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
+    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
     pb_end(p);
     
     depth_stencil=1;
@@ -2303,7 +2303,7 @@ void pb_end(DWORD *pEnd)
 }
 
 
-void pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
+void pb_push_to(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
 {
 #ifdef DBG
     if (p!=pb_PushNext)
@@ -2328,33 +2328,33 @@ void pb_pushto(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
     *(p+0)=EncodeMethod(subchannel,command,nparam);
 }
 
-DWORD *pb_push1to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
+DWORD *pb_push1_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
 {
-    pb_pushto(subchannel,p,command,1);
+    pb_push_to(subchannel,p,command,1);
     *(p+1)=param1;
     return p+2;
 }
 
-DWORD *pb_push2to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2)
+DWORD *pb_push2_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2)
 {
-    pb_pushto(subchannel,p,command,2);
+    pb_push_to(subchannel,p,command,2);
     *(p+1)=param1;
     *(p+2)=param2;
     return p+3;
 }
 
-DWORD *pb_push3to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
+DWORD *pb_push3_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
-    pb_pushto(subchannel,p,command,3);
+    pb_push_to(subchannel,p,command,3);
     *(p+1)=param1;
     *(p+2)=param2;
     *(p+3)=param3;
     return p+4;
 }
 
-DWORD *pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
+DWORD *pb_push4_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
-    pb_pushto(subchannel,p,command,4);
+    pb_push_to(subchannel,p,command,4);
     *(p+1)=param1;
     *(p+2)=param2;
     *(p+3)=param3;
@@ -2362,9 +2362,9 @@ DWORD *pb_push4to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD
     return p+5;
 }
 
-DWORD *pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
+DWORD *pb_push4f_to(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
 {
-    pb_pushto(subchannel,p,command,4);
+    pb_push_to(subchannel,p,command,4);
     *((float *)(p+1))=param1;
     *((float *)(p+2))=param2;
     *((float *)(p+3))=param3;
@@ -2374,37 +2374,37 @@ DWORD *pb_push4fto(DWORD subchannel, DWORD *p, DWORD command, float param1, floa
 
 void pb_push(DWORD *p, DWORD command, DWORD nparam)
 {
-    pb_pushto(SUBCH_3D,p,command,nparam);
+    pb_push_to(SUBCH_3D,p,command,nparam);
 }
 
 DWORD *pb_push1(DWORD *p, DWORD command, DWORD param1)
 {
-    return pb_push1to(SUBCH_3D,p,command,param1);
+    return pb_push1_to(SUBCH_3D,p,command,param1);
 }
 
 DWORD *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2)
 {
-    return pb_push2to(SUBCH_3D,p,command,param1,param2);
+    return pb_push2_to(SUBCH_3D,p,command,param1,param2);
 }
 
 DWORD *pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
-    return pb_push3to(SUBCH_3D,p,command,param1,param2,param3);
+    return pb_push3_to(SUBCH_3D,p,command,param1,param2,param3);
 }
 
 DWORD *pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
-    return pb_push4to(SUBCH_3D,p,command,param1,param2,param3,param4);
+    return pb_push4_to(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
 DWORD *pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
 {
-    return pb_push4fto(SUBCH_3D,p,command,param1,param2,param3,param4);
+    return pb_push4f_to(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
 DWORD *pb_push_transposed_matrix(DWORD *p, DWORD command, float *m)
 {
-    pb_pushto(SUBCH_3D,p++,command,16);
+    pb_push_to(SUBCH_3D,p++,command,16);
 
     *((float *)p++)=m[_11];
     *((float *)p++)=m[_21];
@@ -3360,14 +3360,14 @@ int pb_init(void)
     //These commands assign DMA channels to push buffer subchannels
     //and associate some specific GPU parts to specific Dma channels
     p=pb_begin();
-    pb_push1to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14); p+=2;
-    pb_push1to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16); p+=2;
-    pb_push1to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17); p+=2;
-    pb_push1to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13); p+=2;
-    pb_push1to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7); p+=2;
-    pb_push1to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17); p+=2;
-    pb_push1to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3); p+=2;
-    pb_push2to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11); p+=3;
+    pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14); p+=2;
+    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16); p+=2;
+    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17); p+=2;
+    pb_push1_to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13); p+=2;
+    pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7); p+=2;
+    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17); p+=2;
+    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3); p+=2;
+    pb_push2_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11); p+=3;
     pb_end(p); //calls pb_start() which will trigger the reading and sending to GPU (asynchronous, no waiting)
 
     //setup needed for color computations
