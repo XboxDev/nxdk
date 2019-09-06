@@ -1863,16 +1863,16 @@ void pb_target_back_buffer(void)
     dma_addr|=3;
 
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); //set params addr,data
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9);
     pb_end(p);
 
     //DMA channel 11 is used by GPU in order to bitblt images
@@ -1882,16 +1882,16 @@ void pb_target_back_buffer(void)
     dma_addr|=3;
     
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); //set params addr,data
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11);
     pb_end(p);
 
     depth_stencil=1;
@@ -1919,32 +1919,32 @@ void pb_target_back_buffer(void)
         }
         
         p=pb_begin();
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); p+=2; //ZEnable=TRUE or FALSE (But don't use W, see below)
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1); p+=2;   //StencilEnable=TRUE
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); //set params addr,data
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); //ZEnable=TRUE or FALSE (But don't use W, see below)
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1);   //StencilEnable=TRUE
         pb_end(p);
 
         pb_DepthStencilLast=depth_stencil;
     }
 
     p=pb_begin();
-    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0); p+=4;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16); p+=3;
+    p=pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16);
     //Default (0x00100001)
     //We use W (0x00010000)
     //We don't enable YUV (0x10000000)
     //We don't use floating point depth (0x00001000)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_W_YUV_FPZ_FLAGS,0x00110001); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BUFFER_FORMAT,pb_GPUFrameBuffersFormat|pb_FBVFlag); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_W_YUV_FPZ_FLAGS,0x00110001);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BUFFER_FORMAT,pb_GPUFrameBuffersFormat|pb_FBVFlag);
     pb_end(p);
 }
 
@@ -1983,16 +1983,16 @@ void pb_target_extra_buffer(int index_buffer)
     dma_addr|=3;
 
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x08,dma_addr); //set params addr,data
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x0C,dma_addr);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x00,dma_flags);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID9Inst<<4)+0x04,dma_limit);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT3,9);
     pb_end(p);
 
     //DMA channel 11 is used by GPU in order to bitblt images
@@ -2002,16 +2002,16 @@ void pb_target_extra_buffer(int index_buffer)
     dma_addr|=3;
 
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit); p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x08,dma_addr); //set params addr,data
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x0C,dma_addr);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x00,dma_flags);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID11Inst<<4)+0x04,dma_limit);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+    p=pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT2,11);
     pb_end(p);
     
     depth_stencil=1;
@@ -2039,32 +2039,32 @@ void pb_target_extra_buffer(int index_buffer)
         }
         
         p=pb_begin();
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); p+=3; //set params addr,data
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit); p+=3;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); p+=2; //ZEnable=TRUE or FALSE (But don't use W, see below)
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1); p+=2;   //StencilEnable=TRUE
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x08,dma_addr); //set params addr,data
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(addr)=data
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x0C,dma_addr);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x00,dma_flags);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PRAMIN+(pb_DmaChID10Inst<<4)+0x04,dma_limit);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT4,10);
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_TEST_ENABLE,flag); //ZEnable=TRUE or FALSE (But don't use W, see below)
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_ENABLE,1);   //StencilEnable=TRUE
         pb_end(p);
 
         pb_DepthStencilLast=depth_stencil;
     }
 
     p=pb_begin();
-    pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0); p+=4;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16); p+=3;
+    p=pb_push3(p,NV20_TCL_PRIMITIVE_3D_BUFFER_PITCH,(pitch_depth_stencil<<16)|(pitch&0xFFFF),0,0);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_HORIZ,width<<16,height<<16);
     //Default (0x00100001)
     //We use W (0x00010000)
     //We don't enable YUV (0x10000000)
     //We don't use floating point depth (0x00001000)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_W_YUV_FPZ_FLAGS,0x00110001); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BUFFER_FORMAT,pb_GPUFrameBuffersFormat|pb_FBVFlag); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_W_YUV_FPZ_FLAGS,0x00110001);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BUFFER_FORMAT,pb_GPUFrameBuffersFormat|pb_FBVFlag);
     pb_end(p);
 }
 
@@ -2482,14 +2482,14 @@ void pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax)
     *((float *)&dwzmaxscaled)=zmax*pb_ZScale;
 /*
     p=pb_begin();
-    pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_OX,x+0.53125f,y+0.53125f,0.0f,0.0f); p+=5;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_DEPTH_RANGE_NEAR,dwzminscaled,dwzmaxscaled); p+=3;
+    p=pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_OX,x+0.53125f,y+0.53125f,0.0f,0.0f);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_DEPTH_RANGE_NEAR,dwzminscaled,dwzmaxscaled);
     pb_end(p);
 */
     p=pb_begin();
-    pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_OX,x+w,y-h,zmin*pb_ZScale,0.0f); p+=5;
-    pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_PX_DIV2,w,h,(zmax-zmin)*pb_ZScale,0.0f); p+=5;
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_DEPTH_RANGE_NEAR,dwzminscaled,dwzmaxscaled); p+=3;
+    p=pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_OX,x+w,y-h,zmin*pb_ZScale,0.0f);
+    p=pb_push4f(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_PX_DIV2,w,h,(zmax-zmin)*pb_ZScale,0.0f);
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_DEPTH_RANGE_NEAR,dwzminscaled,dwzmaxscaled);
     pb_end(p);
 }
 
@@ -2576,12 +2576,12 @@ int pb_finished(void)
 
     //insert in push buffer the commands to trigger screen swapping at next VBlank
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_ASK_FOR_IDLE,0); p+=2; //ask for idle
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_NOP,0); p+=2; //wait for idle
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2; //wait/makespace (obtains null status)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,pb_back_index); p+=2; //set param=back buffer index to show up
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_FINISHED); p+=2; //subprogID PB_FINISHED: gets frame ready to show up soon
-//  pb_push1(p,NV20_TCL_PRIMITIVE_3D_STALL_PIPELINE,0); p+=2; //stall gpu pipeline (not sure it's needed in triple buffering technic)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_ASK_FOR_IDLE,0); //ask for idle
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_NOP,0); //wait for idle
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); //wait/makespace (obtains null status)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,pb_back_index); //set param=back buffer index to show up
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_FINISHED); //subprogID PB_FINISHED: gets frame ready to show up soon
+//  p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STALL_PIPELINE,0); //stall gpu pipeline (not sure it's needed in triple buffering technic)
     pb_end(p);
 
     //insert in push buffer the commands to trigger selection of next back buffer
@@ -3360,14 +3360,14 @@ int pb_init(void)
     //These commands assign DMA channels to push buffer subchannels
     //and associate some specific GPU parts to specific Dma channels
     p=pb_begin();
-    pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14); p+=2;
-    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16); p+=2;
-    pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17); p+=2;
-    pb_push1_to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13); p+=2;
-    pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7); p+=2;
-    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17); p+=2;
-    pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3); p+=2;
-    pb_push2_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11); p+=3;
+    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14);
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16);
+    p=pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17);
+    p=pb_push1_to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13);
+    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7);
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17);
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3);
+    p=pb_push2_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11);
     pb_end(p); //calls pb_start() which will trigger the reading and sending to GPU (asynchronous, no waiting)
 
     //setup needed for color computations
@@ -3383,33 +3383,31 @@ int pb_init(void)
     *(p++)=3;
     *(p++)=3;
     *(p++)=8;
-    pb_push(p++,NV20_TCL_PRIMITIVE_3D_SET_OBJECT8,1);
-    *(p++)=12;
-    pb_push(p++,NV20_TCL_PRIMITIVE_3D_ACTIVATE_COLORS,1);
-    *(p++)=0;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT8,12);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_ACTIVATE_COLORS,0);
     pb_end(p);
 
     p=pb_begin();
-    pb_push1(p,NV097_SET_FLAT_SHADE_OP,1); p+=2; //FIRST_VTX 
-    pb_push4f(p,NV097_SET_EYE_POSITION,0.0f,0.0f,0.0f,1.0f); p+=5;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_EDGE_FLAG,1); p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_PREVIOUS,0x00210000); p+=2; //(PSTextureInput) What previous stage is used at each stage
-    pb_push1(p,NV097_SET_COMPRESS_ZBUFFER_EN,0); p+=2; //
-    pb_push1(p,NV097_SET_SHADOW_ZSLOPE_THRESHOLD,0x7F800000); p+=2;
-    pb_push1(p,NV097_SET_ZMIN_MAX_CONTROL,1); p+=2; //CULL_NEAR_FAR_EN_TRUE | ZCLAMP_EN_CULL | CULL_IGNORE_W_FALSE
+    p=pb_push1(p,NV097_SET_FLAT_SHADE_OP,1); //FIRST_VTX
+    p=pb_push4f(p,NV097_SET_EYE_POSITION,0.0f,0.0f,0.0f,1.0f);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_EDGE_FLAG,1);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_PREVIOUS,0x00210000); //(PSTextureInput) What previous stage is used at each stage
+    p=pb_push1(p,NV097_SET_COMPRESS_ZBUFFER_EN,0); //
+    p=pb_push1(p,NV097_SET_SHADOW_ZSLOPE_THRESHOLD,0x7F800000);
+    p=pb_push1(p,NV097_SET_ZMIN_MAX_CONTROL,1); //CULL_NEAR_FAR_EN_TRUE | ZCLAMP_EN_CULL | CULL_IGNORE_W_FALSE
     pb_end(p);
 
     p=pb_begin();
-    pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(0),pb_IdentityMatrix); p+=17;
-    pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(4),pb_IdentityMatrix); p+=17;
-    pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(8),pb_IdentityMatrix); p+=17;
-    pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(12),pb_IdentityMatrix); p+=17;
-/*  pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(0),0x2202);  p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(1),0x2202);  p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(2),0x2202);  p+=2;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(3),0x2202);  p+=2;
-*/  pb_push4f(p,NV097_SET_FOG_PLANE,0.0f,0.0f,1.0f,0.0f); p+=5;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_VP_UPLOAD_CONST_ID,0x0000003C); p+=2; //set shader constants cursor at C-36
+    p=pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(0),pb_IdentityMatrix);
+    p=pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(4),pb_IdentityMatrix);
+    p=pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(8),pb_IdentityMatrix);
+    p=pb_push_transposed_matrix(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_A(12),pb_IdentityMatrix);
+/*  p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(0),0x2202);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(1),0x2202);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(2),0x2202);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CLIP_PLANE_ENABLE(3),0x2202);
+*/  p=pb_push4f(p,NV097_SET_FOG_PLANE,0.0f,0.0f,1.0f,0.0f);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VP_UPLOAD_CONST_ID,0x0000003C); //set shader constants cursor at C-36
     pb_push(p++,NV20_TCL_PRIMITIVE_3D_VP_UPLOAD_CONST_X,12);        //loads C-36, C-35 & C-34
     memcpy(p,pb_FixedPipelineConstants,12*4); p+=12; //used by common xbox shaders, but I doubt we will use them.
     //(also usually C-37 is screen center offset Decals vector & c-38 is Scales vector)
@@ -3695,7 +3693,7 @@ int pb_init(void)
 
     p=pb_begin();
     n=pb_FrameBuffersCount; //(BackBufferCount+1)
-    pb_push3(p,NV20_TCL_PRIMITIVE_3D_MAIN_TILES_INDICES,0,1,n); p+=4;
+    p=pb_push3(p,NV20_TCL_PRIMITIVE_3D_MAIN_TILES_INDICES,0,1,n);
     pb_end(p);
 
     //set area where GPU is allowed to draw pixels
@@ -3703,16 +3701,16 @@ int pb_init(void)
 
     //set vertex shader type
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADER_TYPE,SHADER_TYPE_INTERNAL); p+=2;
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADER_TYPE,SHADER_TYPE_INTERNAL);
     pb_end(p);
 
     //no scissors (accept pixels in 8 rectangles covering all screen)
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_MODE,0); p+=2;   //accept pixels inside scissor rectangles union (1=reject)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_MODE,0);   //accept pixels inside scissor rectangles union (1=reject)
     for(i=0;i<8;i++)
     {
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_HORIZ(i),0|((vm.width*HScale-1)<<16)); p+=2;
-        pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_VERT(i),0|((vm.height*VScale-1)<<16)); p+=2;
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_HORIZ(i),0|((vm.width*HScale-1)<<16));
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VIEWPORT_CLIP_VERT(i),0|((vm.height*VScale-1)<<16));
     }
     pb_end(p);
 
@@ -3721,96 +3719,95 @@ int pb_init(void)
 
     //various intial settings (simple states)
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_FUNC,0x203); p+=2; //Depth comparison function="less or equal"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_FUNC,0x207); p+=2; //Alpha comparison function="always"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_ENABLE,0); p+=2; //AlphaBlendEnable=FALSE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_ENABLE,0); p+=2; //AlphaTestEnable=FALSE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_REF,0); p+=2; //AlphaRef=0 
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_SRC,1); p+=2; //SrcBlend=(1,1,1,1)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_DST,0); p+=2; //DstBlend=(0,0,0,0) 
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_WRITE_ENABLE,1); p+=2; //ZWriteEnable=TRUE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_DITHER_ENABLE,0); p+=2; //DitherEnable=FALSE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADE_MODEL,0x1D01); p+=2; //ShadeMode="gouraud"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_COLOR_MASK,0x01010101); p+=2; // ColorWriteEnable=abgr
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_ZFAIL,0x1E00); p+=2; //StencilZFail="keep"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_ZPASS,0x1E00); p+=2; //StencilPass="keep"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_FUNC,0x207); p+=2; // Stencil comparison function="always"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_REF,0); p+=2; //StencilRef=0
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_MASK,0xFFFFFFFF); p+=2; //StencilMask=0xFFFFFFFF
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_MASK,0xFFFFFFFF); p+=2; //StencilWriteMask=0xFFFFFFFF
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_EQUATION,0x8006); p+=2; //Blend operator="add"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_COLOR,0); p+=2; //BlendColor=0x000000 
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SWATHWIDTH,4); p+=2; //SwathWidth=128 
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_FACTOR,0); p+=2; //PolygonOffZSlopeScale=0.0f (because ZBias=0.0f)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_UNITS,0); p+=2; //PolygonOffZOffset=0.0f (because ZBias=0.0f)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_POINT_ENABLE,0); p+=2; //PtOffEnable=FALSE (because ZBias=0.0f)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_LINE_ENABLE,0); p+=2; //WireFrameOffEnable=FALSE (because ZBias=0.0f)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_FILL_ENABLE,0); p+=2; //SolidOffEnable=FALSE (because ZBias=0.0f)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_FUNC,0x203); //Depth comparison function="less or equal"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_FUNC,0x207); //Alpha comparison function="always"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_ENABLE,0); //AlphaBlendEnable=FALSE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_ENABLE,0); //AlphaTestEnable=FALSE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_ALPHA_FUNC_REF,0); //AlphaRef=0
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_SRC,1); //SrcBlend=(1,1,1,1)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_FUNC_DST,0); //DstBlend=(0,0,0,0)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_DEPTH_WRITE_ENABLE,1); //ZWriteEnable=TRUE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_DITHER_ENABLE,0); //DitherEnable=FALSE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADE_MODEL,0x1D01); //ShadeMode="gouraud"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_COLOR_MASK,0x01010101); // ColorWriteEnable=abgr
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_ZFAIL,0x1E00); //StencilZFail="keep"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_ZPASS,0x1E00); //StencilPass="keep"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_FUNC,0x207); // Stencil comparison function="always"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_REF,0); //StencilRef=0
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_FUNC_MASK,0xFFFFFFFF); //StencilMask=0xFFFFFFFF
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_MASK,0xFFFFFFFF); //StencilWriteMask=0xFFFFFFFF
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_EQUATION,0x8006); //Blend operator="add"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_BLEND_COLOR,0); //BlendColor=0x000000
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SWATHWIDTH,4); //SwathWidth=128
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_FACTOR,0); //PolygonOffZSlopeScale=0.0f (because ZBias=0.0f)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_UNITS,0); //PolygonOffZOffset=0.0f (because ZBias=0.0f)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_POINT_ENABLE,0); //PtOffEnable=FALSE (because ZBias=0.0f)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_LINE_ENABLE,0); //WireFrameOffEnable=FALSE (because ZBias=0.0f)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_POLYGON_OFFSET_FILL_ENABLE,0); //SolidOffEnable=FALSE (because ZBias=0.0f)
     pb_end(p);
 
     //various intial settings (complex states)
     p=pb_begin();
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_VERTEX_BLEND_ENABLE,0); p+=2; //VertexBlend="disable"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_COLOR,0); p+=2; //FogColor=0x000000
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_POLYGON_MODE_FRONT,0x1B02,0x1B02); p+=3; //FillMode="solid" BackFillMode="point"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_NORMALIZE_ENABLE,0); p+=2; //NormalizeNormals=FALSE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_FAIL,0x1E00); p+=2; //StencilFail="keep"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FRONT_FACE,0x900); p+=2; //FrontFace="clockwise"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_FACE_ENABLE,1); p+=2;//CullModeEnable=TRUE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_FACE,0x405); p+=2; //CullMode="FrontFace opposite" (counterclockwise)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_COLOR_LOGIC_OP_ENABLE,0); p+=2; //Logic operator="none"
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_LINE_SMOOTH_ENABLE,0,0); p+=3; //EdgeAntiAlias=0
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_MULTISAMPLE,0xFFFF0001); p+=2; //MultiSampleAntiAliasing=TRUE & MultiSampleMask=0xFFFF
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADOW_FUNC_FUNC,0); p+=2; //Shadow comparison function="never"
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_LINE_WIDTH,(DWORD)(1.0f*8.0f*pb_GlobalScale+0.5f)); p+=2; //LineWidth=1.0f =>8 (0-511)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2; //prepare subprogram call (wait/makespace, will obtain null status)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,1); p+=2; //set parameter for subprogram (TRUE)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETNOISE); p+=2; //call subprogID PB_SETNOISE: Dxt1NoiseEnable=TRUE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_ENABLE,3); p+=2; //bit0:OcclusionCullEnable=TRUE & bit1:StencilCullEnable=TRUE
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); p+=2; //prepare subprogram call (wait/makespace, will obtain null status)
-    pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_DEBUG_5,NV_PGRAPH_DEBUG_5_ZCULL_SPARE2_ENABLED); p+=3; //set parameters A & B: DoNotCullUncompressed=FALSE (|8 otherwise)
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VERTEX_BLEND_ENABLE,0); //VertexBlend="disable"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_COLOR,0); //FogColor=0x000000
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_POLYGON_MODE_FRONT,0x1B02,0x1B02); //FillMode="solid" BackFillMode="point"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_NORMALIZE_ENABLE,0); //NormalizeNormals=FALSE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_STENCIL_OP_FAIL,0x1E00); //StencilFail="keep"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FRONT_FACE,0x900); //FrontFace="clockwise"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_FACE_ENABLE,1);//CullModeEnable=TRUE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_FACE,0x405); //CullMode="FrontFace opposite" (counterclockwise)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_COLOR_LOGIC_OP_ENABLE,0); //Logic operator="none"
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_LINE_SMOOTH_ENABLE,0,0); //EdgeAntiAlias=0
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_MULTISAMPLE,0xFFFF0001); //MultiSampleAntiAliasing=TRUE & MultiSampleMask=0xFFFF
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_SHADOW_FUNC_FUNC,0); //Shadow comparison function="never"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_LINE_WIDTH,(DWORD)(1.0f*8.0f*pb_GlobalScale+0.5f)); //LineWidth=1.0f =>8 (0-511)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); //prepare subprogram call (wait/makespace, will obtain null status)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,1); //set parameter for subprogram (TRUE)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETNOISE); //call subprogID PB_SETNOISE: Dxt1NoiseEnable=TRUE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_CULL_ENABLE,3); //bit0:OcclusionCullEnable=TRUE & bit1:StencilCullEnable=TRUE
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_WAIT_MAKESPACE,0); //prepare subprogram call (wait/makespace, will obtain null status)
+    p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_DEBUG_5,NV_PGRAPH_DEBUG_5_ZCULL_SPARE2_ENABLED); //set parameters A & B: DoNotCullUncompressed=FALSE (|8 otherwise)
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
     if (VIDEOREG(NV_PBUS_ROM_VERSION)&NV_PBUS_ROM_VERSION_MASK)
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_UNKNOWN_400B80,(0x45EAD10F&~0x18100000)); //RopZCmpAlwaysRead=FALSE (bit27) & RopZRead=FALSE (bit20)
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_UNKNOWN_400B80,(0x45EAD10F&~0x18100000)); //RopZCmpAlwaysRead=FALSE (bit27) & RopZRead=FALSE (bit20)
     else
-        pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_UNKNOWN_400B80,(0x45EAD10E&~0x18100000));
-    p+=3;
-    pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); p+=2; //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
+        p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_PARAMETER_A,NV_PGRAPH_UNKNOWN_400B80,(0x45EAD10E&~0x18100000));
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
     pb_end(p);
 
 
     //various intial settings (texture stages states)
     p=pb_begin();
-    pb_push1(p,0x1b68,0); p+=2; //texture stage 1 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
-    pb_push1(p,0x1b6c,0); p+=2; //texture stage 1 BumpEnvMat01=0.0f
-    pb_push1(p,0x1b70,0); p+=2;//texture stage 1 BumpEnvMat11=0.0f
-    pb_push1(p,0x1b74,0); p+=2; //texture stage 1 BumpEnvMat10=0.0f
-    pb_push1(p,0x1b78,0); p+=2; //texture stage 1 BumpEnvMatLightScale=0.0f
-    pb_push1(p,0x1b7c,0); p+=2; //texture stage 1 BumpEnvMatLightOffset=0.0f
-    pb_push3(p,0x03c0,0,0,0); p+=4; //texture stages 0 TexCoordIndex="passthru"
-    pb_push1(p,0x1b24,0); p+=2; //texture stage 0 BorderColor=0x000000
-    pb_push1(p,0x0ae0,0); p+=2; //texture stage 0 ColorKeyColor=0x000000
-    pb_push1(p,0x1ba8,0); p+=2; //texture stage 2 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
-    pb_push1(p,0x1bac,0); p+=2; //texture stage 2 BumpEnvMat01=0.0f
-    pb_push1(p,0x1bb0,0); p+=2;//texture stage 2 BumpEnvMat11=0.0f
-    pb_push1(p,0x1bb4,0); p+=2; //texture stage 2 BumpEnvMat10=0.0f
-    pb_push1(p,0x1bb8,0); p+=2; //texture stage 2 BumpEnvMatLightScale=0.0f
-    pb_push1(p,0x1bbc,0); p+=2; //texture stage 2 BumpEnvMatLightOffset=0.0f
-    pb_push3(p,0x03d0,0,0,0); p+=4; //texture stages 1 TexCoordIndex="passthru"
-    pb_push1(p,0x1b64,0); p+=2; //texture stage 1 BorderColor=0x000000
-    pb_push1(p,0x0ae4,0); p+=2; //texture stage 1 ColorKeyColor=0x000000
-    pb_push1(p,0x1be8,0); p+=2; //texture stage 3 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
-    pb_push1(p,0x1bec,0); p+=2; //texture stage 3 BumpEnvMat01=0.0f
-    pb_push1(p,0x1bf0,0); p+=2;//texture stage 3 BumpEnvMat11=0.0f
-    pb_push1(p,0x1bf4,0); p+=2; //texture stage 3 BumpEnvMat10=0.0f
-    pb_push1(p,0x1bf8,0); p+=2; //texture stage 3 BumpEnvMatLightScale=0.0f
-    pb_push1(p,0x1bfc,0); p+=2; //texture stage 3 BumpEnvMatLightOffset=0.0f
-    pb_push3(p,0x03e0,0,0,0); p+=4; //texture stages 2 TexCoordIndex="passthru"
-    pb_push1(p,0x1ba4,0); p+=2; //texture stage 2 BorderColor=0x000000
-    pb_push1(p,0x0ae8,0); p+=2; //texture stage 2 ColorKeyColor=0x000000
-    pb_push3(p,0x03f0,0,0,0); p+=4; //texture stages 3 TexCoordIndex="passthru"
-    pb_push1(p,0x1be4,0); p+=2; //texture stage 3 BorderColor=0x000000
-    pb_push1(p,0x0aec,0); p+=2; //texture stage 3 ColorKeyColor=0x000000
+    p=pb_push1(p,0x1b68,0); //texture stage 1 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
+    p=pb_push1(p,0x1b6c,0); //texture stage 1 BumpEnvMat01=0.0f
+    p=pb_push1(p,0x1b70,0);//texture stage 1 BumpEnvMat11=0.0f
+    p=pb_push1(p,0x1b74,0); //texture stage 1 BumpEnvMat10=0.0f
+    p=pb_push1(p,0x1b78,0); //texture stage 1 BumpEnvMatLightScale=0.0f
+    p=pb_push1(p,0x1b7c,0); //texture stage 1 BumpEnvMatLightOffset=0.0f
+    p=pb_push3(p,0x03c0,0,0,0); //texture stages 0 TexCoordIndex="passthru"
+    p=pb_push1(p,0x1b24,0); //texture stage 0 BorderColor=0x000000
+    p=pb_push1(p,0x0ae0,0); //texture stage 0 ColorKeyColor=0x000000
+    p=pb_push1(p,0x1ba8,0); //texture stage 2 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
+    p=pb_push1(p,0x1bac,0); //texture stage 2 BumpEnvMat01=0.0f
+    p=pb_push1(p,0x1bb0,0);//texture stage 2 BumpEnvMat11=0.0f
+    p=pb_push1(p,0x1bb4,0); //texture stage 2 BumpEnvMat10=0.0f
+    p=pb_push1(p,0x1bb8,0); //texture stage 2 BumpEnvMatLightScale=0.0f
+    p=pb_push1(p,0x1bbc,0); //texture stage 2 BumpEnvMatLightOffset=0.0f
+    p=pb_push3(p,0x03d0,0,0,0); //texture stages 1 TexCoordIndex="passthru"
+    p=pb_push1(p,0x1b64,0); //texture stage 1 BorderColor=0x000000
+    p=pb_push1(p,0x0ae4,0); //texture stage 1 ColorKeyColor=0x000000
+    p=pb_push1(p,0x1be8,0); //texture stage 3 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
+    p=pb_push1(p,0x1bec,0); //texture stage 3 BumpEnvMat01=0.0f
+    p=pb_push1(p,0x1bf0,0);//texture stage 3 BumpEnvMat11=0.0f
+    p=pb_push1(p,0x1bf4,0); //texture stage 3 BumpEnvMat10=0.0f
+    p=pb_push1(p,0x1bf8,0); //texture stage 3 BumpEnvMatLightScale=0.0f
+    p=pb_push1(p,0x1bfc,0); //texture stage 3 BumpEnvMatLightOffset=0.0f
+    p=pb_push3(p,0x03e0,0,0,0); //texture stages 2 TexCoordIndex="passthru"
+    p=pb_push1(p,0x1ba4,0); //texture stage 2 BorderColor=0x000000
+    p=pb_push1(p,0x0ae8,0); //texture stage 2 ColorKeyColor=0x000000
+    p=pb_push3(p,0x03f0,0,0,0); //texture stages 3 TexCoordIndex="passthru"
+    p=pb_push1(p,0x1be4,0); //texture stage 3 BorderColor=0x000000
+    p=pb_push1(p,0x0aec,0); //texture stage 3 ColorKeyColor=0x000000
     pb_end(p);
 
     memset((DWORD *)pb_FBAddr[0],0,pb_FBSize);
