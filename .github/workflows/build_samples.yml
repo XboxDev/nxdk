@@ -1,0 +1,49 @@
+name: Build Samples
+
+on: [push, pull_request]
+
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: Install MSYS2 & Dependencies
+        run: |
+          choco install msys2 --no-progress
+          C:\tools\msys64\usr\bin\bash.exe -lc "pacman --needed --noconfirm -S make bison flex mingw-w64-x86_64-llvm mingw-w64-x86_64-clang mingw-w64-x86_64-lld cmake"
+      - name: Build
+        env:
+          MSYS2_ARCH: x86_64
+          MSYSTEM: MINGW64
+        run: C:\tools\msys64\usr\bin\bash.exe -lc "cd $(cygpath $env:GITHUB_WORKSPACE) && ./.ci_build_samples.sh"
+  macos:
+    name: macOS
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: |
+          export HOMEBREW_NO_INSTALL_CLEANUP=1
+          brew update && brew install llvm
+      - name: Build
+        run: sh ./.ci_build_samples.sh
+  ubuntu:
+    name: Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y flex bison clang lld
+      - name: Build
+        run: |
+          export PATH=$PATH:/usr/lib/llvm-6.0/bin
+          sh ./.ci_build_samples.sh
+
