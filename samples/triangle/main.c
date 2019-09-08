@@ -6,6 +6,8 @@
 #include <hal/xbox.h>
 #include <math.h>
 #include <pbkit/pbkit.h>
+#include <xgu/xgu.h>
+#include <xgu/xgux.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,8 +43,6 @@ static const ColoredVertex verts[] = {
 
 static void matrix_viewport(float out[4][4], float x, float y, float width, float height, float z_min, float z_max);
 static void init_shader(void);
-static void set_attrib_pointer(unsigned int index, unsigned int format, unsigned int size, unsigned int stride, const void* data);
-static void draw_arrays(unsigned int mode, int start, int count);
 
 /* Main program function */
 int main(void)
@@ -84,8 +84,8 @@ int main(void)
         pb_target_back_buffer();
 
         /* Clear depth & stencil buffers */
-        pb_erase_depth_stencil_buffer(0, 0, width, height);
-        pb_fill(0, 0, width, height, 0x00000000);
+        pb_erase_depth_stencil_buffer(0, 0, width, height); //FIXME: Do in XGU
+        pb_fill(0, 0, width, height, 0x00000000); //FIXME: Do in XGU
         pb_erase_text_screen();
 
         while(pb_busy()) {
@@ -101,32 +101,30 @@ int main(void)
         p = pb_begin();
 
         /* Set shader constants cursor at C0 */
-        p = pb_push1(p, NV097_SET_TRANSFORM_CONSTANT_LOAD, 96);
+        p = xgu_set_transform_constant_load(p, 96);
 
         /* Send the transformation matrix */
-        pb_push(p++, NV097_SET_TRANSFORM_CONSTANT, 16);
-        memcpy(p, m_viewport, 16*4); p+=16;
+        p = xgu_set_transform_constant(p, m_viewport, 4);
 
         pb_end(p);
         p = pb_begin();
 
         /* Clear all attributes */
-        pb_push(p++, NV097_SET_VERTEX_DATA_ARRAY_FORMAT,16);
         for(i = 0; i < 16; i++) {
-            *(p++) = NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F;
+          p = xgu_set_vertex_data_array_format(p, i, XGU_FLOAT, 0, 0);
         }
         pb_end(p);
 
         /* Set vertex position attribute */
-        set_attrib_pointer(0, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
+        set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT,
                            3, sizeof(ColoredVertex), &alloc_vertices[0]);
 
         /* Set vertex diffuse color attribute */
-        set_attrib_pointer(3, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
+        set_attrib_pointer(XGU_COLOR_ARRAY, XGU_FLOAT,
                            3, sizeof(ColoredVertex), &alloc_vertices[3]);
 
         /* Begin drawing triangles */
-        draw_arrays(NV097_SET_BEGIN_END_OP_TRIANGLES, 0, num_vertices);
+        draw_arrays(XGU_TRIANGLES, 0, num_vertices);
 
         /* Draw some text on the screen */
         pb_print("Triangle Demo\n");
@@ -191,30 +189,17 @@ static void init_shader(void)
     p = pb_begin();
 
     /* Set run address of shader */
-    p = pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_START, 0);
+    p = xgu_set_transform_program_start(p, 0);
 
     /* Set execution mode */
-    p = pb_push1(p, NV097_SET_TRANSFORM_EXECUTION_MODE,
-                 MASK(NV097_SET_TRANSFORM_EXECUTION_MODE_MODE, NV097_SET_TRANSFORM_EXECUTION_MODE_MODE_PROGRAM)
-                 | MASK(NV097_SET_TRANSFORM_EXECUTION_MODE_RANGE_MODE, NV097_SET_TRANSFORM_EXECUTION_MODE_RANGE_MODE_PRIV));
+    p = xgu_set_transform_execution_mode(p, XGU_PROGRAM, XGU_RANGE_MODE_PRIVATE);
+    p = xgu_set_transform_program_cxt_write_enable(p, false);
 
-    p = pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_CXT_WRITE_EN, 0);
+    /* Set cursor and begin copying program */
+    p = xgu_set_transform_program_load(p, 0);
+    p = xgu_set_transform_program(p, vs_program, sizeof(vs_program)/16);
 
     pb_end(p);
-
-    /* Set cursor for program upload */
-    p = pb_begin();
-    p = pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_LOAD, 0);
-    pb_end(p);
-
-    /* Copy program instructions (16-bytes each) */
-    for (i=0; i<sizeof(vs_program)/16; i++) {
-        p = pb_begin();
-        pb_push(p++, NV097_SET_TRANSFORM_PROGRAM, 4);
-        memcpy(p, &vs_program[i*4], 4*4);
-        p+=4;
-        pb_end(p);
-    }
 
     /* Setup fragment shader */
     p = pb_begin();
@@ -223,26 +208,20 @@ static void init_shader(void)
 }
 
 /* Set an attribute pointer */
-static void set_attrib_pointer(unsigned int index, unsigned int format, unsigned int size, unsigned int stride, const void* data)
+static void set_attrib_pointer(XguVertexArray index, XguVertexArrayType format, unsigned int size, unsigned int stride, const void* data)
 {
     uint32_t *p = pb_begin();
-    p = pb_push1(p, NV097_SET_VERTEX_DATA_ARRAY_FORMAT + index*4,
-                 MASK(NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE, format) | \
-                 MASK(NV097_SET_VERTEX_DATA_ARRAY_FORMAT_SIZE, size) |  \
-                 MASK(NV097_SET_VERTEX_DATA_ARRAY_FORMAT_STRIDE, stride));
-    p = pb_push1(p, NV097_SET_VERTEX_DATA_ARRAY_OFFSET + index*4, (uint32_t)data & 0x03ffffff);
-    pb_end(p);
+    p = xgu_set_vertex_data_array_format(p, index, format, size, stride);
+    p = xgu_set_vertex_data_array_offset(p, index, (uint32_t)data & 0x03ffffff);
+    p = pb_end(p);
 }
 
 /* Send draw commands for the triangles */
-static void draw_arrays(unsigned int mode, int start, int count)
+static void draw_arrays(XguPrimitiveType mode, int start, int count)
 {
     uint32_t *p = pb_begin();
-    p = pb_push1(p, NV097_SET_BEGIN_END, mode);
-
-    p = pb_push1(p, 0x40000000|NV097_DRAW_ARRAYS, //bit 30 means all params go to same register 0x1810
-                 MASK(NV097_DRAW_ARRAYS_COUNT, (count-1)) | MASK(NV097_DRAW_ARRAYS_START_INDEX, start));
-
-    p = pb_push1(p, NV097_SET_BEGIN_END, NV097_SET_BEGIN_END_OP_END);
-    pb_end(p);
+    p = xgu_begin(p, mode);
+    p = xgu_draw_arrays(p, start, count);
+    p = xgu_end(p);
+    p = pb_end(p);
 }
