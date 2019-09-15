@@ -112,9 +112,9 @@ DWORD   pb_back_buffer_width(void);
 DWORD   pb_back_buffer_height(void);
 DWORD   pb_back_buffer_pitch(void);
 
-void    pb_fill(int x,int y,int w,int h, DWORD color);  //rectangle fill
+void    pb_fill(int x,int y,int w,int h, DWORD color) __attribute__ ((deprecated));  //rectangle fill
 
-void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax);
+void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax) __attribute__ ((deprecated));
 
 int pb_busy(void);
 
