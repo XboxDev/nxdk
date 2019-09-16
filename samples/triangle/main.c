@@ -116,15 +116,15 @@ int main(void)
         pb_end(p);
 
         /* Set vertex position attribute */
-        set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT,
+        xgux_set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT,
                            3, sizeof(ColoredVertex), &alloc_vertices[0]);
 
         /* Set vertex diffuse color attribute */
-        set_attrib_pointer(XGU_COLOR_ARRAY, XGU_FLOAT,
+        xgux_set_attrib_pointer(XGU_COLOR_ARRAY, XGU_FLOAT,
                            3, sizeof(ColoredVertex), &alloc_vertices[3]);
 
         /* Begin drawing triangles */
-        draw_arrays(XGU_TRIANGLES, 0, num_vertices);
+        xgux_draw_arrays(XGU_TRIANGLES, 0, num_vertices);
 
         /* Draw some text on the screen */
         pb_print("Triangle Demo\n");
@@ -205,23 +205,4 @@ static void init_shader(void)
     p = pb_begin();
     #include "ps.inl"
     pb_end(p);
-}
-
-/* Set an attribute pointer */
-static void set_attrib_pointer(XguVertexArray index, XguVertexArrayType format, unsigned int size, unsigned int stride, const void* data)
-{
-    uint32_t *p = pb_begin();
-    p = xgu_set_vertex_data_array_format(p, index, format, size, stride);
-    p = xgu_set_vertex_data_array_offset(p, index, (uint32_t)data & 0x03ffffff);
-    p = pb_end(p);
-}
-
-/* Send draw commands for the triangles */
-static void draw_arrays(XguPrimitiveType mode, int start, int count)
-{
-    uint32_t *p = pb_begin();
-    p = xgu_begin(p, mode);
-    p = xgu_draw_arrays(p, start, count);
-    p = xgu_end(p);
-    p = pb_end(p);
 }
