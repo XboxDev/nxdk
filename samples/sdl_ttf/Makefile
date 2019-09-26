@@ -1,4 +1,3 @@
-DEBUG = y
 XBE_TITLE = sdl_ttf
 GEN_XISO = $(XBE_TITLE).iso
 SRCS += $(CURDIR)/main.c
