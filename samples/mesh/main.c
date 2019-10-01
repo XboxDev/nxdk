@@ -354,7 +354,7 @@ static void set_attrib_pointer(unsigned int index, unsigned int format, unsigned
 static void draw_indices(void)
 {
     /* Indices are already packed as dwords, so we simply send them out in batches */
-    #define MAX(a,b) ((a)>(b)?(a):(b))
+    #define MIN(a,b) ((a)<(b)?(a):(b))
     #define MAX_BATCH 120
 
     DWORD *p;
@@ -362,7 +362,7 @@ static void draw_indices(void)
 
     for (i = 0; i < num_indices; ) {
         /* Determine how many can be sent in this batch */
-        num_this_batch = MAX(MAX_BATCH, num_indices-i);
+        num_this_batch = MIN(MAX_BATCH, num_indices-i);
 
         /* Begin by stating what these indices are and how many we'll send */
         p = pb_begin();
