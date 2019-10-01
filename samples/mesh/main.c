@@ -18,7 +18,6 @@
 #include "math3d.h"
 
 static uint32_t *alloc_vertices;
-static uint32_t *alloc_indices;
 static uint32_t  num_vertices;
 static uint32_t  num_indices;
 
@@ -96,9 +95,6 @@ void main(void)
     alloc_vertices = MmAllocateContiguousMemoryEx(sizeof(vertices), 0, MAXRAM, 0, 0x404);
     memcpy(alloc_vertices, vertices, sizeof(vertices));
     num_vertices = sizeof(vertices)/sizeof(vertices[0]);
-
-    alloc_indices = MmAllocateContiguousMemoryEx(sizeof(indices), 0, MAXRAM, 0, 0x404);
-    memcpy(alloc_indices, indices, sizeof(indices));
     num_indices = sizeof(indices)/sizeof(indices[0]);
 
     /* Setup to determine frames rendered every second */
