@@ -16,5 +16,6 @@ SRCS += \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/_fltused.c \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/check_stack.c \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/chkstk.s \
+	$(NXDK_DIR)/lib/xboxrt/vcruntime/purecall.c \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_exception.cpp \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.cpp
