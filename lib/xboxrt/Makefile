@@ -2,6 +2,7 @@ SRCS += \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/stat.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/strings.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/wchar.c \
+	$(NXDK_DIR)/lib/xboxrt/libc_extensions/string_ext_.c \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/_alldiv.s \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/_allmul.s \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/_allrem.s \
