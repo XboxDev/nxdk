@@ -204,17 +204,22 @@ static void init_shader(void)
     pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_CXT_WRITE_EN, 0);
     p += 2;
 
-    /* Set cursor and begin copying program */
+    pb_end(p);
+
+    /* Set cursor for program upload */
+    p = pb_begin();
     pb_push1(p, NV097_SET_TRANSFORM_PROGRAM_LOAD, 0);
     p += 2;
+    pb_end(p);
 
-    for (i=0; i<sizeof(vs_program)/8; i++) {
+    /* Copy program instructions (16-bytes each) */
+    for (i=0; i<sizeof(vs_program)/16; i++) {
+        p = pb_begin();
         pb_push(p++, NV097_SET_TRANSFORM_PROGRAM, 4);
         memcpy(p, &vs_program[i*4], 4*4);
         p+=4;
+        pb_end(p);
     }
-
-    pb_end(p);
 
     /* Setup fragment shader */
     p = pb_begin();
