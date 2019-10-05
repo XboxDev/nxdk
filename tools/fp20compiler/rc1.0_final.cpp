@@ -115,7 +115,7 @@ static void GenerateFinalInput(char var, MappedRegisterStruct reg) {
     int num = (var >= 'E') ? 1 : 0;
     printf("MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW%d_%c_SOURCE, 0x%x)", num, var, reg.reg.bits.name);
     printf(" | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW%d_%c_ALPHA, %d)", num, var,
-            reg.reg.bits.channel == RCP_ALPHA); //TODO: Blue
+            reg.reg.bits.channel == RCP_ALPHA);
     printf(" | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW%d_%c_INVERSE, %d)", num, var,
             (reg.map == MAP_UNSIGNED_INVERT));
 }
