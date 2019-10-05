@@ -60,6 +60,17 @@ void GeneralCombinersStruct::Invoke()
     //         glDisable(GL_PER_STAGE_CONSTANTS_NV);
     // }
     // assert(false);
+
+    printf("pb_push1(p, NV097_SET_COMBINER_CONTROL,");
+    printf("\n    MASK(NV097_SET_COMBINER_CONTROL_FACTOR0, %s)",
+        localConsts > 0 ? "NV097_SET_COMBINER_CONTROL_FACTOR0_EACH_STAGE"
+                : "NV097_SET_COMBINER_CONTROL_FACTOR0_SAME_FACTOR_ALL");
+    printf("\n    | MASK(NV097_SET_COMBINER_CONTROL_FACTOR1, %s)",
+        localConsts > 0 ? "NV097_SET_COMBINER_CONTROL_FACTOR1_EACH_STAGE"
+                : "NV097_SET_COMBINER_CONTROL_FACTOR1_SAME_FACTOR_ALL");
+    printf("\n    | MASK(NV097_SET_COMBINER_CONTROL_ITERATION_COUNT, %d)", num);
+    printf(");\n");
+    printf("p += 2;\n");
 }
 
 void GeneralCombinerStruct::ZeroOut()
@@ -136,9 +147,19 @@ void GeneralCombinerStruct::Invoke(int stage)
             assert(false);
             break;
         }
-        printf("pb_push4f(p, %s + %d * 4, %f, %f, %f, %f);\n", cmd, i,
-            cc[i].v[0], cc[i].v[1], cc[i].v[2], cc[i].v[3]);
-        printf("p += 5;\n");
+
+        assert(cc[i].v[0] >= 0.0f && cc[i].v[0] <= 1.0f);
+        assert(cc[i].v[1] >= 0.0f && cc[i].v[1] <= 1.0f);
+        assert(cc[i].v[2] >= 0.0f && cc[i].v[2] <= 1.0f);
+        assert(cc[i].v[3] >= 0.0f && cc[i].v[3] <= 1.0f);
+
+        printf("pb_push1(p, %s + %d * 4,", cmd, stage);
+        printf("\n    MASK(0xFF000000, 0x%02X)", (unsigned char)(cc[i].v[3] * 0xFF));
+        printf("\n    | MASK(0x00FF0000, 0x%02X)", (unsigned char)(cc[i].v[0] * 0xFF));
+        printf("\n    | MASK(0x0000FF00, 0x%02X)", (unsigned char)(cc[i].v[1] * 0xFF));
+        printf("\n    | MASK(0x000000FF, 0x%02X)", (unsigned char)(cc[i].v[2] * 0xFF));
+        printf(");\n");
+        printf("p += 2;\n");
     }
 
     for (i = 0; i < 2; i++)
