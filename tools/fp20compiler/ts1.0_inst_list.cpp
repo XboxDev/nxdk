@@ -46,6 +46,7 @@ void InstList::Invoke()
            "    MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE1, 0)\n"
            "    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE2, 1)\n"
            "    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE3, 2));\n");
+    printf("p += 2;\n");
 
     printf("pb_push1(p, NV097_SET_SHADER_STAGE_PROGRAM,\n    ");
     for (i=0; i<size; i++) {
