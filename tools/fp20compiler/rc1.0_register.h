@@ -8,7 +8,9 @@
 #endif
 
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cassert>
 
 
 #define RCP_NUM_GENERAL_COMBINERS 8
@@ -18,24 +20,69 @@
 #define RCP_BLUE  2
 #define RCP_NONE  3
 
+enum RegisterName {
+    REG_ZERO,
+    REG_CONSTANT_COLOR0,
+    REG_CONSTANT_COLOR1,
+    REG_FOG,
+    REG_PRIMARY_COLOR,
+    REG_SECONDARY_COLOR,
+    REG_TEXTURE0,
+    REG_TEXTURE1,
+    REG_TEXTURE2,
+    REG_TEXTURE3,
+    REG_SPARE0,
+    REG_SPARE1,
+    REG_SPARE0_PLUS_SECONDARY_COLOR,
+    REG_E_TIMES_F,
+    REG_DISCARD,
+    REG_ONE
+};
 
-#define REG_ZERO            0x0
-#define REG_CONSTANT_COLOR0 0x1
-#define REG_CONSTANT_COLOR1 0x2
-#define REG_FOG             0x3
-#define REG_PRIMARY_COLOR   0x4
-#define REG_SECONDARY_COLOR 0x5
-#define REG_TEXTURE0        0x8
-#define REG_TEXTURE1        0x9
-#define REG_TEXTURE2        0xa
-#define REG_TEXTURE3        0xb
-#define REG_SPARE0          0xc
-#define REG_SPARE1          0xd
-#define REG_SPARE0_PLUS_SECONDARY_COLOR 0xe
-#define REG_E_TIMES_F       0xf
-
-#define REG_DISCARD         0x0
-#define REG_ONE             0x12
+#ifdef __GNUC__
+__attribute__ ((unused))
+#endif
+static const char* GetRegisterNameString(unsigned int reg_name) {
+    switch(reg_name) {
+    case REG_ZERO:
+        return "0x0";
+    case REG_CONSTANT_COLOR0:
+        return "0x1";
+    case REG_CONSTANT_COLOR1:
+        return "0x2";
+    case REG_FOG:
+        return "0x3";
+    case REG_PRIMARY_COLOR:
+        return "0x4";
+    case REG_SECONDARY_COLOR:
+        return "0x5";
+    case REG_TEXTURE0:
+        return "0x8";
+    case REG_TEXTURE1:
+        return "0x9";
+    case REG_TEXTURE2:
+        return "0xa";
+    case REG_TEXTURE3:
+        return "0xb";
+    case REG_SPARE0:
+        return "0xc";
+    case REG_SPARE1:
+        return "0xd";
+    case REG_SPARE0_PLUS_SECONDARY_COLOR:
+        return "0xe";
+    case REG_E_TIMES_F:
+        return "0xf";
+    case REG_DISCARD:
+        return "0x0";
+    case REG_ONE:
+        return "0x12";
+    default:
+        fprintf(stderr, "unknown register name index %d\n", reg_name);
+        assert(false);
+        break;
+    }
+    return "UNKNOWN";
+}
 
 #define BIAS_NONE 0
 #define BIAS_BY_NEGATIVE_ONE_HALF 1
@@ -57,7 +104,7 @@
 typedef union _RegisterEnum {
   struct {
 #if BYTE_ORDER != BIG_ENDIAN
-    unsigned int name          :16; // OpenGL enum for register
+    unsigned int name          :16; // RegisterName enum for register
     unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, etc
     unsigned int readOnly      : 1; // true or false
     unsigned int finalOnly     : 1; // true or false
@@ -67,7 +114,7 @@ typedef union _RegisterEnum {
     unsigned int finalOnly     : 1; // true or false
     unsigned int readOnly      : 1; // true or false
     unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, RCP_BLUE, RCP_NONE
-    unsigned int name          :16; // OpenGL enum for register
+    unsigned int name          :16; // RegisterName enum for register
 #endif
   } bits;
   unsigned int word;

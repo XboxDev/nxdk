@@ -254,7 +254,7 @@ void GeneralFunctionStruct::Validate(int stage, int portion)
 
 static void GenerateInput(int portion, char variable, MappedRegisterStruct reg) {
     const char* portion_s = portion == RCP_RGB ? "COLOR" : "ALPHA";
-    printf("MASK(NV097_SET_COMBINER_%s_ICW_%c_SOURCE, 0x%x)", portion_s, variable, reg.reg.bits.name);
+    printf("MASK(NV097_SET_COMBINER_%s_ICW_%c_SOURCE, %s)", portion_s, variable, GetRegisterNameString(reg.reg.bits.name));
     printf(" | MASK(NV097_SET_COMBINER_%s_ICW_%c_ALPHA, %d)", portion_s, variable,
             reg.reg.bits.channel == RCP_ALPHA);
     printf(" | MASK(NV097_SET_COMBINER_%s_ICW_%c_MAP, 0x%x)", portion_s, variable, reg.map);
@@ -306,9 +306,9 @@ void GeneralFunctionStruct::Invoke(int stage, int portion, BiasScaleEnum bs)
     //     MAP_CHANNEL(op[1].reg[2].reg.bits.channel));
 
     printf("pb_push1(p, NV097_SET_COMBINER_%s_OCW + %d * 4,\n", portion_s, stage);
-    printf("    MASK(NV097_SET_COMBINER_%s_OCW_AB_DST, 0x%x)\n", portion_s, op[0].reg[0].reg.bits.name);
-    printf("    | MASK(NV097_SET_COMBINER_%s_OCW_CD_DST, 0x%x)\n", portion_s, op[1].reg[0].reg.bits.name);
-    printf("    | MASK(NV097_SET_COMBINER_%s_OCW_SUM_DST, 0x%x)\n", portion_s, op[2].reg[0].reg.bits.name);
+    printf("    MASK(NV097_SET_COMBINER_%s_OCW_AB_DST, %s)\n", portion_s, GetRegisterNameString(op[0].reg[0].reg.bits.name));
+    printf("    | MASK(NV097_SET_COMBINER_%s_OCW_CD_DST, %s)\n", portion_s, GetRegisterNameString(op[1].reg[0].reg.bits.name));
+    printf("    | MASK(NV097_SET_COMBINER_%s_OCW_SUM_DST, %s)\n", portion_s, GetRegisterNameString(op[2].reg[0].reg.bits.name));
     printf("    | MASK(NV097_SET_COMBINER_%s_OCW_MUX_ENABLE, %d)\n", portion_s, (op[2].op == RCP_MUX));
 
     const char* scale_s = NULL;
