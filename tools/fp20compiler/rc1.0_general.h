@@ -99,7 +99,6 @@ public:
     void Invoke();
     GeneralCombinerStruct general[RCP_NUM_GENERAL_COMBINERS];
     int num;
-private:
     int localConsts;
 };
 
