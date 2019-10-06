@@ -42,10 +42,17 @@ void InstList::Invoke()
 {
     int i;
 
-    printf("pb_push1(p, NV097_SET_SHADER_OTHER_STAGE_INPUT,\n"
-           "    MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE1, 0)\n"
-           "    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE2, 1)\n"
-           "    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE3, 2));\n");
+    assert(size > 1);
+    printf("pb_push1(p, NV097_SET_SHADER_OTHER_STAGE_INPUT,\n    ");
+    for (i=1; i<size; i++) {
+        if (i != 1) printf("    | ");
+        int previousTexture = (int)list[i].args[0];
+        assert(i > previousTexture);
+        printf("MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE%d, %d)",
+            i, previousTexture);
+        if (i != size-1) printf("\n");
+    }
+    printf(");\n");
     printf("p += 2;\n");
 
     printf("pb_push1(p, NV097_SET_SHADER_STAGE_PROGRAM,\n    ");
