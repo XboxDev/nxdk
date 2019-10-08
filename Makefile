@@ -60,11 +60,14 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 NXDK_CXXFLAGS = $(NXDK_CFLAGS)
+NXDK_LDFLAGS = -subsystem:windows -dll -entry:XboxCRTEntry \
+               -stack:$(NXDK_STACKSIZE) -safeseh:no
+
 
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g -gdwarf-4
 NXDK_CXXFLAGS += -g -gdwarf-4
-LDFLAGS += -debug
+NXDK_LDFLAGS += -debug
 endif
 
 NXDK_CFLAGS += $(CFLAGS)
@@ -119,7 +122,7 @@ $(SRCS): $(SHADER_OBJS)
 
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
-	$(VE) $(LD) $(LDFLAGS) -subsystem:windows -dll -out:'$@' -entry:XboxCRTEntry -stack:$(NXDK_STACKSIZE) -safeseh:no $^
+	$(VE) $(LD) $(NXDK_LDFLAGS) $(LDFLAGS) -out:'$@' $^
 
 %.lib:
 	@echo "[ LIB      ] $@"
