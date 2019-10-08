@@ -138,7 +138,7 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 
 %.obj: %.s
 	@echo "[ AS       ] $@"
-	$(VE) $(AS) $(NXDK_ASFLAGS) -c -o '$@' '$<'
+	$(VE) $(AS) $(NXDK_ASFLAGS) $(ASFLAGS) -c -o '$@' '$<'
 
 %.inl: %.vs.cg $(VP20COMPILER)
 	@echo "[ CG       ] $@"
