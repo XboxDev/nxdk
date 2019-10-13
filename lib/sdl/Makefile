@@ -25,6 +25,11 @@ CFLAGS += -I$(NXDK_DIR)/lib/sdl \
           -I$(FREETYPE_DIR)/include \
           -DXBOX
 
+CXXFLAGS += -I$(NXDK_DIR)/lib/sdl \
+          -I$(SDL_TTF_DIR) \
+          -I$(FREETYPE_DIR)/include \
+          -DXBOX
+
 main.exe: $(NXDK_DIR)/lib/libSDL_ttf.lib $(NXDK_DIR)/lib/libfreetype.lib
 
 CLEANRULES += clean-sdl_ttf
