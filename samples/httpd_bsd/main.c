@@ -39,7 +39,7 @@ static void packet_timer(void *arg)
     sys_timeout(PKT_TMR_INTERVAL, packet_timer, NULL);
 }
 
-void main(void)
+int main(void)
 {
     XVideoSetMode(640,480,32,REFRESH_DEFAULT);
     sys_sem_t init_complete;
@@ -76,7 +76,7 @@ void main(void)
                          NULL, nforceif_init, ethernet_input);
     if (!g_pnetif) {
         debugPrint("netif_add failed\n");
-        return;
+        return 1;
     }
 
     netif_set_default(g_pnetif);
@@ -103,5 +103,5 @@ void main(void)
 
     http_server_bsd();
     Pktdrv_Quit();
-    return;
+    return 0;
 }

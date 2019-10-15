@@ -39,7 +39,7 @@ static void packet_timer(void *arg)
   sys_timeout(PKT_TMR_INTERVAL, packet_timer, NULL);
 }
 
-void main(void)
+int main(void)
 {
 	sys_sem_t init_complete;
 	const ip4_addr_t *ip;
@@ -77,7 +77,7 @@ void main(void)
 	                     NULL, nforceif_init, ethernet_input);
 	if (!g_pnetif) {
 		debugPrint("netif_add failed\n");
-		return;
+		return 1;
 	}
 
 	netif_set_default(g_pnetif);
@@ -105,5 +105,5 @@ void main(void)
 	http_server_netconn_init();
 	while (1) NtYieldExecution();
 	Pktdrv_Quit();
-	return;
+	return 0;
 }

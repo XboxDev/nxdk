@@ -12,13 +12,13 @@ public:
   int getValue() { return hiddenValue; };
 };
 
-int main() {
+int main(void) {
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
   int ret = pb_init();
   if (ret != 0) {
     Sleep(2000);
-    return -1;
+    return 1;
   }
 
   pb_show_debug_screen();
@@ -33,6 +33,5 @@ int main() {
   }
 
   pb_kill();
-
   return 0;
 }

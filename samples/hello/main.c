@@ -5,7 +5,7 @@
 #include <windows.h>
 #include "stdio.h"
 
-void main(void)
+int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
@@ -14,8 +14,7 @@ void main(void)
         case 0: break;
         default:
             Sleep(2000);
-            XReboot();
-            return;
+            return 1;
     }
 
     pb_show_debug_screen();
@@ -26,5 +25,5 @@ void main(void)
     }
 
     pb_kill();
-    XReboot();
+    return 0;
 }

@@ -64,7 +64,7 @@ static void draw_arrays(unsigned int mode, int start, int count);
 static void draw_indices(void);
 
 /* Main program function */
-void main(void)
+int main(void)
 {
     uint32_t *p;
     int       i, status;
@@ -78,8 +78,7 @@ void main(void)
     if ((status = pb_init())) {
         debugPrint("pb_init Error %d\n", status);
         Sleep(2000);
-        XReboot();
-        return;
+        return 1;
     }
 
     pb_show_front_screen();
@@ -267,7 +266,7 @@ void main(void)
     MmFreeContiguousMemory(alloc_vertices);
     pb_show_debug_screen();
     pb_kill();
-    XReboot();
+    return 0;
 }
 
 /* Construct a viewport transformation matrix */

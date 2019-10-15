@@ -10,7 +10,7 @@
 const extern int SCREEN_WIDTH;
 const extern int SCREEN_HEIGHT;
 
-void main() {
+int main(void) {
   int initialized_pbkit = -1;
   int initialized_SDL   = -1;
   int initialized_TTF   = -1;
@@ -136,5 +136,6 @@ cleanup:
   if (initialized_pbkit == 0) {
     pb_kill();
   }
-  return;
+  
+  return 0;
 }

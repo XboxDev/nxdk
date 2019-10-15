@@ -1,7 +1,7 @@
 #include <hal/led.h>
 #include <windows.h>
 
-void main(void)
+int main(void)
 {
     // Set front LEDs to shine green, red and then turned off in a repeating pattern.
     XSetCustomLED(XLED_GREEN, XLED_RED, XLED_OFF, XLED_OFF);
@@ -12,4 +12,6 @@ void main(void)
     while(1) {
         Sleep(1000);
     }
+    
+    return 0;
 }
