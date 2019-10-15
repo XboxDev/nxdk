@@ -22,13 +22,13 @@ int mount_drive_c ()
     return 0;
 }
 
-int main()
+int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     int ret = pb_init();
     if (ret != 0) {
         Sleep(2000);
-        return -1;
+        return 1;
     }
 
     pb_show_debug_screen();
@@ -36,7 +36,7 @@ int main()
     // Mount C:
     ret = mount_drive_c();
     if (ret != 0) {
-        return ret;
+        return 1;
     }
 
     debugPrint("Content of C:\\\n");
@@ -50,7 +50,7 @@ int main()
     if (hFind == INVALID_HANDLE_VALUE) {
         debugPrint("FindFirstHandle() failed!\n");
         Sleep(5000);
-        return -1;
+        return 1;
     }
 
     do {
@@ -79,5 +79,5 @@ int main()
     }
 
     pb_kill();
-    XReboot();
+    return 0;
 }

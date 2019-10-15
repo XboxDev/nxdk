@@ -364,18 +364,17 @@ void demo(void)
     SDL_VideoQuit();
 }
 
-void main(void)
+int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
     if (pb_init() != 0)
     {
         Sleep(2000);
-        XReboot();
-        return;
+        return 1;
     }
 
     pb_show_debug_screen();
     demo();
     pb_kill();
-    XReboot();
+    return 0;
 }
