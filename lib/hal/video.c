@@ -310,67 +310,27 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 
 BOOL XVideoSetMode(int width, int height, int bpp, int refresh)
 {
-	VIDEO_MODE_SETTING *pVidMode = NULL;
-	int vidRefresh = 0;
-	int i = 0;
+	VIDEO_MODE vm;
+	void *p = NULL;
 
-	DWORD dwEnc = XVideoGetEncoderSettings();
-	
-	DWORD dwAdapter		= dwEnc & 0x000000FF;
-	DWORD dwStandard	= dwEnc & 0x0000FF00;
-
-	if(bpp != 15 && bpp != 16 && bpp != 32)
-		bpp = 32;
-
-	if(refresh > 0)
-		vidRefresh = refresh;
-	else
+	while(XVideoListModes(&vm, bpp, refresh, &p))
 	{
-		if(dwEnc & 0x00400000) //60Hz refresh rate
-			vidRefresh = 60;
-		else
-			vidRefresh = 50;
+		if(vm.width != width || vm.height != height)
+			continue;
+		
+		DWORD dwMode = vidModes[(int)p-1].dwMode;
+
+		XVideoInit(dwMode, vm.width, vm.height, vm.bpp);
+
+		vmCurrent.width = vm.width;
+		vmCurrent.height = vm.height;
+		vmCurrent.bpp = vm.bpp;
+		vmCurrent.refresh = vm.refresh;
+		return TRUE;
 	}
 
-	for(i=0; i<iVidModes; i++)
-	{
-		pVidMode = &vidModes[i];
-
-		if((pVidMode->dwFlags & 0x000000FF) != dwAdapter)
-			continue;
-
-		if(pVidMode->dwStandard != dwStandard)
-			continue;
-
-		if(pVidMode->width != width || pVidMode->height != height)
-			continue;
-
-		if(pVidMode->refresh != vidRefresh)
-			continue;
-
-		break;
-	}
-
-	if(i >= iVidModes) // No compatible mode found
-	{
-		memset(&vmCurrent, 0x00, sizeof(VIDEO_MODE));
-		return FALSE;
-	}
-
-	XVideoInit(pVidMode->dwMode, pVidMode->width, pVidMode->height, bpp);
-
-//Will be registered at first XVideoWaitForVBlank() call anyway. No need to lock IRQ3 here.
-//	if (! IsrRegistered) {
-//		if (InstallVBLInterrupt())
-//			IsrRegistered = TRUE;
-//	}
-
-	vmCurrent.width = pVidMode->width;
-	vmCurrent.height = pVidMode->height;
-	vmCurrent.bpp = bpp;
-	vmCurrent.refresh = vidRefresh;
-
-	return TRUE;
+	memset(&vmCurrent, 0x00, sizeof(VIDEO_MODE));
+	return FALSE;
 }
 
 
