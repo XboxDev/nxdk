@@ -1,3 +1,6 @@
+#ifndef XBOXRT_STRING_EXT
+#define XBOXRT_STRING_EXT
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -11,4 +14,6 @@ static char *_strdup (const char *s)
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
