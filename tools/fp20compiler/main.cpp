@@ -58,6 +58,10 @@ static char* find_at_line_start(const char* haystack, const char* cursor,
 
 void translate(const char* s) {
 
+    // Keep a cursor for line-counting
+    const char* line_cursor = s;
+    unsigned int shader_line_number = 1;
+
     // Look for the first shader magic
     const char* shader_magic = find_at_line_start(s, s, "!!");
 
@@ -68,6 +72,14 @@ void translate(const char* s) {
 
     // Loop until we can't find a shader anymore
     while (shader_magic != NULL) {
+
+        // Move line cursor until we found the line of the shader magic
+        while (line_cursor < shader_magic) {
+            line_cursor = strchr(line_cursor, '\n');
+            assert(line_cursor != NULL);
+            line_cursor++;
+            shader_line_number++;
+        }
 
         // Find end of shader magic line (whitespace or comment)
         const char* shader_magic_end = shader_magic+2;
@@ -97,6 +109,9 @@ void translate(const char* s) {
         // Copy the magic
         size_t shader_magic_len = shader_magic_end - shader_magic;
         char* shader_magic_str = copy_string(shader_magic, shader_magic_len);
+
+        // Add information about shader section to output
+        printf("/* %s (line %u) */\n", shader_magic_str, shader_line_number);
 
         // Shader magic marks shader start
         const char* shader = shader_magic;
