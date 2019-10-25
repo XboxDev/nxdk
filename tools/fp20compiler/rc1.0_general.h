@@ -15,7 +15,8 @@ enum {
 class ConstColorStruct {
 public:
     void Init(RegisterEnum _reg, float _v0, float _v1, float _v2, float _v3)
-    { reg = _reg; v[0] = _v0; v[1] = _v1; v[2] = _v2; v[3] = _v3; }
+    { line_number = ::line_number; reg = _reg; v[0] = _v0; v[1] = _v1; v[2] = _v2; v[3] = _v3; }
+    int line_number;
     RegisterEnum reg;
     float v[4];
 };
