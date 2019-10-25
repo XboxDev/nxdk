@@ -56,7 +56,8 @@ static char* find_at_line_start(const char* haystack, const char* cursor,
     return NULL;
 }
 
-void translate(const char* s) {
+int translate(const char* s) {
+    int ret = 0;
 
     // Keep a cursor for line-counting
     const char* line_cursor = s;
@@ -68,6 +69,7 @@ void translate(const char* s) {
     // Warn the user if we couldn't find any shader at all
     if (shader_magic == NULL) {
         fprintf(stderr, "no shaders found\n");
+        ret = 1;
     }
 
     // Loop until we can't find a shader anymore
@@ -158,6 +160,7 @@ void translate(const char* s) {
             for(int i = 0; i < num_errors; i++) {
                 fprintf(stderr, "error: %s\n", errors.get_errors()[i]);
             }
+            ret = 1;
         }
 
         // Free temporary string copies
@@ -167,6 +170,8 @@ void translate(const char* s) {
         // Continue with next shader by jumping to its magic
         shader_magic = next_shader_magic;
     }
+
+    return ret;
 }
 
 int main(int argc, char** argv) {
@@ -193,10 +198,10 @@ int main(int argc, char** argv) {
     fread(buffer, size, 1, fh);
     buffer[size] = '\0';
 
-    translate(buffer);
+    int ret = translate(buffer);
 
     fclose(fh);
     free(buffer);
 
-    return 0;
+    return ret;
 }
