@@ -101,23 +101,26 @@ static const char* GetRegisterNameString(unsigned int reg_name) {
 #define MAP_SIGNED_IDENTITY 6
 #define MAP_SIGNED_NEGATE 7
 
-typedef union _RegisterEnum {
-  struct {
+typedef struct _RegisterEnum {
+  union {
+    struct {
 #if BYTE_ORDER != BIG_ENDIAN
-    unsigned int name          :16; // RegisterName enum for register
-    unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, etc
-    unsigned int readOnly      : 1; // true or false
-    unsigned int finalOnly     : 1; // true or false
-    unsigned int unused        :12;
+      unsigned int name          :16; // RegisterName enum for register
+      unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, etc
+      unsigned int readOnly      : 1; // true or false
+      unsigned int finalOnly     : 1; // true or false
+      unsigned int unused        :12;
 #else
-    unsigned int unused        :12;
-    unsigned int finalOnly     : 1; // true or false
-    unsigned int readOnly      : 1; // true or false
-    unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, RCP_BLUE, RCP_NONE
-    unsigned int name          :16; // RegisterName enum for register
+      unsigned int unused        :12;
+      unsigned int finalOnly     : 1; // true or false
+      unsigned int readOnly      : 1; // true or false
+      unsigned int channel       : 2; // RCP_RGB, RCP_ALPHA, RCP_BLUE, RCP_NONE
+      unsigned int name          :16; // RegisterName enum for register
 #endif
-  } bits;
-  unsigned int word;
+    } bits;
+    unsigned int word;
+  };
+  int line_number;
 } RegisterEnum;
 // No need for writeOnly flag, since DISCARD is the only register in that category
 

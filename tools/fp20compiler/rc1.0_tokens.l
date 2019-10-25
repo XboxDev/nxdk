@@ -58,227 +58,280 @@ alphanum [0-9a-zA-Z_]
 !!RC1\.0	{ /* eat header */ }
 
 fog\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_FOG_RGB;
 			    return(regVariable);
 			}
 fog\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_FOG_ALPHA;
 			    return(regVariable);
 			}
 fog\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_FOG_BLUE;
 			    return(regVariable);
 			}
 fog			{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_FOG;
 			    return(regVariable);
 			}
 
 col0\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_PRIMARY_COLOR_RGB;
 			    return(regVariable);
 			}
 col0\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_PRIMARY_COLOR_ALPHA;
 			    return(regVariable);
 			}
 col0\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_PRIMARY_COLOR_BLUE;
 			    return(regVariable);
 			}
 col0		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_PRIMARY_COLOR;
 			    return(regVariable);
 			}
 
 col1\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SECONDARY_COLOR_RGB;
 			    return(regVariable);
 			}
 col1\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SECONDARY_COLOR_ALPHA;
 			    return(regVariable);
 			}
 col1\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SECONDARY_COLOR_BLUE;
 			    return(regVariable);
 			}
 col1		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SECONDARY_COLOR;
 			    return(regVariable);
 			}
 
 spare0\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE0_RGB;
 			    return(regVariable);
 			}
 spare0\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE0_ALPHA;
 			    return(regVariable);
 			}
 spare0\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE0_BLUE;
 			    return(regVariable);
 			}
 spare0		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE0;
 			    return(regVariable);
 			}
 
 spare1\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE1_RGB;
 			    return(regVariable);
 			}
 spare1\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE1_ALPHA;
 			    return(regVariable);
 			}
 spare1\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE1_BLUE;
 			    return(regVariable);
 			}
 spare1		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_SPARE1;
 			    return(regVariable);
 			}
 
 tex0\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE0_RGB;
 			    return(regVariable);
 			}
 tex0\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE0_ALPHA;
 			    return(regVariable);
 			}
 tex0\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE0_BLUE;
 			    return(regVariable);
 			}
 tex0		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE0;
 			    return(regVariable);
 			}
 
 tex1\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE1_RGB;
 			    return(regVariable);
 			}
 tex1\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE1_ALPHA;
 			    return(regVariable);
 			}
 tex1\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE1_BLUE;
 			    return(regVariable);
 			}
 tex1		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE1;
 			    return(regVariable);
 			}
 
 tex2\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE2_RGB;
 			    return(regVariable);
 			}
 tex2\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE2_ALPHA;
 			    return(regVariable);
 			}
 tex2\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE2_BLUE;
 			    return(regVariable);
 			}
 tex2		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE2;
 			    return(regVariable);
 			}
 
 tex3\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE3_RGB;
 			    return(regVariable);
 			}
 tex3\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE3_ALPHA;
 			    return(regVariable);
 			}
 tex3\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE3_BLUE;
 			    return(regVariable);
 			}
 tex3		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_TEXTURE3;
 			    return(regVariable);
 			}
 
 const0\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR0_RGB;
 			    return(regVariable);
 			}
 const0\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR0_ALPHA;
 			    return(regVariable);
 			}
 const0\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR0_BLUE;
 			    return(regVariable);
 			}
 const0		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR0;
 			    return(constVariable);
 			}
 
 const1\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR1_RGB;
 			    return(regVariable);
 			}
 const1\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR1_ALPHA;
 			    return(regVariable);
 			}
 const1\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR1_BLUE;
 			    return(regVariable);
 			}
 const1		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_CONST_COLOR1;
 			    return(constVariable);
 			}
 
 zero\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ZERO_RGB;
 			    return(regVariable);
 			}
 zero\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ZERO_ALPHA;
 			    return(regVariable);
 			}
 zero\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ZERO_BLUE;
 			    return(regVariable);
 			}
 zero		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ZERO;
 			    return(regVariable);
 			}
 
 one\.rgb	{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ONE_RGB;
 			    return(regVariable);
 			}
 one\.a		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ONE_ALPHA;
 			    return(regVariable);
 			}
 one\.b		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ONE_BLUE;
 			    return(regVariable);
 			}
 one			{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_ONE;
 			    return(regVariable);
 			}
 
 discard		{
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_DISCARD;
 			    return(regVariable);
 			}
@@ -287,11 +340,13 @@ out\.rgb		return(fragment_rgb);
 out\.a			return(fragment_alpha);
 
 final_product {
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_FINAL_PRODUCT;
 			    return(final_product);
 			}
 
 color_sum {
+			    rc10_lval.registerEnum.line_number = line_number;
 			    rc10_lval.registerEnum.word = RCP_COLOR_SUM;
 			    return(color_sum);
 			}
