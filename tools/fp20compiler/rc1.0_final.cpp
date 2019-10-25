@@ -31,30 +31,42 @@ void FinalProductStruct::ZeroOut()
     e.Init(zero, MAP_UNSIGNED_IDENTITY);
     f.Init(zero, MAP_UNSIGNED_IDENTITY);
 }
+
+static void ValidateRgbInputRegister(RegisterEnum& reg, bool isEorF, bool hasProduct) {
+    if (RCP_NONE == reg.bits.channel)
+        reg.bits.channel = RCP_RGB;
+
+    if (REG_DISCARD == reg.bits.name)
+        errors.set("reading from discard", reg.line_number);
+    if (RCP_BLUE == reg.bits.channel)
+        errors.set("blue component can not be used in rgb portion", reg.line_number);
+    if (!isEorF) {
+        if (!hasProduct && (REG_E_TIMES_F == reg.bits.name))
+            errors.set("final_product used but not set", reg.line_number);
+    } else {
+        if (REG_E_TIMES_F == reg.bits.name)
+            errors.set("final_product can not reference itself", reg.line_number);
+        if (REG_SPARE0_PLUS_SECONDARY_COLOR == reg.bits.name)
+            errors.set("color_sum can not be used in final_product", reg.line_number);
+    }
+}
+
+static void ValidateAlphaInputRegister(RegisterEnum& reg) {
+    if (RCP_NONE == reg.bits.channel)
+        reg.bits.channel = RCP_ALPHA;
+
+    if (REG_E_TIMES_F == reg.bits.name)
+        errors.set("final_product can not be used in final-combiner alpha portion", reg.line_number);
+    if (REG_SPARE0_PLUS_SECONDARY_COLOR == reg.bits.name)
+        errors.set("color_sum can not be used in final-combiner alpha portion", reg.line_number);
+    if (REG_DISCARD == reg.bits.name)
+        errors.set("reading from discard", reg.line_number);
+    if (RCP_RGB == reg.bits.channel)
+        errors.set("rgb component can not be used in alpha portion", reg.line_number);
+}
+
 void FinalCombinerStruct::Validate()
 {
-    if (hasProduct &&
-        (REG_E_TIMES_F == product.e.reg.bits.name ||
-         REG_SPARE0_PLUS_SECONDARY_COLOR == product.e.reg.bits.name ||
-         REG_DISCARD == product.e.reg.bits.name ||
-         REG_E_TIMES_F == product.f.reg.bits.name ||
-         REG_SPARE0_PLUS_SECONDARY_COLOR == product.f.reg.bits.name ||
-         REG_DISCARD == product.f.reg.bits.name))
-        errors.set("invalid input register for final_product");
-
-    if (hasProduct &&
-        (RCP_BLUE == product.e.reg.bits.channel ||
-         RCP_BLUE == product.f.reg.bits.channel))
-        errors.set("blue register used in final_product");
-
-    if (REG_E_TIMES_F == alpha.g.reg.bits.name ||
-        REG_SPARE0_PLUS_SECONDARY_COLOR == alpha.g.reg.bits.name ||
-        REG_DISCARD == alpha.g.reg.bits.name)
-        errors.set("invalid input register for final alpha");
-
-    if (RCP_RGB == alpha.g.reg.bits.channel)
-        errors.set("rgb register used in final alpha");
-
     if (REG_SPARE0_PLUS_SECONDARY_COLOR == rgb.a.reg.bits.name &&
         REG_SPARE0_PLUS_SECONDARY_COLOR != rgb.b.reg.bits.name &&
         REG_ZERO == rgb.c.reg.bits.name && MAP_UNSIGNED_IDENTITY == rgb.c.map)
@@ -76,39 +88,17 @@ void FinalCombinerStruct::Validate()
         rgb.d = temp;
     }
 
-    if (REG_SPARE0_PLUS_SECONDARY_COLOR == rgb.a.reg.bits.name ||
-        REG_DISCARD == rgb.a.reg.bits.name ||
-        REG_DISCARD == rgb.b.reg.bits.name ||
-        REG_DISCARD == rgb.c.reg.bits.name ||
-        REG_DISCARD == rgb.d.reg.bits.name)
-        errors.set("invalid input register for final rgb");
+    if (REG_SPARE0_PLUS_SECONDARY_COLOR == rgb.a.reg.bits.name)
+        errors.set("color_sum can not be used in this term of the final-combiner rgb portion", rgb.a.reg.line_number);
 
-    if (RCP_BLUE == rgb.a.reg.bits.channel ||
-        RCP_BLUE == rgb.b.reg.bits.channel ||
-        RCP_BLUE == rgb.c.reg.bits.channel ||
-        RCP_BLUE == rgb.d.reg.bits.channel)
-        errors.set("blue register used in final rgb");
+    ValidateRgbInputRegister(rgb.a.reg, false, hasProduct);
+    ValidateRgbInputRegister(rgb.b.reg, false, hasProduct);
+    ValidateRgbInputRegister(rgb.c.reg, false, hasProduct);
+    ValidateRgbInputRegister(rgb.d.reg, false, hasProduct);
+    ValidateRgbInputRegister(product.e.reg, true, hasProduct);
+    ValidateRgbInputRegister(product.f.reg, true, hasProduct);
 
-    if ((REG_E_TIMES_F == rgb.a.reg.bits.name ||
-        REG_E_TIMES_F == rgb.b.reg.bits.name ||
-        REG_E_TIMES_F == rgb.c.reg.bits.name ||
-        REG_E_TIMES_F == rgb.d.reg.bits.name) && !hasProduct)
-        errors.set("final_product used but not set");
-
-    if (RCP_NONE == rgb.a.reg.bits.channel)
-        rgb.a.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == rgb.b.reg.bits.channel)
-        rgb.b.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == rgb.c.reg.bits.channel)
-        rgb.c.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == rgb.d.reg.bits.channel)
-        rgb.d.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == product.e.reg.bits.channel)
-        product.e.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == product.f.reg.bits.channel)
-        product.f.reg.bits.channel = RCP_RGB;
-    if (RCP_NONE == alpha.g.reg.bits.channel)
-        alpha.g.reg.bits.channel = RCP_ALPHA;
+    ValidateAlphaInputRegister(alpha.g.reg);
 }
 
 static void GenerateFinalInput(char var, MappedRegisterStruct reg) {
