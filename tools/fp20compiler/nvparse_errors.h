@@ -16,10 +16,12 @@ public:
 	void set(const char * e);
 	void set(const char * e, int line_number);
 	char * const * const get_errors();
-    inline int  get_num_errors() { return num_errors; }
+	inline int  get_num_errors() { return num_errors; }
+	void set_line_number_offset(int offset) { line_number_offset = offset; }
 private:
-        char* elist [NVPARSE_MAX_ERRORS+1];
+	char* elist [NVPARSE_MAX_ERRORS+1];
 	int num_errors;
+	int line_number_offset;
 };
 
 #endif

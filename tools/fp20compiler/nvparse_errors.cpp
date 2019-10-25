@@ -9,6 +9,7 @@
 nvparse_errors::nvparse_errors()
 {
 	num_errors = 0;
+	line_number_offset = 0;
 	reset();
 }
 
@@ -36,7 +37,7 @@ void nvparse_errors::set(const char * e)
 void nvparse_errors::set(const char * e, int line_number)
 {
 	char buff[256];
-	sprintf(buff, "error on line %d: %s", line_number, e);
+	sprintf(buff, "line %d: %s", line_number_offset + line_number, e);
 	if(num_errors < NVPARSE_MAX_ERRORS)
 		elist[num_errors++] = strdup(buff);
 }
