@@ -119,7 +119,7 @@ void GeneralCombinerStruct::Validate(int stage)
         // Fallthru
     case 2:
         if (portion[0].designator == portion[1].designator)
-            errors.set("portion declared twice");
+            errors.set("portion declared twice", portion[1].line_number);
         break;
     }
     int i;
@@ -225,13 +225,13 @@ void GeneralFunctionStruct::Validate(int stage, int portion)
     // Check if multiple ops are writing to same register (and it's not DISCARD)
     if (numOps > 1 &&
         op[0].reg[0].reg.bits.name == op[1].reg[0].reg.bits.name &&
-        REG_DISCARD != op[0].reg[0].reg.bits.name)
-        errors.set("writing to same register twice");
+        REG_DISCARD != op[1].reg[0].reg.bits.name)
+        errors.set("writing to same register twice", op[1].reg[0].reg.line_number);
     if (numOps > 2 &&
         (op[0].reg[0].reg.bits.name == op[2].reg[0].reg.bits.name ||
          op[1].reg[0].reg.bits.name == op[2].reg[0].reg.bits.name) &&
         REG_DISCARD != op[2].reg[0].reg.bits.name)
-        errors.set("writing to same register twice");
+        errors.set("writing to same register twice", op[2].reg[0].reg.line_number);
 
     // Set unused outputs to discard, unused inputs to zero/unsigned_identity
     if (numOps < 2) {
@@ -374,24 +374,24 @@ void OpStruct::Validate(int stage, int portion)
         args = 1;
 
     if (reg[0].reg.bits.readOnly)
-        errors.set("writing to a read-only register");
+        errors.set("writing to a read-only register", reg[0].reg.line_number);
 
     if (RCP_ALPHA == portion &&
         RCP_DOT == op)
-        errors.set("dot used in alpha portion");
+        errors.set("dot can not be used in alpha portion", reg[0].reg.line_number);
     int i;
     for (i = 0; i < args; i++) {
         ConvertRegister(reg[i].reg, portion);
         if (reg[i].reg.bits.finalOnly)
-            errors.set("final register used in general combiner");
+            errors.set("final-combiner register can not be used in general-combiner", reg[i].reg.line_number);
         if (RCP_RGB == portion &&
             RCP_BLUE == reg[i].reg.bits.channel)
-            errors.set("blue register used in rgb portion");
+            errors.set("blue component can not be used in rgb portion", reg[i].reg.line_number);
         if (RCP_ALPHA == portion &&
             RCP_RGB == reg[i].reg.bits.channel)
-            errors.set("rgb register used in alpha portion");
+            errors.set("rgb component can not be used in alpha portion", reg[i].reg.line_number);
         if (i > 0 &&
             REG_DISCARD == reg[i].reg.bits.name)
-            errors.set("reading from discard");
+            errors.set("reading from discard", reg[i].reg.line_number);
     }
 }
