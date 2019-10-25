@@ -48,11 +48,12 @@ public:
 class GeneralPortionStruct {
 public:
     void Init(int _designator, GeneralFunctionStruct _gf, BiasScaleEnum _bs)
-    { designator = _designator; gf = _gf; bs = _bs; }
+    { line_number = ::line_number; designator = _designator; gf = _gf; bs = _bs; }
 
     void Validate(int stage);
     void Invoke(int stage);
     void ZeroOut();
+    int line_number;
     int designator;
     GeneralFunctionStruct gf;
     BiasScaleEnum bs;
@@ -93,7 +94,7 @@ public:
         if (num < RCP_NUM_GENERAL_COMBINERS)
             general[num++] = _gc;
         else
-            errors.set("Too many general combiners.");
+            errors.set("too many general-combiners", ::line_number);
         return *this;
     }
     void Validate(int numConsts, ConstColorStruct *cc);
