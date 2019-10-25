@@ -136,6 +136,9 @@ void translate(const char* s) {
         size_t shader_len = shader_end - shader;
         char* shader_str = copy_string(shader, shader_len);
 
+        // Prepare error reporting
+        errors.set_line_number_offset(shader_line_number-1);
+
         // Process shader
         if (is_ts10(shader_str)) {
             ts10_init(shader_str);
@@ -145,6 +148,16 @@ void translate(const char* s) {
             rc10_parse();
         } else {
             fprintf(stderr, "unknown shader type \"%s\"\n", shader_magic_str);
+        }
+
+        // Show all errors
+        int num_errors = errors.get_num_errors();
+        if (num_errors > 0) {
+            fprintf(stderr, "errors in shader \"%s\" (line %d):\n",
+                    shader_magic_str, shader_line_number);
+            for(int i = 0; i < num_errors; i++) {
+                fprintf(stderr, "error: %s\n", errors.get_errors()[i]);
+            }
         }
 
         // Free temporary string copies
