@@ -678,5 +678,5 @@ Register : constVariable
 %%
 void yyerror(const char* s)
 {
-     errors.set("unrecognized token");
+     errors.set("syntax error", line_number);
 }
