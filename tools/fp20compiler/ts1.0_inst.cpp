@@ -1,9 +1,12 @@
 #include "ts1.0_inst.h"
+#include "nvparse_errors.h"
+#include "nvparse_externs.h"
 
 #include <cassert>
 
 Inst::Inst(int inst, float arg0, float arg1, float arg2, float arg3, float arg4, float arg5, float arg6)
 {
+    line_number = ::line_number;
     opcode.word = inst;
     expand = 0;
     args[0] = arg0;
@@ -17,6 +20,7 @@ Inst::Inst(int inst, float arg0, float arg1, float arg2, float arg3, float arg4,
 
 Inst::Inst(int inst, MappedVariablePtr arg0, float arg1, float arg2, float arg3, float arg4, float arg5, float arg6)
 {
+    line_number = ::line_number;
     opcode.word = inst;
     expand = arg0->expand;
     args[0] = arg0->var;

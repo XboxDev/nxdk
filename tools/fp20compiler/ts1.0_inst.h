@@ -96,6 +96,7 @@ public:
     Inst(int inst, float arg0 = 0., float arg1 = 0., float arg2 = 0., float arg3 = 0., float arg4 = 0., float arg5 = 0., float arg6 = 0.);
     Inst(int inst, MappedVariablePtr arg0, float arg1 = 0., float arg2 = 0., float arg3 = 0., float arg4 = 0., float arg5 = 0., float arg6 = 0.);
     // void Invoke(int stage);
+    int line_number;
     InstructionEnum opcode;
     float args[TSP_MAX_ARGS];
 private:
