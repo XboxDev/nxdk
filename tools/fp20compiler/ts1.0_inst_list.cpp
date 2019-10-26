@@ -102,16 +102,27 @@ void InstList::Validate()
             continue;
         }
         int stage = list[i].opcode.bits.stage;
-        if (stage > i)
-            errors.set("prior stage missing", list[i].line_number);
-        if (list[i].opcode.bits.instruction != list[i - stage].opcode.bits.instruction)
-            errors.set("stage mismatch", list[i].line_number);
+        int instruction = list[i].opcode.bits.instruction;
+        if (stage > 0) {
+            if (i <= 0)
+                errors.set("previous stage is missing", list[i].line_number);
+            else if (list[i-1].opcode.bits.instruction != instruction ||
+                     list[i-1].opcode.bits.stage != stage-1)
+                errors.set("previous stage does not match", list[i].line_number);
+        }
         if (list[i].opcode.bits.dependent) {
             int previousTexture = (int)list[i].args[0];
             if (previousTexture >= i - stage)
                 errors.set("invalid texture reference", list[i].line_number);
             if (list[previousTexture].opcode.bits.noOutput)
                 errors.set("no output on referenced texture", list[i].line_number);
+        }
+        if (stage < stageCounts[instruction]-1) {
+            if (i+1 >= size)
+                errors.set("next stage is missing", list[i].line_number);
+            else if (list[i+1].opcode.bits.instruction != instruction ||
+                     list[i+1].opcode.bits.stage != stage+1)
+                errors.set("next stage does not match", list[i].line_number);
         }
     }
 
