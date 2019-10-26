@@ -51,7 +51,9 @@ void InstList::Invoke()
     printf("pb_push1(p, NV097_SET_SHADER_OTHER_STAGE_INPUT,\n    ");
     for (i=1; i<size; i++) {
         if (i != 1) printf("    | ");
-        int previousTexture = (int)list[i].args[0];
+        int previousTexture = 0;
+        if (list[i].opcode.bits.dependent)
+            previousTexture = (int)list[i].args[0];
         assert(i > previousTexture);
         printf("MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE%d, %d)",
             i, previousTexture);
