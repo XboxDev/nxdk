@@ -309,5 +309,5 @@ Newlines :
 
 void yyerror(const char* s)
 {
-	errors.set("parser: syntax error", line_number);
+	errors.set("syntax error", line_number);
 }
