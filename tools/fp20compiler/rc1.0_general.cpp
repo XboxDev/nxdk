@@ -27,8 +27,10 @@ void GeneralCombinersStruct::Validate(int numConsts, ConstColorStruct *pcc)
 
     localConsts = 0;
     int i;
-    for (i = 0; i < num; i++)
+    for (i = 0; i < num; i++) {
+        general[i].Validate(i);
         localConsts += general[i].numConsts;
+    }
 
     if (localConsts > 0)
         // if (NULL == glCombinerStageParameterfvNV)
@@ -36,9 +38,6 @@ void GeneralCombinersStruct::Validate(int numConsts, ConstColorStruct *pcc)
         // else
         for (i = 0; i < num; i++)
             general[i].SetUnusedLocalConsts(numConsts, pcc);
-
-    for (i = 0; i < num; i++)
-        general[i].Validate(i);
 
 
     for (; i < maxGCs; i++)
@@ -93,8 +92,10 @@ void GeneralCombinerStruct::SetUnusedLocalConsts(int numGlobalConsts, ConstColor
         int j;
         for (j = 0; j < numConsts; j++)
             constUsed |= (cc[j].reg.bits.name == globalCCs[i].reg.bits.name);
-        if (!constUsed)
+        if (!constUsed) {
+            assert(numConsts < 2);
             cc[numConsts++] = globalCCs[i];
+        }
     }
 }
 
@@ -102,8 +103,11 @@ void GeneralCombinerStruct::SetUnusedLocalConsts(int numGlobalConsts, ConstColor
 void GeneralCombinerStruct::Validate(int stage)
 {
     if (2 == numConsts &&
-        cc[0].reg.bits.name == cc[1].reg.bits.name)
+        cc[0].reg.bits.name == cc[1].reg.bits.name) {
         errors.set("local constant set twice");
+        cc[0] = cc[1];
+        numConsts = 1;
+    }
 
     switch (numPortions)
     {
@@ -134,6 +138,7 @@ void GeneralCombinerStruct::Invoke(int stage)
     // if (NULL != glCombinerStageParameterfvNV)
     //     for (i = 0; i < numConsts; i++)
     //         glCombinerStageParameterfvNV(GL_COMBINER0_NV + stage, cc[i].reg.bits.name, &(cc[i].v[0]));
+    assert(numConsts <= 2);
     for (i = 0; i < numConsts; i++) {
         const char* cmd = NULL;
         switch(cc[i].reg.bits.name) {
