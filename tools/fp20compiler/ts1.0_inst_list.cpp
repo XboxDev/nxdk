@@ -93,21 +93,23 @@ void InstList::Invoke()
 
 void InstList::Validate()
 {
-    if (size > TSP_NUM_TEXTURE_UNITS)
-        errors.set("too many instructions");
     int i;
     for (i = 0; i < size; i++) {
+        if (i >= TSP_NUM_TEXTURE_UNITS) {
+            errors.set("too many instructions", list[i].line_number);
+            continue;
+        }
         int stage = list[i].opcode.bits.stage;
         if (stage > i)
-            errors.set("prior stage missing");
+            errors.set("prior stage missing", list[i].line_number);
         if (list[i].opcode.bits.instruction != list[i - stage].opcode.bits.instruction)
-            errors.set("stage mismatch");
+            errors.set("stage mismatch", list[i].line_number);
         if (list[i].opcode.bits.dependent) {
             int previousTexture = (int)list[i].args[0];
             if (previousTexture >= i - stage)
-                errors.set("invalid texture reference");
+                errors.set("invalid texture reference", list[i].line_number);
             if (list[previousTexture].opcode.bits.noOutput)
-                errors.set("no output on referenced texture");
+                errors.set("no output on referenced texture", list[i].line_number);
         }
     }
 
