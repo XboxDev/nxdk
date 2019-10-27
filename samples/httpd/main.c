@@ -10,7 +10,6 @@
 #include <hal/input.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
-#include <pbkit/pbkit.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <debug.h>
 
@@ -69,9 +68,6 @@ int main(void)
 	sys_sem_free(&init_complete);
 
 	XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-
-	pb_init();
-	pb_show_debug_screen();
 
 	g_pnetif = netif_add(&nforce_netif, &ipaddr, &netmask, &gw,
 	                     NULL, nforceif_init, ethernet_input);
