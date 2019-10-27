@@ -1,5 +1,4 @@
 #include <hal/debug.h>
-#include <pbkit/pbkit.h>
 #include <hal/video.h>
 #include <windows.h>
 
@@ -15,14 +14,6 @@ public:
 int main(void) {
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
-  int ret = pb_init();
-  if (ret != 0) {
-    Sleep(2000);
-    return 1;
-  }
-
-  pb_show_debug_screen();
-
   NumberClass defaultFive;
   NumberClass customSix(6);
 
@@ -32,6 +23,5 @@ int main(void) {
     Sleep(2000);
   }
 
-  pb_kill();
   return 0;
 }

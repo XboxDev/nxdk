@@ -10,7 +10,6 @@
 #include <hal/video.h>
 #include <hal/input.h>
 #include <hal/xbox.h>
-#include <pbkit/pbkit.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <debug.h>
 
@@ -68,9 +67,6 @@ int main(void)
     tcpip_init(tcpip_init_done, &init_complete);
     sys_sem_wait(&init_complete);
     sys_sem_free(&init_complete);
-
-    pb_init();
-    pb_show_debug_screen();
 
     g_pnetif = netif_add(&nforce_netif, &ipaddr, &netmask, &gw,
                          NULL, nforceif_init, ethernet_input);

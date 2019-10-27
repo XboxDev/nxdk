@@ -1,6 +1,3 @@
-#include <hal/debug.h>
-#include <pbkit/pbkit.h>
-#include <hal/xbox.h>
 #include <hal/video.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -11,7 +8,6 @@ const extern int SCREEN_WIDTH;
 const extern int SCREEN_HEIGHT;
 
 int main(void) {
-  int initialized_pbkit = -1;
   int initialized_SDL   = -1;
   int initialized_TTF   = -1;
   SDL_Window   *window   = NULL;
@@ -19,14 +15,6 @@ int main(void) {
   SDL_Texture  *texture  = NULL;
 
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-
-  initialized_pbkit = pb_init();
-  if (initialized_pbkit != 0) {
-    debugPrint("pb_init() failed!");
-    Sleep(2000);
-    goto cleanup;
-  }
-  pb_show_debug_screen();
   
   initialized_SDL = SDL_VideoInit(NULL);
   if (initialized_SDL != 0) {
@@ -132,9 +120,6 @@ cleanup:
   }
   if (initialized_SDL == 0) {
     SDL_Quit();
-  }
-  if (initialized_pbkit == 0) {
-    pb_kill();
   }
   
   return 0;

@@ -10,8 +10,6 @@
   freely.
 */
 /* Simple program:  Create a native window and attach an SDL renderer */
-#include <hal/debug.h>
-#include <pbkit/pbkit.h>
 #include <hal/xbox.h>
 #include <hal/video.h>
 #include <windows.h>
@@ -24,7 +22,6 @@ static void printSDLErrorAndReboot(void)
     debugPrint("SDL_Error: %s\n", SDL_GetError());
     debugPrint("Rebooting in 5 seconds.\n");
     Sleep(5000);
-    pb_kill();
     XReboot();
 }
 
@@ -367,14 +364,7 @@ void demo(void)
 int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-    if (pb_init() != 0)
-    {
-        Sleep(2000);
-        return 1;
-    }
 
-    pb_show_debug_screen();
     demo();
-    pb_kill();
     return 0;
 }

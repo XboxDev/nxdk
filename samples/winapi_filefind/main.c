@@ -2,7 +2,6 @@
 #include <string.h>
 #include <windows.h>
 #include <hal/debug.h>
-#include <pbkit/pbkit.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
 
@@ -25,16 +24,9 @@ int mount_drive_c ()
 int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-    int ret = pb_init();
-    if (ret != 0) {
-        Sleep(2000);
-        return 1;
-    }
-
-    pb_show_debug_screen();
 
     // Mount C:
-    ret = mount_drive_c();
+    int ret = mount_drive_c();
     if (ret != 0) {
         return 1;
     }
@@ -78,6 +70,5 @@ int main(void)
         Sleep(2000);
     }
 
-    pb_kill();
     return 0;
 }
