@@ -2205,7 +2205,7 @@ DWORD *pb_begin(void)
 #ifdef DBG
     if (pb_Put>=pb_Tail) debugPrint("ERROR! Push buffer overflow! Use pb_reset more often or enlarge push buffer!\n");
 
-    if (pb_BeginEndPair==1) debugPrint("pb_start without a pb_end earlier\n");
+    if (pb_BeginEndPair==1) debugPrint("pb_begin without a pb_end earlier\n");
     pb_BeginEndPair=1;
     pb_PushIndex=0;
     pb_PushNext=pb_Put;
@@ -2271,7 +2271,7 @@ void pb_end(DWORD *pEnd)
     }
     if (pb_BeginEndPair==0)
     {
-        debugPrint("pb_end without a pb_start\n");
+        debugPrint("pb_end without a pb_begin\n");
         assert(false);
     }
     pb_BeginEndPair=0;
