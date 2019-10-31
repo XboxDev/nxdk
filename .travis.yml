@@ -17,7 +17,7 @@ install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq flex bison clang lld-6.0; fi
     - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cmd /c\ .travis_win_deps.bat; fi
     # Build hang workaround (https://travis-ci.community/t/build-times-out-when-msys-was-installed/3498)
-    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then taskkill -IM "gpg-agent.exe" -F; fi
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then taskkill -IM "gpg-agent.exe" -F || true; fi
 
 language: c
 
