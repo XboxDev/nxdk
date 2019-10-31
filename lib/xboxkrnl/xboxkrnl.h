@@ -1685,6 +1685,12 @@ XBAPI VOID NTAPI XcUpdateCrypto
     OUT PCRYPTO_VECTOR pROMVector OPTIONAL
 );
 
+/**
+ * Updates the internal state of the SHA-1 algorithm by hashing some input data.
+ * @param pbSHAContext A pointer to the buffer holding the internal state of the algorithm
+ * @param pbInput A pointer to the bytes which are to get hashed
+ * @oaram dwInputLength The number of bytes in the buffer given in the pbInput parameter
+ */
 XBAPI VOID NTAPI XcSHAUpdate
 (
     IN OUT PUCHAR pbSHAContext,
@@ -1692,11 +1698,20 @@ XBAPI VOID NTAPI XcSHAUpdate
     IN ULONG dwInputLength
 );
 
+/**
+ * Initializes a buffer which will get used to generate a SHA-1 hash.
+ * @param pbSHAContext A pointer to a 116-byte buffer to be used as storage for the internal state of the algorithm
+ */
 XBAPI VOID NTAPI XcSHAInit
 (
     OUT PUCHAR pbSHAContext
 );
 
+/**
+ * Extracts the final SHA-1 hash from the buffer used to calculate the hash.
+ * @param pbSHAContext A pointer to the buffer used to hold the internal state of the algorithm
+ * @param pbDigest A pointer to a 20-byte buffer in which the hash will be stored
+ */
 XBAPI VOID NTAPI XcSHAFinal
 (
     IN PUCHAR pbSHAContext,
