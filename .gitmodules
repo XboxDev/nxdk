@@ -15,3 +15,7 @@
 [submodule "lib/sdl/SDL_ttf"]
 	path = lib/sdl/SDL_ttf
 	url = https://github.com/SDL-mirror/SDL_ttf
+[submodule "lib/libcxx"]
+	path = lib/libcxx
+	url = https://github.com/XboxDev/nxdk-libcxx.git
+	branch = nxdk
