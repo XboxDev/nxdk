@@ -1,4 +1,5 @@
 #include "wchar.h"
+#include <assert.h>
 
 wchar_t * wcscat( wchar_t * XBOXRT_RESTRICT s1, const wchar_t * XBOXRT_RESTRICT s2 )
 {
@@ -322,4 +323,98 @@ wchar_t * wmemmove( wchar_t * dest, const wchar_t * src, size_t n )
         }
     }
     return rv;
+}
+
+wchar_t * wmemset(wchar_t *wcs, wchar_t wc, size_t n)
+{
+    wchar_t * p = wcs;
+    while ( n-- )
+    {
+        *p++ = wc;
+    }
+    return wcs;
+}
+
+size_t wcrtomb (char *mbchar, wchar_t wchar, mbstate_t *mbstate)
+{
+    assert(0);
+    return 0;
+}
+
+size_t mbrtowc (wchar_t *wchar, const char *mbchar, size_t count, mbstate_t *mbstate)
+{
+    assert(0);
+    return 0;
+}
+
+double wcstod(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr)
+{
+    assert(0);
+    return 0.0;
+}
+
+float wcstof(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr)
+{
+    assert(0);
+    return 0.0;
+}
+
+long double wcstold(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr)
+{
+    assert(0);
+    return 0.0;
+}
+
+long wcstol(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base)
+{
+    assert(0);
+    return 0;
+}
+
+long long wcstoll(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base)
+{
+    assert(0);
+    return 0;
+}
+
+unsigned long wcstoul(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base)
+{
+    assert(0);
+    return 0;
+}
+
+unsigned long long wcstoull(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base)
+{
+    assert(0);
+    return 0;
+}
+
+size_t mbrlen(const char *s, size_t n, mbstate_t *ps)
+{
+    assert(0);
+    return 0;
+}
+
+wint_t btowc(int c)
+{
+    assert(0);
+    return 0;
+}
+
+size_t mbsrtowcs(wchar_t *dest, const char **src, size_t len, mbstate_t *ps)
+{
+    assert(0);
+    return 0;
+}
+
+int wctob(wint_t c)
+{
+    assert(0);
+    return 0;
+}
+
+int wcrtomb_s(size_t * XBOXRT_RESTRICT retval, char * XBOXRT_RESTRICT s, size_t ssz, wchar_t wc, mbstate_t * XBOXRT_RESTRICT ps)
+{
+    assert(0);
+    return 0;
 }
