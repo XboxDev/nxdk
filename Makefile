@@ -59,7 +59,7 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -Wno-ignored-attributes -DNXDK -D__STDC__=1
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
-NXDK_CXXFLAGS = $(NXDK_CFLAGS) -fno-threadsafe-statics
+NXDK_CXXFLAGS = $(NXDK_CFLAGS) -fno-threadsafe-statics -fno-rtti
 NXDK_LDFLAGS = -subsystem:windows -dll -entry:XboxCRTEntry \
                -stack:$(NXDK_STACKSIZE) -safeseh:no
 
