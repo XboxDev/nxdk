@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <wctype.h>
 
 #ifdef __cplusplus
     #define XBOXRT_RESTRICT __restrict
@@ -54,6 +55,19 @@ size_t wcslen( const wchar_t * s );
 int mbsinit( const mbstate_t * ps );
 size_t mbrtowc( wchar_t * XBOXRT_RESTRICT pwc, const char * XBOXRT_RESTRICT s, size_t n, mbstate_t * XBOXRT_RESTRICT ps );
 size_t wcrtomb( char * XBOXRT_RESTRICT s, wchar_t wc, mbstate_t * XBOXRT_RESTRICT ps );
+wchar_t *wmemset(wchar_t *wcs, wchar_t wc, size_t n);
+double wcstod(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr);
+float wcstof(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr);
+long double wcstold(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr);
+long wcstol(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base);
+long long wcstoll(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base);
+unsigned long wcstoul(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base);
+unsigned long long wcstoull(const wchar_t * XBOXRT_RESTRICT nptr, wchar_t ** XBOXRT_RESTRICT endptr, int base);
+size_t mbrlen(const char *s, size_t n, mbstate_t *ps);
+wint_t btowc(int c);
+size_t mbsrtowcs(wchar_t *dest, const char **src, size_t len, mbstate_t *ps);
+int wctob(wint_t c);
+int wcrtomb_s(size_t * XBOXRT_RESTRICT retval, char * XBOXRT_RESTRICT s, size_t ssz, wchar_t wc, mbstate_t * XBOXRT_RESTRICT ps);
 
 #ifdef __cplusplus
 }
