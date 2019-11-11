@@ -117,9 +117,9 @@ static  DWORD           *pb_DmaBuffer2; //points at 32 contiguous bytes (Dma Cha
 static  DWORD           *pb_DmaBuffer7; //points at 32 contiguous bytes (Dma Channel ID 7 buffer)
 
 static  DWORD           pb_Size=512*1024;//push buffer size, must be >64Kb and a power of 2
-static  DWORD           *pb_Head;   //points at push buffer head
-static  DWORD           *pb_Tail;   //points at push buffer tail
-static  DWORD           *pb_Put=NULL;   //where next command+params are to be written
+static  uint32_t        *pb_Head;   //points at push buffer head
+static  uint32_t        *pb_Tail;   //points at push buffer tail
+static  uint32_t        *pb_Put=NULL;   //where next command+params are to be written
 
 static  float           pb_CpuFrequency;
 
@@ -1728,7 +1728,7 @@ static void pb_jump_to_head(void)
     //or to enlarge push buffer (with pb_size, before calling pb_init).
     //Default size is 512Kb (128*1024 dwords)
 
-    DWORD           *pGetAddr;
+    uint32_t        *pGetAddr;
 
     DWORD           TimeStampTicks;
 
@@ -1767,7 +1767,7 @@ static void pb_jump_to_head(void)
         }
 
         //converts physical address into virtual address
-        pGetAddr=(DWORD *)((*(pb_DmaUserAddr+0x44/4))|0x80000000);
+        pGetAddr=(uint32_t *)((*(pb_DmaUserAddr+0x44/4))|0x80000000);
     }while (pGetAddr!=pb_Head);
             
 }
@@ -1837,7 +1837,7 @@ DWORD *pb_extra_buffer(int index_buffer)
 
 void pb_target_back_buffer(void)
 {
-    DWORD           *p;
+    uint32_t        *p;
 
     DWORD           width;
     DWORD           height;
@@ -1951,7 +1951,7 @@ void pb_target_back_buffer(void)
 
 void pb_target_extra_buffer(int index_buffer)
 {
-    DWORD           *p;
+    uint32_t        *p;
 
     DWORD           width;
     DWORD           height;
@@ -2200,7 +2200,7 @@ void pb_reset(void)
 }
 
 
-DWORD *pb_begin(void)
+uint32_t *pb_begin(void)
 {
 #ifdef DBG
     if (pb_Put>=pb_Tail) debugPrint("ERROR! Push buffer overflow! Use pb_reset more often or enlarge push buffer!\n");
@@ -2238,7 +2238,7 @@ void pb_stop_log(void)
 #endif
 
 
-void pb_end(DWORD *pEnd)
+void pb_end(uint32_t *pEnd)
 {
     DWORD           TimeStamp1;
     DWORD           TimeStamp2;
@@ -2246,7 +2246,7 @@ void pb_end(DWORD *pEnd)
     int         i;
 
 #ifdef LOG
-    DWORD           *p;
+    uint32_t    *p;
     int         n;
     
     if (logging)
@@ -2303,7 +2303,7 @@ void pb_end(DWORD *pEnd)
 }
 
 
-void pb_push_to(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
+void pb_push_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD nparam)
 {
 #ifdef DBG
     if (p!=pb_PushNext)
@@ -2328,14 +2328,14 @@ void pb_push_to(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam)
     *(p+0)=EncodeMethod(subchannel,command,nparam);
 }
 
-DWORD *pb_push1_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1)
+uint32_t *pb_push1_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1)
 {
     pb_push_to(subchannel,p,command,1);
     *(p+1)=param1;
     return p+2;
 }
 
-DWORD *pb_push2_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2)
+uint32_t *pb_push2_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2)
 {
     pb_push_to(subchannel,p,command,2);
     *(p+1)=param1;
@@ -2343,7 +2343,7 @@ DWORD *pb_push2_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWOR
     return p+3;
 }
 
-DWORD *pb_push3_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
+uint32_t *pb_push3_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
     pb_push_to(subchannel,p,command,3);
     *(p+1)=param1;
@@ -2352,7 +2352,7 @@ DWORD *pb_push3_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWOR
     return p+4;
 }
 
-DWORD *pb_push4_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
+uint32_t *pb_push4_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
     pb_push_to(subchannel,p,command,4);
     *(p+1)=param1;
@@ -2362,7 +2362,7 @@ DWORD *pb_push4_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWOR
     return p+5;
 }
 
-DWORD *pb_push4f_to(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
+uint32_t *pb_push4f_to(DWORD subchannel, uint32_t *p, DWORD command, float param1, float param2, float param3, float param4)
 {
     pb_push_to(subchannel,p,command,4);
     *((float *)(p+1))=param1;
@@ -2372,37 +2372,37 @@ DWORD *pb_push4f_to(DWORD subchannel, DWORD *p, DWORD command, float param1, flo
     return p+5;
 }
 
-void pb_push(DWORD *p, DWORD command, DWORD nparam)
+void pb_push(uint32_t *p, DWORD command, DWORD nparam)
 {
     pb_push_to(SUBCH_3D,p,command,nparam);
 }
 
-DWORD *pb_push1(DWORD *p, DWORD command, DWORD param1)
+uint32_t *pb_push1(uint32_t *p, DWORD command, DWORD param1)
 {
     return pb_push1_to(SUBCH_3D,p,command,param1);
 }
 
-DWORD *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2)
+uint32_t *pb_push2(uint32_t *p, DWORD command, DWORD param1, DWORD param2)
 {
     return pb_push2_to(SUBCH_3D,p,command,param1,param2);
 }
 
-DWORD *pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
+uint32_t *pb_push3(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3)
 {
     return pb_push3_to(SUBCH_3D,p,command,param1,param2,param3);
 }
 
-DWORD *pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
+uint32_t *pb_push4(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4)
 {
     return pb_push4_to(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
-DWORD *pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4)
+uint32_t *pb_push4f(uint32_t *p, DWORD command, float param1, float param2, float param3, float param4)
 {
     return pb_push4f_to(SUBCH_3D,p,command,param1,param2,param3,param4);
 }
 
-DWORD *pb_push_transposed_matrix(DWORD *p, DWORD command, float *m)
+uint32_t *pb_push_transposed_matrix(uint32_t *p, DWORD command, float *m)
 {
     pb_push_to(SUBCH_3D,p++,command,16);
 
@@ -2457,7 +2457,7 @@ void pb_show_depth_screen(void)
 
 void pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax)
 {
-    DWORD           *p;
+    uint32_t        *p;
     DWORD           dwzminscaled;
     DWORD           dwzmaxscaled;
     float           x,y,w,h;
@@ -2497,7 +2497,7 @@ void pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax)
 
 void pb_fill(int x, int y, int w, int h, DWORD color)
 {
-    DWORD       *p;
+    uint32_t    *p;
 
     int     x1,y1,x2,y2;
 
@@ -2544,7 +2544,7 @@ void pb_fill(int x, int y, int w, int h, DWORD color)
 //Implies that depth test function is set to "less or equal"
 void pb_erase_depth_stencil_buffer(int x, int y, int w, int h)
 {
-    DWORD       *p;
+    uint32_t    *p;
 
     int     x1,y1,x2,y2;
 
@@ -2570,7 +2570,7 @@ void pb_erase_depth_stencil_buffer(int x, int y, int w, int h)
 //returns 1 if we have to retry later (means no free buffer, draw more details next time)
 int pb_finished(void)
 {
-    DWORD           *p;
+    uint32_t        *p;
 
     if (pb_BackBufferbReady[pb_BackBufferNxt]) return 1; //table is full, retry later
 
@@ -2748,11 +2748,11 @@ int pb_init(void)
     BYTE            old_color_31;
     BYTE            old_color_82;
 
-    DWORD           baseaddr,baseaddr2;
+    uint32_t        baseaddr,baseaddr2;
 
     int         i,j,k;
 
-    DWORD           *p;
+    uint32_t        *p;
 
     struct s_CtxDma sDmaObject2;
     struct s_CtxDma sDmaObject3;
@@ -3051,7 +3051,7 @@ int pb_init(void)
 
     VIDEOREG(NV_PGRAPH_CHANNEL_CTX_TABLE)=pb_GrCtxTableInst&NV_PGRAPH_CHANNEL_CTX_TABLE_INST;
 
-    p=(DWORD *)(VIDEO_BASE+NV_PRAMIN+(pb_GrCtxTableInst<<4));
+    p=(uint32_t *)(VIDEO_BASE+NV_PRAMIN+(pb_GrCtxTableInst<<4));
     *(p+0)=0; //we don't point at the 2 graphic contexts yet
     *(p+1)=0;
 
@@ -3237,7 +3237,7 @@ int pb_init(void)
     pb_GrCtxInst[channel]=pb_FifoBigInst;
 
     //points at channel details in PRAMIN area
-    p=(DWORD *)(VIDEO_BASE+pb_FifoFCAddr+channel*64);
+    p=(uint32_t *)(VIDEO_BASE+pb_FifoFCAddr+channel*64);
 
     //zeroes details
     for(i=0;i<16;i++) *(p+i)=0;

@@ -21,6 +21,7 @@ extern "C"
 #endif
 
 #include <xboxkrnl/xboxkrnl.h>
+#include <stdint.h>
 #if !defined(__cplusplus)
 #include <stdbool.h>
 #endif
@@ -75,21 +76,21 @@ int pb_finished(void);  //prepare screen swapping at VBlank (do it at frame end)
 void pb_wait_until_gr_not_busy(void);
 DWORD pb_wait_until_tiles_not_busy(void);
 
-DWORD   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
-void    pb_push_to(DWORD subchannel, DWORD *p, DWORD command, DWORD nparam);
-DWORD   *pb_push1_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1);
-DWORD   *pb_push2_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2);
-DWORD   *pb_push3_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-DWORD   *pb_push4_to(DWORD subchannel, DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-DWORD   *pb_push4f_to(DWORD subchannel, DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
-void    pb_push(DWORD *p, DWORD command, DWORD nparam);
-DWORD   *pb_push1(DWORD *p, DWORD command, DWORD param1);
-DWORD   *pb_push2(DWORD *p, DWORD command, DWORD param1, DWORD param2);
-DWORD   *pb_push3(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-DWORD   *pb_push4(DWORD *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-DWORD   *pb_push4f(DWORD *p, DWORD command, float param1, float param2, float param3, float param4);
-DWORD   *pb_push_transposed_matrix(DWORD *p, DWORD command, float *m);
-void    pb_end(DWORD *pEnd);    //end a block with this (triggers the data sending to GPU)
+uint32_t   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
+void    pb_push_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD nparam);
+uint32_t   *pb_push1_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1);
+uint32_t   *pb_push2_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2);
+uint32_t   *pb_push3_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
+uint32_t   *pb_push4_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+uint32_t   *pb_push4f_to(DWORD subchannel, uint32_t *p, DWORD command, float param1, float param2, float param3, float param4);
+void    pb_push(uint32_t *p, DWORD command, DWORD nparam);
+uint32_t   *pb_push1(uint32_t *p, DWORD command, DWORD param1);
+uint32_t   *pb_push2(uint32_t *p, DWORD command, DWORD param1, DWORD param2);
+uint32_t   *pb_push3(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
+uint32_t   *pb_push4(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
+uint32_t   *pb_push4f(uint32_t *p, DWORD command, float param1, float param2, float param3, float param4);
+uint32_t   *pb_push_transposed_matrix(uint32_t *p, DWORD command, float *m);
+void    pb_end(uint32_t *pEnd);    //end a block with this (triggers the data sending to GPU)
 
 void    pb_extra_buffers(int n);//requests additional back buffers (default is 0) (call it before pb_init)
 void    pb_size(DWORD size);    //sets push buffer size (default is 512Kb) (call it before pb_init)

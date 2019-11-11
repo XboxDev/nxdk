@@ -355,7 +355,7 @@ static void draw_indices(void)
     #define MIN(a,b) ((a)<(b)?(a):(b))
     #define MAX_BATCH 120
 
-    DWORD *p;
+    uint32_t *p;
     unsigned int i, num_this_batch;
 
     for (i = 0; i < num_indices; ) {
