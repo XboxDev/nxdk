@@ -1825,10 +1825,10 @@ DWORD *pb_back_buffer(void)
 
 DWORD *pb_extra_buffer(int index_buffer)
 {
-    if (index_buffer>pb_ExtraBuffersCount)
+    if (index_buffer>=pb_ExtraBuffersCount)
     {
-        debugPrint("pb_target_extra_buffer: buffer index out of range\n");
-        return pb_back_buffer();
+        debugPrint("pb_extra_buffer: buffer index out of range\n");
+        return NULL;
     }
 
     return (DWORD *)pb_EXAddr[index_buffer];
