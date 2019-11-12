@@ -1823,15 +1823,15 @@ DWORD *pb_back_buffer(void)
     return (DWORD *)pb_FBAddr[pb_back_index];
 }
 
-DWORD *pb_extra_buffer(int index_buffer)
+DWORD *pb_extra_buffer(int buffer_index)
 {
-    if (index_buffer>=pb_ExtraBuffersCount)
+    if (buffer_index>=pb_ExtraBuffersCount)
     {
         debugPrint("pb_extra_buffer: buffer index out of range\n");
         return NULL;
     }
 
-    return (DWORD *)pb_EXAddr[index_buffer];
+    return (DWORD *)pb_EXAddr[buffer_index];
 }
 
 
@@ -1954,15 +1954,15 @@ void pb_target_back_buffer(void)
     set_draw_buffer(pb_FBAddr[pb_back_index]&0x03FFFFFF);
 }
 
-void pb_target_extra_buffer(int index_buffer)
+void pb_target_extra_buffer(int buffer_index)
 {
-    if (index_buffer>=pb_ExtraBuffersCount)
+    if (buffer_index>=pb_ExtraBuffersCount)
     {
         debugPrint("pb_target_extra_buffer: buffer index out of range\n");
         return;
     }
     
-    set_draw_buffer(pb_EXAddr[index_buffer]&0x03FFFFFF);
+    set_draw_buffer(pb_EXAddr[buffer_index]&0x03FFFFFF);
 }
 
 DWORD pb_get_vbl_counter(void)
