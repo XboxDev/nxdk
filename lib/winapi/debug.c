@@ -1,7 +1,13 @@
-#include <winbase.h>
+#include <windows.h>
 #include <winnt.h>
 
 #include <string.h>
+
+BOOL IsDebuggerPresent (VOID)
+{
+    // FIXME: Can we detect debugger presence on the Xbox?
+    return FALSE;
+}
 
 void WINAPI OutputDebugStringA (LPCTSTR lpOutputString)
 {
