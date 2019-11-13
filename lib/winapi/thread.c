@@ -2,6 +2,11 @@
 #include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
 
+HANDLE GetCurrentThread (VOID)
+{
+    return (HANDLE)-2;
+}
+
 DWORD GetCurrentThreadId (VOID)
 {
     return (DWORD)((PETHREAD)KeGetCurrentThread())->UniqueThread;
