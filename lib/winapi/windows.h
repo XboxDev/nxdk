@@ -1,6 +1,7 @@
 #ifndef __WINDOWS_H__
 #define __WINDOWS_H__
 
+#include <errhandlingapi.h>
 #include <fileapi.h>
 #include <handleapi.h>
 #include <memoryapi.h>
