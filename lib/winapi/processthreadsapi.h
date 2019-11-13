@@ -11,6 +11,8 @@ DWORD GetCurrentThreadId (VOID);
 DWORD GetThreadId (HANDLE Thread);
 BOOL SwitchToThread (VOID);
 
+BOOL SetThreadPriority (HANDLE hThread, int nPriority);
+
 #ifdef __cplusplus
 }
 #endif

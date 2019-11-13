@@ -33,3 +33,27 @@ BOOL SwitchToThread (VOID)
         return FALSE;
     }
 }
+
+BOOL SetThreadPriority (HANDLE hThread, int nPriority)
+{
+    NTSTATUS status;
+    PETHREAD thread;
+
+    status = ObReferenceObjectByHandle(hThread, &PsThreadObjectType, (PVOID)&thread);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    LONG priority = (LONG)nPriority;
+    if (priority == THREAD_PRIORITY_TIME_CRITICAL) {
+        priority = (HIGH_PRIORITY + 1) / 2;
+    } else if (priority == THREAD_PRIORITY_IDLE) {
+        priority = -((HIGH_PRIORITY + 1) / 2);
+    }
+
+    KeSetBasePriorityThread(&thread->Tcb, priority);
+
+    ObfDereferenceObject(thread);
+    return TRUE;
+}
