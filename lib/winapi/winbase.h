@@ -12,6 +12,8 @@ extern "C"
 
 #define INVALID_HANDLE_VALUE ((HANDLE)-1)
 
+#define INFINITE 0xFFFFFFFF
+
 #define FILE_BEGIN 0
 #define FILE_CURRENT 1
 #define FILE_END 2
