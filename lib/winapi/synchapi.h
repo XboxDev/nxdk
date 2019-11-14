@@ -12,6 +12,7 @@ typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 typedef PRTL_CRITICAL_SECTION LPCRITICAL_SECTION;
 
 VOID InitializeCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
+BOOL InitializeCriticalSectionAndSpinCount (LPCRITICAL_SECTION lpCriticalSection, DWORD dwSpinCount);
 VOID DeleteCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID EnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
