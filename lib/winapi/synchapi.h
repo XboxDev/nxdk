@@ -2,6 +2,7 @@
 #define __SYNCHAPI_H__
 
 #include <windef.h>
+#include <winbase.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,6 +27,9 @@ VOID Sleep (DWORD dwMilliseconds);
 DWORD SleepEx (DWORD dwMilliseconds, BOOL bAlertable);
 
 DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds, BOOL bAlertable);
+
+HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName);
+BOOL ReleaseSemaphore (HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount);
 
 #ifdef __cplusplus
 }

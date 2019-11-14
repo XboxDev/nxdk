@@ -1,6 +1,7 @@
 #include <synchapi.h>
 #include <stdbool.h>
 #include <winbase.h>
+#include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 VOID InitializeCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
@@ -62,4 +63,48 @@ DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds, BOOL bAlertab
 
         return status;
     }
+}
+
+HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING obj_name;
+    OBJECT_ATTRIBUTES obj_attributes;
+    POBJECT_ATTRIBUTES obj_attributes_ptr;
+
+    if (lpName) {
+        RtlInitAnsiString(&obj_name, lpName);
+        InitializeObjectAttributes(&obj_attributes, &obj_name, OBJ_OPENIF, ObWin32NamedObjectsDirectory(), NULL);
+        obj_attributes_ptr = &obj_attributes;
+    } else {
+        obj_attributes_ptr = NULL;
+    }
+
+    status = NtCreateSemaphore(&handle, obj_attributes_ptr, lInitialCount, lMaximumCount);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return NULL;
+    }
+
+    if (status == STATUS_OBJECT_NAME_EXISTS) {
+        SetLastError(ERROR_ALREADY_EXISTS);
+    } else {
+        SetLastError(0);
+    }
+
+    return handle;
+}
+
+BOOL ReleaseSemaphore (HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount)
+{
+    NTSTATUS status;
+
+    status = NtReleaseSemaphore(hSemaphore, lReleaseCount, lpPreviousCount);
+    if (NT_SUCCESS(status)) {
+        return TRUE;
+    }
+
+    SetLastError(RtlNtStatusToDosError(status));
+    return FALSE;
 }
