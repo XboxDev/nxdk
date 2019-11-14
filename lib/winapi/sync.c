@@ -9,6 +9,15 @@ VOID InitializeCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
     RtlInitializeCriticalSection(lpCriticalSection);
 }
 
+BOOL InitializeCriticalSectionAndSpinCount (LPCRITICAL_SECTION lpCriticalSection, DWORD dwSpinCount)
+{
+    // From the MSDN: The spin count for the critical section object
+    // On single-processor systems, the spin count is ignored and the critical
+    // section spin count is set to 0 (zero).
+    InitializeCriticalSection(lpCriticalSection);
+    return TRUE;
+}
+
 VOID DeleteCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
 {
     RtlDeleteCriticalSection(lpCriticalSection);
