@@ -14,6 +14,11 @@ extern "C"
 
 #define INFINITE 0xFFFFFFFF
 
+#define CREATE_SUSPENDED 0x00000004
+// The STACK_SIZE_PARAM_IS_A_RESERVATION flag has no effect when passed to
+// CreateThread or _beginthreadex, stacks are always committed memory in the Xbox
+#define STACK_SIZE_PARAM_IS_A_RESERVATION 0x00010000
+
 #define THREAD_PRIORITY_ABOVE_NORMAL 1
 #define THREAD_PRIOIRTY_BELOW_NORMAL (-1)
 #define THREAD_PRIORITY_HIGHEST 2

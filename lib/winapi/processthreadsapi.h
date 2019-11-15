@@ -1,11 +1,16 @@
 #ifndef __PROCESSTHREADSAPI_H__
 #define __PROCESSTHREADSAPI_H__
 
+#include <winbase.h>
 #include <windef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
+
+typedef DWORD (__stdcall *LPTHREAD_START_ROUTINE) (LPVOID lpThreadParameter);
+HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
 
 HANDLE GetCurrentThread (VOID);
 DWORD GetCurrentThreadId (VOID);
