@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include <processthreadsapi.h>
+#include <fibersapi_internal_.h>
 #include <winbase.h>
 #include <pdclib/_PDCLIB_xbox_tls.h>
 #include <xboxkrnl/xboxkrnl.h>
@@ -26,8 +27,14 @@ static VOID NTAPI WinapiThreadStartup (PKSTART_ROUTINE StartRoutine, PVOID Start
     // Zero-initialize the rest
     RtlZeroMemory((char *)TlsData + TlsDataSize, _tls_used.SizeOfZeroFill);
 
+    // Register the thread for proper FLS destructor handling
+    fls_register_thread();
+
     int res;
     res = (*(LPTHREAD_START_ROUTINE)StartRoutine)(StartContext);
+
+    fls_unregister_thread();
+
     PsTerminateSystemThread(res);
 }
 
