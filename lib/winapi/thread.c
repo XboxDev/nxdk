@@ -32,10 +32,7 @@ static VOID NTAPI WinapiThreadStartup (PKSTART_ROUTINE StartRoutine, PVOID Start
 
     int res;
     res = (*(LPTHREAD_START_ROUTINE)StartRoutine)(StartContext);
-
-    fls_unregister_thread();
-
-    PsTerminateSystemThread(res);
+    ExitThread(res);
 }
 
 HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId)
@@ -65,6 +62,12 @@ HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSiz
     }
 
     return handle;
+}
+
+VOID ExitThread (DWORD dwExitCode)
+{
+    fls_unregister_thread();
+    PsTerminateSystemThread(res);
 }
 
 HANDLE GetCurrentThread (VOID)
