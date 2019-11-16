@@ -208,6 +208,8 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
     (Entry)->Next = (ListHead)->Next; \
     (ListHead)->Next = (Entry);
 
+#define CONTAINING_RECORD(Address, Type, Field) ((Type *)((PCHAR)(Address) - (ULONG_PTR)__builtin_offsetof(Type, Field)))
+
 /**
  * Time information
  */
