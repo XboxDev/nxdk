@@ -155,15 +155,15 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
         PLIST_ENTRY ListHead
     );
 */
-#define InitializeListHead (ListHead) ((Listhead)->Flink = (ListHead)->Blink = (ListHead))
+#define InitializeListHead(ListHead) ((ListHead)->Flink = (ListHead)->Blink = (ListHead))
 
-#define IsListEmpty (ListHead) ((ListHead)->Flink == (ListHead))
+#define IsListEmpty(ListHead) ((ListHead)->Flink == (ListHead))
 
-#define RemoveHeadList (Listhead) (ListHead)->Flink;{RemoveEntryList((ListHead)->Flink)}
+#define RemoveHeadList(Listhead) (ListHead)->Flink;{RemoveEntryList((ListHead)->Flink)}
 
-#define RemoveTailList (ListHead) (ListHead)->Blink;{RemoveEntryList((ListHead)->Blink)}
+#define RemoveTailList(ListHead) (ListHead)->Blink;{RemoveEntryList((ListHead)->Blink)}
 
-#define RemoveEntryList (Entry) {\
+#define RemoveEntryList(Entry) {\
     PLIST_ENTRY _EX_Blink;\
     PLIST_ENTRY _EX_Flink;\
     _EX_Flink = (Entry)->Flink;\
@@ -172,7 +172,7 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
     _EX_Flink->Blink = _EX_Blink;\
 }
 
-#define InsertTailList (ListHead, Entry) {\
+#define InsertTailList(ListHead, Entry) {\
     PLIST_ENTRY _EX_Blink;\
     PLIST_ENTRY _EX_ListHead;\
     _EX_ListHead = (ListHead);\
@@ -183,7 +183,7 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
     _EX_ListHead->Blink = (Entry);\
 }
 
-#define InsertHeadList (ListHead, Entry) {\
+#define InsertHeadList(ListHead, Entry) {\
     PLIST_ENTRY _EX_Flink;\
     PLIST_ENTRY _EX_ListHead;\
     _EX_ListHead = (ListHead);\
@@ -194,7 +194,7 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
     _EX_ListHead->Flink = (Entry);\
 }
 
-#define PopEntryList (ListHead) \
+#define PopEntryList(ListHead) \
     (ListHead)->Next;\
     {\
         PSINGLE_LIST_ENTRY FirstEntry;\
@@ -204,7 +204,7 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
         }\
     }
 
-#define PushEntryList (ListHead, Entry) \
+#define PushEntryList(ListHead, Entry) \
     (Entry)->Next = (ListHead)->Next; \
     (ListHead)->Next = (Entry);
 
