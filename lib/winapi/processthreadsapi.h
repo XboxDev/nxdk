@@ -19,6 +19,11 @@ BOOL SwitchToThread (VOID);
 
 BOOL SetThreadPriority (HANDLE hThread, int nPriority);
 
+DWORD TlsAlloc ();
+BOOL TlsFree (DWORD dwTlsIndex);
+LPVOID TlsGetValue (DWORD dwTlsIndex);
+BOOL TlsSetValue (DWORD dwTlsIndex, LPVOID lpTlsValue);
+
 #ifdef __cplusplus
 }
 #endif
