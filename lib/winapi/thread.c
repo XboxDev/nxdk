@@ -1,10 +1,29 @@
 #include <assert.h>
+#include <errno.h>
 #include <string.h>
 #include <processthreadsapi.h>
+#include <process.h>
 #include <fibersapi_internal_.h>
 #include <winbase.h>
 #include <pdclib/_PDCLIB_xbox_tls.h>
 #include <xboxkrnl/xboxkrnl.h>
+
+uintptr_t __cdecl _beginthreadex (void *_Security, unsigned _StackSize, _beginthreadex_proc_type _StartAddress, void *_ArgList, unsigned _InitFlag, unsigned *_ThrdAddr)
+{
+    HANDLE thread;
+    thread = CreateThread(_Security, _StackSize, (LPTHREAD_START_ROUTINE)_StartAddress, _ArgList, _InitFlag, (LPDWORD)_ThrdAddr);
+    if (thread == NULL) {
+        // FIXME: Do proper translation from GetLastError() to errno
+        errno = -EINVAL;
+    }
+
+    return (uintptr_t)thread;
+}
+
+void __cdecl _endthreadex (unsigned _ReturnCode)
+{
+    ExitThread(_ReturnCode);
+}
 
 static VOID NTAPI WinapiThreadStartup (PKSTART_ROUTINE StartRoutine, PVOID StartContext)
 {
@@ -67,7 +86,7 @@ HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSiz
 VOID ExitThread (DWORD dwExitCode)
 {
     fls_unregister_thread();
-    PsTerminateSystemThread(res);
+    PsTerminateSystemThread(dwExitCode);
 }
 
 HANDLE GetCurrentThread (VOID)
