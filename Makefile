@@ -60,7 +60,7 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -Wno-ignored-attributes -DNXDK -D__STDC__=1
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
-NXDK_CXXFLAGS = $(NXDK_CFLAGS) -fno-threadsafe-statics -fno-rtti
+NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-threadsafe-statics -fno-rtti
 NXDK_LDFLAGS = -subsystem:windows -dll -entry:XboxCRTEntry \
                -stack:$(NXDK_STACKSIZE) -safeseh:no
 
@@ -79,6 +79,10 @@ all: $(TARGET)
 
 include $(NXDK_DIR)/lib/Makefile
 OBJS = $(addsuffix .obj, $(basename $(SRCS)))
+
+ifneq ($(NXDK_CXX),)
+include $(NXDK_DIR)/lib/libcxx/Makefile.nxdk
+endif
 
 ifneq ($(NXDK_NET),)
 include $(NXDK_DIR)/lib/net/Makefile
