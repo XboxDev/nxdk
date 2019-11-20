@@ -121,10 +121,6 @@ __attribute__((deprecated))
 int XDeleteDirectory(
 	const char *directoryName);
 
-int XMountDrive(
-	char driveLetter,
-	char *directoryName);
-
 #ifdef __cplusplus
 }
 #endif
