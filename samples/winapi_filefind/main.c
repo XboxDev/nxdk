@@ -1,33 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
+#include <nxdk/mount.h>
 #include <hal/debug.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
-
-int mount_drive_c ()
-{
-    OBJECT_STRING MountPath = RTL_CONSTANT_STRING("\\??\\C:");
-    OBJECT_STRING DrivePath = RTL_CONSTANT_STRING("\\Device\\Harddisk0\\Partition2\\");
-    NTSTATUS status;
-
-    status = IoCreateSymbolicLink(&MountPath, &DrivePath);
-    if (!NT_SUCCESS(status)) {
-        debugPrint("Failed to mount C: drive!\n");
-        Sleep(5000);
-        return -1;
-    }
-
-    return 0;
-}
 
 int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
     // Mount C:
-    int ret = mount_drive_c();
-    if (ret != 0) {
+    BOOL ret = nxMountDrive('C', "\\Device\\Harddisk0\\Partition2\\");
+    if (!ret) {
+        debugPrint("Failed to mount C: drive!\n");
+        Sleep(5000);
         return 1;
     }
 
