@@ -1,3 +1,4 @@
+#include <hal/debug.h>
 #include <hal/video.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
