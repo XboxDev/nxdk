@@ -694,4 +694,20 @@ DWORD* xgu_set_light_local_attenuation(DWORD* p, unsigned int light_index, XguVe
     return push_floats(p, v.f, 3);
 }
 
+/* ==== Direct Mode stuff ==== */
+
+inline
+DWORD* xgu_set_vertex3f(DWORD* p, XguVec3 v) {
+    p = push_command(p, NV097_SET_VERTEX3F, 3);
+    return push_floats(p, v.f, 3);
+}
+
+inline
+DWORD* xgu_set_vertex4f(DWORD* p, XguVec4 v) {
+    p = push_command(p, NV097_SET_VERTEX4F, 4);
+    return push_floats(p, v.f, 4);
+}
+
+
+
 #endif
