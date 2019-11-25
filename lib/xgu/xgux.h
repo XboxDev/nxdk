@@ -113,4 +113,48 @@ void xgux_set_transform_constant_matrix4x4(unsigned int location, unsigned int c
     }
 }
 
+
+#if 0
+#define GENERIC_ATTRIBUTE_TYPE(suffix, type, name, register, extra_arguments, x, y, z, w) \
+inline \
+static void name ## suffix(extra_arguments, type, x, y, z, w) { \
+  xgux_set_vertex_data ## suffix(register, x, y, z, w);
+}
+
+#define GENERIC_ATTRIBUTE(name, register, extra_arguments, x, y, z, w) \
+  GENERIC_ATTRIBUTE_TYPE(1f, float, name, register, extra_arguments, x) \
+  GENERIC_ATTRIBUTE_TYPE(2f, float, name, register, extra_arguments, x, y) \
+  GENERIC_ATTRIBUTE_TYPE(3f, float, name, register, extra_arguments, x, y, z) \
+  GENERIC_ATTRIBUTE_TYPE(4f, float, name, register, extra_arguments, x, y, z, w)
+
+
+
+//FIXME: Also support XGU_POSITION_ARRAY?
+GENERIC_ATTRIBUTE(weight, XGU_WEIGHT_ARRAY,, x, y, z, w)
+GENERIC_ATTRIBUTE(normal, XGU_NORMAL_ARRAY,, x, y, z, w)
+GENERIC_ATTRIBUTE(diffuse, XGU_COLOR_ARRAY,, r, g, b, a)
+GENERIC_ATTRIBUTE(specular, XGU_COLOR_ARRAY,, r, g, b, a)
+GENERIC_ATTRIBUTE(fogcoord, XGU_POINT_SIZE_ARRAY,, x, y, z, w)
+GENERIC_ATTRIBUTE(point_size, XGU_POINT_SIZE_ARRAY,, x, y, z, w)
+GENERIC_ATTRIBUTE(back_diffuse, XGU_COLOR_ARRAY,, r, g, b, a)
+GENERIC_ATTRIBUTE(back_specular, XGU_COLOR_ARRAY,, r, g, b, a)
+GENERIC_ATTRIBUTE(texcoord, 8+index, unsigned int index, s, t, r, q)
+GENERIC_ATTRIBUTE(vertex_attribute, index, unsigned int index, x, y, z, w)
+
+#undef GENERIC_ATTRIBUTE
+#undef GENERIC_ATTRIBUTE_TYPE
+#endif
+
+//FIXME: Remove p argument?
+inline
+uint32_t* xgux_set_color3f(uint32_t* p, float r, float g, float b) {
+    return xgu_set_vertex_data4f(p, XGU_COLOR_ARRAY, (r), (g), (b), 1.0f);
+}
+
+
+inline
+uint32_t* xgux_set_texcoord3f(uint32_t* p, unsigned int index, float s, float t, float r) {
+    return xgu_set_vertex_data4f(p, 8+index, s, t, r, 1.0f);
+}
+
 #endif
