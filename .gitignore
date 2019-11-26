@@ -14,3 +14,4 @@ _*.h
 samples/**/*.iso
 *.lib
 !tools/cg/win/cgc.exe
+bin/
