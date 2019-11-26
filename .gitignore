@@ -10,6 +10,7 @@
 *.bc
 *.pdb
 _*.cpp
+_*.hpp
 _*.h
 samples/**/*.iso
 *.lib
