@@ -538,7 +538,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             m_Certificate.dwTitleId = 0xFFFF0002;
 
             // title name
-            memset(m_Certificate.wszTitleName, 0, 40);
+            memset(m_Certificate.wszTitleName, 0, sizeof(m_Certificate.wszTitleName));
             //mbstowcs(m_Certificate.wszTitleName, x_szTitle, 40);
             const char *p = x_szTitle;
             char *q = (char *) m_Certificate.wszTitleName;
