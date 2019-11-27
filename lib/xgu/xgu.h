@@ -223,24 +223,24 @@ uint32_t* push_floats(uint32_t* p, const float* f, unsigned int count) {
 }
 
 static inline
-uint32_t* push_matrix2x2(uint32_t* p, float m[2*2]) {
+uint32_t* push_matrix2x2(uint32_t* p, const float m[2*2]) {
     return push_floats(p, m, 2*2);
 }
 
 static inline
-uint32_t* push_matrix4x4(uint32_t* p, float m[4*4]) {
+uint32_t* push_matrix4x4(uint32_t* p, const float m[4*4]) {
     return push_floats(p, m, 4*4);
 }
 
 static inline
-uint32_t* push_command_matrix2x2(uint32_t* p, uint32_t command, float m[2*2]) {
+uint32_t* push_command_matrix2x2(uint32_t* p, uint32_t command, const float m[2*2]) {
     p = push_command(p, command, 2*2);
     p = push_matrix2x2(p, m);
     return p;
 }
 
 static inline
-uint32_t* push_command_matrix4x4(uint32_t* p, uint32_t command, float m[4*4]) {
+uint32_t* push_command_matrix4x4(uint32_t* p, uint32_t command, const float m[4*4]) {
     p = push_command(p, command, 4*4);
     p = push_matrix4x4(p, m);
     return p;
@@ -388,27 +388,27 @@ uint32_t* xgu_set_texture_matrix_enable(uint32_t* p, uint32_t texture_index, boo
 }
 
 inline
-uint32_t* xgu_set_projection_matrix(uint32_t* p, float m[4*4]) {
+uint32_t* xgu_set_projection_matrix(uint32_t* p, const float m[4*4]) {
     return push_command_matrix4x4(p, NV097_SET_PROJECTION_MATRIX, m);
 }
 
 inline
-uint32_t* xgu_set_model_view_matrix(uint32_t* p, uint32_t bone_index, float m[4*4]) {
+uint32_t* xgu_set_model_view_matrix(uint32_t* p, uint32_t bone_index, const float m[4*4]) {
     return push_command_matrix4x4(p, NV097_SET_MODEL_VIEW_MATRIX + bone_index*(4*4)*4, m);
 }
 
 inline
-uint32_t* xgu_set_inverse_model_view_matrix(uint32_t* p, uint32_t bone_index, float m[4*4]) {
+uint32_t* xgu_set_inverse_model_view_matrix(uint32_t* p, uint32_t bone_index, const float m[4*4]) {
     return push_command_matrix4x4(p, NV097_SET_INVERSE_MODEL_VIEW_MATRIX + bone_index*(4*4)*4, m);
 }
 
 inline
-uint32_t* xgu_set_composite_matrix(uint32_t* p, float m[4*4]) {
+uint32_t* xgu_set_composite_matrix(uint32_t* p, const float m[4*4]) {
     return push_command_matrix4x4(p, NV097_SET_COMPOSITE_MATRIX, m);
 }
 
 inline
-uint32_t* xgu_set_texture_matrix(uint32_t* p, uint32_t slot, float m[4*4]) {
+uint32_t* xgu_set_texture_matrix(uint32_t* p, uint32_t slot, const float m[4*4]) {
     assert(slot == 0);
     return push_command_matrix4x4(p, NV097_SET_TEXTURE_MATRIX, m);
 }
