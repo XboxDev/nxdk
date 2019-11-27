@@ -106,9 +106,9 @@ void xgux_set_transform_constant_matrix4x4(unsigned int location, unsigned int c
                     t.col[row].f[col] = m[i].col[col].f[row];
                 }
             }
-            xgux_set_transform_constant_vec4(location + i*4, 4, &t.col);
+            xgux_set_transform_constant_vec4(location + i*4, 4, &t.col[0]);
         } else {
-            xgux_set_transform_constant_vec4(location + i*4, 4, &m[i].col);
+            xgux_set_transform_constant_vec4(location + i*4, 4, &m[i].col[0]);
         }
     }
 }
