@@ -572,11 +572,22 @@ uint32_t* xgu_set_transform_constant_load(uint32_t* p, uint32_t offset) {
     return push_command_parameter(p, NV097_SET_TRANSFORM_CONSTANT_LOAD, offset);
 }
 
+
+typedef union {
+    uint32_t i[4];
+    struct {
+        uint32_t a;
+        uint32_t b;
+        uint32_t c;
+        uint32_t d;
+    };
+} XguTransformProgramInstruction;
+
 inline
-uint32_t* xgu_set_transform_program(uint32_t* p, XguVec4 *v, unsigned int count) {
+uint32_t* xgu_set_transform_program(uint32_t* p, const XguTransformProgramInstruction* instructions, unsigned int count) {
     p = push_command(p, NV097_SET_TRANSFORM_PROGRAM, count*4);
     for (uint32_t i = 0; i < count; ++i) {
-        p = push_floats(p, v[i].f, 4);
+        p = push_parameters(p, &instructions[i].i[0], 4);
     }
     return p;
 }
