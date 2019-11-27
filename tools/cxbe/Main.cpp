@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
             }
             else if(strcmp(szOptionU, "TITLE") == 0)
             {
-                if(dwParamSize > 256)
+                if(dwParamSize > 40)
                     printf("WARNING: Title too long, using default title\n");
                 else
                     strcpy(szXbeTitle, szParam);
