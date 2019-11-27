@@ -166,15 +166,14 @@ int main(int argc, char *argv[])
 
             char *szWorking = szFilename;
 
-            strncpy(szWorkingU, szWorking, 265);
-
             for(int c=0;szFilename[c] != 0;c++)
                 if(szFilename[c] == '.')
                     szWorking = &szFilename[c];
 
-            MakeUpper(szWorking);
+            strncpy(szWorkingU, szWorking, 265);
+            MakeUpper(szWorkingU);
 
-            if(strcmp(szWorkingU, ".exe") == 0)
+            if(strcmp(szWorkingU, ".EXE") == 0)
                 strcpy(szWorking, ".xbe");
             else
                 strcat(szXbeFilename, ".xbe");
