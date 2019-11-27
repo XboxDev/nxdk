@@ -17,12 +17,6 @@
 #include <hal/debug.h>
 #include <windows.h>
 
-static float     m_viewport[4][4];
-
-#define MASK(mask, val) (((val) << (ffs(mask)-1)) & (mask))
-
-static void matrix_viewport(float out[4][4], float x, float y, float width, float height, float z_min, float z_max);
-static void init_shader(void);
 
 /* Main program function */
 int main(void)
@@ -48,9 +42,70 @@ int main(void)
     int width = pb_back_buffer_width();
     int height = pb_back_buffer_height();
 
-    /* Load constant rendering things (shaders, geometry) */
-    init_shader();
-    matrix_viewport(m_viewport, 0, 0, width, height, 0, 65536.0f);
+    /* A generic identity matrix */
+    const float m_identity[4*4] = {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    /* A viewport matrix; this maps:
+     *  - X from [-1, 1] to [0, width]
+     *  - Y from [-1, 1] to [height, 0]
+     *  - Z from [ 0, 1] to [0, 0xFFFF]
+     *  - W to 1
+     * This scales: X from [-1, 1] to [0, width]
+     */
+    float m_viewport[4*4] = {
+        width/2.0f, 0.0f,         0.0f,          width/2.0f,
+        0.0f,       height/-2.0f, 0.0f,          height/2.0f,
+        0.0f,       0.0f,         (float)0xFFFF, 0.0f,
+        0.0f,       0.0f,         0.0f,          1.0f
+    };
+
+    /* Setup fragment shader */
+    p = pb_begin();
+    //FIXME: The MASK macro should be contained within ps.inl
+    //FIXME: Ideally ps.inl would contain a struct, not this weird garbage
+    #pragma push_macro("MASK")
+    #undef MASK //FIXME: Maybe not necessary?
+    #define MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))
+    #include "ps.inl"
+    #undef MASK //FIXME: Maybe not necessary?
+    #pragma pop_macro("MASK")
+    pb_end(p);
+
+    /* Set up some default GPU state (should be done in xgux_init maybe? currently partially done in pb_init) */
+    {
+        p = pb_begin();
+
+        //FIXME: p = xgu_set_skinning(p, XGU_SKINNING_OFF);
+        //FIXME: p = xgu_set_normalization(p, false);
+        p = xgu_set_lighting_enable(p, false);
+
+        for(int i = 0; i < XGU_TEXTURE_COUNT; i++) {
+            //FIXME: p = xgu_set_texgen(p, XGU_TEXGEN_OFF);
+            //p = xgu_set_texture_matrix_enable(p, i, false);
+        }
+
+        for(int i = 0; i < XGU_WEIGHT_COUNT; i++) {
+            p = xgu_set_model_view_matrix(p, i, m_identity); //FIXME: Not sure when used?
+            p = xgu_set_inverse_model_view_matrix(p, i, m_identity); //FIXME: Not sure when used?
+        }
+
+        pb_end(p);
+    }
+
+    /* Set up all states for hardware vertex pipeline */
+    p = pb_begin();
+    p = xgu_set_transform_execution_mode(p, XGU_FIXED, XGU_RANGE_MODE_USER);
+    //FIXME: p = xgu_set_fog_enable(p, false);
+    p = xgu_set_projection_matrix(p, m_identity); //FIXME: Unused in XQEMU
+    p = xgu_set_composite_matrix(p, m_viewport); //FIXME: Always used in XQEMU?
+    p = xgu_set_viewport_offset(p, 0.0f, 0.0f, 0.0f, 0.0f);
+    p = xgu_set_viewport_scale(p, 1.0f / width, 1.0f / height, 1.0f / (float)0xFFFF, 1.0f); //FIXME: Ignored?!
+    pb_end(p);
 
     /* Setup to determine frames rendered every second */
     int       start, last, now;
@@ -72,21 +127,6 @@ int main(void)
             /* Wait for completion... */
         }
 
-        /* Send shader constants
-         *
-         * WARNING: Changing shader source code may impact constant locations!
-         * Check the intermediate file (*.inl) for the expected locations after
-         * changing the code.
-         */
-        p = pb_begin();
-
-        /* Set shader constants cursor at C0 */
-        p = xgu_set_transform_constant_load(p, 96);
-
-        /* Send the transformation matrix */
-        p = xgu_set_transform_constant(p, m_viewport, 4);
-
-        pb_end(p);
         p = pb_begin();
 
         p = xgu_begin(p, XGU_TRIANGLES);
@@ -144,49 +184,4 @@ int main(void)
     pb_kill();
     
     return 0;
-}
-
-/* Construct a viewport transformation matrix */
-static void matrix_viewport(float out[4][4], float x, float y, float width, float height, float z_min, float z_max)
-{
-    memset(out, 0, 4*4*sizeof(float));
-    out[0][0] = width/2.0f;
-    out[1][1] = height/-2.0f;
-    out[2][2] = z_max - z_min;
-    out[3][3] = 1.0f;
-    out[3][0] = x + width/2.0f;
-    out[3][1] = y + height/2.0f;
-    out[3][2] = z_min;
-}
-
-/* Load the shader we will render with */
-static void init_shader(void)
-{
-    uint32_t *p;
-    int       i;
-
-    /* Setup vertex shader */
-    uint32_t vs_program[] = {
-        #include "vs.inl"
-    };
-
-    p = pb_begin();
-
-    /* Set run address of shader */
-    p = xgu_set_transform_program_start(p, 0);
-
-    /* Set execution mode */
-    p = xgu_set_transform_execution_mode(p, XGU_PROGRAM, XGU_RANGE_MODE_PRIVATE);
-    p = xgu_set_transform_program_cxt_write_enable(p, false);
-
-    /* Set cursor and begin copying program */
-    p = xgu_set_transform_program_load(p, 0);
-    p = xgu_set_transform_program(p, vs_program, sizeof(vs_program)/16);
-
-    pb_end(p);
-
-    /* Setup fragment shader */
-    p = pb_begin();
-    #include "ps.inl"
-    pb_end(p);
 }
