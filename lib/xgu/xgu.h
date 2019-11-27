@@ -559,7 +559,7 @@ uint32_t* xgu_set_transform_execution_mode(uint32_t* p, XguExecMode mode, XguExe
 }
 
 inline
-uint32_t* xgu_set_transform_constant(uint32_t* p, XguVec4 *v, unsigned int count) {
+uint32_t* xgu_set_transform_constant(uint32_t* p, const XguVec4 *v, unsigned int count) {
     p = push_command(p, NV097_SET_TRANSFORM_CONSTANT, count*4);
     for (uint32_t i = 0; i < count; ++i) {
         p = push_floats(p, v[i].f, 4);
