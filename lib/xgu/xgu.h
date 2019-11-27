@@ -141,7 +141,7 @@ typedef enum {
     XGU_LMASK_SPOT = NV097_SET_LIGHT_ENABLE_MASK_LIGHT0_SPOT
 } XguLightMask;
 
-#define XGU_MASK(mask, val) (((val) << (ffs(mask)-1)) & (mask))
+#define XGU_MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))
 
 #define XGU_ATTRIBUTE_COUNT 16
 #define XGU_TEXTURE_COUNT 4
