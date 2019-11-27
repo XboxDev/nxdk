@@ -193,6 +193,14 @@ uint32_t* push_parameter(uint32_t* p, uint32_t parameter) {
 }
 
 static inline
+uint32_t* push_parameters(uint32_t* p, const uint32_t* parameters, unsigned int count) {
+    for(unsigned int i = 0; i < count; i++) {
+        p = push_parameter(p, parameters[i]);
+    }
+    return p;
+}
+
+static inline
 uint32_t* push_boolean(uint32_t* p, bool enabled) {
     return push_parameter(p, enabled ? 1 : 0);
 }
@@ -210,11 +218,8 @@ uint32_t* push_float(uint32_t* p, float f) {
 }
 
 static inline
-uint32_t* push_floats(uint32_t* p, float* f, unsigned int count) {
-    for(unsigned int i = 0; i < count; i++) {
-        p = push_float(p, f[i]);
-    }
-    return p;
+uint32_t* push_floats(uint32_t* p, const float* f, unsigned int count) {
+    return push_parameters(p, (const uint32_t*)f, count);
 }
 
 static inline
