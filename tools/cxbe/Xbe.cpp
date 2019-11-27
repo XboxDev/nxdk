@@ -131,16 +131,16 @@ Xbe::Xbe(const char *x_szFilename)
             goto cleanup;
         }
 
+        // generate ascii title from certificate title name
         setlocale( LC_ALL, "English" );
-
         //wcstombs(m_szAsciiTitle, m_Certificate.wszTitleName, 40);
         char *c = m_szAsciiTitle;
         char *d = (char *) m_Certificate.wszTitleName;
-        while (*d) {
+        while ((uint16*)d < &m_Certificate.wszTitleName[40] && *d) {
            *c++ = *d++;
            d++;
         }
-
+        *c = '\0';
 
         printf("OK\n");
 
@@ -592,13 +592,14 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
 
         // generate ascii title from certificate title name
         setlocale( LC_ALL, "English" );
-        ///wcstombs(m_szAsciiTitle, m_Certificate.wszTitleName, 40);
+        //wcstombs(m_szAsciiTitle, m_Certificate.wszTitleName, 40);
         char *c = m_szAsciiTitle;
         char *d = (char *) m_Certificate.wszTitleName;
-        while (*d) {
+        while ((uint16*)d < &m_Certificate.wszTitleName[40] && *d) {
            *c++ = *d++;
            d++;
         }
+        *c = '\0';
 
 
 
