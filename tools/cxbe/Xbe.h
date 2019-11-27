@@ -216,7 +216,7 @@ class Xbe : public Error
         char m_szPath[260];
 
         // Xbe ascii title, translated from certificate title
-        char m_szAsciiTitle[40];
+        char m_szAsciiTitle[40+1];
 
         // retrieve thread local storage data address
         uint08 *GetTLSData() { if(m_TLS == 0) return 0; else return GetAddr(m_TLS->dwDataStartAddr); }
