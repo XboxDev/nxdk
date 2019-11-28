@@ -42,6 +42,11 @@ void InstList::Invoke()
 {
     int i;
 
+    printf("#pragma push_macro(\"MASK\")\n");
+    printf("#undef MASK\n");
+    printf("#define MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))\n");
+    printf("\n");
+
     assert(size > 1);
     printf("pb_push1(p, NV097_SET_SHADER_OTHER_STAGE_INPUT,\n    ");
     for (i=1; i<size; i++) {
@@ -89,6 +94,9 @@ void InstList::Invoke()
     }
     printf(");\n");
     printf("p += 2;\n");
+
+    printf("\n");
+    printf("#pragma pop_macro(\"MASK\")\n");
 }
 
 void InstList::Validate()
