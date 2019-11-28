@@ -21,6 +21,11 @@ void CombinersStruct::Validate()
 
 void CombinersStruct::Invoke()
 {
+    printf("#pragma push_macro(\"MASK\")\n");
+    printf("#undef MASK\n");
+    printf("#define MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))\n");
+    printf("\n");
+
     assert(numConsts <= 2);
     for (int i = 0; i < numConsts; i++) {
     //     glCombinerParameterfvNV(cc[i].reg.bits.name, &(cc[i].v[0]));
@@ -77,6 +82,9 @@ void CombinersStruct::Invoke()
     generals.Invoke();
 
     final.Invoke();
+
+    printf("\n");
+    printf("#pragma pop_macro(\"MASK\")\n");
 }
 
 bool is_rc10(const char * s)
