@@ -49,7 +49,6 @@ void InstList::Invoke()
         int previousTexture = 0;
         if (list[i].opcode.bits.dependent)
             previousTexture = (int)list[i].args[0];
-        assert(i > previousTexture);
         printf("MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE%d, %d)",
             i, previousTexture);
         if (i != size-1) printf("\n");
@@ -112,10 +111,14 @@ void InstList::Validate()
         }
         if (list[i].opcode.bits.dependent) {
             int previousTexture = (int)list[i].args[0];
-            if (previousTexture >= i - stage)
-                errors.set("invalid texture reference", list[i].line_number);
-            if (list[previousTexture].opcode.bits.noOutput)
-                errors.set("no output on referenced texture", list[i].line_number);
+            if (previousTexture >= i)
+                errors.set("texture reference not ready", list[i].line_number);
+            else {
+                if (previousTexture >= i - stage)
+                    errors.set("texture references a previous stage of itself", list[i].line_number);
+                if (list[previousTexture].opcode.bits.noOutput)
+                    errors.set("no output on referenced texture", list[i].line_number);
+            }
         }
         if (stage < stageCounts[instruction]-1) {
             if (i+1 >= size)
