@@ -73,4 +73,6 @@ int wcrtomb_s(size_t * XBOXRT_RESTRICT retval, char * XBOXRT_RESTRICT s, size_t 
 }
 #endif
 
+#include <wchar_ext_.h>
+
 #endif /* end of include guard: _XBOXRT_WCHAR_H */
