@@ -28,6 +28,8 @@ typedef struct XBOXRT_mbstate {
 
 typedef XBOXRT_mbstate_t mbstate_t;
 
+struct tm;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
