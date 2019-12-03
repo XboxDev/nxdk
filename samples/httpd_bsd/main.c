@@ -4,7 +4,7 @@
 #include <lwip/netif.h>
 #include <lwip/sys.h>
 #include <lwip/tcpip.h>
-#include <lwip/timers.h>
+#include <lwip/timeouts.h>
 #include <netif/etharp.h>
 #include <pktdrv.h>
 #include <hal/video.h>
@@ -86,7 +86,7 @@ int main(void)
 
 #if USE_DHCP
     debugPrint("Waiting for DHCP...\n");
-    while (g_pnetif->dhcp->state != DHCP_STATE_BOUND)
+    while (dhcp_supplied_address(g_pnetif) == 0)
         NtYieldExecution();
     debugPrint("DHCP bound!\n");
 #endif

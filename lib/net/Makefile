@@ -1,6 +1,7 @@
 # Include LWIP sources
 LWIPDIR = $(NXDK_DIR)/lib/net/lwip/src
 include $(LWIPDIR)/Filelists.mk
+NETIFFILES := $(filter-out $(LWIPDIR)/netif/slipif.c,$(NETIFFILES))
 LWIPSRCS := $(COREFILES) \
             $(CORE4FILES) \
             $(CORE6FILES) \
