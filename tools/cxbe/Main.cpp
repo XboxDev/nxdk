@@ -48,7 +48,8 @@ int main(int argc, char *argv[])
     char szXbeFilename[OPTION_LEN+1]  = {0};
     char szDumpFilename[OPTION_LEN+1] = {0};
     char szXbeTitle[OPTION_LEN+1]     = "Untitled";
-    bool bRetail                      = true;
+    char szMode[OPTION_LEN+1]         = "retail";
+    bool bRetail;
 
     // parse command line
     for(int v=1;v<argc;v++)
@@ -104,15 +105,7 @@ int main(int argc, char *argv[])
             }
             else if(CompareString(szOption, "MODE"))
             {
-                if(CompareString(szParam, "RETAIL"))
-                    bRetail = true;
-                else if(CompareString(szParam, "DEBUG"))
-                    bRetail = false;
-                else
-                {
-                    strncpy(szErrorMessage, "invalid MODE", ERROR_LEN);
-                    goto cleanup;
-                }
+                strncpy(szMode, szParam, OPTION_LEN);
             }
             else
             {
@@ -120,6 +113,16 @@ int main(int argc, char *argv[])
                 goto cleanup;
             }
         }
+    }
+
+    if(CompareString(szMode, "RETAIL"))
+        bRetail = true;
+    else if(CompareString(szMode, "DEBUG"))
+        bRetail = false;
+    else
+    {
+        strncpy(szErrorMessage, "invalid MODE", ERROR_LEN);
+        goto cleanup;
     }
 
     if(strlen(szXbeTitle) > 40)
