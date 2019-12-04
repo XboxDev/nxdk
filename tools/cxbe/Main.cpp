@@ -89,36 +89,10 @@ int main(int argc, char *argv[])
     // if we don't have an Xbe filename, generate one from szExeFilename
     if(szXbeFilename[0] == '\0')
     {
-        strncpy(szXbeFilename, szExeFilename, OPTION_LEN);
-
-        char *szFilename = &szXbeFilename[0];
-
-        // locate last \ or / (if there are any)
+        if(GenerateFilename(szXbeFilename, ".xbe", szExeFilename, ".exe"))
         {
-            for(int c=0;szXbeFilename[c] != 0;c++)
-                if(szXbeFilename[c] == '\\' || szXbeFilename[c] == '/')
-                    szFilename = &szXbeFilename[c+1];
-        }
-
-        // locate and remove last . (if there are any)
-        {
-            char *szWorking = szFilename;
-
-            for(int c=0;szFilename[c] != 0;c++)
-                if(szFilename[c] == '.')
-                    szWorking = &szFilename[c];
-
-            if(CompareString(szWorking, ".EXE"))
-                *szWorking = '\0';
-
-            sintptr freeLength = OPTION_LEN - strlen(szXbeFilename);
-            if(freeLength < strlen(".xbe"))
-            {
-                strncpy(szErrorMessage, "Exe Path too long", ERROR_LEN);
-                goto cleanup;
-            }
-
-            strncat(szXbeFilename, ".xbe", freeLength);
+            strncpy(szErrorMessage, "Unable to generate Exe Path", ERROR_LEN);
+            goto cleanup;
         }
     }
 

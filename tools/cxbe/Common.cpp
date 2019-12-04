@@ -97,6 +97,43 @@ void ShowUsage(const char *program, const char *desc, const Option *options)
     }
 }
 
+int GenerateFilename(char *szNewPath, const char *szNewExtension,
+                     const char *szOldPath, const char *szOldExtension)
+{
+    strncpy(szNewPath, szOldPath, OPTION_LEN);
+
+    char *szFilename = &szNewPath[0];
+
+    // locate last \ or / (if there are any)
+    {
+        for(int c=0;szNewPath[c] != 0;c++)
+            if(szNewPath[c] == '\\' || szNewPath[c] == '/')
+                szFilename = &szNewPath[c+1];
+    }
+
+    // locate and remove last . (if there are any)
+    {
+        char *szWorking = szFilename;
+
+        for(int c=0;szFilename[c] != 0;c++)
+            if(szFilename[c] == '.')
+                szWorking = &szFilename[c];
+
+        if(CompareString(szWorking, szOldExtension))
+            *szWorking = '\0';
+
+        sintptr freeLength = OPTION_LEN - strlen(szNewPath);
+        if(freeLength < strlen(szNewExtension))
+        {
+            return 1;
+        }
+
+        strncat(szNewPath, szNewExtension, freeLength);
+    }
+
+    return 0;
+}
+
 // case-insensitive string compare
 bool CompareString(const char *szA, const char *szB)
 {
