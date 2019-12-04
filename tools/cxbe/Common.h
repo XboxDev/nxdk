@@ -8,6 +8,13 @@
 #define OPTION_LEN 266
 #define ERROR_LEN 256
 
+struct Option {
+    char *value;
+    const char *key;
+};
+
+int ParseOptions(char *argv[], int argc,
+                 const Option *options, char *szErrorMessage);
 bool CompareString(const char *szA, const char *szB);
 
 #endif
