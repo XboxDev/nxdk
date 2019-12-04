@@ -33,6 +33,7 @@
 // ******************************************************************
 #include "Exe.h"
 #include "Xbe.h"
+#include "Common.h"
 
 #include <string.h>
 
@@ -43,12 +44,12 @@ static void MakeUpper(char *str);
 // program entry point
 int main(int argc, char *argv[])
 {
-    char szErrorMessage[266] = {0};
-    char szExeFilename[266]  = {0};
-    char szXbeFilename[266]  = {0};
-    char szDumpFilename[266] = {0};
-    char szXbeTitle[256]     = "Untitled";
-    bool bRetail             = true;
+    char szErrorMessage[ERROR_LEN+1]  = {0};
+    char szExeFilename[OPTION_LEN+1]  = {0};
+    char szXbeFilename[OPTION_LEN+1]  = {0};
+    char szDumpFilename[OPTION_LEN+1] = {0};
+    char szXbeTitle[OPTION_LEN+1]     = "Untitled";
+    bool bRetail                      = true;
 
     // parse command line
     for(int v=1;v<argc;v++)
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
         // if this isn't an option, it must be the Exe file
         if(argv[v][0] != '-')
         {
-            strncpy(szExeFilename, argv[v], 265);
+            strncpy(szExeFilename, argv[v], OPTION_LEN);
             continue;
         }
 
@@ -90,11 +91,11 @@ int main(int argc, char *argv[])
 
         // interpret the current switch
         {
-            char szOptionU[266] = {0};
-            char szParamU[266] = {0};
+            char szOptionU[OPTION_LEN+1] = {0};
+            char szParamU[OPTION_LEN+1] = {0};
 
-            strncpy(szOptionU, szOption, 265);
-            strncpy(szParamU, szParam, 265);
+            strncpy(szOptionU, szOption, OPTION_LEN);
+            strncpy(szParamU, szParam, OPTION_LEN);
 
             MakeUpper(szOptionU);
             MakeUpper(szParamU);
@@ -125,7 +126,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                char szBuffer[255];
+                char szBuffer[ERROR_LEN+1];
                 sprintf(szBuffer, "Unrecognized command : %s", szOption);
                 strcpy(szErrorMessage, szBuffer);
                 goto cleanup;
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
 
         // locate and remove last . (if there are any)
         {
-            char szWorkingU[266];
+            char szWorkingU[OPTION_LEN+1];
 
             char *szWorking = szFilename;
 
@@ -170,7 +171,7 @@ int main(int argc, char *argv[])
                 if(szFilename[c] == '.')
                     szWorking = &szFilename[c];
 
-            strncpy(szWorkingU, szWorking, 265);
+            strncpy(szWorkingU, szWorking, OPTION_LEN);
             MakeUpper(szWorkingU);
 
             if(strcmp(szWorkingU, ".EXE") == 0)

@@ -32,6 +32,7 @@
 // *
 // ******************************************************************
 #include "Error.h"
+#include "Common.h"
 
 #include <string.h>
 
@@ -54,9 +55,9 @@ bool Error::ClearError()
 void Error::SetError(const char *x_szError, bool x_bFatal)
 {
     if(m_szError == 0)
-        m_szError = new char[256];
+        m_szError = new char[ERROR_LEN+1];
 
-    strncpy(m_szError, x_szError, 255);
+    strncpy(m_szError, x_szError, ERROR_LEN);
 
     m_bFatal = x_bFatal;
 
