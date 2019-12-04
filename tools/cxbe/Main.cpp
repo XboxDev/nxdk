@@ -39,7 +39,6 @@
 
 // static global(s)
 static void ShowUsage();
-static void MakeUpper(char *str);
 
 // program entry point
 int main(int argc, char *argv[])
@@ -91,32 +90,23 @@ int main(int argc, char *argv[])
 
         // interpret the current switch
         {
-            char szOptionU[OPTION_LEN+1] = {0};
-            char szParamU[OPTION_LEN+1] = {0};
-
-            strncpy(szOptionU, szOption, OPTION_LEN);
-            strncpy(szParamU, szParam, OPTION_LEN);
-
-            MakeUpper(szOptionU);
-            MakeUpper(szParamU);
-
-            if(strcmp(szOptionU, "OUT") == 0)
+            if(CompareString(szOption, "OUT"))
             {
                 strncpy(szXbeFilename, szParam, OPTION_LEN);
             }
-            else if(strcmp(szOptionU, "DUMPINFO") == 0)
+            else if(CompareString(szOption, "DUMPINFO"))
             {
                 strncpy(szDumpFilename, szParam, OPTION_LEN);
             }
-            else if(strcmp(szOptionU, "TITLE") == 0)
+            else if(CompareString(szOption, "TITLE"))
             {
                 strncpy(szXbeTitle, szParam, OPTION_LEN);
             }
-            else if(strcmp(szOptionU, "MODE") == 0)
+            else if(CompareString(szOption, "MODE"))
             {
-                if(strcmp(szParamU, "RETAIL") == 0)
+                if(CompareString(szParam, "RETAIL"))
                     bRetail = true;
-                else if(strcmp(szParamU, "DEBUG") == 0)
+                else if(CompareString(szParam, "DEBUG"))
                     bRetail = false;
                 else
                 {
@@ -161,18 +151,13 @@ int main(int argc, char *argv[])
 
         // locate and remove last . (if there are any)
         {
-            char szWorkingU[OPTION_LEN+1];
-
             char *szWorking = szFilename;
 
             for(int c=0;szFilename[c] != 0;c++)
                 if(szFilename[c] == '.')
                     szWorking = &szFilename[c];
 
-            strncpy(szWorkingU, szWorking, OPTION_LEN);
-            MakeUpper(szWorkingU);
-
-            if(strcmp(szWorkingU, ".EXE") == 0)
+            if(CompareString(szWorking, ".EXE"))
                 *szWorking = '\0';
 
             sintptr freeLength = OPTION_LEN - strlen(szXbeFilename);
@@ -265,16 +250,4 @@ static void ShowUsage()
         "  -TITLE:title\n"
         "  -MODE:{debug|retail}\n"
     );
-}
-
-// convert string to upper case
-static void MakeUpper(char *str)
-{
-    while(*str != '\0')
-    {
-        if(*str >= 'a' && *str <= 'z')
-            *str = *str - ('a' - 'A');
-
-        str++;
-    }
 }
