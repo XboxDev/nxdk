@@ -17,6 +17,8 @@ struct Option {
 int ParseOptions(char *argv[], int argc,
                  const Option *options, char *szErrorMessage);
 void ShowUsage(const char *program, const char *desc, const Option *options);
+int GenerateFilename(char *szNewPath, const char *szNewExtension,
+                     const char *szOldPath, const char *szOldExtension);
 bool CompareString(const char *szA, const char *szB);
 
 #endif
