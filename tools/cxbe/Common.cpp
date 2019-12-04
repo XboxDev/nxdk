@@ -74,6 +74,29 @@ int ParseOptions(char *argv[], int argc,
     return 0;
 }
 
+// show program usage
+void ShowUsage(const char *program, const char *desc, const Option *options)
+{
+    printf("%s\n"
+           "\n" 
+           "Usage : %s [options] [%s]\n",
+           desc, program, options[0].desc);
+
+    if(options[1].value != NULL)
+    {
+        const Option *option = NULL;
+        printf("\n"
+               "Options :\n"
+               "\n");
+        option = &options[1];
+        while(option->value)
+        {
+            printf("  -%s:%s\n", option->key, option->desc);
+            option++;
+        }
+    }
+}
+
 // case-insensitive string compare
 bool CompareString(const char *szA, const char *szB)
 {

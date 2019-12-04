@@ -37,9 +37,6 @@
 
 #include <string.h>
 
-// static global(s)
-static void ShowUsage();
-
 // program entry point
 int main(int argc, char *argv[])
 {
@@ -51,12 +48,14 @@ int main(int argc, char *argv[])
     char szMode[OPTION_LEN+1]         = "retail";
     bool bRetail;
 
+    const char *program = argv[0];
+    const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
     Option options[] = {
-        { szExeFilename,  NULL,       },
-        { szXbeFilename,  "OUT",      },
-        { szDumpFilename, "DUMPINFO", },
-        { szXbeTitle,     "TITLE",    },
-        { szMode,         "MODE",     },
+        { szExeFilename,  NULL,       "exefile"        },
+        { szXbeFilename,  "OUT",      "filename"       },
+        { szDumpFilename, "DUMPINFO", "filename"       },
+        { szXbeTitle,     "TITLE",    "title"          },
+        { szMode,         "MODE",     "{debug|retail}" },
         { NULL }
     };
 
@@ -83,7 +82,7 @@ int main(int argc, char *argv[])
     // verify we recieved the required parameters
     if(szExeFilename[0] == '\0')
     {
-        ShowUsage();
+        ShowUsage(program, program_desc, options);
         return 1;
     }
 
@@ -175,7 +174,7 @@ cleanup:
 
     if(szErrorMessage[0] != 0)
     {
-        ShowUsage();
+        ShowUsage(program, program_desc, options);
     
         printf("\n");
         printf(" *  Error : %s\n", szErrorMessage);
@@ -184,22 +183,4 @@ cleanup:
     }
 
     return 0;
-}
-
-// show program usage
-static void ShowUsage()
-{
-    printf
-    (
-        "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")\n"
-        "\n" 
-        "Usage : cxbe [options] [exefile]\n"
-        "\n"
-        "Options :\n"
-        "\n"
-        "  -OUT:filename\n"
-        "  -DUMPINFO:filename\n"
-        "  -TITLE:title\n"
-        "  -MODE:{debug|retail}\n"
-    );
 }
