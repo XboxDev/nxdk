@@ -51,68 +51,17 @@ int main(int argc, char *argv[])
     char szMode[OPTION_LEN+1]         = "retail";
     bool bRetail;
 
-    // parse command line
-    for(int v=1;v<argc;v++)
-    {
-        char *szOption    = 0;
-        char *szParam     = 0;
+    Option options[] = {
+        { szExeFilename,  NULL,       },
+        { szXbeFilename,  "OUT",      },
+        { szDumpFilename, "DUMPINFO", },
+        { szXbeTitle,     "TITLE",    },
+        { szMode,         "MODE",     },
+        { NULL }
+    };
 
-        // if this isn't an option, it must be the Exe file
-        if(argv[v][0] != '-')
-        {
-            strncpy(szExeFilename, argv[v], OPTION_LEN);
-            continue;
-        }
-
-        // locate the colon and seperate option / parameters
-        {
-            uint dwColon = (uint)-1;
-
-            for(uint c=1;argv[v][c] != 0;c++)
-            {
-                if(argv[v][c] == ':')
-                {
-                    dwColon = c;
-                    break;
-                }
-            }
-
-            if(dwColon == (uint)-1)
-            {
-                strncpy(szErrorMessage, "Command line format error", ERROR_LEN);
-                goto cleanup;
-            }
-
-            argv[v][dwColon] = '\0';
-
-            szOption = &argv[v][1];
-            szParam  = &argv[v][dwColon + 1];
-        }
-
-        // interpret the current switch
-        {
-            if(CompareString(szOption, "OUT"))
-            {
-                strncpy(szXbeFilename, szParam, OPTION_LEN);
-            }
-            else if(CompareString(szOption, "DUMPINFO"))
-            {
-                strncpy(szDumpFilename, szParam, OPTION_LEN);
-            }
-            else if(CompareString(szOption, "TITLE"))
-            {
-                strncpy(szXbeTitle, szParam, OPTION_LEN);
-            }
-            else if(CompareString(szOption, "MODE"))
-            {
-                strncpy(szMode, szParam, OPTION_LEN);
-            }
-            else
-            {
-                snprintf(szErrorMessage, ERROR_LEN, "Unrecognized command : %s", szOption);
-                goto cleanup;
-            }
-        }
+    if(ParseOptions(argv, argc, options, szErrorMessage)) {
+        goto cleanup;
     }
 
     if(CompareString(szMode, "RETAIL"))
