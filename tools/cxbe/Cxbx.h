@@ -55,6 +55,7 @@ typedef uint32_t       uint32;
 typedef int8_t         sint08;
 typedef int16_t        sint16;
 typedef int32_t        sint32;
+typedef intptr_t       sintptr;
 
 // define this to track resources for debugging purposes
 //#define _DEBUG_TRACK_VB // Vertex Buffers

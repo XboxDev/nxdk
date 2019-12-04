@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
             if(dwColon == (uint)-1)
             {
-                strcpy(szErrorMessage, "Command line format error");
+                strncpy(szErrorMessage, "Command line format error", ERROR_LEN);
                 goto cleanup;
             }
 
@@ -102,15 +102,15 @@ int main(int argc, char *argv[])
 
             if(strcmp(szOptionU, "OUT") == 0)
             {
-                strcpy(szXbeFilename, szParam);
+                strncpy(szXbeFilename, szParam, OPTION_LEN);
             }
             else if(strcmp(szOptionU, "DUMPINFO") == 0)
             {
-                strcpy(szDumpFilename, szParam);
+                strncpy(szDumpFilename, szParam, OPTION_LEN);
             }
             else if(strcmp(szOptionU, "TITLE") == 0)
             {
-                strcpy(szXbeTitle, szParam);
+                strncpy(szXbeTitle, szParam, OPTION_LEN);
             }
             else if(strcmp(szOptionU, "MODE") == 0)
             {
@@ -120,15 +120,13 @@ int main(int argc, char *argv[])
                     bRetail = false;
                 else
                 {
-                    strcpy(szErrorMessage, "invalid MODE");
+                    strncpy(szErrorMessage, "invalid MODE", ERROR_LEN);
                     goto cleanup;
                 }
             }
             else
             {
-                char szBuffer[ERROR_LEN+1];
-                sprintf(szBuffer, "Unrecognized command : %s", szOption);
-                strcpy(szErrorMessage, szBuffer);
+                snprintf(szErrorMessage, ERROR_LEN, "Unrecognized command : %s", szOption);
                 goto cleanup;
             }
         }
@@ -150,7 +148,7 @@ int main(int argc, char *argv[])
     // if we don't have an Xbe filename, generate one from szExeFilename
     if(szXbeFilename[0] == '\0')
     {
-        strcpy(szXbeFilename, szExeFilename);
+        strncpy(szXbeFilename, szExeFilename, OPTION_LEN);
 
         char *szFilename = &szXbeFilename[0];
 
@@ -175,9 +173,16 @@ int main(int argc, char *argv[])
             MakeUpper(szWorkingU);
 
             if(strcmp(szWorkingU, ".EXE") == 0)
-                strcpy(szWorking, ".xbe");
-            else
-                strcat(szXbeFilename, ".xbe");
+                *szWorking = '\0';
+
+            sintptr freeLength = OPTION_LEN - strlen(szXbeFilename);
+            if(freeLength < strlen(".xbe"))
+            {
+                strncpy(szErrorMessage, "Exe Path too long", ERROR_LEN);
+                goto cleanup;
+            }
+
+            strncat(szXbeFilename, ".xbe", freeLength);
         }
     }
 
@@ -187,7 +192,7 @@ int main(int argc, char *argv[])
 
         if(ExeFile->GetError() != 0)
         {
-            strcpy(szErrorMessage, ExeFile->GetError());
+            strncpy(szErrorMessage, ExeFile->GetError(), ERROR_LEN);
             goto cleanup;
         }
 
@@ -195,7 +200,7 @@ int main(int argc, char *argv[])
 
         if(XbeFile->GetError() != 0)
         {
-            strcpy(szErrorMessage, XbeFile->GetError());
+            strncpy(szErrorMessage, XbeFile->GetError(), ERROR_LEN);
             goto cleanup;
         }
 
@@ -209,7 +214,7 @@ int main(int argc, char *argv[])
             {
                 if(XbeFile->IsFatal())
                 {
-                    strcpy(szErrorMessage, XbeFile->GetError());
+                    strncpy(szErrorMessage, XbeFile->GetError(), ERROR_LEN);
                     goto cleanup;
                 }
                 else
@@ -224,7 +229,7 @@ int main(int argc, char *argv[])
 
         if(XbeFile->GetError() != 0)
         {
-            strcpy(szErrorMessage, XbeFile->GetError());
+            strncpy(szErrorMessage, XbeFile->GetError(), ERROR_LEN);
             goto cleanup;
         }
     }
