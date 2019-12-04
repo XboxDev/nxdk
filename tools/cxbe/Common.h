@@ -11,10 +11,12 @@
 struct Option {
     char *value;
     const char *key;
+    const char *desc;
 };
 
 int ParseOptions(char *argv[], int argc,
                  const Option *options, char *szErrorMessage);
+void ShowUsage(const char *program, const char *desc, const Option *options);
 bool CompareString(const char *szA, const char *szB);
 
 #endif
