@@ -74,12 +74,7 @@ typedef int32_t        sint32;
 //#define _DEBUG_DUMP_TEXTURE_SETTEXTURE "C:\\Aaron\\Textures\\"
 //#define _DEBUG_DUMP_TEXTURE_REGISTER   "C:\\Aaron\\Textures\\"
 
-// version information
-#ifndef _DEBUG_TRACE
-#define _CXBX_VERSION "0.8.0-Pre3"
-#else
-#define _CXBX_VERSION "0.8.0-Pre3-Trace"
-#endif
+#define VERSION "unknown"
 
 // round dwValue to the nearest multiple of dwMult
 static uint32 RoundUp(uint32 dwValue, uint32 dwMult)
