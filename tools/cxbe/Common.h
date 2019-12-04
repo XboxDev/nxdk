@@ -8,4 +8,6 @@
 #define OPTION_LEN 266
 #define ERROR_LEN 256
 
+bool CompareString(const char *szA, const char *szB);
+
 #endif
