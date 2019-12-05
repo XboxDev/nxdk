@@ -6,6 +6,10 @@ Notable features:
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
 - 3D graphics! nxdk includes and expands on pbkit, a library for interfacing with the Xbox GPU.
 
+Build Status
+------
+![CI Status for "Build Samples"](https://github.com/XboxDev/nxdk/workflows/Build%20Samples/badge.svg?branch=master&event=push)
+
 Status
 ------
 nxdk is currently in early stages of development.
