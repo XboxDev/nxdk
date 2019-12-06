@@ -61,7 +61,8 @@ static char *getCurrentDirString()
 		return currentDirString;
 	}
 	currentDirString = malloc(XeImageFileName->Length + 1);
-	strcpy(currentDirString, XeImageFileName->Buffer);
+	memcpy(currentDirString, XeImageFileName->Buffer, XeImageFileName->Length);
+	currentDirString[XeImageFileName->Length] = '\0';
 	// Remove XBE name, leaving the path
 	tmp = strrchr(currentDirString, '\\');
 	if (tmp) {
