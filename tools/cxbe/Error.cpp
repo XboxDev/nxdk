@@ -55,7 +55,10 @@ bool Error::ClearError()
 void Error::SetError(const char *x_szError, bool x_bFatal)
 {
     if(m_szError == 0)
+    {
         m_szError = new char[ERROR_LEN+1];
+        m_szError[ERROR_LEN] = '\0';
+    }
 
     strncpy(m_szError, x_szError, ERROR_LEN);
 
