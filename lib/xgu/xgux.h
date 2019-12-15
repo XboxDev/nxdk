@@ -148,9 +148,18 @@ GENERIC_ATTRIBUTE(vertex_attribute, index, unsigned int index, x, y, z, w)
 //FIXME: Remove p argument?
 inline
 uint32_t* xgux_set_color3f(uint32_t* p, float r, float g, float b) {
-    return xgu_set_vertex_data4f(p, XGU_COLOR_ARRAY, (r), (g), (b), 1.0f);
+    return xgu_set_vertex_data4f(p, XGU_COLOR_ARRAY, r, g, b, 1.0f);
 }
 
+inline
+uint32_t* xgux_set_color4f(uint32_t* p, float r, float g, float b, float a) {
+    return xgu_set_vertex_data4f(p, XGU_COLOR_ARRAY, r, g, b, a);
+}
+
+inline
+uint32_t* xgux_set_color4ub(uint32_t* p, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    return xgu_set_vertex_data4ub(p, XGU_COLOR_ARRAY, r, g, b, a);
+}
 
 inline
 uint32_t* xgux_set_texcoord3f(uint32_t* p, unsigned int index, float s, float t, float r) {
