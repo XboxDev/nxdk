@@ -21,6 +21,13 @@ _purecall_handler __cdecl _set_purecall_handler (_purecall_handler function);
 // https://docs.microsoft.com/en-us/cpp/c-runtime-library/errno-doserrno-sys-errlist-and-sys-nerr?view=vs-2019
 #define _sys_nerr _PDCLIB_ERRNO_MAX
 
+// Necessary stub for libc++
+#include <wchar.h>
+int mbtowc (wchar_t *pwc, const char *string, size_t n);
+
+// Defined as on ReactOS - may need further adjustment if we decide to do locales properly
+#define MB_CUR_MAX 2
+
 #ifdef __cplusplus
 }
 #endif

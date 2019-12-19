@@ -85,3 +85,9 @@ long double strtold( const char * _PDCLIB_restrict nptr, char * * _PDCLIB_restri
     return 0.0;
 }
 
+int mbtowc (wchar_t *pwc, const char *string, size_t n)
+{
+    assert(0);
+    return 0;
+}
+
