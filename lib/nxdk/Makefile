@@ -26,7 +26,7 @@ main.exe: $(NXDK_DIR)/lib/libnxdk_automount_d.lib
 NXDK_LDFLAGS += -include:_automount_d_drive
 endif
 
-CLEANRULES += clean-nxdk-autmount-d
+CLEANRULES += clean-nxdk-automount-d
 
 .PHONY: clean-nxdk-automount-d
 clean-nxdk-automount-d:
