@@ -212,9 +212,6 @@ class Xbe : public Error
         // Xbe sections
         uint08 **m_bzSection;
 
-        // Xbe original path
-        char m_szPath[260];
-
         // Xbe ascii title, translated from certificate title
         char m_szAsciiTitle[40+1];
 
