@@ -62,26 +62,6 @@ Xbe::Xbe(const char *x_szFilename)
 
     printf("OK\n");
 
-    // remember the Xbe path
-    {
-        printf("Xbe::Xbe: Storing Xbe Path...");
-
-        strcpy(m_szPath, x_szFilename);
-
-        int v=0, c=0;
-
-        while(m_szPath[v] != '\0')
-        {
-            if(m_szPath[v] == '\\')
-                c = v+1;
-            v++;
-        }
-
-        m_szPath[c] = '\0';
-    }
-
-    printf("OK\n");
-
     // read Xbe image header
     {
         printf("Xbe::Xbe: Reading Image Header...");
