@@ -229,7 +229,7 @@ int main(void)
 
 
         /* Begin drawing triangles */
-        xgux_draw_elements16(XGU_TRIANGLES, num_indices * 2, indices);
+        xgux_draw_elements16(XGU_TRIANGLES, indices, num_indices * 2);
 
         /* Draw some text on the screen */
         pb_print("Mesh Demo\n");
