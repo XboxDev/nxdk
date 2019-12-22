@@ -803,7 +803,7 @@ uint32_t* xgu_set_light_local_attenuation(uint32_t* p, unsigned int light_index,
 
 inline
 uint32_t* xgu_set_texture_offset(uint32_t* p, unsigned int texture_index, const void* offset) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_OFFSET + texture_index*64, (uint32_t)offset);
 }
 
@@ -812,7 +812,7 @@ uint32_t* xgu_set_texture_format(uint32_t* p, unsigned int texture_index, uint8_
                                  XguBorderSrc border_src, uint8_t dimensionality,
                                  XguTexFormatColor format, uint8_t mipmap_levels,
                                  uint8_t u_size, uint8_t v_size, uint8_t p_size) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_FORMAT + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_CONTEXT_DMA, context_dma) |
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_CUBEMAP_ENABLE, cubemap_enable) |
@@ -827,13 +827,13 @@ uint32_t* xgu_set_texture_format(uint32_t* p, unsigned int texture_index, uint8_
 
 inline
 uint32_t* xgu_set_texture_address(uint32_t* p, unsigned int texture_index, uint32_t address) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_ADDRESS + texture_index*64, address);
 }
 
 inline
 uint32_t* xgu_set_texture_control0(uint32_t* p, unsigned int texture_index, bool enable, uint16_t min_lod, uint16_t max_lod) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL0 + texture_index*64,
                                   (enable ? NV097_SET_TEXTURE_CONTROL0_ENABLE : 0) |
                                   XGU_MASK(NV097_SET_TEXTURE_CONTROL0_MIN_LOD_CLAMP, min_lod) |
@@ -842,7 +842,7 @@ uint32_t* xgu_set_texture_control0(uint32_t* p, unsigned int texture_index, bool
 
 inline
 uint32_t* xgu_set_texture_control1(uint32_t* p, unsigned int texture_index, uint16_t pitch) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL1 + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_CONTROL1_IMAGE_PITCH, pitch));
 }
@@ -850,7 +850,7 @@ uint32_t* xgu_set_texture_control1(uint32_t* p, unsigned int texture_index, uint
 inline
 uint32_t* xgu_set_texture_filter(uint32_t* p, unsigned int texture_index, uint16_t lod_bias, uint8_t filter_min, uint8_t filter_mag,
                                  bool r_signed, bool g_signed, bool b_signed, bool a_signed) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_FILTER + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_FILTER_MIPMAP_LOD_BIAS, lod_bias) |
                                   XGU_MASK(NV097_SET_TEXTURE_FILTER_MIN, filter_min) |
@@ -863,7 +863,7 @@ uint32_t* xgu_set_texture_filter(uint32_t* p, unsigned int texture_index, uint16
 
 inline
 uint32_t* xgu_set_texture_image_rect(uint32_t* p, unsigned int texture_index, uint16_t width, uint16_t height) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_IMAGE_RECT + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_IMAGE_RECT_WIDTH, width) |
                                   XGU_MASK(NV097_SET_TEXTURE_IMAGE_RECT_HEIGHT, height));
@@ -872,7 +872,7 @@ uint32_t* xgu_set_texture_image_rect(uint32_t* p, unsigned int texture_index, ui
 inline
 uint32_t* xgu_set_texture_palette(uint32_t* p, unsigned int texture_index, bool context_dma, XguPaletteLen palette_length,
                                   const void* offset) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_PALETTE + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_PALETTE_CONTEXT_DMA, context_dma) |
                                   XGU_MASK(NV097_SET_TEXTURE_PALETTE_LENGTH, palette_length) |
@@ -881,26 +881,26 @@ uint32_t* xgu_set_texture_palette(uint32_t* p, unsigned int texture_index, bool 
 
 inline
 uint32_t* xgu_set_texture_border_color(uint32_t* p, unsigned int texture_index, uint32_t color) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_BORDER_COLOR + texture_index*64, color);
 }
 
 inline
 uint32_t* xgu_set_texture_set_bump_env_mat(uint32_t* p, unsigned int texture_index, const float m[2*2]) {
-    assert(texture_index < 4);
+    assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_matrix2x2(p, NV097_SET_TEXTURE_SET_BUMP_ENV_MAT + texture_index*64, m);
 }
 
 inline
 uint32_t* xgu_set_texture_set_bump_env_scale(uint32_t* p, unsigned int texture_index, float scale) {
-    assert(texture_index < 4);
-    return push_command_float(p, NV097_SET_TEXTURE_SET_BUMP_ENV_SCALE+ texture_index*64, scale);
+    assert(texture_index < XGU_TEXTURE_COUNT);
+    return push_command_float(p, NV097_SET_TEXTURE_SET_BUMP_ENV_SCALE + texture_index*64, scale);
 }
 
 inline
 uint32_t* xgu_set_texture_set_bump_env_offset(uint32_t* p, unsigned int texture_index, float offset) {
-    assert(texture_index < 4);
-    return push_command_float(p, NV097_SET_TEXTURE_SET_BUMP_ENV_OFFSET+texture_index*64, offset);
+    assert(texture_index < XGU_TEXTURE_COUNT);
+    return push_command_float(p, NV097_SET_TEXTURE_SET_BUMP_ENV_OFFSET + texture_index*64, offset);
 }
 
 
