@@ -162,8 +162,9 @@ uint32_t* xgux_set_color4ub(uint32_t* p, uint8_t r, uint8_t g, uint8_t b, uint8_
 }
 
 inline
-uint32_t* xgux_set_texcoord3f(uint32_t* p, unsigned int index, float s, float t, float r) {
-    return xgu_set_vertex_data4f(p, 8+index, s, t, r, 1.0f);
+uint32_t* xgux_set_texcoord3f(uint32_t* p, unsigned int texture_index, float s, float t, float r) {
+    assert(texture_index < XGU_TEXTURE_COUNT);
+    return xgu_set_vertex_data4f(p, 8+texture_index, s, t, r, 1.0f);
 }
 
 #endif
