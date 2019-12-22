@@ -37,6 +37,17 @@ typedef enum {
 } XguPrimitiveType;
 
 typedef enum {
+    XGU_FUNC_NEVER = 0x200,
+    XGU_FUNC_LESS,
+    XGU_FUNC_EQUAL,
+    XGU_FUNC_LESS_OR_EQUAL,
+    XGU_FUNC_GREATER,
+    XGU_FUNC_NOT_EQUAL,
+    XGU_FUNC_GREATER_OR_EQUAL,
+    XGU_FUNC_ALWAYS
+} XguFuncType;
+
+typedef enum {
     XGU_VERTEX_ARRAY = NV2A_VERTEX_ATTR_POSITION,
     XGU_NORMAL_ARRAY = NV2A_VERTEX_ATTR_NORMAL,
     XGU_COLOR_ARRAY = NV2A_VERTEX_ATTR_DIFFUSE,
@@ -117,6 +128,57 @@ typedef enum {
     XGU_TEXGEN_REFLECTION_MAP = NV097_SET_TEXGEN_S_REFLECTION_MAP,
     XGU_TEXGEN_NORMAL_MAP = NV097_SET_TEXGEN_S_NORMAL_MAP
 } XguTexgen;
+
+typedef enum {
+    XGU_SOURCE_TEXTURE = NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE_TEXTURE,
+    XGU_SOURCE_COLOR = NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE_COLOR
+} XguBorderSrc;
+
+typedef enum {
+    XGU_TEXTURE_FORMAT_COLOR_SZ_Y8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_Y8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_AY8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_AY8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A1R5G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A1R5G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_X1R5G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_X1R5G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A4R4G4B4 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A4R4G4B4,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_R5G6B5 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_R5G6B5,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_X8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_X8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_I8_A8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_I8_A8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_L_DXT1_A1R5G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_L_DXT1_A1R5G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_L_DXT23_A8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_L_DXT23_A8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_L_DXT45_A8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_L_DXT45_A8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A1R5G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A1R5G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_R5G6B5 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_R5G6B5,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_Y8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_Y8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A8Y8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A8Y8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_AY8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_AY8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_X1R5G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_X1R5G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A4R4G4B4 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A4R4G4B4,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_X8R8G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_X8R8G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8Y8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8Y8,
+    XGU_TEXTURE_FORMAT_COLOR_LC_IMAGE_CR8YB8CB8YA8 = NV097_SET_TEXTURE_FORMAT_COLOR_LC_IMAGE_CR8YB8CB8YA8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_R6G5B5 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_R6G5B5,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_G8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_G8B8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_R8B8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_R8B8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_DEPTH_X8_Y24_FIXED = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_DEPTH_X8_Y24_FIXED,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_DEPTH_Y16_FIXED = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_DEPTH_Y16_FIXED,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_Y16 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_Y16,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_A8B8G8R8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_A8B8G8R8,
+    XGU_TEXTURE_FORMAT_COLOR_SZ_R8G8B8A8 = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_R8G8B8A8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8B8G8R8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_A8B8G8R8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_B8G8R8A8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_B8G8R8A8,
+    XGU_TEXTURE_FORMAT_COLOR_LU_IMAGE_R8G8B8A8 = NV097_SET_TEXTURE_FORMAT_COLOR_LU_IMAGE_R8G8B8A8
+} XguTexFormatColor;
+
+typedef enum {
+    XGU_PALETTE_LENGTH_256 = NV097_SET_TEXTURE_PALETTE_LENGTH_256,
+    XGU_PALETTE_LENGTH_128 = NV097_SET_TEXTURE_PALETTE_LENGTH_128,
+    XGU_PALETTE_LENGTH_64 = NV097_SET_TEXTURE_PALETTE_LENGTH_64,
+    XGU_PALETTE_LENGTH_32 = NV097_SET_TEXTURE_PALETTE_LENGTH_32,    
+} XguPaletteLen;
 
 typedef enum {
     XGU_STENCIL_OP_KEEP = NV097_SET_STENCIL_OP_V_KEEP,
@@ -510,12 +572,12 @@ uint32_t* xgu_set_stencil_test_enable(uint32_t* p, bool enabled) {
 }
 
 inline
-uint32_t* xgu_set_alpha_func(uint32_t* p, uint8_t func) {
+uint32_t* xgu_set_alpha_func(uint32_t* p, XguFuncType func) {
     return push_command_parameter(p, NV097_SET_ALPHA_FUNC, func);
 }
 
 inline
-uint32_t* xgu_set_alpha_ref(uint32_t* p, uint32_t ref) {
+uint32_t* xgu_set_alpha_ref(uint32_t* p, uint8_t ref) {
     return push_command_parameter(p, NV097_SET_ALPHA_REF, ref);
 }
 
@@ -527,6 +589,11 @@ uint32_t* xgu_set_blend_func_sfactor(uint32_t* p, XguBlendFactor sf) {
 inline
 uint32_t* xgu_set_blend_func_dfactor(uint32_t* p, XguBlendFactor df) {
     return push_command_parameter(p, NV097_SET_BLEND_FUNC_DFACTOR, df);
+}
+
+inline
+uint32_t* xgu_set_depth_func(uint32_t* p, XguFuncType func) {
+    return push_command_parameter(p, NV097_SET_DEPTH_FUNC, func);
 }
 
 inline
@@ -712,6 +779,99 @@ uint32_t* xgu_set_light_local_attenuation(uint32_t* p, unsigned int light_index,
     return push_floats(p, v.f, 3);
 }
 
+/* ==== Texture stuff ==== */
+
+inline
+uint32_t* xgu_set_texture_offset(uint32_t* p, uint32_t offset) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_OFFSET, offset);
+}
+
+inline
+uint32_t* xgu_set_texture_format(uint32_t* p, uint8_t context_dma, bool cubemap_enable,
+                                 XguBorderSrc border_src, uint8_t dimensionality,
+                                 XguTexFormatColor format, uint8_t mipmap_levels,
+                                 uint8_t u_size, uint8_t v_size, uint8_t p_size) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_FORMAT,
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_CONTEXT_DMA, context_dma) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_CUBEMAP_ENABLE, cubemap_enable) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE, border_src) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_DIMENSIONALITY, dimensionality) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_COLOR, format) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_MIPMAP_LEVELS, mipmap_levels) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BASE_SIZE_U, u_size) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BASE_SIZE_V, v_size) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BASE_SIZE_P, p_size));
+}
+
+inline
+uint32_t* xgu_set_texture_address(uint32_t* p, uint32_t address) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_ADDRESS, address);
+}
+
+inline
+uint32_t* xgu_set_texture_control0(uint32_t* p, bool enable, uint16_t min_lod, uint16_t max_lod) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL0,
+                                  (enable ? NV097_SET_TEXTURE_CONTROL0_ENABLE : 0) |
+                                  XGU_MASK(NV097_SET_TEXTURE_CONTROL0_MIN_LOD_CLAMP, min_lod) |
+                                  XGU_MASK(NV097_SET_TEXTURE_CONTROL0_MAX_LOD_CLAM, max_lod));
+}
+
+inline
+uint32_t* xgu_set_texture_control1(uint32_t* p, uint16_t pitch) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL1,
+                                  XGU_MASK(NV097_SET_TEXTURE_CONTROL1_IMAGE_PITCH, pitch));
+}
+
+inline
+uint32_t* xgu_set_texture_filter(uint32_t* p, uint16_t lod_bias, uint8_t filter_min, uint8_t filter_mag,
+                                 bool alpha_signed, bool r_signed, bool g_signed, bool b_signed) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_FILTER,
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_MIPMAP_LOD_BIAS, lod_bias) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_MIN, filter_min) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_MAG, filter_mag) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_ASIGNED, alpha_signed) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_RSIGNED, r_signed) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_GSIGNED, g_signed) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_BSIGNED, b_signed));
+}
+
+inline
+uint32_t* xgu_set_texture_image_rect(uint32_t* p, uint16_t width, uint16_t height) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_IMAGE_RECT,
+                                  XGU_MASK(NV097_SET_TEXTURE_IMAGE_RECT_WIDTH, width) |
+                                  XGU_MASK(NV097_SET_TEXTURE_IMAGE_RECT_HEIGHT, height));
+}
+
+inline
+uint32_t* xgu_set_texture_palette(uint32_t* p, bool context_dma, XguPaletteLen palette_length,
+                                  uint32_t offset) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_palette,
+                                  XGU_MASK(NV097_SET_TEXTURE_PALETTE_CONTEXT_DMA, context_dma) |
+                                  XGU_MASK(NV097_SET_TEXTURE_PALETTE_LENGTH, palette_length) |
+                                  XGU_MASK(NV097_SET_TEXTURE_PALETTE_OFFSET, offset));
+}
+
+inline
+uint32_t* xgu_set_texture_border_color(uint32_t* p, uint32_t color) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_BORDER_COLOR, color);
+}
+
+inline
+uint32_t* xgu_set_texture_set_bump_env_mat(uint32_t* p, XguMatrix4x4 mat) {
+    return push_command_matrix4x4(p, NV097_SET_TEXTURE_SET_BUMP_ENV_MAT, mat);
+}
+
+inline
+uint32_t* xgu_set_texture_set_bump_env_scale(uint32_t* p, uint32_t scale) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_SET_BUMP_ENV_SCALE, scale);
+}
+
+inline
+uint32_t* xgu_set_texture_set_bump_env_offset(uint32_t* p, uint32_t offset) {
+    return push_command_parameter(p, NV097_SET_TEXTURE_SET_BUMP_ENV_OFFSET, offset);
+}
+
+
 /* ==== Immediate Mode ==== */
 
 inline
@@ -761,7 +921,7 @@ uint32_t* xgu_set_vertex_data2s(uint32_t* p, XguVertexArray index, int16_t x, in
 
 inline
 uint32_t* xgu_set_vertex_data4ub(uint32_t* p, XguVertexArray index, uint8_t x, uint8_t y, uint8_t z, uint8_t w) {
-    p = push_command(p, NV097_SET_VERTEX_DATA2S + index * 1*4, 1);
+    p = push_command(p, NV097_SET_VERTEX_DATA4UB + index * 1*4, 1);
     p = push_parameter(p, w << 24 | z << 16 | y << 8 | x);
     return p;
 }
