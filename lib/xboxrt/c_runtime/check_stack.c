@@ -1,5 +1,5 @@
 #include <debug.h>
-#include "xboxkrnl/xboxkrnl.h"
+#include <xboxkrnl/xboxkrnl.h>
 
 #ifdef DEBUG_CONSOLE
     #define _print DbgPrint
