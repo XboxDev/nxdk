@@ -530,9 +530,10 @@ inline
 uint32_t* xgu_draw_arrays(uint32_t* p, unsigned int start, unsigned int count) {
     assert(count>=1);
     assert(count<=256);
-    return push_command_parameter(p, 0x40000000|NV097_DRAW_ARRAYS,
-                                  XGU_MASK(NV097_DRAW_ARRAYS_COUNT, (count-1)) |
-                                  XGU_MASK(NV097_DRAW_ARRAYS_START_INDEX, start));
+    p = push_command(p, 0x40000000|NV097_DRAW_ARRAYS, 1);
+    p = push_parameter(p, XGU_MASK(NV097_DRAW_ARRAYS_COUNT, (count-1)) |
+                          XGU_MASK(NV097_DRAW_ARRAYS_START_INDEX, start));
+    return p;
 }
 
 /* ==== Alpha/Blend/Cull ==== */
