@@ -859,7 +859,11 @@ uint32_t* xgu_set_texture_filter(uint32_t* p, unsigned int texture_index, uint16
                                   XGU_MASK(NV097_SET_TEXTURE_FILTER_ASIGNED, a_signed) |
                                   XGU_MASK(NV097_SET_TEXTURE_FILTER_RSIGNED, r_signed) |
                                   XGU_MASK(NV097_SET_TEXTURE_FILTER_GSIGNED, g_signed) |
-                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_BSIGNED, b_signed));
+                                  XGU_MASK(NV097_SET_TEXTURE_FILTER_BSIGNED, b_signed) |
+
+0x4000 //FIXME: convolution kernel can't be zero! (shared by min and mag-filter)
+
+);
 }
 
 inline
