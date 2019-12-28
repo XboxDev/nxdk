@@ -11,6 +11,7 @@ jobs:
       - name: Clone Tree
         uses: actions/checkout@v1
         with:
+          fetch-depth: 1
           submodules: recursive
       - name: Install MSYS2 & Dependencies
         run: |
@@ -33,6 +34,7 @@ jobs:
       - name: Clone Tree
         uses: actions/checkout@v1
         with:
+          fetch-depth: 1
           submodules: recursive
       - name: Install Dependencies
         run: |
@@ -48,6 +50,7 @@ jobs:
       - name: Clone Tree
         uses: actions/checkout@v1
         with:
+          fetch-depth: 1
           submodules: recursive
       - name: Install Dependencies
         run: |
