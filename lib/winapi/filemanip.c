@@ -2,6 +2,27 @@
 #include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
 
+DWORD GetFileAttributesA (LPCSTR lpFileName)
+{
+    NTSTATUS status;
+    ANSI_STRING path;
+    OBJECT_ATTRIBUTES objectAttributes;
+    FILE_NETWORK_OPEN_INFORMATION openInfo;
+
+    assert(lpFileName != NULL);
+    RtlInitAnsiString(&path, lpFileName);
+
+    InitializeObjectAttributes(&objectAttributes, &path, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtQueryFullAttributesFile(&objectAttributes, &openInfo);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return INVALID_FILE_ATTRIBUTES;
+    }
+
+    return openInfo.FileAttributes;
+}
+
 BOOL DeleteFileA (LPCTSTR lpFileName)
 {
     NTSTATUS status;

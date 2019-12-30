@@ -10,6 +10,8 @@ extern "C"
 {
 #endif
 
+DWORD GetFileAttributesA (LPCSTR lpFileName);
+
 #define CREATE_NEW 1
 #define CREATE_ALWAYS 2
 #define OPEN_EXISTING 3
@@ -35,6 +37,7 @@ BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttrib
 BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 
 #ifndef UNICODE
+#define GetFileAttributes GetFileAttributesA
 #define CreateFile CreateFileA
 #define FindFirstFile FindFirstFileA
 #define FindNextFile FindNextFileA
