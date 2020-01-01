@@ -2399,7 +2399,7 @@ XBAPI VOID NTAPI READ_PORT_BUFFER_UCHAR
     IN ULONG Count
 );
 
-XBAPI volatile OBJECT_TYPE PsThreadObjectType;
+XBAPI OBJECT_TYPE PsThreadObjectType;
 
 XBAPI VOID NTAPI __attribute__ ((noreturn)) PsTerminateSystemThread
 (
@@ -2462,8 +2462,8 @@ XBAPI DWORD NTAPI PhyGetLinkState
     BOOLEAN update
 );
 
-XBAPI volatile OBJECT_HANDLE_TABLE ObpObjectHandleTable;
-XBAPI volatile OBJECT_TYPE ObSymbolicLinkObjectType;
+XBAPI OBJECT_HANDLE_TABLE ObpObjectHandleTable;
+XBAPI OBJECT_TYPE ObSymbolicLinkObjectType;
 
 XBAPI NTSTATUS NTAPI ObReferenceObjectByPointer
 (
@@ -2515,7 +2515,7 @@ XBAPI NTSTATUS NTAPI ObInsertObject
     OUT PHANDLE Handle
 );
 
-XBAPI volatile OBJECT_TYPE ObDirectoryObjectType;
+XBAPI OBJECT_TYPE ObDirectoryObjectType;
 
 XBAPI NTSTATUS NTAPI ObCreateObject
 (
@@ -3262,7 +3262,7 @@ XBAPI BOOLEAN NTAPI MmIsAddressValid
     IN PVOID VirtualAddress
 );
 
-XBAPI volatile PMMGLOBALDATA MmGlobalData;
+XBAPI PMMGLOBALDATA MmGlobalData;
 
 /**
  * Returns the physical address for a virtual address.
@@ -3351,7 +3351,7 @@ XBAPI PVOID NTAPI MmAllocateContiguousMemory
 
 XBAPI PLAUNCH_DATA_PAGE LaunchDataPage;
 
-XBAPI volatile ULONG KiBugCheckData[];
+XBAPI ULONG KiBugCheckData[];
 
 XBAPI NTSTATUS NTAPI KeWaitForSingleObject
 (
@@ -3374,7 +3374,7 @@ XBAPI NTSTATUS NTAPI KeWaitForMultipleObjects
     IN PKWAIT_BLOCK WaitBlockArray
 );
 
-XBAPI volatile CONST ULONG KeTimeIncrement;
+XBAPI CONST ULONG KeTimeIncrement;
 
 /**
  * Contains the number of milliseconds elapsed since the system was started.
@@ -3749,8 +3749,8 @@ XBAPI ULONG NTAPI KeAlertResumeThread
     IN PKTHREAD Thread
 );
 
-XBAPI volatile BOOLEAN KdDebuggerNotPresent;
-XBAPI volatile BOOLEAN KdDebuggerEnabled;
+XBAPI BOOLEAN KdDebuggerNotPresent;
+XBAPI BOOLEAN KdDebuggerEnabled;
 
 XBAPI NTSTATUS NTAPI IoSynchronousFsdRequest
 (
@@ -3860,7 +3860,7 @@ XBAPI VOID NTAPI IoFreeIrp
     IN PIRP Irp
 );
 
-XBAPI volatile OBJECT_TYPE IoFileObjectType;
+XBAPI OBJECT_TYPE IoFileObjectType;
 
 XBAPI NTSTATUS NTAPI IoDismountVolumeByName
 (
@@ -3872,7 +3872,7 @@ XBAPI NTSTATUS NTAPI IoDismountVolume
     IN PDEVICE_OBJECT DeviceObject
 );
 
-XBAPI volatile OBJECT_TYPE IoDeviceObjectType;
+XBAPI OBJECT_TYPE IoDeviceObjectType;
 
 XBAPI NTSTATUS NTAPI IoDeleteSymbolicLink
 (
@@ -3914,7 +3914,7 @@ XBAPI NTSTATUS NTAPI IoCreateDevice
     OUT PDEVICE_OBJECT *DeviceObject
 );
 
-XBAPI volatile OBJECT_TYPE IoCompletionObjectType;
+XBAPI OBJECT_TYPE IoCompletionObjectType;
 
 XBAPI NTSTATUS NTAPI IoCheckShareAccess
 (
@@ -3964,7 +3964,7 @@ XBAPI PIRP NTAPI IoAllocateIrp
     IN CCHAR StackSize
 );
 
-XBAPI volatile IDE_CHANNEL_OBJECT IdexChannelObject;
+XBAPI IDE_CHANNEL_OBJECT IdexChannelObject;
 
 XBAPI NTSTATUS NTAPI HalWriteSMCScratchRegister
 (
@@ -4041,9 +4041,9 @@ XBAPI VOID NTAPI HalEnableSystemInterrupt
  * Switches the console to secure mode, where a tray eject or tray open interrupt causes the console to reboot. After the console is switched into secure mode, it cannot switch back.
  */
 XBAPI VOID NTAPI HalEnableSecureTrayEject(void);
-XBAPI volatile STRING HalDiskSerialNumber;
-XBAPI volatile STRING HalDiskModelNumber;
-XBAPI volatile ULONG HalDiskCachePartitionCount;
+XBAPI STRING HalDiskSerialNumber;
+XBAPI STRING HalDiskModelNumber;
+XBAPI ULONG HalDiskCachePartitionCount;
 
 XBAPI VOID NTAPI HalDisableSystemInterrupt
 (
@@ -4062,8 +4062,8 @@ XBAPI VOID NTAPI FscInvalidateIdleBlocks (void);
 
 XBAPI PFN_COUNT NTAPI FscGetCacheSize (void);
 
-XBAPI volatile OBJECT_TYPE ExTimerObjectType;
-XBAPI volatile OBJECT_TYPE ExSemaphoreObjectType;
+XBAPI OBJECT_TYPE ExTimerObjectType;
+XBAPI OBJECT_TYPE ExSemaphoreObjectType;
 
 XBAPI NTSTATUS NTAPI ExSaveNonVolatileSetting
 (
@@ -4114,7 +4114,7 @@ XBAPI NTSTATUS NTAPI ExQueryNonVolatileSetting
     OUT PULONG ResultLength
 );
 
-XBAPI volatile OBJECT_TYPE ExMutantObjectType;
+XBAPI OBJECT_TYPE ExMutantObjectType;
 
 XBAPI LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 (
@@ -4136,7 +4136,7 @@ XBAPI VOID NTAPI ExFreePool
     IN PVOID P
 );
 
-XBAPI volatile OBJECT_TYPE ExEventObjectType;
+XBAPI OBJECT_TYPE ExEventObjectType;
 
 /**
  * Allocates pool memory and returns a pointer to the allocated block.
