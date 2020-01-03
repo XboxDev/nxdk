@@ -25,3 +25,6 @@
 [submodule "lib/libpng/libpng"]
 	path = lib/libpng/libpng
 	url = https://github.com/glennrp/libpng.git
+[submodule "lib/libjpeg/libjpeg-turbo"]
+	path = lib/libjpeg/libjpeg-turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git
