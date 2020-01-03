@@ -40,3 +40,37 @@ clean-sdl_ttf:
 	           $(FREETYPE_OBJS) \
 	           $(NXDK_DIR)/lib/libSDL_ttf.lib \
 	           $(NXDK_DIR)/lib/libfreetype.lib
+
+LIBSDLIMAGE_DIR = $(NXDK_DIR)/lib/sdl/SDL2_image
+
+LIBSDLIMAGE_SRCS = $(LIBSDLIMAGE_DIR)/IMG.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_png.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_bmp.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_gif.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_jpg.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_lbm.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_pcx.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_pnm.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_svg.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_tga.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_tif.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_webp.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_WIC.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_xcf.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_xpm.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_xv.c \
+                   $(LIBSDLIMAGE_DIR)/IMG_xxx.c
+
+LIBSDLIMAGE_OBJS = $(addsuffix .obj, $(basename $(LIBSDLIMAGE_SRCS)))
+NXDK_CFLAGS += -I$(NXDK_DIR)/lib/sdl/SDL2_image -DLOAD_BMP -DLOAD_GIF -DLOAD_JPG -DLOAD_LBM -DLOAD_PCX -DLOAD_PNG -DLOAD_PNM -DLOAD_TGA -DLOAD_XCF -DLOAD_XPM -DLOAD_XV -DLOAD_XXX
+NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/sdl/SDL2_image -DLOAD_BMP -DLOAD_GIF -DLOAD_JPG -DLOAD_LBM -DLOAD_PCX -DLOAD_PNG -DLOAD_PNM -DLOAD_TGA -DLOAD_XCF -DLOAD_XPM -DLOAD_XV -DLOAD_XXX
+
+$(NXDK_DIR)/lib/libSDL2_image.lib: $(LIBSDLIMAGE_OBJS)
+
+main.exe: $(NXDK_DIR)/lib/libSDL2_image.lib
+
+CLEANRULES += clean-libsdlimage
+
+.PHONY: clean-libsdlimage
+clean-libsdlimage:
+	$(VE)rm -f $(LIBSDLIMAGE_OBJS) $(NXDK_DIR)/lib/libSDL2_image.lib
