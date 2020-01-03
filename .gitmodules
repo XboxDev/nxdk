@@ -22,3 +22,6 @@
 [submodule "lib/zlib"]
 	path = lib/zlib/zlib
 	url = https://github.com/madler/zlib.git
+[submodule "lib/libpng/libpng"]
+	path = lib/libpng/libpng
+	url = https://github.com/glennrp/libpng.git
