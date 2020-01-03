@@ -42,6 +42,13 @@ typedef struct _VIDEO_MODE
 	int		refresh;
 } VIDEO_MODE;
 
+typedef struct _GAMMA_RAMP_ENTRY
+{
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+} GAMMA_RAMP_ENTRY;
+
 
 DWORD XVideoGetEncoderSettings(void);
 unsigned char* XVideoGetFB(void);
@@ -51,6 +58,7 @@ void XVideoSetFlickerFilter(int level);
 BOOL XVideoSetMode(int width, int height, int bpp, int refresh);
 void XVideoSetSoftenFilter(BOOL enable);
 void XVideoSetVideoEnable(BOOL enable);
+void XVideoSetGammaRamp(unsigned int offset, const GAMMA_RAMP_ENTRY *entries, unsigned int count);
 
 /*
 Lists the video modes available at the given colour depth and refresh rate.

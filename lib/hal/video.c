@@ -22,6 +22,9 @@
 #define NV_PMC_INTR_EN_0_INTA_HARDWARE 0x00000001
 #define NV_PMC_INTR_EN_0_INTA_SOFTWARE 0x00000002
 
+#define NV_USER_DAC_WRITE_MODE_ADDRESS 0x006813C8
+#define NV_USER_DAC_PALETTE_DATA 0x006813C9
+
 // Defines for video regions
 #define VIDEO_REGION_NTSCM			0x00000100
 #define VIDEO_REGION_NTSCJ			0x00000200
@@ -40,6 +43,7 @@ int			flickerLevel		= 5;
 BOOL			flickerSet		= FALSE;
 BOOL			softenFilter		= TRUE;
 BOOL			softenSet		= FALSE;
+GAMMA_RAMP_ENTRY	gammaRampEntries[256];
 
 static KINTERRUPT InterruptObject;
 static KDPC DPCObject;
@@ -294,6 +298,8 @@ VIDEO_MODE XVideoGetMode(void)
 
 void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 {
+	int i;
+	GAMMA_RAMP_ENTRY defaultGammaRampEntries[256];
 	ULONG Step = 0;
 	DWORD dwFormat = 0;
 	int bytesPerPixel = (bpp+7)/8;
@@ -325,6 +331,13 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 
 	XVideoSetFlickerFilter(5);
 	XVideoSetSoftenFilter(TRUE);
+
+	for(i = 0; i < 256; i++) {
+		defaultGammaRampEntries[i].red = i;
+		defaultGammaRampEntries[i].green = i;
+		defaultGammaRampEntries[i].blue = i;
+	}
+	XVideoSetGammaRamp(0, defaultGammaRampEntries, 256);
 
 	XVideoSetVideoEnable(TRUE);
 
@@ -384,6 +397,25 @@ void XVideoSetSoftenFilter(BOOL enable)
 
 		softenSet = TRUE;
 		softenFilter = enable;
+	}
+}
+
+void XVideoSetGammaRamp(unsigned int offset, const GAMMA_RAMP_ENTRY *entries, unsigned int count)
+{
+	int i;
+
+	assert((offset + count) <= 256);
+	memcpy(&gammaRampEntries[offset], entries, count * sizeof(GAMMA_RAMP_ENTRY));
+
+	/* Partial setting of `count` entries at `offset` would be nice, but
+	   NV2A doesn't seem to support this: Changing the write address will
+	   sometimes mess up the existing table.
+	   To avoid this, we update it all from a cached state. */
+	VIDEOREG8(NV_USER_DAC_WRITE_MODE_ADDRESS) = 0;
+	for(i = 0; i < 256; i++) {
+		VIDEOREG8(NV_USER_DAC_PALETTE_DATA) = gammaRampEntries[i].red;
+		VIDEOREG8(NV_USER_DAC_PALETTE_DATA) = gammaRampEntries[i].green;
+		VIDEOREG8(NV_USER_DAC_PALETTE_DATA) = gammaRampEntries[i].blue;
 	}
 }
 
