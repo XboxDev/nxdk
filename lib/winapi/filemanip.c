@@ -23,6 +23,39 @@ DWORD GetFileAttributesA (LPCSTR lpFileName)
     return openInfo.FileAttributes;
 }
 
+BOOL GetFileAttributesExA (LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation)
+{
+    NTSTATUS status;
+    ANSI_STRING path;
+    OBJECT_ATTRIBUTES objectAttributes;
+    FILE_NETWORK_OPEN_INFORMATION openInfo;
+
+    assert(fInfoLevelId == GetFileExInfoStandard);
+
+    assert(lpFileName != NULL);
+    RtlInitAnsiString(&path, lpFileName);
+
+    InitializeObjectAttributes(&objectAttributes, &path, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtQueryFullAttributesFile(&objectAttributes, &openInfo);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    LPWIN32_FILE_ATTRIBUTE_DATA fileInfo = lpFileInformation;
+    fileInfo->dwFileAttributes = openInfo.FileAttributes;
+    fileInfo->ftCreationTime.dwHighDateTime = openInfo.CreationTime.HighPart;
+    fileInfo->ftCreationTime.dwLowDateTime = openInfo.CreationTime.LowPart;
+    fileInfo->ftLastAccessTime.dwHighDateTime = openInfo.LastAccessTime.HighPart;
+    fileInfo->ftLastAccessTime.dwLowDateTime = openInfo.LastAccessTime.LowPart;
+    fileInfo->ftLastWriteTime.dwHighDateTime = openInfo.LastWriteTime.HighPart;
+    fileInfo->ftLastWriteTime.dwLowDateTime = openInfo.LastWriteTime.LowPart;
+    fileInfo->nFileSizeHigh = openInfo.EndOfFile.HighPart;
+    fileInfo->nFileSizeLow = openInfo.EndOfFile.LowPart;
+    return TRUE;
+}
+
 BOOL DeleteFileA (LPCTSTR lpFileName)
 {
     NTSTATUS status;
