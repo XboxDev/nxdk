@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 bool nxIsDriveMounted (char driveLetter);
-bool nxMountDrive (char driveLetter, char *path);
+bool nxMountDrive (char driveLetter, const char *path);
 bool nxUnmountDrive (char driveLetter);
 
 #ifdef __cplusplus

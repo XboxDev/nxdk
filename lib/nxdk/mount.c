@@ -30,7 +30,7 @@ bool nxIsDriveMounted (char driveLetter)
     return false;
 }
 
-bool nxMountDrive (char driveLetter, char *path)
+bool nxMountDrive (char driveLetter, const char *path)
 {
     NTSTATUS status;
     ANSI_STRING drivePath;
