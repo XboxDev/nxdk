@@ -8,7 +8,7 @@
 #define __NXDK_MOUNT_H__
 
 #ifdef __cplusplus
-{
+extern "C" {
 #endif
 
 #ifndef __cplusplus
