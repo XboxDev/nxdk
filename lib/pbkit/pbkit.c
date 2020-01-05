@@ -3288,6 +3288,7 @@ int pb_init(void)
     p=pb_push1(p,NV097_SET_FLAT_SHADE_OP,1); //FIRST_VTX
     p=pb_push4f(p,NV097_SET_EYE_POSITION,0.0f,0.0f,0.0f,1.0f);
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_EDGE_FLAG,1);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_OP,0x00000000);
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_PREVIOUS,0x00210000); //(PSTextureInput) What previous stage is used at each stage
     p=pb_push1(p,NV097_SET_COMPRESS_ZBUFFER_EN,0); //
     p=pb_push1(p,NV097_SET_SHADOW_ZSLOPE_THRESHOLD,0x7F800000);
