@@ -3647,6 +3647,7 @@ int pb_init(void)
     //various intial settings (complex states)
     p=pb_begin();
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VERTEX_BLEND_ENABLE,0); //VertexBlend="disable"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_ENABLE,0); //FogEnable=FALSE
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_COLOR,0); //FogColor=0x000000
     p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_POLYGON_MODE_FRONT,0x1B02,0x1B02); //FillMode="solid" BackFillMode="point"
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_NORMALIZE_ENABLE,0); //NormalizeNormals=FALSE
