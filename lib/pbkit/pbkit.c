@@ -3674,9 +3674,12 @@ int pb_init(void)
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
     pb_end(p);
 
-
     //various intial settings (texture stages states)
     p=pb_begin();
+    for(i=0;i<4;i++)
+    {
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_ENABLE(i),0); //texture enable flags
+    }
     p=pb_push1(p,0x1b68,0); //texture stage 1 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
     p=pb_push1(p,0x1b6c,0); //texture stage 1 BumpEnvMat01=0.0f
     p=pb_push1(p,0x1b70,0);//texture stage 1 BumpEnvMat11=0.0f
