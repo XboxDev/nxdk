@@ -15,13 +15,19 @@ NXDK_STACKSIZE = 65536
 endif
 
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
+
 ifeq ($(UNAME_S),Linux)
 LD           = lld -flavor link
 LIB          = llvm-lib
 AS           = clang
 CC           = clang
 CXX          = clang++
+ifneq ($(UNAME_M),x86_64)
+CGC          = $(NXDK_DIR)/tools/cg/linux/cgc.i386
+else
 CGC          = $(NXDK_DIR)/tools/cg/linux/cgc
+endif #UNAME_M != x86_64
 endif
 ifeq ($(UNAME_S),Darwin)
 LD           = /usr/local/opt/llvm/bin/lld -flavor link
