@@ -9,7 +9,7 @@ once_flag init_flag = ONCE_FLAG_INIT;
 mtx_t rand_mutex;
 unsigned char rand_buffer[116];
 
-void update_rand_buffer (void)
+static void update_rand_buffer (void)
 {
     LARGE_INTEGER performanceCounter;
     QueryPerformanceCounter(&performanceCounter);
