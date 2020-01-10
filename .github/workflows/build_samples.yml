@@ -6,6 +6,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
+    timeout-minutes: 20
     steps:
       - name: Clone Tree
         uses: actions/checkout@v1
@@ -27,6 +28,7 @@ jobs:
   macos:
     name: macOS
     runs-on: macOS-latest
+    timeout-minutes: 20
     steps:
       - name: Clone Tree
         uses: actions/checkout@v1
@@ -41,6 +43,7 @@ jobs:
   ubuntu:
     name: Ubuntu
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Clone Tree
         uses: actions/checkout@v1
