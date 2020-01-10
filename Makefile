@@ -64,6 +64,10 @@ NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-threadsafe-
 NXDK_LDFLAGS = -subsystem:windows -dll -entry:XboxCRTEntry \
                -stack:$(NXDK_STACKSIZE) -safeseh:no
 
+# Multithreaded LLD on Windows hang workaround
+ifneq (,$(findstring MINGW,$(UNAME_S)))
+NXDK_LDFLAGS += -threads:no
+endif
 
 ifeq ($(DEBUG),y)
 NXDK_CFLAGS += -g -gdwarf-4
