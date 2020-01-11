@@ -5,6 +5,6 @@
 #include <stdlib.h>
 
 // Forward alloca to the builtin with the Windows-specific name
-static void *alloca (size_t size) { return _alloca(size); }
+#define alloca(size) _alloca(size)
 
 #endif
