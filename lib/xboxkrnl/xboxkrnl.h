@@ -4095,7 +4095,7 @@ XBAPI VOID NTAPI HalDisableSystemInterrupt
     IN ULONG BusInterruptLevel
 );
 
-XBAPI DWORD HalBootSMCVideoMode(void);
+XBAPI DWORD HalBootSMCVideoMode;
 
 
 XBAPI NTSTATUS NTAPI FscSetCacheSize
