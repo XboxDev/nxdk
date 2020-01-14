@@ -155,16 +155,18 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 void XAudioPlay()
 {
 	volatile AC97_DEVICE *pac97device = &ac97Device;
-	pac97device->mmio[0x118>>2] = (unsigned int)0x1d000000; // PCM out - run, allow interrupts
-	pac97device->mmio[0x178>>2] = (unsigned int)0x1d000000; // PCM out - run, allow interrupts
+	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
+	pb[0x11B] = 0x1d; // PCM out - run, allow interrupts
+	pb[0x17B] = 0x1d; // PCM out - run, allow interrupts
 }
 
 // tell the chip it is paused.
 void XAudioPause()
 {
 	volatile AC97_DEVICE *pac97device = &ac97Device;
-	pac97device->mmio[0x118>>2] = (unsigned int)0x1c000000; // PCM out - PAUSE, allow interrupts
-	pac97device->mmio[0x178>>2] = (unsigned int)0x1c000000; // PCM out - PAUSE, allow interrupts
+	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
+	pb[0x11B] = 0x1c; // PCM out - PAUSE, allow interrupts
+	pb[0x17B] = 0x1c; // PCM out - PAUSE, allow interrupts
 }
 
 // This is the function you should call when you want to give the
