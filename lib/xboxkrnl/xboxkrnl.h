@@ -3492,7 +3492,7 @@ XBAPI ULONG NTAPI KeResumeThread
     IN PKTHREAD Thread
 );
 
-XBAPI NTSTATUS KeRestoreFloatingPointState
+XBAPI NTSTATUS NTAPI KeRestoreFloatingPointState
 (
     IN PKFLOATING_SAVE FloatSave
 );
