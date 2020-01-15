@@ -11,6 +11,7 @@ typedef signed char SCHAR, *PSCHAR;
 
 typedef char CHAR, *PCHAR, CCHAR, *LPCH, *PCH, OCHAR, *POCHAR;
 typedef short SHORT, *PSHORT;
+typedef int INT, *PINT, *LPINT;
 typedef long LONG, *PLONG, *LPLONG;
 typedef long long LONGLONG, *PLONGLONG;
 
