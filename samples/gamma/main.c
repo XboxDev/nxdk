@@ -22,7 +22,7 @@ int main(void)
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
     /* Create test image in framebuffer */
-    uint32_t *rgbx = (uint32_t*)XVideoGetFB();
+    volatile uint32_t *rgbx = (uint32_t*)XVideoGetFB();
     for(unsigned int y = 0; y < 480; y++) {
         unsigned int stripe = y / (480/3);
 
