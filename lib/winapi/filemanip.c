@@ -56,6 +56,45 @@ BOOL GetFileAttributesExA (LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelI
     return TRUE;
 }
 
+BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING path;
+    OBJECT_ATTRIBUTES objectAttributes;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_BASIC_INFORMATION fileBasicInfo;
+
+    assert(lpFileName != NULL);
+    RtlInitAnsiString(&path, lpFileName);
+
+    InitializeObjectAttributes(&objectAttributes, &path, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtOpenFile(&handle, FILE_WRITE_ATTRIBUTES | SYNCHRONIZE, &objectAttributes, &ioStatusBlock, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, FILE_SYNCHRONOUS_IO_NONALERT);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    // Setting the times to zero makes the kernel preserve their current values
+    fileBasicInfo.CreationTime.QuadPart = 0;
+    fileBasicInfo.LastAccessTime.QuadPart = 0;
+    fileBasicInfo.LastWriteTime.QuadPart = 0;
+    fileBasicInfo.ChangeTime.QuadPart = 0;
+
+    fileBasicInfo.FileAttributes = dwFileAttributes | FILE_ATTRIBUTE_NORMAL;
+
+    status = NtSetInformationFile(handle, &ioStatusBlock, &fileBasicInfo, sizeof(fileBasicInfo), FileBasicInformation);
+    NtClose(handle);
+
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 BOOL DeleteFileA (LPCTSTR lpFileName)
 {
     NTSTATUS status;

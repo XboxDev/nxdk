@@ -12,6 +12,7 @@ extern "C"
 
 DWORD GetFileAttributesA (LPCSTR lpFileName);
 BOOL GetFileAttributesExA (LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation);
+BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes);
 
 #define CREATE_NEW 1
 #define CREATE_ALWAYS 2
@@ -40,6 +41,7 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 #ifndef UNICODE
 #define GetFileAttributes GetFileAttributesA
 #define GetFileAttributesEx GetFileAttributesExA
+#define SetFileAttributes SetFileAttributesA
 #define CreateFile CreateFileA
 #define FindFirstFile FindFirstFileA
 #define FindNextFile FindNextFileA
