@@ -10,7 +10,7 @@
 
 static char *currentDirString = NULL;
 
-char *partitions[] =
+static char *partitions[] =
 {
 	"\\??\\D:\\",
 	"\\Device\\Harddisk0\\Partition1\\",
@@ -22,7 +22,7 @@ char *partitions[] =
 	"\\Device\\Harddisk0\\Partition7\\",
 };
 
-int getPartitionIndex(char c)
+static int getPartitionIndex(char c)
 {
 	switch(c)
 	{
@@ -38,7 +38,7 @@ int getPartitionIndex(char c)
 	}
 }
 
-char *getPartitionString(char c)
+static char *getPartitionString(char c)
 {
 	int i = getPartitionIndex(c);
 	if (i == -1)
@@ -47,7 +47,7 @@ char *getPartitionString(char c)
 		return partitions[i];
 }
 
-void setPartitionString(char c, char *string)
+static void setPartitionString(char c, char *string)
 {
 	int i = getPartitionIndex(c);
 	if (i != -1)

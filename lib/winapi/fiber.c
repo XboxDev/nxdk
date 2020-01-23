@@ -12,11 +12,11 @@ typedef struct fls_node_t_
     PVOID slots[FLS_MAXIMUM_AVAILABLE];
 } fls_node_t;
 
-CRITICAL_SECTION fls_lock;
-thread_local fls_node_t fls_node;
-LIST_ENTRY fls_nodes_list;
-uint32_t fls_bitmap[FLS_MAXIMUM_AVAILABLE / 32];
-PFLS_CALLBACK_FUNCTION fls_dtors[FLS_MAXIMUM_AVAILABLE];
+static CRITICAL_SECTION fls_lock;
+static thread_local fls_node_t fls_node;
+static LIST_ENTRY fls_nodes_list;
+static uint32_t fls_bitmap[FLS_MAXIMUM_AVAILABLE / 32];
+static PFLS_CALLBACK_FUNCTION fls_dtors[FLS_MAXIMUM_AVAILABLE];
 
 // Gets run by the CRT on startup.
 __attribute__((constructor)) static VOID fls_init (VOID)

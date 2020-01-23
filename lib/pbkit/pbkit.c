@@ -3288,6 +3288,7 @@ int pb_init(void)
     p=pb_push1(p,NV097_SET_FLAT_SHADE_OP,1); //FIRST_VTX
     p=pb_push4f(p,NV097_SET_EYE_POSITION,0.0f,0.0f,0.0f,1.0f);
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_EDGE_FLAG,1);
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_OP,0x00000000);
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_SHADER_PREVIOUS,0x00210000); //(PSTextureInput) What previous stage is used at each stage
     p=pb_push1(p,NV097_SET_COMPRESS_ZBUFFER_EN,0); //
     p=pb_push1(p,NV097_SET_SHADOW_ZSLOPE_THRESHOLD,0x7F800000);
@@ -3646,6 +3647,7 @@ int pb_init(void)
     //various intial settings (complex states)
     p=pb_begin();
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_VERTEX_BLEND_ENABLE,0); //VertexBlend="disable"
+    p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_ENABLE,0); //FogEnable=FALSE
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FOG_COLOR,0); //FogColor=0x000000
     p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_POLYGON_MODE_FRONT,0x1B02,0x1B02); //FillMode="solid" BackFillMode="point"
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_NORMALIZE_ENABLE,0); //NormalizeNormals=FALSE
@@ -3672,9 +3674,12 @@ int pb_init(void)
     p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_FIRE_INTERRUPT,PB_SETOUTER); //calls subprogID PB_SETOUTER: does VIDEOREG(ParamA)=ParamB
     pb_end(p);
 
-
     //various intial settings (texture stages states)
     p=pb_begin();
+    for(i=0;i<4;i++)
+    {
+        p=pb_push1(p,NV20_TCL_PRIMITIVE_3D_TX_ENABLE(i),0); //texture enable flags
+    }
     p=pb_push1(p,0x1b68,0); //texture stage 1 BumpEnvMat00=0.0f (stage +1 because no pixel shader used yet)
     p=pb_push1(p,0x1b6c,0); //texture stage 1 BumpEnvMat01=0.0f
     p=pb_push1(p,0x1b70,0);//texture stage 1 BumpEnvMat11=0.0f
