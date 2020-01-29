@@ -38,13 +38,13 @@ typedef enum {
 
 typedef enum {
     XGU_FUNC_NEVER = 0x200,
-    XGU_FUNC_LESS,
-    XGU_FUNC_EQUAL,
-    XGU_FUNC_LESS_OR_EQUAL,
-    XGU_FUNC_GREATER,
-    XGU_FUNC_NOT_EQUAL,
-    XGU_FUNC_GREATER_OR_EQUAL,
-    XGU_FUNC_ALWAYS
+    XGU_FUNC_LESS = 0x201,
+    XGU_FUNC_EQUAL = 0x202,
+    XGU_FUNC_LESS_OR_EQUAL = 0x203,
+    XGU_FUNC_GREATER = 0x204,
+    XGU_FUNC_NOT_EQUAL = 0x205,
+    XGU_FUNC_GREATER_OR_EQUAL = 0x206,
+    XGU_FUNC_ALWAYS = 0x207
 } XguFuncType;
 
 typedef enum {
@@ -128,11 +128,6 @@ typedef enum {
     XGU_TEXGEN_REFLECTION_MAP = NV097_SET_TEXGEN_S_REFLECTION_MAP,
     XGU_TEXGEN_NORMAL_MAP = NV097_SET_TEXGEN_S_NORMAL_MAP
 } XguTexgen;
-
-typedef enum {
-    XGU_SOURCE_TEXTURE = NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE_TEXTURE,
-    XGU_SOURCE_COLOR = NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE_COLOR
-} XguBorderSrc;
 
 typedef enum {
     XGU_TEXTURE_FORMAT_Y8_SWIZZLED = NV097_SET_TEXTURE_FORMAT_COLOR_SZ_Y8,
@@ -810,14 +805,14 @@ uint32_t* xgu_set_texture_offset(uint32_t* p, unsigned int texture_index, const 
 
 inline
 uint32_t* xgu_set_texture_format(uint32_t* p, unsigned int texture_index, uint8_t context_dma, bool cubemap_enable,
-                                 XguBorderSrc border_src, uint8_t dimensionality,
+                                 bool border, uint8_t dimensionality,
                                  XguTexFormatColor format, uint8_t mipmap_levels,
                                  uint8_t u_size, uint8_t v_size, uint8_t p_size) {
     assert(texture_index < XGU_TEXTURE_COUNT);
     return push_command_parameter(p, NV097_SET_TEXTURE_FORMAT + texture_index*64,
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_CONTEXT_DMA, context_dma) |
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_CUBEMAP_ENABLE, cubemap_enable) |
-                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE, border_src) |
+                                  XGU_MASK(NV097_SET_TEXTURE_FORMAT_BORDER_SOURCE, border) |
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_DIMENSIONALITY, dimensionality) |
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_COLOR, format) |
                                   XGU_MASK(NV097_SET_TEXTURE_FORMAT_MIPMAP_LEVELS, mipmap_levels) |
