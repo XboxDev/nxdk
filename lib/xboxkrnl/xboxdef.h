@@ -11,12 +11,14 @@ typedef signed char SCHAR, *PSCHAR;
 
 typedef char CHAR, *PCHAR, CCHAR, *LPCH, *PCH, OCHAR, *POCHAR;
 typedef short SHORT, *PSHORT;
+typedef int INT, *PINT, *LPINT;
 typedef long LONG, *PLONG, *LPLONG;
 typedef long long LONGLONG, *PLONGLONG;
 
 typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT, CSHORT;
 typedef unsigned short WORD, WCHAR, *PWSTR;
+typedef unsigned int UINT, *PUINT, *LPUINT;
 typedef unsigned long DWORD, *PDWORD, *LPDWORD;
 typedef unsigned long ULONG, *PULONG;
 typedef unsigned long long ULONGLONG;
@@ -110,5 +112,16 @@ typedef struct _RTL_CRITICAL_SECTION
     LONG RecursionCount;
     PVOID OwningThread;
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
+
+/* values for FileAttributes */
+#define FILE_ATTRIBUTE_READONLY 0x00000001
+#define FILE_ATTRIBUTE_HIDDEN 0x00000002
+#define FILE_ATTRIBUTE_SYSTEM 0x00000004
+#define FILE_ATTRIBUTE_DIRECTORY 0x00000010
+#define FILE_ATTRIBUTE_ARCHIVE 0x00000020
+#define FILE_ATTRIBUTE_DEVICE 0x00000040
+#define FILE_ATTRIBUTE_NORMAL 0x00000080
+#define FILE_ATTRIBUTE_TEMPORARY 0x00000100
+#define INVALID_FILE_ATTRIBUTES 0xFFFFFFFF
 
 #endif

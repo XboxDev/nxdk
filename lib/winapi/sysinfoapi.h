@@ -7,6 +7,7 @@
 extern "C" {
 #endif
 
+void GetSystemTime (LPSYSTEMTIME lpSystemTime);
 void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
 DWORD GetTickCount (void);
 

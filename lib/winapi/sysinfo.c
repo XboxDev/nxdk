@@ -2,6 +2,28 @@
 #include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
 
+void GetSystemTime (LPSYSTEMTIME lpSystemTime)
+{
+    assert(lpSystemTime != NULL);
+
+    LARGE_INTEGER KTime;
+    TIME_FIELDS TimeFields;
+
+    KeQuerySystemTime(&KTime);
+
+    RtlTimeToTimeFields(&KTime, &TimeFields);
+
+    lpSystemTime->wYear = TimeFields.Year;
+    lpSystemTime->wMonth = TimeFields.Month;
+    lpSystemTime->wDay = TimeFields.Day;
+    lpSystemTime->wHour = TimeFields.Hour;
+    lpSystemTime->wMinute = TimeFields.Minute;
+    lpSystemTime->wSecond = TimeFields.Second;
+    lpSystemTime->wMilliseconds = TimeFields.Millisecond;
+    lpSystemTime->wDayOfWeek = TimeFields.Weekday;
+}
+
+
 void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime)
 {
     assert(lpSystemTimeAsFileTime != NULL);
