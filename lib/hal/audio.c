@@ -103,6 +103,11 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	KIRQL irql;
 	ULONG vector;
 
+	// Hack to prevent an assertion in MmGetPhysicalAddress by locking the memory.
+	// A future API redesign should use proper allocation
+	// (MmAllocateContiguousMemory) instead.
+	MmLockUnlockBufferPages((PVOID)pac97device, sizeof(AC97_DEVICE), FALSE);
+
 	pac97device->mmio = (unsigned int *)0xfec00000;
 	pac97device->nextDescriptorMod31 = 0;
 	pac97device->callback = callback;
