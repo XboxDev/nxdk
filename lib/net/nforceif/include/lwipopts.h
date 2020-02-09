@@ -43,7 +43,7 @@
 #define LWIP_IPV4 1
 #define LWIP_IPV6 1
 #define LWIP_DEBUG 1
-#define LWIP_ERRNO_INCLUDE <errno.h>
+#define LWIP_ERRNO_STDINCLUDE 1
 #define LWIP_COMPAT_MUTEX_ALLOWED
 #define SYS_LIGHTWEIGHT_PROT 0
 
