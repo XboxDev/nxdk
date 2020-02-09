@@ -18,3 +18,6 @@ SRCS += $(LWIPSRCS) $(DRIVERSRCS)
 CFLAGS += -I $(LWIPDIR)/include
 CFLAGS += -I $(NXDK_DIR)/lib/net/nforceif/include
 CFLAGS += -I $(NXDK_DIR)/lib/net/pktdrv
+CXXFLAGS += -I $(LWIPDIR)/include
+CXXFLAGS += -I $(NXDK_DIR)/lib/net/nforceif/include
+CXXFLAGS += -I $(NXDK_DIR)/lib/net/pktdrv

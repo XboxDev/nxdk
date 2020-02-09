@@ -437,7 +437,13 @@
 #define TCP_QLEN_DEBUG   LWIP_DBG_ON
 #define TCP_RST_DEBUG    LWIP_DBG_ON
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern unsigned char debug_flags;
+#ifdef __cplusplus
+}
+#endif
 #define LWIP_DBG_TYPES_ON debug_flags
 
 
