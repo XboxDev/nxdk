@@ -67,7 +67,7 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-threadsafe-statics -fno-rtti
-NXDK_LDFLAGS = -subsystem:windows -dll -entry:XboxCRTEntry \
+NXDK_LDFLAGS = -subsystem:windows -fixed:no -entry:XboxCRTEntry \
                -stack:$(NXDK_STACKSIZE) -safeseh:no
 
 # Multithreaded LLD on Windows hang workaround
