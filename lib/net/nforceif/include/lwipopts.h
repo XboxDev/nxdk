@@ -67,6 +67,24 @@
    ------------------------------------
 */
 /**
+ * MEM_LIBC_MALLOC==1: Use malloc/free/realloc provided by your C-library
+ * instead of the lwip internal allocator. Can save code size if you
+ * already use it.
+ */
+#define MEM_LIBC_MALLOC                 1
+
+/**
+ * MEMP_MEM_MALLOC==1: Use mem_malloc/mem_free instead of the lwip pool allocator.
+ * Especially useful with MEM_LIBC_MALLOC but handle with care regarding execution
+ * speed (heap alloc can be much slower than pool alloc) and usage from interrupts
+ * (especially if your netif driver allocates PBUF_POOL pbufs for received frames
+ * from interrupt)!
+ * ATTENTION: Currently, this uses the heap for ALL pools (also for private pools,
+ * not only for internal pools defined in memp_std.h)!
+ */
+#define MEMP_MEM_MALLOC                 1
+
+/**
  * MEM_ALIGNMENT: should be set to the alignment of the CPU
  *    4 byte alignment -> #define MEM_ALIGNMENT 4
  *    2 byte alignment -> #define MEM_ALIGNMENT 2
