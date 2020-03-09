@@ -41,6 +41,7 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes);
 BOOL GetDiskFreeSpaceA (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster, LPDWORD lpBytesPerSector, LPDWORD lpNumberOfFreeClusters, LPDWORD lpTotalNumberOfClusters);
 DWORD GetLogicalDrives (VOID);
+DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer);
 
 #ifndef UNICODE
 #define GetFileAttributes GetFileAttributesA
@@ -55,6 +56,7 @@ DWORD GetLogicalDrives (VOID);
 #define MoveFile(...) MoveFileA(__VA_ARGS__)
 #define GetDiskFreeSpaceEx GetDiskFreeSpaceExA
 #define GetDiskFreeSpace GetDiskFreeSpaceA
+#define GetLogicalDriveStrings GetLogicalDriveStringsA
 #else
 #error nxdk does not support the Unicode API
 #endif

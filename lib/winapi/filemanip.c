@@ -394,3 +394,33 @@ DWORD GetLogicalDrives (VOID)
     SetLastError(ERROR_SUCCESS);
     return result;
 }
+
+DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer)
+{
+    DWORD driveBitmask = GetLogicalDrives();
+    if (driveBitmask == 0 && GetLastError() != ERROR_SUCCESS) {
+        return 0;
+    }
+
+    DWORD requiredBufLength = 0;
+    for (int bit = 0; bit < 26; bit++) {
+        if (driveBitmask & (1 << bit)) {
+            requiredBufLength += 4;
+        }
+    }
+
+    if (nBufferLength == 0 || nBufferLength < requiredBufLength) {
+        return requiredBufLength+1;
+    }
+
+    for (int bit = 0; bit < 26; bit++) {
+        if (driveBitmask & (1 << bit)) {
+            *lpBuffer++ = 'A' + bit;
+            *lpBuffer++ = ':';
+            *lpBuffer++ = '\\';
+            *lpBuffer++ = '\0';
+        }
+    }
+    *lpBuffer = '\0';
+    return requiredBufLength;
+}
