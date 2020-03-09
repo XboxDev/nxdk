@@ -1,6 +1,10 @@
 #include <fileapi.h>
+#include <winbase.h>
 #include <winerror.h>
 #include <assert.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <string.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 DWORD GetFileAttributesA (LPCSTR lpFileName)
@@ -338,4 +342,55 @@ BOOL GetDiskFreeSpaceA (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster, LPDW
     }
 
     return TRUE;
+}
+
+DWORD GetLogicalDrives (VOID)
+{
+    DWORD result = 0;
+    NTSTATUS status;
+    ANSI_STRING path;
+    HANDLE handle;
+    OBJECT_ATTRIBUTES attributes;
+    struct {
+        OBJECT_DIRECTORY_INFORMATION objDirInfo;
+        CHAR filenameBuf[2];
+    } objDirInfoBuf;
+
+    InitializeObjectAttributes(&attributes, NULL, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+    status = NtOpenDirectoryObject(&handle, &attributes);
+
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return 0;
+    }
+
+    ULONG index = 0;
+    while (true) {
+        POBJECT_DIRECTORY_INFORMATION objDirInfo = (POBJECT_DIRECTORY_INFORMATION)&objDirInfoBuf;
+        status = NtQueryDirectoryObject(handle, objDirInfo, sizeof(objDirInfoBuf), (index == 0), &index, NULL);
+
+        if (status == STATUS_NO_MORE_ENTRIES) {
+            break;
+        } else if (status == STATUS_BUFFER_TOO_SMALL) {
+            // If the object name is too long, we're not interested in it anyway
+            continue;
+        } else if (!NT_SUCCESS(status)) {
+            NtClose(handle);
+            SetLastError(RtlNtStatusToDosError(status));
+            return 0;
+        }
+
+        // Only allow entries like "C:" or "E:", ignore stuff like "CdRom0:"
+        if (objDirInfo->Name.Length != 2 || objDirInfo->Name.Buffer[1] != ':') {
+            continue;
+        }
+
+        if (isalpha(objDirInfo->Name.Buffer[0])) {
+            result |= 1 << (toupper(objDirInfo->Name.Buffer[0]) - 'A');
+        }
+    }
+
+    NtClose(handle);
+    SetLastError(ERROR_SUCCESS);
+    return result;
 }

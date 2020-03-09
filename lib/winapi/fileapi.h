@@ -40,6 +40,7 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 
 BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes);
 BOOL GetDiskFreeSpaceA (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster, LPDWORD lpBytesPerSector, LPDWORD lpNumberOfFreeClusters, LPDWORD lpTotalNumberOfClusters);
+DWORD GetLogicalDrives (VOID);
 
 #ifndef UNICODE
 #define GetFileAttributes GetFileAttributesA
