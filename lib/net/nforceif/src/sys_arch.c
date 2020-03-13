@@ -70,7 +70,7 @@ struct sys_sem {
 
 struct sys_thread {
   struct sys_thread *next;
-  int handle;
+  HANDLE handle;
 };
 #endif /* !NO_SYS */
 
@@ -109,7 +109,6 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
 {
   struct sys_thread *st = NULL;
   LWIP_UNUSED_ARG(name);
-  LWIP_UNUSED_ARG(stacksize);
   LWIP_UNUSED_ARG(prio);
 
   st = (struct sys_thread *)malloc(sizeof(struct sys_thread));
@@ -118,7 +117,7 @@ sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksi
     abort();
   }
 
-  st->handle = XCreateThread((void *)function, arg, NULL);
+  st->handle = CreateThread(NULL, stacksize, (void *)function, arg, 0, NULL);
   
   return st;
 }
