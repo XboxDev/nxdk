@@ -19,6 +19,7 @@ void XLaunchXBE(char *xbePath);
 
 // the thread callback function
 typedef void (*XThreadCallback)(void *args1, void *args2);
+__attribute__((deprecated))
 int XCreateThread(XThreadCallback callback, void *args1, void *args2);
 
 
