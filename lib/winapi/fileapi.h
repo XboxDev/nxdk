@@ -38,6 +38,8 @@ BOOL RemoveDirectoryA (LPCSTR lpPathName);
 BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
 BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 
+BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes);
+
 #ifndef UNICODE
 #define GetFileAttributes GetFileAttributesA
 #define GetFileAttributesEx GetFileAttributesExA
@@ -49,6 +51,7 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
 #define RemoveDirectory(...) RemoveDirectoryA(__VA_ARGS__)
 #define CreateDirectory(...) CreateDirectoryA(__VA_ARGS__)
 #define MoveFile(...) MoveFileA(__VA_ARGS__)
+#define GetDiskFreeSpaceEx GetDiskFreeSpaceExA
 #else
 #error nxdk does not support the Unicode API
 #endif

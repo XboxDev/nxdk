@@ -1,4 +1,5 @@
 #include <fileapi.h>
+#include <winerror.h>
 #include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
 
@@ -234,4 +235,56 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
     } else {
         return TRUE;
     }
+}
+
+BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING path;
+    OBJECT_ATTRIBUTES objectAttributes;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_FS_SIZE_INFORMATION fsSizeInfo;
+
+    assert(lpDirectoryName);
+
+    RtlInitAnsiString(&path, lpDirectoryName);
+    InitializeObjectAttributes(&objectAttributes, &path, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtOpenFile(&handle, FILE_LIST_DIRECTORY | SYNCHRONIZE, &objectAttributes, &ioStatusBlock, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE | FILE_OPEN_FOR_FREE_SPACE_QUERY);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+            SetLastError(ERROR_PATH_NOT_FOUND);
+        }
+        return FALSE;
+    }
+
+    status = NtQueryVolumeInformationFile(handle, &ioStatusBlock, &fsSizeInfo, sizeof(fsSizeInfo), FileFsSizeInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtClose(handle);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    ULONGLONG bytesPerAllocUnit = fsSizeInfo.BytesPerSector * fsSizeInfo.SectorsPerAllocationUnit;
+    ULONGLONG totalBytes = bytesPerAllocUnit * fsSizeInfo.TotalAllocationUnits.QuadPart;
+    ULONGLONG freeBytes = bytesPerAllocUnit * fsSizeInfo.AvailableAllocationUnits.QuadPart;
+
+    if (lpFreeBytesAvailableToCaller) {
+        lpFreeBytesAvailableToCaller->QuadPart = freeBytes;
+    }
+    if (lpTotalNumberOfBytes) {
+        lpTotalNumberOfBytes->QuadPart = totalBytes;
+    }
+    if (lpTotalNumberOfFreeBytes) {
+        lpTotalNumberOfFreeBytes->QuadPart = freeBytes;
+    }
+
+    return TRUE;
 }
