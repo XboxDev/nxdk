@@ -288,3 +288,54 @@ BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAva
 
     return TRUE;
 }
+
+BOOL GetDiskFreeSpaceA (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster, LPDWORD lpBytesPerSector, LPDWORD lpNumberOfFreeClusters, LPDWORD lpTotalNumberOfClusters)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING path;
+    OBJECT_ATTRIBUTES objectAttributes;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_FS_SIZE_INFORMATION fsSizeInfo;
+
+    assert(lpRootPathName);
+
+    RtlInitAnsiString(&path, lpRootPathName);
+    InitializeObjectAttributes(&objectAttributes, &path, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtOpenFile(&handle, FILE_LIST_DIRECTORY | SYNCHRONIZE, &objectAttributes, &ioStatusBlock, FILE_SHARE_READ | FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_NONALERT | FILE_DIRECTORY_FILE | FILE_OPEN_FOR_FREE_SPACE_QUERY);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+            SetLastError(ERROR_PATH_NOT_FOUND);
+        }
+        return FALSE;
+    }
+
+    status = NtQueryVolumeInformationFile(handle, &ioStatusBlock, &fsSizeInfo, sizeof(fsSizeInfo), FileFsSizeInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtClose(handle);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    if (lpSectorsPerCluster) {
+        *lpSectorsPerCluster = fsSizeInfo.SectorsPerAllocationUnit;
+    }
+    if (lpBytesPerSector) {
+        *lpBytesPerSector = fsSizeInfo.BytesPerSector;
+    }
+    if (lpNumberOfFreeClusters) {
+        *lpNumberOfFreeClusters = fsSizeInfo.AvailableAllocationUnits.HighPart ? 0xFFFFFFFF : fsSizeInfo.AvailableAllocationUnits.LowPart;
+    }
+    if (lpTotalNumberOfClusters) {
+        *lpTotalNumberOfClusters = fsSizeInfo.TotalAllocationUnits.HighPart ? 0xFFFFFFFF : fsSizeInfo.TotalAllocationUnits.LowPart;
+    }
+
+    return TRUE;
+}
