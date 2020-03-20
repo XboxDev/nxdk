@@ -278,6 +278,150 @@ BOOL InitOnceComplete (LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext)
     }
 }
 
+static BOOL WINAPI condvar_init (PINIT_ONCE InitOnce, PVOID Parameter, PVOID *Context)
+{
+    PCONDITION_VARIABLE ConditionVariable = Parameter;
+    NTSTATUS status;
+    assert(ConditionVariable->waitCount == 0);
+    assert(ConditionVariable->eventHandles[0] == INVALID_HANDLE_VALUE);
+    assert(ConditionVariable->eventHandles[1] == INVALID_HANDLE_VALUE);
+    status = NtCreateEvent(&ConditionVariable->eventHandles[0], NULL, SynchronizationEvent, FALSE);
+    assert(NT_SUCCESS(status));
+    status = NtCreateEvent(&ConditionVariable->eventHandles[1], NULL, NotificationEvent, FALSE);
+    assert(NT_SUCCESS(status));
+    return true;
+}
+
+VOID InitializeConditionVariable (PCONDITION_VARIABLE ConditionVariable)
+{
+    ConditionVariable->initOnce.Ptr = 0;
+    __atomic_store_n(&ConditionVariable->waitCount, 0, __ATOMIC_RELEASE);
+    ConditionVariable->eventHandles[0] = INVALID_HANDLE_VALUE;
+    ConditionVariable->eventHandles[1] = INVALID_HANDLE_VALUE;
+
+    BOOL success = InitOnceExecuteOnce(&ConditionVariable->initOnce, condvar_init, ConditionVariable, NULL);
+    assert(success);
+}
+
+BOOL SleepConditionVariableCS (PCONDITION_VARIABLE ConditionVariable, PCRITICAL_SECTION CriticalSection, DWORD dwMilliseconds)
+{
+    BOOL success = InitOnceExecuteOnce(&ConditionVariable->initOnce, condvar_init, ConditionVariable, NULL);
+    assert(success);
+
+    NTSTATUS status;
+    LARGE_INTEGER waitTime;
+    LARGE_INTEGER *waitTimePtr = NULL;
+
+    if (dwMilliseconds != INFINITE) {
+        waitTime.QuadPart = dwMilliseconds * 1000;
+        waitTimePtr = &waitTime;
+    }
+
+    LeaveCriticalSection(CriticalSection);
+    __atomic_add_fetch(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+    status = NtWaitForMultipleObjectsEx(2, ConditionVariable->eventHandles, WaitAny, UserMode, FALSE, waitTimePtr);
+    if (status == WAIT_FAILED || status == STATUS_TIMEOUT) {
+        __atomic_sub_fetch(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+        EnterCriticalSection(CriticalSection);
+        return FALSE;
+    }
+
+    int oldCount = __atomic_fetch_sub(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+    if (oldCount == 1) {
+        // Last waiter needs to manually reset the broadcast-object
+        status = NtClearEvent(ConditionVariable->eventHandles[1]);
+        if (!NT_SUCCESS(status)) {
+            EnterCriticalSection(CriticalSection);
+            return FALSE;
+        }
+    }
+
+    EnterCriticalSection(CriticalSection);
+    return TRUE;
+}
+
+BOOL SleepConditionVariableSRW (PCONDITION_VARIABLE ConditionVariable, PSRWLOCK SRWLock, DWORD dwMilliseconds, ULONG Flags)
+{
+    BOOL success = InitOnceExecuteOnce(&ConditionVariable->initOnce, condvar_init, ConditionVariable, NULL);
+    assert(success);
+
+    NTSTATUS status;
+    LARGE_INTEGER waitTime;
+    LARGE_INTEGER *waitTimePtr = NULL;
+
+    if (dwMilliseconds != INFINITE) {
+        waitTime.QuadPart = dwMilliseconds * 1000;
+        waitTimePtr = &waitTime;
+    }
+
+    if (Flags == CONDITION_VARIABLE_LOCKMODE_SHARED) {
+        ReleaseSRWLockShared(SRWLock);
+    } else {
+        ReleaseSRWLockExclusive(SRWLock);
+    }
+    __atomic_add_fetch(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+    status = NtWaitForMultipleObjectsEx(2, ConditionVariable->eventHandles, WaitAny, UserMode, FALSE, waitTimePtr);
+    if (status == WAIT_FAILED || status == STATUS_TIMEOUT) {
+        __atomic_sub_fetch(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+        if (Flags == CONDITION_VARIABLE_LOCKMODE_SHARED) {
+            AcquireSRWLockShared(SRWLock);
+        } else {
+            AcquireSRWLockExclusive(SRWLock);
+        }
+        return FALSE;
+    }
+
+    int oldCount = __atomic_fetch_sub(&ConditionVariable->waitCount, 1, __ATOMIC_ACQ_REL);
+    if (oldCount == 1) {
+        // Last waiter needs to manually reset the broadcast-object
+        status = NtClearEvent(ConditionVariable->eventHandles[1]);
+        if (!NT_SUCCESS(status)) {
+            if (Flags == CONDITION_VARIABLE_LOCKMODE_SHARED) {
+                AcquireSRWLockShared(SRWLock);
+            } else {
+                AcquireSRWLockExclusive(SRWLock);
+            }
+            return FALSE;
+        }
+    }
+
+    if (Flags == CONDITION_VARIABLE_LOCKMODE_SHARED) {
+        AcquireSRWLockShared(SRWLock);
+    } else {
+        AcquireSRWLockExclusive(SRWLock);
+    }
+    return TRUE;
+}
+
+VOID WakeConditionVariable (PCONDITION_VARIABLE ConditionVariable)
+{
+    BOOL success = InitOnceExecuteOnce(&ConditionVariable->initOnce, condvar_init, ConditionVariable, NULL);
+    assert(success);
+
+    NTSTATUS status;
+    status = NtSetEvent(ConditionVariable->eventHandles[0], NULL);
+    assert(NT_SUCCESS(status));
+}
+
+VOID WakeAllConditionVariable (PCONDITION_VARIABLE ConditionVariable)
+{
+    BOOL success = InitOnceExecuteOnce(&ConditionVariable->initOnce, condvar_init, ConditionVariable, NULL);
+    assert(success);
+
+    NTSTATUS status;
+    status = NtSetEvent(ConditionVariable->eventHandles[1], NULL);
+    assert(NT_SUCCESS(status));
+}
+
+VOID UninitializeConditionVariable (PCONDITION_VARIABLE ConditionVariable)
+{
+    ConditionVariable->initOnce.Ptr = (PVOID)INITONCE_DONE;
+    NtClose(ConditionVariable->eventHandles[0]);
+    NtClose(ConditionVariable->eventHandles[1]);
+    ConditionVariable->eventHandles[0] = INVALID_HANDLE_VALUE;
+    ConditionVariable->eventHandles[1] = INVALID_HANDLE_VALUE;
+}
+
 VOID Sleep (DWORD dwMilliseconds)
 {
     SleepEx(dwMilliseconds, FALSE);
