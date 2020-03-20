@@ -11,6 +11,7 @@ extern "C" {
 
 typedef RTL_CRITICAL_SECTION CRITICAL_SECTION;
 typedef PRTL_CRITICAL_SECTION LPCRITICAL_SECTION;
+typedef PRTL_CRITICAL_SECTION PCRITICAL_SECTION;
 
 VOID InitializeCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL InitializeCriticalSectionAndSpinCount (LPCRITICAL_SECTION lpCriticalSection, DWORD dwSpinCount);
@@ -18,6 +19,15 @@ VOID DeleteCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID EnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 BOOL TryEnterCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
 VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection);
+
+VOID InitializeConditionVariable (PCONDITION_VARIABLE ConditionVariable);
+BOOL SleepConditionVariableCS (PCONDITION_VARIABLE ConditionVariable, PCRITICAL_SECTION CriticalSection, DWORD dwMilliseconds);
+BOOL SleepConditionVariableSRW (PCONDITION_VARIABLE ConditionVariable, PSRWLOCK SRWLock, DWORD dwMilliseconds, ULONG Flags);
+VOID WakeConditionVariable (PCONDITION_VARIABLE ConditionVariable);
+VOID WakeAllConditionVariable (PCONDITION_VARIABLE ConditionVariable);
+// UninitializeConditionVariable is an nxdk extension to free associated system resources
+VOID UninitializeConditionVariable (PCONDITION_VARIABLE ConditionVariable);
+
 
 void AcquireSRWLockExclusive (PSRWLOCK SRWLock);
 void AcquireSRWLockShared (PSRWLOCK SRWLock);

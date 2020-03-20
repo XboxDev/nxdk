@@ -46,6 +46,16 @@ typedef struct _INIT_ONCE
 #define INIT_ONCE_INIT_FAILED 0x00000004UL
 typedef BOOL (CALLBACK *PINIT_ONCE_FN) (PINIT_ONCE, PVOID, PVOID *);
 
+typedef struct _CONDITION_VARIABLE {
+    INIT_ONCE initOnce;
+    // eventHandles[0]: Created as SynchronizationEvent to wake a single thread
+    // eventHandles[1]: Created as NotificationEvent to wake all threads at once
+    PVOID eventHandles[2];
+    int waitCount;
+} CONDITION_VARIABLE, *PCONDITION_VARIABLE;
+#define CONDITION_VARIABLE_INIT {INIT_ONCE_STATIC_INIT, {INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE}, 0}
+#define CONDITION_VARIABLE_LOCKMODE_SHARED 0x01
+
 typedef struct  _SRWLOCK
 {
     // highest bit: reader lock (0=free, 1=locked)
