@@ -45,6 +45,7 @@
 
 static struct sys_sem *sys_sem_new_internal(u8_t count);
 static void sys_sem_free_internal(struct sys_sem *sem);
+static int ext_sys_arch_sem_try(struct sys_sem **s);
 
 static struct sys_thread *threads = NULL;
 
@@ -58,10 +59,9 @@ struct sys_mbox_msg {
 struct sys_mbox {
     int first, last;
     void *msgs[SYS_MBOX_SIZE];
-    struct sys_sem *not_empty;
-    struct sys_sem *not_full;
+    struct sys_sem *read_sem;
+    struct sys_sem *write_sem;
     struct sys_sem *mutex;
-    int wait_send;
 };
 
 struct sys_sem {
@@ -133,10 +133,9 @@ sys_mbox_new(struct sys_mbox **mb, int size)
         return ERR_MEM;
     }
     mbox->first = mbox->last = 0;
-    mbox->not_empty = sys_sem_new_internal(0);
-    mbox->not_full = sys_sem_new_internal(0);
+    mbox->read_sem = sys_sem_new_internal(0);
+    mbox->write_sem = sys_sem_new_internal(SYS_MBOX_SIZE);
     mbox->mutex = sys_sem_new_internal(1);
-    mbox->wait_send = 0;
 
     SYS_STATS_INC_USED(mbox);
     *mb = mbox;
@@ -151,10 +150,9 @@ sys_mbox_free(struct sys_mbox **mb)
         SYS_STATS_DEC(mbox.used);
         sys_arch_sem_wait(&mbox->mutex, 0);
 
-        sys_sem_free_internal(mbox->not_empty);
-        sys_sem_free_internal(mbox->not_full);
+        sys_sem_free_internal(mbox->read_sem);
+        sys_sem_free_internal(mbox->write_sem);
         sys_sem_free_internal(mbox->mutex);
-        mbox->not_empty = mbox->not_full = mbox->mutex = NULL;
         /*  LWIP_DEBUGF("sys_mbox_free: mbox 0x%lx\n", mbox); */
         free(mbox);
     }
@@ -168,31 +166,19 @@ sys_mbox_trypost(struct sys_mbox **mb, void *msg)
     LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
     mbox = *mb;
 
-    sys_arch_sem_wait(&mbox->mutex, 0);
-
     LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_trypost: mbox %p msg %p\n",
                             (void *)mbox, (void *)msg));
 
-    if ((mbox->last + 1) >= (mbox->first + SYS_MBOX_SIZE)) {
-        sys_sem_signal(&mbox->mutex);
+    if (!ext_sys_arch_sem_try(&mbox->write_sem)) {
         return ERR_MEM;
     }
 
+    sys_arch_sem_wait(&mbox->mutex, 0);
     mbox->msgs[mbox->last % SYS_MBOX_SIZE] = msg;
-
-    if (mbox->last == mbox->first) {
-        first = 1;
-    } else {
-        first = 0;
-    }
-
     mbox->last++;
-
-    if (first) {
-        sys_sem_signal(&mbox->not_empty);
-    }
-
     sys_sem_signal(&mbox->mutex);
+
+    sys_sem_signal(&mbox->read_sem);
 
     return ERR_OK;
 }
@@ -211,33 +197,16 @@ sys_mbox_post(struct sys_mbox **mb, void *msg)
     LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
     mbox = *mb;
 
-    sys_arch_sem_wait(&mbox->mutex, 0);
-
     LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_post: mbox %p msg %p\n", (void *)mbox, (void *)msg));
 
-    while ((mbox->last + 1) >= (mbox->first + SYS_MBOX_SIZE)) {
-        mbox->wait_send++;
-        sys_sem_signal(&mbox->mutex);
-        sys_arch_sem_wait(&mbox->not_full, 0);
-        sys_arch_sem_wait(&mbox->mutex, 0);
-        mbox->wait_send--;
-    }
+    sys_arch_sem_wait(&mbox->write_sem, 0);
 
-    mbox->msgs[mbox->last % SYS_MBOX_SIZE] = msg;
-
-    if (mbox->last == mbox->first) {
-        first = 1;
-    } else {
-        first = 0;
-    }
-
+    sys_arch_sem_wait(&mbox->mutex, 0);
+    mbox->msgs[mbox->last & SYS_MBOX_SIZE] = msg;
     mbox->last++;
-
-    if (first) {
-        sys_sem_signal(&mbox->not_empty);
-    }
-
     sys_sem_signal(&mbox->mutex);
+
+    sys_sem_signal(&mbox->read_sem);
 }
 
 u32_t
@@ -247,28 +216,21 @@ sys_arch_mbox_tryfetch(struct sys_mbox **mb, void **msg)
     LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
     mbox = *mb;
 
-    sys_arch_sem_wait(&mbox->mutex, 0);
-
-    if (mbox->first == mbox->last) {
-        sys_sem_signal(&mbox->mutex);
+    if (!ext_sys_arch_sem_try(&mbox->read_sem)) {
         return SYS_MBOX_EMPTY;
     }
 
+    sys_arch_sem_wait(&mbox->mutex, 0);
     if (msg != NULL) {
         LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p msg %p\n", (void *)mbox, *msg));
         *msg = mbox->msgs[mbox->first % SYS_MBOX_SIZE];
     } else {
         LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_tryfetch: mbox %p, null msg\n", (void *)mbox));
     }
-
     mbox->first++;
-
-    if (mbox->wait_send) {
-        sys_sem_signal(&mbox->not_full);
-    }
-
     sys_sem_signal(&mbox->mutex);
 
+    sys_sem_signal(&mbox->write_sem);
     return 0;
 }
 
@@ -280,43 +242,22 @@ sys_arch_mbox_fetch(struct sys_mbox **mb, void **msg, u32_t timeout)
     LWIP_ASSERT("invalid mbox", (mb != NULL) && (*mb != NULL));
     mbox = *mb;
 
-    /* The mutex lock is quick so we don't bother with the timeout
-       stuff here. */
-    sys_arch_sem_wait(&mbox->mutex, 0);
-
-    while (mbox->first == mbox->last) {
-        sys_sem_signal(&mbox->mutex);
-
-        /* We block while waiting for a mail to arrive in the mailbox. We
-           must be prepared to timeout. */
-        if (timeout != 0) {
-            time_needed = sys_arch_sem_wait(&mbox->not_empty, timeout);
-
-            if (time_needed == SYS_ARCH_TIMEOUT) {
-                return SYS_ARCH_TIMEOUT;
-            }
-        } else {
-            sys_arch_sem_wait(&mbox->not_empty, 0);
-        }
-
-        sys_arch_sem_wait(&mbox->mutex, 0);
+    time_needed = sys_arch_sem_wait(&mbox->read_sem, timeout);
+    if (time_needed == SYS_ARCH_TIMEOUT) {
+        return SYS_ARCH_TIMEOUT;
     }
 
+    sys_arch_sem_wait(&mbox->mutex, 0);
     if (msg != NULL) {
         LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p msg %p\n", (void *)mbox, *msg));
         *msg = mbox->msgs[mbox->first % SYS_MBOX_SIZE];
     } else {
         LWIP_DEBUGF(SYS_DEBUG, ("sys_mbox_fetch: mbox %p, null msg\n", (void *)mbox));
     }
-
     mbox->first++;
-
-    if (mbox->wait_send) {
-        sys_sem_signal(&mbox->not_full);
-    }
-
     sys_sem_signal(&mbox->mutex);
 
+    sys_sem_signal(&mbox->write_sem);
     return time_needed;
 }
 
@@ -371,6 +312,30 @@ sys_arch_sem_wait(struct sys_sem **s, u32_t timeout)
     assert(status == STATUS_SUCCESS);
 
     return sys_now() - start_time;
+}
+
+/**
+ * Custom function not demanded by lwip. Used for the mbox implementation when waiting is not allowed.
+ */
+static int ext_sys_arch_sem_try(struct sys_sem **s)
+{
+    struct sys_sem *sem;
+    LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
+    sem = *s;
+
+    LARGE_INTEGER timeout;
+    timeout.QuadPart = 0;
+
+    NTSTATUS status = NtWaitForSingleObject(sem->handle, FALSE, &timeout);
+    if (!NT_SUCCESS(status)) {
+        return 0;
+    }
+
+    if (status == STATUS_TIMEOUT) {
+        return 0;
+    }
+
+    return -1;
 }
 
 void
