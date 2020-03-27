@@ -40,6 +40,7 @@
 
 #if !NO_SYS
 #include <xboxkrnl/xboxkrnl.h>
+#include <assert.h>
 #include <stdlib.h>
 
 static struct sys_sem *sys_sem_new_internal(u8_t count);
@@ -64,7 +65,6 @@ struct sys_mbox {
 };
 
 struct sys_sem {
-    unsigned int c;
     HANDLE handle;
 };
 
@@ -327,8 +327,11 @@ sys_sem_new_internal(u8_t count)
 
     sem = (struct sys_sem *)malloc(sizeof(struct sys_sem));
     if (sem != NULL) {
-        sem->c = count;
-        NtCreateSemaphore(&(sem->handle), NULL, 1, 1);
+        NTSTATUS status = NtCreateSemaphore(&(sem->handle), NULL, count, 10000);
+        if (!NT_SUCCESS(status)) {
+            free(sem);
+            return NULL;
+        }
     }
     return sem;
 }
@@ -347,31 +350,27 @@ sys_sem_new(struct sys_sem **sem, u8_t count)
 u32_t
 sys_arch_sem_wait(struct sys_sem **s, u32_t timeout)
 {
-    u32_t start, time_needed = 0;
     struct sys_sem *sem;
     LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
     sem = *s;
-    int done;
 
-    start = sys_now();
-
-    for (done=0; !done;) {
-        NtWaitForSingleObject(sem->handle, FALSE, NULL);
-
-        if (sem->c > 0) {
-            sem->c -= 1;
-            done = 1;
-        }
-
-        NtReleaseSemaphore(sem->handle, 1, NULL);
-
-        if (timeout > 0) {
-            time_needed = sys_now()-start;
-            if (time_needed >= timeout) return SYS_ARCH_TIMEOUT;
-        }
+    LARGE_INTEGER timeout_large;
+    PLARGE_INTEGER timeout_ptr;
+    if (timeout) {
+        timeout_large.QuadPart = (long long int)timeout * -10000;
+        timeout_ptr = &timeout_large;
+    } else {
+        timeout_ptr = NULL;
     }
 
-    return (u32_t)time_needed;
+    u32_t start_time = sys_now();
+    NTSTATUS status = NtWaitForSingleObject(sem->handle, FALSE, timeout_ptr);
+    if (status == STATUS_TIMEOUT) {
+        return SYS_ARCH_TIMEOUT;
+    }
+    assert(status == STATUS_SUCCESS);
+
+    return sys_now() - start_time;
 }
 
 void
@@ -380,13 +379,6 @@ sys_sem_signal(struct sys_sem **s)
     struct sys_sem *sem;
     LWIP_ASSERT("invalid sem", (s != NULL) && (*s != NULL));
     sem = *s;
-
-    NtWaitForSingleObject(sem->handle, FALSE, NULL);
-    sem->c++;
-
-    if (sem->c > 1) {
-        sem->c = 1;
-    }
 
     NtReleaseSemaphore(sem->handle, 1, NULL);
 }
