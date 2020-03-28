@@ -963,7 +963,7 @@ typedef struct _OBJECT_TYPE
     ULONG PoolTag;
 } OBJECT_TYPE, *POBJECT_TYPE;
 
-typedef NTAPI VOID (*PKDEFERRED_ROUTINE) (
+typedef VOID (NTAPI *PKDEFERRED_ROUTINE) (
     IN PKDPC Dpc,
     IN PVOID DeferredContext,
     IN PVOID SystemArgument1,
@@ -978,7 +978,7 @@ typedef struct _KDEVICE_QUEUE
     LIST_ENTRY DeviceListHead;
 } KDEVICE_QUEUE, *PKDEVICE_QUEUE;
 
-typedef VOID (*PKSTART_ROUTINE) (
+typedef VOID (NTAPI *PKSTART_ROUTINE) (
     IN PVOID StartContext
 );
 
@@ -988,7 +988,7 @@ typedef union _FILE_SEGMENT_ELEMENT
     DWORD Alignment;
 } FILE_SEGMENT_ELEMENT, *PFILE_SEGMENT_ELEMENT;
 
-typedef VOID (*PIO_APC_ROUTINE) (
+typedef VOID (NTAPI *PIO_APC_ROUTINE) (
     IN PVOID ApcContext,
     IN PIO_STATUS_BLOCK IoStatusBlock,
     IN ULONG Reserved
@@ -1049,7 +1049,7 @@ typedef struct _ETHREAD
     PVOID DebugData;
 } ETHREAD, *PETHREAD;
 
-typedef VOID (*PCREATE_THREAD_NOTIFY_ROUTINE) (
+typedef VOID (NTAPI *PCREATE_THREAD_NOTIFY_ROUTINE) (
     IN PETHREAD Thread,
     IN HANDLE ThreadId,
     IN BOOLEAN Create
@@ -1065,7 +1065,7 @@ typedef enum _KINTERRUPT_MODE
     Latched /**< Interrupt is edge-triggered. Used for PCI message-signaled interrupts */
 } KINTERRUPT_MODE;
 
-typedef BOOLEAN (* NTAPI PKSERVICE_ROUTINE) (
+typedef BOOLEAN (NTAPI *PKSERVICE_ROUTINE) (
     IN PKINTERRUPT Interrupt,
     IN PVOID ServiceContext
 );
@@ -1076,7 +1076,7 @@ typedef struct _TIMER_BASIC_INFORMATION
     BOOLEAN TimerState;
 } TIMER_BASIC_INFORMATION, *PTIMER_BASIC_INFORMATION;
 
-typedef VOID (*PTIMER_APC_ROUTINE) (
+typedef VOID (NTAPI *PTIMER_APC_ROUTINE) (
     IN PVOID TimerContext,
     IN ULONG TimerLowValue,
     IN LONG TimerHighValue
@@ -1262,20 +1262,20 @@ typedef struct _IRP
 
 struct _DEVICE_OBJECT;
 
-typedef NTAPI VOID (*PDRIVER_STARTIO) (
+typedef VOID (NTAPI *PDRIVER_STARTIO) (
     IN struct _DEVICE_OBJECT *DeviceObject,
     IN struct _IRP *Irp
 );
 
-typedef NTAPI VOID (*PDRIVER_DELETEDEVICE) (
+typedef VOID (NTAPI *PDRIVER_DELETEDEVICE) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTAPI NTSTATUS (*PDRIVER_DISMOUNTVOLUME) (
+typedef NTSTATUS (NTAPI *PDRIVER_DISMOUNTVOLUME) (
     IN struct _DEVICE_OBJECT *DeviceObject
 );
 
-typedef NTAPI NTSTATUS (*PDRIVER_DISPATCH) (
+typedef NTSTATUS (NTAPI *PDRIVER_DISPATCH) (
     IN struct _DEVICE_OBJECT *DeviceObject,
     IN struct _IRP *Irp
 );
@@ -1411,7 +1411,7 @@ typedef struct _HARDWARE_PTE
     ULONG PageFrameNumber : 20;
 } HARDWARE_PTE, *PHARDWARE_PTE;
 
-typedef VOID (*PPS_APC_ROUTINE) (
+typedef VOID (NTAPI *PPS_APC_ROUTINE) (
     IN PVOID ApcArgument1,
     IN PVOID ApcArgument2,
     IN PVOID ApcArgument3
@@ -1468,21 +1468,21 @@ typedef struct _SHARE_ACCESS
     UCHAR SharedDelete;
 } SHARE_ACCESS, *PSHARE_ACCESS;
 
-typedef BOOLEAN (*PKSYNCHRONIZE_ROUTINE) (
+typedef BOOLEAN (NTAPI *PKSYNCHRONIZE_ROUTINE) (
     IN PVOID SynchronizeContext
 );
 
-typedef VOID (*PKRUNDOWN_ROUTINE) (
+typedef VOID (NTAPI *PKRUNDOWN_ROUTINE) (
     IN PKAPC Apc
 );
 
-typedef VOID (*PKNORMAL_ROUTINE) (
+typedef VOID (NTAPI *PKNORMAL_ROUTINE) (
     IN PVOID NormalContext,
     IN PVOID SystemArgument1,
     IN PVOID SystemArgument2
 );
 
-typedef VOID (*PKKERNEL_ROUTINE) (
+typedef VOID (NTAPI *PKKERNEL_ROUTINE) (
     IN PKAPC Apc,
     IN OUT PKNORMAL_ROUTINE *NormalRoutine,
     IN OUT PVOID *NormalContext,
@@ -1492,7 +1492,7 @@ typedef VOID (*PKKERNEL_ROUTINE) (
 
 struct _HAL_SHUTDOWN_REGISTRATION;
 
-typedef NTAPI VOID (*PHAL_SHUTDOWN_NOTIFICATION) (
+typedef VOID (NTAPI *PHAL_SHUTDOWN_NOTIFICATION) (
     IN struct _HAL_SHUTDOWN_REGISTRATION *ShutdownRegistration
 );
 
@@ -1506,22 +1506,22 @@ typedef struct _HAL_SHUTDOWN_REGISTRATION
     LIST_ENTRY ListEntry; /**< Used to put the notifications into a linked list **/
 } HAL_SHUTDOWN_REGISTRATION, *PHAL_SHUTDOWN_REGISTRATION;
 
-typedef VOID (*pfXcSHAInit) (PUCHAR pbSHAContext);
-typedef VOID (*pfXcSHAUpdate) (PUCHAR pbSHAContext, PUCHAR pbInput, ULONG dwInputLength);
-typedef VOID (*pfXcSHAFinal) (PUCHAR pbSHAContext, PUCHAR pbDigest);
-typedef VOID (*pfXcRC4Key) (PUCHAR pbKeyStruct, ULONG dwKeyLength, PUCHAR pbKey);
-typedef VOID (*pfXcRC4Crypt) (PUCHAR pbKeyStruct, ULONG dwInputLength, PUCHAR pbInput);
-typedef VOID (*pfXcHMAC) (PUCHAR pbKey, ULONG dwKeyLength, PUCHAR pbInput, ULONG dwInputLength, PUCHAR pbInput2, ULONG dwInputLength2, PUCHAR pbDigest);
-typedef ULONG (*pfXcPKEncPublic) (PUCHAR pbPubKey, PUCHAR pbInput, PUCHAR pbOutput);
-typedef ULONG (*pfXcPKDecPrivate) (PUCHAR pbPrvKey, PUCHAR pbInput, PUCHAR pbOutput);
-typedef ULONG (*pfXcPKGetKeyLen) (PUCHAR pbPubKey);
-typedef BOOLEAN (*pfXcVerifyPKCS1Signature) (PUCHAR pbSig, PUCHAR pbPubKey, PUCHAR pbDigest);
-typedef ULONG (*pfXcModExp) (PULONG pA, PULONG pB, PULONG pC, PULONG pD, ULONG dwN);
-typedef VOID (*pfXcDESKeyParity) (PUCHAR pbKey, ULONG dwKeyLength);
-typedef VOID (*pfXcKeyTable) (ULONG dwCipher, PUCHAR pbKeyTable, PUCHAR pbKey);
-typedef VOID (*pfXcBlockCrypt) (ULONG dwCipher, PUCHAR pbOutput, PUCHAR pbInput, PUCHAR pbKeyTable, ULONG dwOp);
-typedef VOID (*pfXcBlockCryptCBC) (ULONG dwCipher, ULONG dwInputLength, PUCHAR pbOutput, PUCHAR pbInput, PUCHAR pbKeyTable, ULONG dwOp, PUCHAR pbFeedback);
-typedef ULONG (*pfXcCryptService) (ULONG dwOp, PVOID pArgs);
+typedef VOID (NTAPI *pfXcSHAInit) (PUCHAR pbSHAContext);
+typedef VOID (NTAPI *pfXcSHAUpdate) (PUCHAR pbSHAContext, PUCHAR pbInput, ULONG dwInputLength);
+typedef VOID (NTAPI *pfXcSHAFinal) (PUCHAR pbSHAContext, PUCHAR pbDigest);
+typedef VOID (NTAPI *pfXcRC4Key) (PUCHAR pbKeyStruct, ULONG dwKeyLength, PUCHAR pbKey);
+typedef VOID (NTAPI *pfXcRC4Crypt) (PUCHAR pbKeyStruct, ULONG dwInputLength, PUCHAR pbInput);
+typedef VOID (NTAPI *pfXcHMAC) (PUCHAR pbKey, ULONG dwKeyLength, PUCHAR pbInput, ULONG dwInputLength, PUCHAR pbInput2, ULONG dwInputLength2, PUCHAR pbDigest);
+typedef ULONG (NTAPI *pfXcPKEncPublic) (PUCHAR pbPubKey, PUCHAR pbInput, PUCHAR pbOutput);
+typedef ULONG (NTAPI *pfXcPKDecPrivate) (PUCHAR pbPrvKey, PUCHAR pbInput, PUCHAR pbOutput);
+typedef ULONG (NTAPI *pfXcPKGetKeyLen) (PUCHAR pbPubKey);
+typedef BOOLEAN (NTAPI *pfXcVerifyPKCS1Signature) (PUCHAR pbSig, PUCHAR pbPubKey, PUCHAR pbDigest);
+typedef ULONG (NTAPI *pfXcModExp) (PULONG pA, PULONG pB, PULONG pC, PULONG pD, ULONG dwN);
+typedef VOID (NTAPI *pfXcDESKeyParity) (PUCHAR pbKey, ULONG dwKeyLength);
+typedef VOID (NTAPI *pfXcKeyTable) (ULONG dwCipher, PUCHAR pbKeyTable, PUCHAR pbKey);
+typedef VOID (NTAPI *pfXcBlockCrypt) (ULONG dwCipher, PUCHAR pbOutput, PUCHAR pbInput, PUCHAR pbKeyTable, ULONG dwOp);
+typedef VOID (NTAPI *pfXcBlockCryptCBC) (ULONG dwCipher, ULONG dwInputLength, PUCHAR pbOutput, PUCHAR pbInput, PUCHAR pbKeyTable, ULONG dwOp, PUCHAR pbFeedback);
+typedef ULONG (NTAPI *pfXcCryptService) (ULONG dwOp, PVOID pArgs);
 
 typedef struct
 {
@@ -1631,20 +1631,20 @@ typedef struct _MMGLOBALDATA
     PMMADDRESS_NODE *VadFreeHint;
 } MMGLOBALDATA, *PMMGLOBALDATA;
 
-typedef VOID (*PIDE_INTERRUPT_ROUTINE) (void);
+typedef VOID (NTAPI *PIDE_INTERRUPT_ROUTINE) (void);
 
-typedef VOID (*PIDE_FINISHIO_ROUTINE) (void);
+typedef VOID (NTAPI *PIDE_FINISHIO_ROUTINE) (void);
 
-typedef BOOLEAN (*PIDE_POLL_RESET_COMPLETE_ROUTINE) (void);
+typedef BOOLEAN (NTAPI *PIDE_POLL_RESET_COMPLETE_ROUTINE) (void);
 
-typedef VOID (*PIDE_TIMEOUT_EXPIRED_ROUTINE) (void);
+typedef VOID (NTAPI *PIDE_TIMEOUT_EXPIRED_ROUTINE) (void);
 
-typedef VOID (*PIDE_START_PACKET_ROUTINE) (
+typedef VOID (NTAPI *PIDE_START_PACKET_ROUTINE) (
     IN PDEVICE_OBJECT DeviceObject,
     IN PIRP Irp
 );
 
-typedef VOID (*PIDE_START_NEXT_PACKET_ROUTINE) (void);
+typedef VOID (NTAPI *PIDE_START_NEXT_PACKET_ROUTINE) (void);
 
 typedef struct _IDE_CHANNEL_OBJECT
 {
@@ -1670,7 +1670,7 @@ typedef struct _IDE_CHANNEL_OBJECT
     KINTERRUPT InterruptObject;
 } IDE_CHANNEL_OBJECT, *PIDE_CHANNEL_OBJECT;
 
-typedef VOID (* NTAPI PKSYSTEM_ROUTINE) (
+typedef VOID (NTAPI *PKSYSTEM_ROUTINE) (
     IN PKSTART_ROUTINE StartRoutine OPTIONAL,
     IN PVOID StartContext OPTIONAL
 );
