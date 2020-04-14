@@ -28,6 +28,10 @@ int mbtowc (wchar_t *pwc, const char *string, size_t n);
 // Defined as on ReactOS - may need further adjustment if we decide to do locales properly
 #define MB_CUR_MAX 2
 
+// Microsoft extension (evaluation of arguments twice is intended)
+#define __min(a,b) (((a) < (b)) ? (a) : (b))
+#define __max(a,b) (((a) > (b)) ? (a) : (b))
+
 #ifdef __cplusplus
 }
 #endif
