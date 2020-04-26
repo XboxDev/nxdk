@@ -1,4 +1,4 @@
-SRCS += \
+XBOXRT_SRCS := \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/stat.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/strings.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/wchar.c \
@@ -22,3 +22,15 @@ SRCS += \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_exception.cpp \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.cpp \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/eh.cpp
+
+XBOXRT_OBJS = $(addsuffix .obj, $(basename $(XBOXRT_SRCS)))
+
+$(NXDK_DIR)/lib/libxboxrt.lib: $(XBOXRT_OBJS)
+
+main.exe: $(NXDK_DIR)/lib/libxboxrt.lib
+
+CLEANRULES += clean-xboxrt
+
+.PHONY: clean-xboxrt
+clean-xboxrt:
+	$(VE)rm -f $(XBOXRT_OBJS) $(NXDK_DIR)/lib/libxboxrt.lib
