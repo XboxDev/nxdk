@@ -211,7 +211,7 @@
 /**
  * LWIP_AUTOIP==1: Enable AUTOIP module.
  */
-#define LWIP_AUTOIP                     0
+#define LWIP_AUTOIP                     1
 
 /*
    ----------------------------------
