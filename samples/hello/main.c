@@ -7,7 +7,7 @@ int main(void)
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
     while(1) {
-        debugPrint("Hello NXDK!\n");
+        debugPrint("Hello nxdk!\n");
         Sleep(2000);
     }
 

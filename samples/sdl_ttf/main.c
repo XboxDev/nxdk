@@ -34,7 +34,7 @@ int main(void) {
   SDL_Surface  *surface;
   TTF_Font     *font;
 
-  window = SDL_CreateWindow("NXDK SDL_ttf sample",
+  window = SDL_CreateWindow("nxdk SDL_ttf sample",
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
                             SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -62,7 +62,7 @@ int main(void) {
   }
 
   SDL_Color font_color = {0x7F, 0xFF, 0x7F, 0xFF};
-  surface = TTF_RenderText_Blended(font, "NXDK", font_color);
+  surface = TTF_RenderText_Blended(font, "nxdk", font_color);
   TTF_CloseFont(font);
   if (surface == NULL) {
     debugPrint("TTF_RenderText failed: %s", TTF_GetError());
