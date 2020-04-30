@@ -52,7 +52,7 @@ int main(void) {
     goto cleanup;
   }
 
-  const char* font_path = "vegur-regular.ttf";
+  const char* font_path = "D:\\vegur-regular.ttf";
   const int font_size = 96;
   font = TTF_OpenFont(font_path, font_size);
   if (font == NULL) {
