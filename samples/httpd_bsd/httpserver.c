@@ -21,7 +21,7 @@
 #define PORT "80"   // port we're listening on
 
 static const char http_html_hdr[] = "HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-Length: 77\r\n\r\n";
-static const char http_body_template[] = "<html><head><title>NXDK</title></head><body>%04d-%02d-%02dT%02d:%02d:%02d</body></html>";
+static const char http_body_template[] = "<html><head><title>nxdk</title></head><body>%04d-%02d-%02dT%02d:%02d:%02d</body></html>";
 static char http_body[78];
 
 // get sockaddr, IPv4 or IPv6:
