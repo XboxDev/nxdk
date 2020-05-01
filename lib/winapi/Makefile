@@ -9,6 +9,7 @@ WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/findfile.c \
 	$(NXDK_DIR)/lib/winapi/handleapi.c \
 	$(NXDK_DIR)/lib/winapi/memory.c \
+	$(NXDK_DIR)/lib/winapi/libloaderapi.c \
 	$(NXDK_DIR)/lib/winapi/profiling.c \
 	$(NXDK_DIR)/lib/winapi/shlobj_core.c \
 	$(NXDK_DIR)/lib/winapi/sync.c \

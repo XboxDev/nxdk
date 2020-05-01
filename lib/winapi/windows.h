@@ -6,6 +6,7 @@
 #include <fibersapi.h>
 #include <fileapi.h>
 #include <handleapi.h>
+#include <libloaderapi.h>
 #include <memoryapi.h>
 #include <processthreadsapi.h>
 #include <profileapi.h>
