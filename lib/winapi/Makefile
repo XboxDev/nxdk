@@ -1,3 +1,5 @@
+include $(NXDK_DIR)/lib/winapi/winmm/Makefile
+
 WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/debug.c \
 	$(NXDK_DIR)/lib/winapi/errhandlingapi.c \
