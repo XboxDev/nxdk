@@ -4,6 +4,7 @@
 #include <windef.h>
 #include <minwinbase.h>
 #include <winnt.h>
+#include <basetsd.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -92,6 +93,8 @@ DWORD GetLastError (void);
 void SetLastError (DWORD error);
 
 void WINAPI OutputDebugStringA (LPCTSTR lpOutputString);
+
+BOOL IsBadWritePtr (LPVOID lp, UINT_PTR ucb);
 
 #ifndef UNICODE
 #define OutputDebugString OutputDebugStringA
