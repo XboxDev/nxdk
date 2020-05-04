@@ -1,4 +1,5 @@
 WINAPI_SRCS := \
+	$(NXDK_DIR)/lib/winapi/badptr.c \
 	$(NXDK_DIR)/lib/winapi/debug.c \
 	$(NXDK_DIR)/lib/winapi/errhandlingapi.c \
 	$(NXDK_DIR)/lib/winapi/error.c \
