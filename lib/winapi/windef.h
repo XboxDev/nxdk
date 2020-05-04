@@ -7,4 +7,6 @@
 
 #define MAX_PATH 260
 
+typedef HANDLE HWND;
+
 #endif
