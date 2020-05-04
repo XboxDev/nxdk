@@ -79,6 +79,30 @@ DWORD WaitForSingleObject (HANDLE hHandle, DWORD dwMilliseconds)
     return WaitForSingleObjectEx(hHandle, dwMilliseconds, FALSE);
 }
 
+DWORD WaitForMultipleObjectsEx (DWORD nCount, const HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds, BOOL bAlertable)
+{
+    LARGE_INTEGER duration;
+    duration.QuadPart = ((LONGLONG)dwMilliseconds) * -10000;
+
+    while (true) {
+        NTSTATUS status = NtWaitForMultipleObjectsEx(nCount, lpHandles, bWaitAll ? WaitAll : WaitAny, UserMode, bAlertable, &duration);
+
+        if (status == STATUS_ALERTED) continue;
+
+        if (!NT_SUCCESS(status)) {
+            SetLastError(RtlNtStatusToDosError(status));
+            return WAIT_FAILED;
+        }
+
+        return status;
+    }
+}
+
+DWORD WaitForMultipleObjects (DWORD nCount, const HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+{
+    return WaitForMultipleObjectsEx(nCount, lpHandles, bWaitAll, dwMilliseconds, FALSE);
+}
+
 HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName)
 {
     NTSTATUS status;
