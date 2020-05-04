@@ -74,6 +74,11 @@ DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds, BOOL bAlertab
     }
 }
 
+DWORD WaitForSingleObject (HANDLE hHandle, DWORD dwMilliseconds)
+{
+    return WaitForSingleObjectEx(hHandle, dwMilliseconds, FALSE);
+}
+
 HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName)
 {
     NTSTATUS status;
