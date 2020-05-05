@@ -24,7 +24,7 @@ int nextCol = MARGIN;
 
 static const unsigned char systemFont[] =
 {
-#include "font_terminal.h"
+#include "font_unscii_16.h"
 };
 
 static void drawChar(unsigned char c, int x, int y, int fgColour, int bgColour)
