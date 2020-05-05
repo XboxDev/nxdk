@@ -1,6 +1,6 @@
 XBE_TITLE = xaudio
 GEN_XISO = $(XBE_TITLE).iso
-SRCS = $(wildcard $(CURDIR)/*.c)
+SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
 
 all: nxdk_wav.h

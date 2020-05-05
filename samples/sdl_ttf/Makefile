@@ -1,6 +1,6 @@
 XBE_TITLE = sdl_ttf
 GEN_XISO = $(XBE_TITLE).iso
-SRCS += $(CURDIR)/main.c
+SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
 NXDK_SDL = y
 
