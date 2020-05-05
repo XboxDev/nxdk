@@ -1,5 +1,5 @@
 SRCS += \
-	$(wildcard $(NXDK_DIR)/lib/pbkit/*.c)
+	$(NXDK_DIR)/lib/pbkit/pbkit.c
 
 include $(NXDK_DIR)/lib/Makefile-pdclib
 include $(NXDK_DIR)/lib/winapi/Makefile
