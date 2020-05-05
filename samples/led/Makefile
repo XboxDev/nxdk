@@ -1,5 +1,5 @@
 XBE_TITLE=led
 GEN_XISO = $(XBE_TITLE).iso
-SRCS = $(wildcard $(CURDIR)/*.c)
+SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
 include $(NXDK_DIR)/Makefile
