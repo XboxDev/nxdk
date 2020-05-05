@@ -9,8 +9,9 @@ LWIPSRCS := $(COREFILES) \
             $(APIFILES)
 
 # Include driver sources
-DRIVERSRCS := $(wildcard $(NXDK_DIR)/lib/net/pktdrv/*.c) \
-              $(wildcard $(NXDK_DIR)/lib/net/nforceif/src/*.c)
+DRIVERSRCS := $(NXDK_DIR)/lib/net/pktdrv/pktdrv.c \
+              $(NXDK_DIR)/lib/net/nforceif/src/driver.c \
+              $(NXDK_DIR)/lib/net/nforceif/src/sys_arch.c
 
 SRCS += $(LWIPSRCS) $(DRIVERSRCS)
 
