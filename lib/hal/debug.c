@@ -33,7 +33,7 @@ static void drawChar(unsigned char c, int x, int y, int fgColour, int bgColour)
 	videoBuffer += (y * SCREEN_WIDTH + x) * ((SCREEN_BPP+7)/8);
 
 	unsigned char mask;
-	const unsigned char *font = systemFont + (c * FONT_WIDTH);
+	const unsigned char *font = systemFont + (c * ((FONT_WIDTH+7)/8) * FONT_HEIGHT);
 	int colourToDraw;
 
 	for (int h = 0; h < FONT_HEIGHT; h++)
@@ -42,6 +42,11 @@ static void drawChar(unsigned char c, int x, int y, int fgColour, int bgColour)
 		mask = 0x01;
 #else
 		mask = 0x80;
+#endif
+
+		// This loop draws up to 1 byte (8 bit) per line; so 8 pixels at most
+#if FONT_WIDTH > 8
+#error Font can't be wider than 8 pixels
 #endif
 		for (int w = 0; w < FONT_WIDTH; w++)
 		{
