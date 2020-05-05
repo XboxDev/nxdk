@@ -1,8 +1,13 @@
 MAIN = vp20compiler
 
-INCLUDES = $(wildcard *.h)
+INCLUDES = \
+	config.h \
+	mtypes.h \
+	nvvertparse.h \
+	prog_instruction.h
 
-SRCS = nvvertparse.c \
+SRCS = \
+	nvvertparse.c \
 	prog_instruction.c \
 	main.c
 

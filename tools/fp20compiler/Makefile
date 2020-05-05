@@ -1,12 +1,22 @@
 MAIN = fp20compiler
 CXXFLAGS= -DYY_NO_UNPUT -Wall -g
 
-INCLUDES = $(wildcard *.h) \
+INCLUDES = \
+	nvparse_errors.h \
+	nvparse_externs.h \
+	ps1.0_program.h \
+	rc1.0_combiners.h \
+	rc1.0_final.h \
+	rc1.0_general.h \
+	rc1.0_register.h \
+	ts1.0_inst.h \
+	ts1.0_inst_list.h \
 	_ps1.0_parser.hpp \
 	_rc1.0_parser.hpp \
 	_ts1.0_parser.hpp
 
-SRCS = main.cpp \
+SRCS = \
+	main.cpp \
 	nvparse_errors.cpp \
 	rc1.0_combiners.cpp \
 	rc1.0_final.cpp \
