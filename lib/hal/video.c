@@ -214,6 +214,8 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	DWORD dwAdapter = dwEnc & 0x000000FF;
 	DWORD dwStandard = dwEnc & 0x0000FF00;
 
+	bool is_pal = (dwStandard == VIDEO_REGION_PAL);
+
 	bool allow_480p = dwEnc & VIDEO_MODE_480P;
 	bool allow_720p = dwEnc & VIDEO_MODE_720P;
 	bool allow_1080i = dwEnc & VIDEO_MODE_1080I;
@@ -225,12 +227,11 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	}
 	if (refresh == 0)
 	{
-		if(dwEnc & 0x00400000)
+		if(is_pal)
 		{
+			refresh = (dwEnc & 0x00400000) ? 60 : 50;
+		} else {
 			refresh = 60;
-		} else
-		{
-			refresh = 50;
 		}
 	}
 	for(; position < iVidModes; position++)
@@ -246,7 +247,7 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 		if(pVidMode->refresh != refresh)
 			continue;
 
-		if(dwAdapter == AV_PACK_HDTV)
+		if(!is_pal && (dwAdapter == AV_PACK_HDTV))
 		{
 			bool is_hd = pVidMode->dwMode & 0x80000000;
 
