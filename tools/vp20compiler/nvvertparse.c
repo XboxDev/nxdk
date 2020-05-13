@@ -127,9 +127,9 @@ record_error(struct parse_state *parseState, const char *msg, const char* file,
                                     parseState->pos, &line, &column);
    // _mesa_debug(parseState->ctx,
    fprintf(stderr,
-               "%s: %s(%d): line %d, column %d: %s (%s)\n",
+               "%s: line %d, column %d: %s (%s)\n",
                onlyWarn ? "warning" : "error",
-               file, lineNo, line, column, (char *) lineStr, msg);
+               line, column, (char *) lineStr, msg);
    free((void *) lineStr);
 
    /* Check that no error was already recorded.  Only record the first one. */
