@@ -40,6 +40,9 @@ extern const char *
 _mesa_nv_vertex_input_register_name(unsigned int i);
 
 extern const char *
+_mesa_nv_vertex_hw_input_register_name(unsigned int i);
+
+extern const char *
 _mesa_nv_vertex_output_register_name(unsigned int i);
 
 #endif

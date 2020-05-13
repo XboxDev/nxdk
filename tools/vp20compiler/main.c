@@ -540,9 +540,18 @@ void translate(const char* str)
                     // TODO: the index needs ajustment?
                     vsh_set_field(vsh_ins, FLD_CONST, reg.Index+96);
                 } else if (reg.File == PROGRAM_INPUT) {
+                    int in_reg;
+                    const char* name = _mesa_nv_vertex_input_register_name(reg.Index);
+                    for (in_reg = 0; _mesa_nv_vertex_hw_input_register_name(in_reg); in_reg++) {
+                        if (strcmp(name, _mesa_nv_vertex_hw_input_register_name(in_reg)) == 0) {
+                            break;
+                        }
+                    }
+                    if (!_mesa_nv_vertex_hw_input_register_name(in_reg)) {
+                        assert(false);
+                    }
                     vsh_set_field(vsh_ins, mux_field[j], PARAM_V);
-                    //TODO: also needs ajustment?
-                    vsh_set_field(vsh_ins, FLD_V, reg.Index);
+                    vsh_set_field(vsh_ins, FLD_V, in_reg);
                 } else {
                     assert(false);
                 }

@@ -10,6 +10,7 @@
 #define MAX_NV_VERTEX_PROGRAM_TEMPS         13
 #define MAX_NV_VERTEX_PROGRAM_PARAMS       192
 #define MAX_NV_VERTEX_PROGRAM_INPUTS        16
+#define MAX_HARDWARE_INPUTS                 16
 /*
  Actually Xbox has 11 outputs, however, the parser is using the GL spec and
  expects 8 units. From the GL spec (NV_vertex_program, section 2.14.1.5):
