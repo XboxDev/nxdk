@@ -347,10 +347,19 @@ static const char *HardwareInputRegisters[MAX_HARDWARE_INPUTS + 1] = {
    "TEX0", "TEX1", "TEX2", "TEX3", "13", "14", "15", NULL
 };
 
+/* as defined in NV_vertex_program */
 static const char *OutputRegisters[MAX_NV_VERTEX_PROGRAM_OUTPUTS + 1] = {
    "HPOS", "COL0", "COL1", "FOGC", 
    "TEX0", "TEX1", "TEX2", "TEX3", "TEX4", "TEX5", "TEX6", "TEX7", 
    "PSIZ", "BFC0", "BFC1", NULL
+};
+
+/* as implemented in NV2A */
+static const char *HardwareOutputRegisters[MAX_HARDWARE_OUTPUTS + 1] = {
+   "HPOS", "1", "2", "COL0", "COL1", "FOGC",
+   "PSIZ", "BFC0", "BFC1",
+   "TEX0", "TEX1", "TEX2", "TEX3",
+   "13", "14", NULL
 };
 
 
@@ -623,6 +632,18 @@ Parse_OutputReg(struct parse_state *parseState, int *outputRegNum)
    /* Match ']' */
    if (!Parse_String(parseState, "]"))
       RETURN_ERROR1("Expected ]");
+
+   /* make sure this register is available on hardware */
+   for (j = 0; HardwareOutputRegisters[j]; j++) {
+      if (strcmp((const char *) token, HardwareOutputRegisters[j]) == 0) {
+         break;
+      }
+   }
+   if (!HardwareOutputRegisters[j]) {
+      char msg[1000];
+      sprintf(msg, "Output register o[%s] not available in hardware", token);
+      WARNING1(msg);
+   }
 
    return TRUE;
 }
@@ -1627,3 +1648,9 @@ _mesa_nv_vertex_output_register_name(unsigned int i)
    return OutputRegisters[i];
 }
 
+const char *
+_mesa_nv_vertex_hw_output_register_name(unsigned int i)
+{
+   assert(i < MAX_HARDWARE_OUTPUTS);
+   return HardwareOutputRegisters[i];
+}
