@@ -164,21 +164,6 @@ static const VshFieldMapping field_mapping[] = {
     {  FLD_FINAL,            3,    0,     1 }
 };
 
-
-typedef enum {
-    OUTREG_oPos = 0,
-    OUTREG_oD0 = 3,
-    OUTREG_oD1,
-    OUTREG_oFog,
-    OUTREG_oPts,
-    OUTREG_oB0,
-    OUTREG_oB1,
-    OUTREG_oT0,
-    OUTREG_oT1,
-    OUTREG_oT2,
-    OUTREG_oT3
-} VshOutReg;
-
 typedef enum {
     MASK_W = 1,   
     MASK_Z,   
@@ -456,34 +441,17 @@ void translate(const char* str)
                 } else if (ilu) {
                     vsh_set_field(vsh_ins, FLD_OUT_MUX, OMUX_ILU);
                 }
-                vsh_set_field(vsh_ins, FLD_OUT_ORB, OUTPUT_O);
-                const char* dst_name = _mesa_nv_vertex_output_register_name(ins.DstReg.Index);
-                uint8_t out_reg = 0;
-                if (strcmp(dst_name, "HPOS") == 0) {
-                    out_reg = OUTREG_oPos;
-                } else if (strcmp(dst_name, "COL0") == 0) {
-                    out_reg = OUTREG_oD0;
-                } else if (strcmp(dst_name, "COL1") == 0) {
-                    out_reg = OUTREG_oD1;
-                } else if (strcmp(dst_name, "FOGC") == 0) {
-                    out_reg = OUTREG_oFog;
-                } else if (strcmp(dst_name, "TEX0") == 0) {
-                    out_reg = OUTREG_oT0;
-                } else if (strcmp(dst_name, "TEX1") == 0) {
-                    out_reg = OUTREG_oT1;
-                } else if (strcmp(dst_name, "TEX2") == 0) {
-                    out_reg = OUTREG_oT2;
-                } else if (strcmp(dst_name, "TEX3") == 0) {
-                    out_reg = OUTREG_oT3;
-                } else if (strcmp(dst_name, "PSIZ") == 0) {
-                    out_reg = OUTREG_oPts;
-                } else if (strcmp(dst_name, "BFC0") == 0) {
-                    out_reg = OUTREG_oB0;
-                } else if (strcmp(dst_name, "BFC1") == 0) {
-                    out_reg = OUTREG_oB1;
-                } else {
+                int out_reg;
+                const char* name = _mesa_nv_vertex_output_register_name(ins.DstReg.Index);
+                for (out_reg = 0; _mesa_nv_vertex_hw_output_register_name(out_reg); out_reg++) {
+                    if (strcmp(name, _mesa_nv_vertex_hw_output_register_name(out_reg)) == 0) {
+                        break;
+                    }
+                }
+                if (!_mesa_nv_vertex_hw_output_register_name(out_reg)) {
                     assert(false);
                 }
+                vsh_set_field(vsh_ins, FLD_OUT_ORB, OUTPUT_O);
                 vsh_set_field(vsh_ins, FLD_OUT_ADDRESS, out_reg);
             } else if (ins.DstReg.File == PROGRAM_ENV_PARAM) {
                 vsh_set_field(vsh_ins, FLD_OUT_O_MASK, vsh_mask(ins.DstReg.WriteMask));
