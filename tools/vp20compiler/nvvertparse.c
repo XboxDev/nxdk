@@ -119,7 +119,7 @@ _mesa_find_line_column(const unsigned char *string, const unsigned char *pos,
  */
 static void
 record_error(struct parse_state *parseState, const char *msg, const char* file,
-             int lineNo)
+             int lineNo, bool onlyWarn)
 {
    int line, column;
    const unsigned char *lineStr;
@@ -127,7 +127,8 @@ record_error(struct parse_state *parseState, const char *msg, const char* file,
                                     parseState->pos, &line, &column);
    // _mesa_debug(parseState->ctx,
    fprintf(stderr,
-               "%s(%d): line %d, column %d: %s (%s)\n",
+               "%s: %s(%d): line %d, column %d: %s (%s)\n",
+               onlyWarn ? "warning" : "error",
                file, lineNo, line, column, (char *) lineStr, msg);
    free((void *) lineStr);
 
@@ -137,19 +138,26 @@ record_error(struct parse_state *parseState, const char *msg, const char* file,
    //                            parseState->pos - parseState->start,
    //                            msg);
    // }
-   exit(1);
+   if (!onlyWarn) {
+      exit(1);
+   }
 }
 
+#define WARNING1(msg)                                                        \
+do {                                                                         \
+   record_error(parseState, msg, __FILE__, __LINE__, TRUE);                  \
+} while(0)
 
 #define RETURN_ERROR                                                         \
 do {                                                                         \
-   record_error(parseState, "Unexpected end of input.", __FILE__, __LINE__); \
+   record_error(parseState, "Unexpected end of input.", __FILE__, __LINE__,  \
+                FALSE);                                                      \
    return FALSE;                                                             \
 } while(0)
 
 #define RETURN_ERROR1(msg)                                                   \
 do {                                                                         \
-   record_error(parseState, msg, __FILE__, __LINE__);                        \
+   record_error(parseState, msg, __FILE__, __LINE__, FALSE);                 \
    return FALSE;                                                             \
 } while(0)
 
@@ -157,7 +165,7 @@ do {                                                                         \
 do {                                                                         \
    char err[1000];                                                           \
    sprintf(err, "%s %s", msg1, msg2);                                        \
-   record_error(parseState, err, __FILE__, __LINE__);                        \
+   record_error(parseState, err, __FILE__, __LINE__, FALSE);                 \
    return FALSE;                                                             \
 } while(0)
 
@@ -326,9 +334,17 @@ Parse_String(struct parse_state *parseState, const char *pattern)
 
 /**********************************************************************/
 
+/* as defined in NV_vertex_program */
 static const char *InputRegisters[MAX_NV_VERTEX_PROGRAM_INPUTS + 1] = {
    "OPOS", "WGHT", "NRML", "COL0", "COL1", "FOGC", "6", "7",
    "TEX0", "TEX1", "TEX2", "TEX3", "TEX4", "TEX5", "TEX6", "TEX7", NULL
+};
+
+/* as implemented in NV2A */
+static const char *HardwareInputRegisters[MAX_HARDWARE_INPUTS + 1] = {
+   "OPOS", "WGHT", "NRML", "COL0", "COL1", "FOGC",
+   "PSIZ", "BFC0", "BFC1",
+   "TEX0", "TEX1", "TEX2", "TEX3", "13", "14", "15", NULL
 };
 
 static const char *OutputRegisters[MAX_NV_VERTEX_PROGRAM_OUTPUTS + 1] = {
@@ -548,6 +564,25 @@ Parse_AttribReg(struct parse_state *parseState, int *tempRegNum)
    if (!Parse_String(parseState, "]"))
       RETURN_ERROR;
 
+   /* make sure this register is available on hardware */
+   const char *name = InputRegisters[*tempRegNum];
+   for (j = 0; HardwareInputRegisters[j]; j++) {
+      if (strcmp(name, HardwareInputRegisters[j]) == 0) {
+         break;
+      }
+   }
+   if (!HardwareInputRegisters[j]) {
+      char msg[1000];
+      sprintf(msg, "Vertex attribute register v[%d] (%s) not available on hardware",
+              *tempRegNum, name);
+      RETURN_ERROR1(msg);
+   }
+   else if (j != *tempRegNum) {
+      char msg[1000];
+      sprintf(msg, "Vertex attribute register v[%d] (%s) will be mapped to hardware register v[%d]",
+              *tempRegNum, name, j);
+      WARNING1(msg);
+   }
    return TRUE;
 }
 
@@ -1578,6 +1613,12 @@ _mesa_nv_vertex_input_register_name(unsigned int i)
    return InputRegisters[i];
 }
 
+const char *
+_mesa_nv_vertex_hw_input_register_name(unsigned int i)
+{
+   assert(i < MAX_HARDWARE_INPUTS);
+   return HardwareInputRegisters[i];
+}
 
 const char *
 _mesa_nv_vertex_output_register_name(unsigned int i)
