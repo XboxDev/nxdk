@@ -892,7 +892,7 @@ Parse_UnaryOpInstruction(struct parse_state *parseState,
                          enum prog_opcode opcode)
 {
    if (opcode == OPCODE_ABS && !parseState->isVersion1_1)
-      RETURN_ERROR1("ABS illegal for vertex program 1.0");
+      RETURN_ERROR1("ABS requires vertex program 1.1");
 
    inst->Opcode = opcode;
 
@@ -920,9 +920,9 @@ Parse_BiOpInstruction(struct parse_state *parseState,
                       enum prog_opcode opcode)
 {
    if (opcode == OPCODE_DPH && !parseState->isVersion1_1)
-      RETURN_ERROR1("DPH illegal for vertex program 1.0");
+      RETURN_ERROR1("DPH requires vertex program 1.1");
    if (opcode == OPCODE_SUB && !parseState->isVersion1_1)
-      RETURN_ERROR1("SUB illegal for vertex program 1.0");
+      RETURN_ERROR1("SUB requires vertex program 1.1");
 
    inst->Opcode = opcode;
 
@@ -1032,7 +1032,7 @@ Parse_ScalarInstruction(struct parse_state *parseState,
                         enum prog_opcode opcode)
 {
    if (opcode == OPCODE_RCC && !parseState->isVersion1_1)
-      RETURN_ERROR1("RCC illegal for vertex program 1.0");
+      RETURN_ERROR1("RCC requires vertex program 1.1");
 
    inst->Opcode = opcode;
 
