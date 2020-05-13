@@ -150,7 +150,7 @@ do {                                                                         \
 
 #define RETURN_ERROR                                                         \
 do {                                                                         \
-   record_error(parseState, "Unexpected end of input.", __FILE__, __LINE__,  \
+   record_error(parseState, "Unexpected end of input", __FILE__, __LINE__,   \
                 FALSE);                                                      \
    return FALSE;                                                             \
 } while(0)
@@ -169,8 +169,11 @@ do {                                                                         \
    return FALSE;                                                             \
 } while(0)
 
-
-
+#define EXPECT(string)                                                       \
+do {                                                                         \
+   if (!Parse_String(parseState, string))                                    \
+      RETURN_ERROR2("Expected", string);                                     \
+} while(0)
 
 
 static bool IsLetter(unsigned char b)
@@ -403,8 +406,7 @@ Parse_AddrReg(struct parse_state *parseState)
       RETURN_ERROR;
 
    /* match '.' */
-   if (!Parse_String(parseState, "."))
-      RETURN_ERROR;
+   EXPECT(".");
 
    /* match 'x' */
    if (!Parse_String(parseState, "x"))
@@ -422,11 +424,9 @@ Parse_AbsParamReg(struct parse_state *parseState, int *regNum)
 {
    unsigned char token[100];
 
-   if (!Parse_String(parseState, "c"))
-      RETURN_ERROR;
+   EXPECT("c");
 
-   if (!Parse_String(parseState, "["))
-      RETURN_ERROR;
+   EXPECT("[");
 
    if (!Parse_Token(parseState, token))
       RETURN_ERROR;
@@ -442,8 +442,7 @@ Parse_AbsParamReg(struct parse_state *parseState, int *regNum)
       RETURN_ERROR;
    }
 
-   if (!Parse_String(parseState, "]"))
-      RETURN_ERROR;
+   EXPECT("]");
 
    return TRUE;
 }
@@ -454,11 +453,9 @@ Parse_ParamReg(struct parse_state *parseState, struct prog_src_register *srcReg)
 {
    unsigned char token[100];
 
-   if (!Parse_String(parseState, "c"))
-      RETURN_ERROR;
+   EXPECT("c");
 
-   if (!Parse_String(parseState, "["))
-      RETURN_ERROR;
+   EXPECT("[");
 
    if (!Peek_Token(parseState, token))
       RETURN_ERROR;
@@ -519,8 +516,7 @@ Parse_ParamReg(struct parse_state *parseState, struct prog_src_register *srcReg)
    }
 
    /* Match closing ']' */
-   if (!Parse_String(parseState, "]"))
-      RETURN_ERROR;
+   EXPECT("]");
 
    return TRUE;
 }
@@ -536,12 +532,10 @@ Parse_AttribReg(struct parse_state *parseState, int *tempRegNum)
    int j;
 
    /* Match 'v' */
-   if (!Parse_String(parseState, "v"))
-      RETURN_ERROR;
+   EXPECT("v");
 
    /* Match '[' */
-   if (!Parse_String(parseState, "["))
-      RETURN_ERROR;
+   EXPECT("[");
 
    /* match number or named register */
    if (!Parse_Token(parseState, token))
@@ -575,8 +569,7 @@ Parse_AttribReg(struct parse_state *parseState, int *tempRegNum)
    }
 
    /* Match '[' */
-   if (!Parse_String(parseState, "]"))
-      RETURN_ERROR;
+   EXPECT("]");
 
    /* make sure this register is available on hardware */
    const char *name = InputRegisters[*tempRegNum];
@@ -608,12 +601,10 @@ Parse_OutputReg(struct parse_state *parseState, int *outputRegNum)
    int start, j;
 
    /* Match 'o' */
-   if (!Parse_String(parseState, "o"))
-      RETURN_ERROR;
+   EXPECT("o");
 
    /* Match '[' */
-   if (!Parse_String(parseState, "["))
-      RETURN_ERROR;
+   EXPECT("[");
 
    /* Get output reg name */
    if (!Parse_Token(parseState, token))
@@ -635,8 +626,7 @@ Parse_OutputReg(struct parse_state *parseState, int *outputRegNum)
       RETURN_ERROR1("Unrecognized output register name");
 
    /* Match ']' */
-   if (!Parse_String(parseState, "]"))
-      RETURN_ERROR1("Expected ]");
+   EXPECT("]");
 
    /* make sure this register is available on hardware */
    for (j = 0; HardwareOutputRegisters[j]; j++) {
@@ -699,8 +689,7 @@ Parse_MaskedDstReg(struct parse_state *parseState, struct prog_dst_register *dst
       /* got a mask */
       int k = 0;
 
-      if (!Parse_String(parseState, "."))
-         RETURN_ERROR;
+      EXPECT(".");
 
       if (!Parse_Token(parseState, token))
          RETURN_ERROR;
@@ -872,8 +861,7 @@ Parse_ScalarSrcReg(struct parse_state *parseState, struct prog_src_register *src
    }
 
    /* Look for .[xyzw] suffix */
-   if (!Parse_String(parseState, "."))
-      RETURN_ERROR;
+   EXPECT(".");
 
    if (!Parse_Token(parseState, token))
       RETURN_ERROR;
@@ -913,16 +901,14 @@ Parse_UnaryOpInstruction(struct parse_state *parseState,
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[0]))
       RETURN_ERROR;
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    return TRUE;
 }
@@ -945,24 +931,21 @@ Parse_BiOpInstruction(struct parse_state *parseState,
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* first src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[0]))
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* second src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[1]))
       RETURN_ERROR;
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    /* make sure we don't reference more than one program parameter register */
    if (inst->SrcReg[0].File == PROGRAM_ENV_PARAM &&
@@ -992,32 +975,28 @@ Parse_TriOpInstruction(struct parse_state *parseState,
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* first src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[0]))
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* second src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[1]))
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* third src arg */
    if (!Parse_SwizzleSrcReg(parseState, &inst->SrcReg[2]))
       RETURN_ERROR;
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    /* make sure we don't reference more than one program parameter register */
    if ((inst->SrcReg[0].File == PROGRAM_ENV_PARAM &&
@@ -1062,16 +1041,14 @@ Parse_ScalarInstruction(struct parse_state *parseState,
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* first src arg */
    if (!Parse_ScalarSrcReg(parseState, &inst->SrcReg[0]))
       RETURN_ERROR;
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    return TRUE;
 }
@@ -1092,16 +1069,14 @@ Parse_AddressInstruction(struct parse_state *parseState, struct prog_instruction
       RETURN_ERROR;
 
    /* comma */
-   if (!Parse_String(parseState, ","))
-      RETURN_ERROR;
+   EXPECT(",");
 
    /* parse src reg */
    if (!Parse_ScalarSrcReg(parseState, &inst->SrcReg[0]))
       RETURN_ERROR;
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    return TRUE;
 }
@@ -1148,8 +1123,7 @@ Parse_PrintInstruction(struct parse_state *parseState, struct prog_instruction *
    inst->Opcode = OPCODE_PRINT;
 
    /* The first argument is a literal string 'just like this' */
-   if (!Parse_String(parseState, "'"))
-      RETURN_ERROR;
+   EXPECT("'");
 
    str = parseState->pos;
    for (len = 0; str[len] != '\''; len++) /* find closing quote */
@@ -1207,8 +1181,7 @@ Parse_PrintInstruction(struct parse_state *parseState, struct prog_instruction *
    }
 
    /* semicolon */
-   if (!Parse_String(parseState, ";"))
-      RETURN_ERROR;
+   EXPECT(";");
 
    return TRUE;
 }
@@ -1228,8 +1201,7 @@ Parse_OptionSequence(struct parse_state *parseState,
       else {
          RETURN_ERROR1("unexpected OPTION statement");
       }
-      if (!Parse_String(parseState, ";"))
-         return FALSE;
+      EXPECT(";");
    }
 }
 
