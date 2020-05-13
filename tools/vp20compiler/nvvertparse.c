@@ -547,16 +547,21 @@ Parse_AttribReg(struct parse_state *parseState, int *tempRegNum)
    if (!Parse_Token(parseState, token))
       RETURN_ERROR;
 
-   if (parseState->isStateProgram && token[0] != '0')
-      RETURN_ERROR1("Only v[0] accessible in vertex state programs");
-
    if (IsDigit(token[0])) {
       int reg = atoi((char *) token);
       if (reg >= MAX_NV_VERTEX_PROGRAM_INPUTS)
          RETURN_ERROR1("Bad vertex attribute register name");
+
+      if (parseState->isStateProgram && reg != 0)
+         RETURN_ERROR1("Vertex state programs can only access vertex attribute register v[0]");
+
       *tempRegNum = reg;
    }
    else {
+
+      if (parseState->isStateProgram)
+         RETURN_ERROR1("Vertex state programs can only access vertex attribute registers by index");
+
       for (j = 0; InputRegisters[j]; j++) {
          if (strcmp((const char *) token, InputRegisters[j]) == 0) {
             *tempRegNum = j;
