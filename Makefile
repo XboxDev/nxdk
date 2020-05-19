@@ -68,7 +68,7 @@ NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-threadsafe-statics -fno-rtti
 NXDK_LDFLAGS = -subsystem:windows -fixed:no -entry:XboxCRTEntry \
-               -stack:$(NXDK_STACKSIZE) -safeseh:no
+               -stack:$(NXDK_STACKSIZE) -safeseh:no -include:__fltused -include:__xlibc_check_stack
 
 # Multithreaded LLD on Windows hang workaround
 ifneq (,$(findstring MINGW,$(UNAME_S)))
