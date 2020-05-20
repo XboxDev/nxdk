@@ -4134,6 +4134,37 @@ XBAPI PFN_COUNT NTAPI FscGetCacheSize (void);
 XBAPI OBJECT_TYPE ExTimerObjectType;
 XBAPI OBJECT_TYPE ExSemaphoreObjectType;
 
+/* Offsets for ExSaveNonVolatileSetting / ExQueryNonVolatileSetting */
+#define XC_TIMEZONE_BIAS                  0x0000
+#define XC_TZ_STD_NAME                    0x0001
+#define XC_TZ_STD_DATE                    0x0002
+#define XC_TZ_STD_BIAS                    0x0003
+#define XC_TZ_DLT_NAME                    0x0004
+#define XC_TZ_DLT_DATE                    0x0005
+#define XC_TZ_DLT_BIAS                    0x0006
+#define XC_LANGUAGE                       0x0007
+#define XC_VIDEO                          0x0008
+#define XC_AUDIO                          0x0009
+#define XC_P_CONTROL_GAMES                0x000A
+#define XC_P_CONTROL_PASSWORD             0x000B
+#define XC_P_CONTROL_MOVIES               0x000C
+#define XC_ONLINE_IP_ADDRESS              0x000D
+#define XC_ONLINE_DNS_ADDRESS             0x000E
+#define XC_ONLINE_DEFAULT_GATEWAY_ADDRESS 0x000F
+#define XC_ONLINE_SUBNET_ADDRESS          0x0010
+#define XC_MISC                           0x0011
+#define XC_DVD_REGION                     0x0012
+#define XC_MAX_OS                         0x00FF
+#define XC_FACTORY_START_INDEX            0x0100
+#define XC_FACTORY_SERIAL_NUMBER          XC_FACTORY_START_INDEX
+#define XC_FACTORY_ETHERNET_ADDR          0x0101
+#define XC_FACTORY_ONLINE_KEY             0x0102
+#define XC_FACTORY_AV_REGION              0x0103
+#define XC_FACTORY_GAME_REGION            0x0104
+#define XC_MAX_FACTORY                    0x01FF
+#define XC_ENCRYPTED_SECTION              0xFFFE
+#define XC_MAX_ALL                        0xFFFF
+
 XBAPI NTSTATUS NTAPI ExSaveNonVolatileSetting
 (
     IN ULONG ValueIndex,
