@@ -3149,6 +3149,27 @@ XBAPI NTSTATUS NTAPI NtCreateFile
 #define FILE_EXISTS 0x00000004
 #define FILE_DOES_NOT_EXIST 0x00000005
 
+/* Priority increment values for events */
+#define ERESOURCE_INCREMENT 4
+#define EVENT_INCREMENT 1
+#define EVENT_PAIR_INCREMENT 1
+#define LPC_RELEASE_WAIT_INCREMENT 1
+#define IO_NO_INCREMENT 0
+#define IO_CD_ROM_INCREMENT 1
+#define IO_DISK_INCREMENT 1
+#define IO_PARALLEL_INCREMENT 1
+#define IO_VIDEO_INCREMENT 1
+#define IO_MAILSLOT_INCREMENT 2
+#define IO_NAMED_PIPE_INCREMENT 2
+#define IO_NETWORK_INCREMENT 2
+#define IO_SERIAL_INCREMENT 2
+#define IO_MOUSE_INCREMENT 6
+#define IO_KEYBOARD_INCREMENT 6
+#define IO_SOUND_INCREMENT 8
+#define MUTANT_INCREMENT 1
+#define SEMAPHORE_INCREMENT 1
+#define TIMER_APC_INCREMENT 0
+
 /**
  * Creates an event object, sets the initial state of the event to the specified value, and opens a handle to the object.
  * @param EventHandle A pointer to a variable that will receive the event object handle.
