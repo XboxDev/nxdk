@@ -18,14 +18,14 @@ jobs:
           echo "Downloading MSYS2 environment..."
           Invoke-WebRequest -Uri "https://github.com/XboxDev/nxdk-ci-environment-msys2/releases/latest/download/msys64.7z" -OutFile "msys64.7z"
           echo "Extracting MSYS2 environment..."
-          7z x -y msys64.7z "-oC:\"
+          7z x -y msys64.7z "-oC:\tools\"
           echo "Updating MSYS2 environment..."
-          C:\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
       - name: Build
         env:
           MSYS2_ARCH: x86_64
           MSYSTEM: MINGW64
-        run: C:\msys64\usr\bin\bash.exe -lc "cd $(cygpath $env:GITHUB_WORKSPACE) && ./.ci_build_samples.sh"
+        run: C:\tools\msys64\usr\bin\bash.exe -lc "cd $(cygpath $env:GITHUB_WORKSPACE) && ./.ci_build_samples.sh"
   macos:
     name: macOS
     runs-on: macOS-latest
