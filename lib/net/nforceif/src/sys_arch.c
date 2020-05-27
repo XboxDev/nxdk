@@ -367,4 +367,14 @@ sys_sem_free(struct sys_sem **sem)
     }
 }
 
+sys_prot_t sys_arch_protect()
+{
+    return KeRaiseIrqlToDpcLevel();
+}
+
+void sys_arch_unprotect(sys_prot_t lev)
+{
+    KfLowerIrql(lev);
+}
+
 #endif /* !NO_SYS */

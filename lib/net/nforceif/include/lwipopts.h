@@ -46,7 +46,6 @@
 #define LWIP_DEBUG 1
 #define LWIP_ERRNO_STDINCLUDE 1
 #define LWIP_COMPAT_MUTEX_ALLOWED
-#define SYS_LIGHTWEIGHT_PROT 0
 
 /*
    -----------------------------------------------
@@ -60,6 +59,40 @@
  */
 #define NO_SYS                          0
 
+/*
+   ------------------------------------
+   ----------- Core locking -----------
+   ------------------------------------
+*/
+
+/**
+ * LWIP_TCPIP_CORE_LOCKING
+ * Creates a global mutex that is held during TCPIP thread operations.
+ * Can be locked by client code to perform lwIP operations without changing
+ * into TCPIP thread using callbacks. See LOCK_TCPIP_CORE() and
+ * UNLOCK_TCPIP_CORE().
+ * Your system should provide mutexes supporting priority inversion to use this.
+ */
+#define LWIP_TCPIP_CORE_LOCKING         1
+
+/**
+ * LWIP_TCPIP_CORE_LOCKING_INPUT: when LWIP_TCPIP_CORE_LOCKING is enabled,
+ * this lets tcpip_input() grab the mutex for input packets as well,
+ * instead of allocating a message and passing it to tcpip_thread.
+ *
+ * ATTENTION: this does not work when tcpip_input() is called from
+ * interrupt context!
+ */
+#define LWIP_TCPIP_CORE_LOCKING_INPUT   1
+
+/**
+ * SYS_LIGHTWEIGHT_PROT==1: enable inter-task protection (and task-vs-interrupt
+ * protection) for certain critical regions during buffer allocation, deallocation
+ * and memory allocation and deallocation.
+ * ATTENTION: This is required when using lwIP from more than one context! If
+ * you disable this, you must be sure what you are doing!
+ */
+#define SYS_LIGHTWEIGHT_PROT            1
 
 /*
    ------------------------------------

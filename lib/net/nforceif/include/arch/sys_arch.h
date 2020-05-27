@@ -41,7 +41,7 @@
 extern unsigned char debug_flags;
 #endif
 
-typedef u32_t sys_prot_t;
+typedef unsigned char sys_prot_t;
 
 struct sys_sem;
 typedef struct sys_sem * sys_sem_t;
