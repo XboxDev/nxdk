@@ -52,6 +52,7 @@ typedef struct _GAMMA_RAMP_ENTRY
 
 DWORD XVideoGetEncoderSettings(void);
 unsigned char* XVideoGetFB(void);
+void XVideoSetFB(unsigned char *fb);
 VIDEO_MODE XVideoGetMode(void);
 
 void XVideoSetFlickerFilter(int level);
@@ -74,7 +75,6 @@ If a value of 0 is provided for the bpp a default value of 32bpp is used.
 BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p);
 
 void XVideoWaitForVBlank();
-void XVideoSetDisplayStart(unsigned int offset);
 unsigned char* XVideoGetVideoBase();
 int XVideoVideoMemorySize();
 

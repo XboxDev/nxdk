@@ -292,6 +292,13 @@ unsigned char* XVideoGetFB(void)
 	return _fb;
 }
 
+void XVideoSetFB(unsigned char *fb)
+{
+	assert(((unsigned int)fb & ~0x7FFFFFFF) == 0);
+	_fb = fb;
+	VIDEOREG(PCRTC_START) = (unsigned int)_fb & 0x7FFFFFFF;
+}
+
 VIDEO_MODE XVideoGetMode(void)
 {
 	return vmCurrent;
@@ -440,11 +447,6 @@ void XVideoWaitForVBlank()
 	/* Disable vblank interrupt */
 	VIDEOREG(PCRTC_INTR_EN)=PCRTC_INTR_EN_VBLANK_DISABLED;
 	VIDEOREG(PCRTC_INTR)=PCRTC_INTR_VBLANK_RESET;
-}
-
-void XVideoSetDisplayStart(unsigned int offset)
-{
-	VIDEOREG(PCRTC_START) = (unsigned int) (_fb - 0xF0000000 + offset);
 }
 
 unsigned char* XVideoGetVideoBase()
