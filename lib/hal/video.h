@@ -53,6 +53,7 @@ DWORD XVideoGetEncoderSettings(void);
 unsigned char* XVideoGetFB(void);
 void XVideoSetFB(unsigned char *fb);
 VIDEO_MODE XVideoGetMode(void);
+void XVideoFlushFB(void);
 
 void XVideoSetFlickerFilter(int level);
 BOOL XVideoSetMode(int width, int height, int bpp, int refresh);
