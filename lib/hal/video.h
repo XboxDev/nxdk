@@ -10,7 +10,6 @@ extern "C"
 
 // Defines for frame buffer
 #define VIDEO_BASE				0xFD000000
-#define VIDEO_FRAMEBUFFER			0x03c00000
 
 // Hardware access macros
 #define VIDEOREG(x) (*(volatile unsigned int*)(VIDEO_BASE + (x)))
