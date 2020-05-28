@@ -38,7 +38,7 @@
 unsigned char*	framebufferMemory = NULL;
 unsigned char*	_fb = NULL;
 DWORD			dwEncoderSettings 	= 0;
-VIDEO_MODE		vmCurrent;
+VIDEO_MODE		vmCurrent = { 0, 0, 0, 0 };
 int			flickerLevel		= 5;
 BOOL			flickerSet		= FALSE;
 BOOL			softenFilter		= TRUE;
