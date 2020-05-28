@@ -35,8 +35,8 @@
 #define VIDEO_R5G6B5				0x00000011
 #define VIDEO_A8R8G8B8				0x00000012
 
-
-unsigned char*	_fb;
+unsigned char*	framebufferMemory = NULL;
+unsigned char*	_fb = NULL;
 DWORD			dwEncoderSettings 	= 0;
 VIDEO_MODE		vmCurrent;
 int			flickerLevel		= 5;
@@ -331,11 +331,27 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 
 	XVideoSetVideoEnable(FALSE);
 
+	if (framebufferMemory != NULL) {
+		MmFreeContiguousMemory(framebufferMemory);
+	}
+	framebufferMemory = MmAllocateContiguousMemoryEx(screenSize,
+	                                                 0x00000000, 0x7FFFFFFF,
+	                                                 0x1000,
+	                                                 PAGE_READWRITE |
+	                                                 PAGE_WRITECOMBINE);
+	assert(framebufferMemory != NULL);
+	memset(framebufferMemory, 0x00, screenSize);
+	asm __volatile__("sfence");
+
 	do
 	{
 		Step = AvSetDisplayMode((PVOID)VIDEO_BASE, Step, 
-			dwMode, dwFormat, pitch, VIDEO_FRAMEBUFFER);
+			dwMode, dwFormat, pitch, (unsigned int)framebufferMemory & 0x7FFFFFFF);
 	} while(Step);
+
+	/* Store the framebuffer that we set; normally this is done in XVideoSetFB.
+	   However, the first one is set using the kernel, so we do it here, too. */
+	_fb = framebufferMemory;
 
 	XVideoSetFlickerFilter(5);
 	XVideoSetSoftenFilter(TRUE);
@@ -348,9 +364,6 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	XVideoSetGammaRamp(0, defaultGammaRampEntries, 256);
 
 	XVideoSetVideoEnable(TRUE);
-
-	_fb = (unsigned char*)(0xF0000000+VIDEOREG(PCRTC_START));
-	memset(_fb, 0x00, screenSize);
 }
 
 
