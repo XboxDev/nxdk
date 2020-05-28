@@ -35,15 +35,15 @@
 #define VIDEO_R5G6B5				0x00000011
 #define VIDEO_A8R8G8B8				0x00000012
 
-unsigned char*	framebufferMemory = NULL;
-unsigned char*	_fb = NULL;
-DWORD			dwEncoderSettings 	= 0;
-VIDEO_MODE		vmCurrent = { 0, 0, 0, 0 };
-int			flickerLevel		= 5;
-BOOL			flickerSet		= FALSE;
-BOOL			softenFilter		= TRUE;
-BOOL			softenSet		= FALSE;
-GAMMA_RAMP_ENTRY	gammaRampEntries[256];
+static unsigned char*	framebufferMemory = NULL;
+static unsigned char*	_fb = NULL;
+static DWORD			dwEncoderSettings 	= 0;
+static VIDEO_MODE		vmCurrent = { 0, 0, 0, 0 };
+static int			flickerLevel		= 5;
+static BOOL			flickerSet		= FALSE;
+static BOOL			softenFilter		= TRUE;
+static BOOL			softenSet		= FALSE;
+static GAMMA_RAMP_ENTRY	gammaRampEntries[256];
 
 static KINTERRUPT InterruptObject;
 static KDPC DPCObject;
@@ -62,7 +62,7 @@ typedef struct _VIDEO_MODE_SETTING
 	DWORD dwFlags;
 } VIDEO_MODE_SETTING;
 
-VIDEO_MODE_SETTING vidModes[] =
+static VIDEO_MODE_SETTING vidModes[] =
 {
  {0x44030307,640,480,50,VIDEO_REGION_PAL,AV_PACK_STANDARD}, //640x480 PAL 50Hz
  {0x44040408,720,480,50,VIDEO_REGION_PAL,AV_PACK_STANDARD}, //720x480 PAL 50Hz
@@ -122,7 +122,7 @@ VIDEO_MODE_SETTING vidModes[] =
  {0x04020204,720,480,60,VIDEO_REGION_NTSCJ,AV_PACK_SVIDEO}, //720x480 NTSCJ 60Hz
 };
 
-int iVidModes = sizeof(vidModes) / sizeof(VIDEO_MODE_SETTING);
+static int iVidModes = sizeof(vidModes) / sizeof(VIDEO_MODE_SETTING);
 
 static void __stdcall DPC(PKDPC Dpc,
 PVOID DeferredContext,
