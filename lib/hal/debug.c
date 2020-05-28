@@ -15,9 +15,10 @@
 #define MARGIN         25
 #define MARGINS        50 // MARGIN*2
 
-int SCREEN_WIDTH	= 640;
-int SCREEN_HEIGHT	= 480;
-int SCREEN_BPP = 32;
+unsigned char *SCREEN_FB = NULL;
+int SCREEN_WIDTH	= 0;
+int SCREEN_HEIGHT	= 0;
+int SCREEN_BPP = 0;
 
 int nextRow = MARGIN;
 int nextCol = MARGIN; 
@@ -27,9 +28,18 @@ static const unsigned char systemFont[] =
 #include "font_unscii_16.h"
 };
 
+static void synchronizeVideoMode()
+{
+	VIDEO_MODE vm = XVideoGetMode();
+	SCREEN_WIDTH = vm.width;
+	SCREEN_HEIGHT = vm.height;
+	SCREEN_BPP = vm.bpp;
+	SCREEN_FB = XVideoGetFB();
+}
+
 static void drawChar(unsigned char c, int x, int y, int fgColour, int bgColour)
 {
-	unsigned char *videoBuffer = XVideoGetFB();
+	unsigned char *videoBuffer = SCREEN_FB;
 	videoBuffer += (y * SCREEN_WIDTH + x) * ((SCREEN_BPP+7)/8);
 
 	unsigned char mask;
@@ -146,11 +156,9 @@ void debugPrint(const char *format, ...)
 	va_start(argList, format);
 	vsprintf(buffer, format, argList);
 	va_end(argList);
-	
-	VIDEO_MODE vm = XVideoGetMode();
-	SCREEN_WIDTH = vm.width;
-	SCREEN_HEIGHT = vm.height;
-	SCREEN_BPP = vm.bpp;
+
+	synchronizeVideoMode();
+
 	int fgColour;
 	int bgColour;
 	switch (SCREEN_BPP) {
@@ -198,11 +206,13 @@ void debugPrint(const char *format, ...)
 
 void advanceScreen( void )
 {
+	synchronizeVideoMode();
+
 	int pixelSize = (SCREEN_BPP+7)/8;
 	int screenSize  = SCREEN_WIDTH * (SCREEN_HEIGHT - MARGINS)  * pixelSize;
 	int lineSize    = SCREEN_WIDTH * (FONT_HEIGHT + 1) * pixelSize;
 	
-	unsigned char* thisScreen = XVideoGetFB() + (SCREEN_WIDTH * MARGIN)  * pixelSize;
+	unsigned char* thisScreen = SCREEN_FB + (SCREEN_WIDTH * MARGIN)  * pixelSize;
 	unsigned char* prevScreen = thisScreen+lineSize;
 		
 	memmove(thisScreen, prevScreen, screenSize);
@@ -213,9 +223,9 @@ void advanceScreen( void )
 
 void debugClearScreen( void )
 {
-	unsigned char* videoBuffer = XVideoGetFB();
+	synchronizeVideoMode();
 
-	memset( videoBuffer, 0, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT) );
+	memset( SCREEN_FB, 0, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT) );
 	nextRow = MARGIN;
 	nextCol = MARGIN; 
 }
