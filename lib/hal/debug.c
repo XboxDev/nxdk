@@ -202,6 +202,8 @@ void debugPrint(const char *format, ...)
 
 		s++;
 	}
+
+	XVideoFlushFB();
 }
 
 void debugAdvanceScreen( void )
@@ -219,6 +221,8 @@ void debugAdvanceScreen( void )
 
 	nextRow -= (FONT_HEIGHT+1);
 	nextCol  = MARGIN; 
+
+	XVideoFlushFB();
 }
 
 void debugClearScreen( void )
@@ -228,6 +232,8 @@ void debugClearScreen( void )
 	memset( SCREEN_FB, 0, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT) );
 	nextRow = MARGIN;
 	nextCol = MARGIN; 
+
+	XVideoFlushFB();
 }
 
 void debugPrintHex(const char *buffer, int length)

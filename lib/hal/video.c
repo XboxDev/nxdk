@@ -304,6 +304,11 @@ VIDEO_MODE XVideoGetMode(void)
 	return vmCurrent;
 }
 
+void XVideoFlushFB(void)
+{
+	asm __volatile__("sfence");
+}
+
 void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 {
 	int i;
