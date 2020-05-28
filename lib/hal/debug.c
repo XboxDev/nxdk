@@ -37,6 +37,11 @@ static void synchronizeVideoMode()
 	SCREEN_FB = XVideoGetFB();
 }
 
+static void writebackBuffers()
+{
+	asm __volatile__("sfence");
+}
+
 static void drawChar(unsigned char c, int x, int y, int fgColour, int bgColour)
 {
 	unsigned char *videoBuffer = SCREEN_FB;
@@ -202,6 +207,8 @@ void debugPrint(const char *format, ...)
 
 		s++;
 	}
+
+	writebackBuffers();
 }
 
 void advanceScreen( void )
@@ -219,6 +226,8 @@ void advanceScreen( void )
 
 	nextRow -= (FONT_HEIGHT+1);
 	nextCol  = MARGIN; 
+
+	writebackBuffers();
 }
 
 void debugClearScreen( void )
@@ -228,6 +237,8 @@ void debugClearScreen( void )
 	memset( SCREEN_FB, 0, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT) );
 	nextRow = MARGIN;
 	nextCol = MARGIN; 
+
+	writebackBuffers();
 }
 
 void debugPrintHex(const char *buffer, int length)
