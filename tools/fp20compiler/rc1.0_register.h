@@ -75,7 +75,11 @@ static const char* GetRegisterNameString(unsigned int reg_name) {
     case REG_DISCARD:
         return "0x0";
     case REG_ONE:
-        return "0x12";
+        // REG_ONE is a pseudo-register that should have been 
+        // mapped to REG_ZERO (with modifier) in MappedRegisterStruct::Init; 
+        // therefore, this should not be reachable. 
+        assert(false);
+        break;
     default:
         fprintf(stderr, "unknown register name index %d\n", reg_name);
         assert(false);
