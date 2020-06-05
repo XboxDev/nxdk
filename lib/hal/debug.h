@@ -31,7 +31,7 @@ void debugPrintNum(int i);
 void debugPrintBinary( int num );
 void debugPrintHex(const char *buffer, int length);
 void debugClearScreen( void );
-void advanceScreen( void );
+void debugAdvanceScreen( void );
 
 
 #ifdef __cplusplus

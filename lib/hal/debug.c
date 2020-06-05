@@ -172,7 +172,7 @@ void debugPrint(const char *format, ...)
 	{
 		if( nextRow >= (SCREEN_HEIGHT-MARGINS) ) {
 			debugClearScreen();
-			// advanceScreen();
+			// debugAdvanceScreen();
 		}
 		
 		if (*s == '\n')
@@ -196,7 +196,7 @@ void debugPrint(const char *format, ...)
 	}
 }
 
-void advanceScreen( void )
+void debugAdvanceScreen( void )
 {
 	int pixelSize = (SCREEN_BPP+7)/8;
 	int screenSize  = SCREEN_WIDTH * (SCREEN_HEIGHT - MARGINS)  * pixelSize;
