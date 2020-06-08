@@ -153,7 +153,11 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	memset((void *)&pac97device->pcmSpdifDescriptor[0], 0, sizeof(pac97device->pcmSpdifDescriptor));
 	memset((void *)&pac97device->pcmOutDescriptor[0], 0, sizeof(pac97device->pcmOutDescriptor));
 
-	// perform a cold reset
+	// perform cold reset
+	pac97device->mmio[0x12C>>2] &= ~2;
+	LARGE_INTEGER Interval;
+	Interval.QuadPart = -10;
+	KeDelayExecutionThread(KernelMode, FALSE, &Interval);
 	pac97device->mmio[0x12C>>2] |= 2;
 	
 	// wait until the chip is finished resetting...
