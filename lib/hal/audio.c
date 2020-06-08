@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdbool.h>
 #include <hal/audio.h>
 #include <xboxkrnl/xboxkrnl.h>
 
@@ -23,6 +24,9 @@
 //  buffers with PCM out successfully.
 
 #define AUDIO_IRQ 6
+
+static volatile int analogBufferCount;
+static volatile int digitalBufferCount;
 
 static KINTERRUPT InterruptObject;
 static KDPC DPCObject;
@@ -55,25 +59,45 @@ static void __stdcall DPC(PKDPC Dpc,
 // PCM actions, since S/PDIF is always spooling through the same buffer.
 static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 {
-	// Was the interrupt triggered because we were out of data?
-	if ((*((char *)0xFEC00116))&8)
-		KeInsertQueueDpc(&DPCObject,NULL,NULL); //calls user callback soon
+	unsigned char analogInterrupt = *(volatile unsigned char *)0xFEC00116;
+	unsigned char digitalInterrupt = *(volatile unsigned char *)0xFEC00176;
 
-	//KeInsertQueueDpc queues Dpc and returns TRUE if Dpc not already queued.
-	//Dpc will be queued only once. So only one Dpc is fired after ISRs cease fire.
-	//DPCs avoid crashes inside non reentrant user callbacks called by nested ISRs.
-	//CAUTION : if you use fpu in DPC you have to save & restore yourself fpu state!!!
-	//(fpu=floating point unit, i.e the coprocessor executing floating point opcodes)
+	bool waitCompleted = false;
 
-	// Was the interrupt triggered because of FIFO error?
-	if ((*((char *)0xFEC00116))&0x10)
-		{
-			// Fifo underrun - what should I do here?
-		// In case of heavy processing, insert a DPC
+	if (analogInterrupt) {
+		bool waitingForAnalog = (analogBufferCount > digitalBufferCount);
+
+		// Was the interrupt triggered because we were out of data?
+		if (analogInterrupt & 8) {
+			waitCompleted |= waitingForAnalog;
+			analogBufferCount--;
 		}
 
-	*((char *)0xFEC00116)=0xFF; // clear all int sources
-	*((char *)0xFEC00176)=0xFF; // clear all int sources
+		*(volatile unsigned char *)0xFEC00116=0xFF; // clear all int sources
+	}
+
+	if (digitalInterrupt) {
+		bool waitingForDigital = (digitalBufferCount > analogBufferCount);
+
+		// Was the interrupt triggered because we were out of data?
+		if (digitalInterrupt & 8) {
+			waitCompleted |= waitingForDigital;
+			digitalBufferCount--;
+		}
+
+		*(volatile unsigned char *)0xFEC00176=0xFF; // clear all int sources
+	}
+
+
+	// If a buffer was consumed by analog and digital output, we ask for a DPC
+	if (waitCompleted) {
+		//KeInsertQueueDpc queues Dpc and returns TRUE if Dpc not already queued.
+		//Dpc will be queued only once. So only one Dpc is fired after ISRs cease fire.
+		//DPCs avoid crashes inside non reentrant user callbacks called by nested ISRs.
+		//CAUTION : if you use fpu in DPC you have to save & restore yourself fpu state!!!
+		//(fpu=floating point unit, i.e the coprocessor executing floating point opcodes)
+		KeInsertQueueDpc(&DPCObject,NULL,NULL); //calls user callback soon
+	}
 
 	return TRUE;
 }
@@ -139,6 +163,10 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 
 	// default to being silent...
 	XAudioPause(pac97device);
+
+	// reset buffer status
+	analogBufferCount = 0;
+	digitalBufferCount = 0;
 	
 	// Register our ISR
 	vector = HalGetInterruptVector(AUDIO_IRQ, &irql);
@@ -194,11 +222,13 @@ void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, in
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = bufferLength / (pac97device->sampleSizeInBits / 8);
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
 	pb[0x115] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
+	analogBufferCount++;
 
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = MmGetPhysicalAddress((PVOID)address);
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = bufferLength / (pac97device->sampleSizeInBits / 8);
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
 	pb[0x175] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
+	digitalBufferCount++;
 
 	// increment to the next buffer descriptor (rolling around to 0 once you get to 31)
 	pac97device->nextDescriptorMod31 = (pac97device->nextDescriptorMod31 +1 ) & 0x1f;
