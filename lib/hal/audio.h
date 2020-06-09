@@ -24,7 +24,7 @@ typedef struct
 	AC97_DESCRIPTOR        pcmSpdifDescriptor[32];
 	AC97_DESCRIPTOR        pcmOutDescriptor[32];
 	volatile unsigned int *mmio;
-	volatile unsigned int  nextDescriptorMod31;
+	volatile unsigned int  nextDescriptor;
 	XAudioCallback         callback;
 	void                  *callbackData;
 	int                    sampleSizeInBits;
