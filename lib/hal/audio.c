@@ -242,16 +242,17 @@ void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, in
 	if (isFinal) 
 		bufferControl |= 0x4000;
 
-	unsigned int address = (unsigned int)buffer;
+	unsigned int address = MmGetPhysicalAddress((PVOID)buffer);
+	unsigned int wordCount = bufferLength / 2;
 
-	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = MmGetPhysicalAddress((PVOID)address);
-	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = bufferLength / (pac97device->sampleSizeInBits / 8);
+	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = address;
+	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = wordCount;
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
 	pb[0x115] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
 	analogBufferCount++;
 
-	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = MmGetPhysicalAddress((PVOID)address);
-	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = bufferLength / (pac97device->sampleSizeInBits / 8);
+	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = address;
+	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = wordCount;
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
 	pb[0x175] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
 	digitalBufferCount++;
