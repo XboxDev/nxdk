@@ -21,14 +21,14 @@ typedef struct
 // represents the current ac97 device
 typedef struct 
 {
-	AC97_DESCRIPTOR        pcmSpdifDescriptor[32];
-	AC97_DESCRIPTOR        pcmOutDescriptor[32];
-	volatile unsigned int *mmio;
-	volatile unsigned int  nextDescriptor;
-	XAudioCallback         callback;
-	void                  *callbackData;
-	int                    sampleSizeInBits;
-	int                    numChannels;
+	volatile AC97_DESCRIPTOR pcmSpdifDescriptor[32];
+	volatile AC97_DESCRIPTOR pcmOutDescriptor[32];
+	volatile unsigned int   *mmio;
+	unsigned char            nextDescriptor;
+	XAudioCallback           callback;
+	void                    *callbackData;
+	int                      sampleSizeInBits;
+	int                      numChannels;
 } AC97_DEVICE  __attribute__ ((aligned (8)));
 
 // note that I currently ignore sampleSizeInBits and numChannels.  They
