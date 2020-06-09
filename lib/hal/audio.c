@@ -143,7 +143,7 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	MmLockUnlockBufferPages((PVOID)pac97device, sizeof(AC97_DEVICE), FALSE);
 
 	pac97device->mmio = (unsigned int *)0xfec00000;
-	pac97device->nextDescriptorMod31 = 0;
+	pac97device->nextDescriptor = 0;
 	pac97device->callback = callback;
 	pac97device->callbackData = data;
 	pac97device->sampleSizeInBits = sampleSizeInBits;
@@ -245,18 +245,18 @@ void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, in
 	unsigned int address = MmGetPhysicalAddress((PVOID)buffer);
 	unsigned int wordCount = bufferLength / 2;
 
-	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = address;
-	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = wordCount;
-	pac97device->pcmOutDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
-	pb[0x115] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
+	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferStartAddress    = address;
+	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferLengthInSamples = wordCount;
+	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferControl         = bufferControl;
+	pb[0x115] = (unsigned char)pac97device->nextDescriptor; // set last active descriptor
 	analogBufferCount++;
 
-	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferStartAddress    = address;
-	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferLengthInSamples = wordCount;
-	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptorMod31].bufferControl         = bufferControl;
-	pb[0x175] = (unsigned char)pac97device->nextDescriptorMod31; // set last active descriptor
+	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferStartAddress    = address;
+	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferLengthInSamples = wordCount;
+	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferControl         = bufferControl;
+	pb[0x175] = (unsigned char)pac97device->nextDescriptor; // set last active descriptor
 	digitalBufferCount++;
 
 	// increment to the next buffer descriptor (rolling around to 0 once you get to 31)
-	pac97device->nextDescriptorMod31 = (pac97device->nextDescriptorMod31 +1 ) & 0x1f;
+	pac97device->nextDescriptor = (pac97device->nextDescriptor + 1) % 32;
 }
