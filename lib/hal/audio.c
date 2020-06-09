@@ -164,6 +164,16 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	while(!(pac97device->mmio[0x130>>2]&0x100))
 		;
 
+	// reset bus master registers for analog output
+	*(volatile unsigned char*)0xFEC0011B = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
+	while((*(volatile unsigned char*)0xFEC0011B) & (1 << 1))
+		;
+
+	// reset bus master registers for digital output
+	*(volatile unsigned char*)0xFEC0017B = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
+	while((*(volatile unsigned char*)0xFEC0017B) & (1 << 1))
+		;
+
 	// clear all interrupts
 	((unsigned char *)pac97device->mmio)[0x116] = 0xFF;
 	((unsigned char *)pac97device->mmio)[0x176] = 0xFF;
