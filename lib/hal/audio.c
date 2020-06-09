@@ -25,8 +25,10 @@
 
 #define AUDIO_IRQ 6
 
-static volatile int analogBufferCount;
-static volatile int digitalBufferCount;
+static volatile unsigned int analogBufferCount;
+static volatile unsigned int digitalBufferCount;
+static bool analogDrained;
+static bool digitalDrained;
 
 static KINTERRUPT InterruptObject;
 static KDPC DPCObject;
@@ -68,10 +70,14 @@ static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 		bool waitingForAnalog = (analogBufferCount > digitalBufferCount);
 
 		// Was the interrupt triggered because we were out of data?
-		if (analogInterrupt & 8) {
-			waitCompleted |= waitingForAnalog;
-			analogBufferCount--;
+		if ((analogInterrupt & 8) && !analogDrained) {
+			if (analogBufferCount > 0) {
+				waitCompleted |= waitingForAnalog;
+				analogBufferCount--;
+			}
 		}
+
+		analogDrained = analogInterrupt & 4;
 
 		*(volatile unsigned char *)0xFEC00116=0xFF; // clear all int sources
 	}
@@ -80,10 +86,14 @@ static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 		bool waitingForDigital = (digitalBufferCount > analogBufferCount);
 
 		// Was the interrupt triggered because we were out of data?
-		if (digitalInterrupt & 8) {
-			waitCompleted |= waitingForDigital;
-			digitalBufferCount--;
+		if ((digitalInterrupt & 8) && !digitalDrained) {
+			if (digitalBufferCount > 0) {
+				waitCompleted |= waitingForDigital;
+				digitalBufferCount--;
+			}
 		}
+
+		digitalDrained = digitalInterrupt & 4;
 
 		*(volatile unsigned char *)0xFEC00176=0xFF; // clear all int sources
 	}
@@ -167,6 +177,8 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	// reset buffer status
 	analogBufferCount = 0;
 	digitalBufferCount = 0;
+	analogDrained = false;
+	digitalDrained = false;
 	
 	// Register our ISR
 	vector = HalGetInterruptVector(AUDIO_IRQ, &irql);
