@@ -46,7 +46,7 @@ static void __stdcall DPC(PKDPC Dpc,
 	//CAUTION : if you use fpu in DPC you have to save & restore yourself fpu state!!!
 	//(fpu=floating point unit, i.e the coprocessor executing floating point opcodes)
 
-	volatile AC97_DEVICE *pac97device;
+	AC97_DEVICE *pac97device;
 
 	pac97device = &ac97Device;
 	if (pac97device)
@@ -61,8 +61,11 @@ static void __stdcall DPC(PKDPC Dpc,
 // PCM actions, since S/PDIF is always spooling through the same buffer.
 static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 {
-	unsigned char analogInterrupt = *(volatile unsigned char *)0xFEC00116;
-	unsigned char digitalInterrupt = *(volatile unsigned char *)0xFEC00176;
+	AC97_DEVICE *pac97device = &ac97Device;
+	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
+
+	unsigned char analogInterrupt = pb[0x116];
+	unsigned char digitalInterrupt = pb[0x176];
 
 	bool waitCompleted = false;
 
@@ -79,7 +82,7 @@ static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 
 		analogDrained = analogInterrupt & 4;
 
-		*(volatile unsigned char *)0xFEC00116=0xFF; // clear all int sources
+		pb[0x116]=0xFF; // clear all int sources
 	}
 
 	if (digitalInterrupt) {
@@ -95,7 +98,7 @@ static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 
 		digitalDrained = digitalInterrupt & 4;
 
-		*(volatile unsigned char *)0xFEC00176=0xFF; // clear all int sources
+		pb[0x176]=0xFF; // clear all int sources
 	}
 
 
@@ -133,7 +136,7 @@ void XDumpAudioStatus()
 // are 16 bits, 2 channels (stereo)
 void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, void *data)
 {
-	volatile AC97_DEVICE * pac97device = &ac97Device;
+	AC97_DEVICE * pac97device = &ac97Device;
 	KIRQL irql;
 	ULONG vector;
 
@@ -149,9 +152,17 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	pac97device->sampleSizeInBits = sampleSizeInBits;
 	pac97device->numChannels = numChannels;
 
-	// initialise descriptors to all 0x00 (no samples)        
-	memset((void *)&pac97device->pcmSpdifDescriptor[0], 0, sizeof(pac97device->pcmSpdifDescriptor));
-	memset((void *)&pac97device->pcmOutDescriptor[0], 0, sizeof(pac97device->pcmOutDescriptor));
+	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
+
+	// initialise descriptors to all zero (no samples)
+	for(unsigned int i = 0; i < 32; i++) {
+		pac97device->pcmSpdifDescriptor[i].bufferStartAddress = 0;
+		pac97device->pcmSpdifDescriptor[i].bufferLengthInSamples = 0;
+		pac97device->pcmSpdifDescriptor[i].bufferControl = 0;
+		pac97device->pcmOutDescriptor[i].bufferStartAddress = 0;
+		pac97device->pcmOutDescriptor[i].bufferLengthInSamples = 0;
+		pac97device->pcmOutDescriptor[i].bufferControl = 0;
+	}
 
 	// perform cold reset
 	pac97device->mmio[0x12C>>2] &= ~2;
@@ -165,18 +176,18 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 		;
 
 	// reset bus master registers for analog output
-	*(volatile unsigned char*)0xFEC0011B = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
-	while((*(volatile unsigned char*)0xFEC0011B) & (1 << 1))
+	pb[0x11B] = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
+	while(pb[0x11B] & (1 << 1))
 		;
 
 	// reset bus master registers for digital output
-	*(volatile unsigned char*)0xFEC0017B = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
-	while((*(volatile unsigned char*)0xFEC0017B) & (1 << 1))
+	pb[0x17B] = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
+	while(pb[0x17B] & (1 << 1))
 		;
 
 	// clear all interrupts
-	((unsigned char *)pac97device->mmio)[0x116] = 0xFF;
-	((unsigned char *)pac97device->mmio)[0x176] = 0xFF;
+	pb[0x116] = 0xFF;
+	pb[0x176] = 0xFF;
 
 	// tell the audio chip where it should look for the descriptors
 	unsigned int pcmAddress = (unsigned int)&pac97device->pcmOutDescriptor[0];
@@ -213,7 +224,7 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 // tell the chip it is OK to play...
 void XAudioPlay()
 {
-	volatile AC97_DEVICE *pac97device = &ac97Device;
+	AC97_DEVICE *pac97device = &ac97Device;
 	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
 	pb[0x11B] = 0x1d; // PCM out - run, allow interrupts
 	pb[0x17B] = 0x1d; // PCM out - run, allow interrupts
@@ -222,7 +233,7 @@ void XAudioPlay()
 // tell the chip it is paused.
 void XAudioPause()
 {
-	volatile AC97_DEVICE *pac97device = &ac97Device;
+	AC97_DEVICE *pac97device = &ac97Device;
 	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
 	pb[0x11B] = 0x1c; // PCM out - PAUSE, allow interrupts
 	pb[0x17B] = 0x1c; // PCM out - PAUSE, allow interrupts
@@ -235,7 +246,7 @@ void XAudioPause()
 // chip doesn't run out of data
 void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, int isFinal)
 {
-	volatile AC97_DEVICE *pac97device = &ac97Device;
+	AC97_DEVICE *pac97device = &ac97Device;
 	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
 
 	unsigned short bufferControl = 0x8000;
@@ -248,13 +259,13 @@ void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, in
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferStartAddress    = address;
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferLengthInSamples = wordCount;
 	pac97device->pcmOutDescriptor[pac97device->nextDescriptor].bufferControl         = bufferControl;
-	pb[0x115] = (unsigned char)pac97device->nextDescriptor; // set last active descriptor
+	pb[0x115] = pac97device->nextDescriptor; // set last active descriptor
 	analogBufferCount++;
 
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferStartAddress    = address;
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferLengthInSamples = wordCount;
 	pac97device->pcmSpdifDescriptor[pac97device->nextDescriptor].bufferControl         = bufferControl;
-	pb[0x175] = (unsigned char)pac97device->nextDescriptor; // set last active descriptor
+	pb[0x175] = pac97device->nextDescriptor; // set last active descriptor
 	digitalBufferCount++;
 
 	// increment to the next buffer descriptor (rolling around to 0 once you get to 31)
