@@ -1,25 +1,22 @@
 #include <hal/debug.h>
 #include <hal/video.h>
+#include <string>
+#include <vector>
 #include <windows.h>
-
-class NumberClass{
-private:
-  int hiddenValue = 0;
-public:
-  NumberClass() {hiddenValue = 5;};
-  NumberClass(int v) : hiddenValue(v) {};
-  int getValue() { return hiddenValue; };
-};
 
 int main(void) {
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
-  NumberClass defaultFive;
-  NumberClass customSix(6);
+  std::vector<std::string> words;
+  words.emplace_back("Hello");
+  words.emplace_back(" ");
+  words.emplace_back("nxdk!");
+  words.emplace_back("\n");
 
   while (true) {
-    debugPrint("Value of defaultFive: %i\n", defaultFive.getValue());
-    debugPrint("Value of customSix  : %i\n", customSix.getValue());
+    for (auto& word : words) {
+      debugPrint("%s", word.c_str());
+    }
     Sleep(2000);
   }
 
