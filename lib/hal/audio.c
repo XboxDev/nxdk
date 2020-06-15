@@ -37,24 +37,23 @@ static KDPC DPCObject;
 AC97_DEVICE ac97Device;
 
 
+//DPCs avoid crashes inside non reentrant user callbacks called by nested ISRs.
+//CAUTION : if you use fpu in DPC you have to save & restore yourself fpu state!!!
+//(fpu=floating point unit, i.e the coprocessor executing floating point opcodes)
 static void __stdcall DPC(PKDPC Dpc, 
 					PVOID DeferredContext, 
 					PVOID SystemArgument1, 
 					PVOID SystemArgument2)
 {
-	//DPCs avoid crashes inside non reentrant user callbacks called by nested ISRs.
-	//CAUTION : if you use fpu in DPC you have to save & restore yourself fpu state!!!
-	//(fpu=floating point unit, i.e the coprocessor executing floating point opcodes)
-
 	AC97_DEVICE *pac97device;
 
 	pac97device = &ac97Device;
 	if (pac97device)
-			if (pac97device->callback)
-				(pac97device->callback)((void *)pac97device, pac97device->callbackData);
+		if (pac97device->callback)
+			(pac97device->callback)((void *)pac97device, pac97device->callbackData);
 
 	return;
-		}
+}
 	
 // Although we have to explicitly clear the S/PDIF interrupt sources, in fact
 // the way we are set up PCM and S/PDIF are in lockstep and we only listen for
