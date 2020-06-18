@@ -1,4 +1,4 @@
-XBE_TITLE=gamma-fade
+XBE_TITLE = gamma-fade
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
