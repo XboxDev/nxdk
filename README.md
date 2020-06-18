@@ -29,7 +29,7 @@ You will need the following tools:
 OS-specific instructions for installing these prerequisites can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Install-the-Prerequisites)
 
 ### Download nxdk
-    git clone --recursive https://github.com/xqemu/nxdk.git
+    git clone --recursive https://github.com/XboxDev/nxdk.git
 
 ### Build Samples
 Samples are easily built by running the Makefile in one of the sample directories. Details can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Build-a-Sample). nxdk also supports automatic [creation of ISO files](https://github.com/XboxDev/nxdk/wiki/Create-an-XISO).
