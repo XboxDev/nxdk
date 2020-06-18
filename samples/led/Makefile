@@ -1,4 +1,4 @@
-XBE_TITLE=led
+XBE_TITLE = led
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
