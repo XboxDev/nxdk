@@ -4,8 +4,15 @@ nxdk is a software development kit for the original Xbox. nxdk is a revitalizati
 It is maintained by the [XboxDev](https://github.com/XboxDev/XboxDev) community.
 
 Notable features:
+- Portable toolchain that works on modern versions of Windows, macOS and Linux.
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
-- 3D graphics! nxdk includes and expands on pbkit, a library for interfacing with the Xbox GPU.
+- Modern C / C++ standards and compiler features.
+- Supports popular APIs like Windows API and BSD sockets.
+- SDL2 support for input, audio and 2D graphics.
+- Custom API for 3D graphics using NVIDIA-designed shader-languages (with additional Xbox extensions).
+- Open-Source drivers which can be modified to get the most out of the hardware.
+- Modifiable startup code, for as much system control as necessary.
+- Supported by an active community that can help with problems and responds to bug reports.
 
 Build Status
 ------
@@ -13,7 +20,8 @@ Build Status
 
 Status
 ------
-nxdk is currently in early stages of development.
+While nxdk still is in early stages of development, it can already be used in many projects.
+Take a look at the [list of projects](https://github.com/XboxDev/nxdk/wiki/Projects-using-nxdk) that are build on top of nxdk. Additionally, the [provided samples](https://github.com/XboxDev/nxdk/tree/master/samples) show how to use common features.
 
 Getting Started
 ---------------
