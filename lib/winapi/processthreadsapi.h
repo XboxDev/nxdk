@@ -12,6 +12,7 @@ extern "C"
 typedef DWORD (__stdcall *LPTHREAD_START_ROUTINE) (LPVOID lpThreadParameter);
 HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
 VOID ExitThread (DWORD dwExitCode);
+BOOL GetExitCodeThread (HANDLE hThread, LPDWORD lpExitCode);
 
 HANDLE GetCurrentThread (VOID);
 DWORD GetCurrentThreadId (VOID);

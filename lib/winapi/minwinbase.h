@@ -29,4 +29,6 @@ typedef struct _SYSTEMTIME
     WORD wMilliseconds;
 } SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
 
+#define STILL_ACTIVE 259
+
 #endif
