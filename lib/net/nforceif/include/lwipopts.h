@@ -422,6 +422,59 @@
 
 /*
    ---------------------------------------
+   ---------- Hook options ---------------
+   ---------------------------------------
+*/
+
+/**
+ * LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr):
+ * Called from various dhcp functions when sending a DHCP message.
+ * This hook is called just before the DHCP message trailer is added, so the
+ * options are at the end of a DHCP message.
+ * Signature:\code{.c}
+ *   void my_hook(struct netif *netif, struct dhcp *dhcp, u8_t state, struct dhcp_msg *msg,
+ *                u8_t msg_type, u16_t *options_len_ptr);
+ * \endcode
+ * Arguments:
+ * - netif: struct netif that the packet will be sent through
+ * - dhcp: struct dhcp on that netif
+ * - state: current dhcp state (dhcp_state_enum_t as an u8_t)
+ * - msg: struct dhcp_msg that will be sent
+ * - msg_type: dhcp message type to be sent (u8_t)
+ * - options_len_ptr: pointer to the current length of options in the dhcp_msg "msg"
+ *                    (must be increased when options are added!)
+ *
+ * Options need to appended like this:
+ *   LWIP_ASSERT("dhcp option overflow", *options_len_ptr + option_len + 2 <= DHCP_OPTIONS_LEN);
+ *   msg->options[(*options_len_ptr)++] = &lt;option_number&gt;;
+ *   msg->options[(*options_len_ptr)++] = &lt;option_len&gt;;
+ *   msg->options[(*options_len_ptr)++] = &lt;option_bytes&gt;;
+ *   [...]
+ */
+/*
+   Add DHCP options to imitate XDK behavior, making DHCP servers treat nxdk the same,
+   i.e. recognizing requests as coming from the same device and assigning the same
+   IP address.
+*/
+#define LWIP_HOOK_DHCP_APPEND_OPTIONS(netif, dhcp, state, msg, msg_type, options_len_ptr) \
+    *options_len_ptr = dhcp_option(*options_len_ptr, msg->options, DHCP_OPTION_CLIENT_ID, 7); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, 0x01); \
+    for (int _i = 0; _i < 6; _i++) { \
+        *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, netif->hwaddr[_i]); \
+    } \
+    \
+    *options_len_ptr = dhcp_option(*options_len_ptr, msg->options, DHCP_OPTION_US, 8); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, 'X'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, 'B'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, 'O'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, 'X'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, ' '); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, '1'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, '.'); \
+    *options_len_ptr = dhcp_option_byte(*options_len_ptr, msg->options, '0');
+
+/*
+   ---------------------------------------
    ---------- Debugging options ----------
    ---------------------------------------
 */
