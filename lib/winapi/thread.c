@@ -89,6 +89,26 @@ VOID ExitThread (DWORD dwExitCode)
     PsTerminateSystemThread(dwExitCode);
 }
 
+BOOL GetExitCodeThread (HANDLE hThread, LPDWORD lpExitCode)
+{
+    PETHREAD thread;
+    NTSTATUS status;
+
+    status = ObReferenceObjectByHandle(hThread, NULL, (PVOID *)&thread);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    if (thread->Tcb.HasTerminated) {
+        *lpExitCode = thread->ExitStatus;
+    } else {
+        *lpExitCode = STILL_ACTIVE;
+    }
+    ObfDereferenceObject(thread);
+    return TRUE;
+}
+
 HANDLE GetCurrentThread (VOID)
 {
     return (HANDLE)-2;
