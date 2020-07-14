@@ -63,7 +63,7 @@ bool nxUnmountDrive (char driveLetter)
     status = IoDeleteSymbolicLink(&drivePath);
     if (!NT_SUCCESS(status)) {
         SetLastError(RtlNtStatusToDosError(status));
-        return true;
+        return false;
     }
 
     return true;
