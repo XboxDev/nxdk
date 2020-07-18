@@ -76,6 +76,7 @@ NXDK_LDFLAGS += -threads:no
 endif
 
 ifeq ($(DEBUG),y)
+NXDK_ASFLAGS += -g -gdwarf-4
 NXDK_CFLAGS += -g -gdwarf-4
 NXDK_CXXFLAGS += -g -gdwarf-4
 NXDK_LDFLAGS += -debug
