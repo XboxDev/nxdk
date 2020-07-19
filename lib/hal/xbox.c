@@ -14,18 +14,6 @@ void XReboot()
 	HalReturnToFirmware(HalRebootRoutine);
 }
 
-int XGetTickCount()
-{
-	return KeTickCount;
-}
-
-void XSleep(int milliseconds)
-{
-	LARGE_INTEGER interval;
-        interval.QuadPart = (long long) milliseconds * -10000;
-        KeDelayExecutionThread(KernelMode, FALSE, &interval);
-}
-
 /**
  * Launches an XBE.  Examples of xbePath might be:
  *   c:\\blah.xbe
@@ -68,28 +56,4 @@ void XLaunchXBE(char *xbePath)
 
 	// if we couldn't find a trailing slash, the conversion to
 	// the xbox path mustn't have worked, so we will return
-}
-
-int XCreateThread(XThreadCallback callback, void *args1, void *args2)
-{
-	HANDLE id;
-	HANDLE handle;
-
-	NTSTATUS status = PsCreateSystemThreadEx(
-		(HANDLE)&handle,
-		0,
-		65536,
-		0,
-		&id,
-		args1,
-		args2,
-		FALSE,
-		FALSE,
-		(PKSYSTEM_ROUTINE)callback);
-
-	if (handle == 0) {
-		return -1;
-	}
-
-	return (unsigned int)handle;
 }
