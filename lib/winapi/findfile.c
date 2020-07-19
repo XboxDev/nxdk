@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/fileio.h>
 #include <winerror.h>
 #include <fileapi.h>
 
