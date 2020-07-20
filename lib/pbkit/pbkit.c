@@ -199,7 +199,7 @@ static  DWORD           pb_DmaChID9Inst;
 static  DWORD           pb_DmaChID10Inst;
 static  DWORD           pb_DmaChID11Inst;
 
-static  DWORD           *pb_DmaUserAddr;
+static volatile DWORD  *pb_DmaUserAddr;
 
 static  DWORD           pb_PushIndex;
 static  DWORD           *pb_PushStart;
@@ -1105,9 +1105,9 @@ DWORD pb_wait_until_tiles_not_busy(void)
 
 static void pb_release_tile(int index,int clear_offset)
 {
-    DWORD       *pTile;
-    DWORD       *pZcomp;
-    DWORD       *p;
+    volatile DWORD *pTile;
+    volatile DWORD *pZcomp;
+    volatile DWORD *p;
 
     DWORD       addr;
     DWORD       data;
