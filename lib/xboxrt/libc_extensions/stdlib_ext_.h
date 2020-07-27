@@ -35,3 +35,37 @@ int mbtowc (wchar_t *pwc, const char *string, size_t n);
 #ifdef __cplusplus
 }
 #endif
+
+
+#ifdef __cplusplus
+#if (__cplusplus < 201103L)
+#define _NXDK_NOEXCEPT throw()
+#else
+#define _NXDK_NOEXCEPT noexcept
+#endif
+
+// libc++ expects MSVCRT to provide these overloads
+
+inline static long abs (long __x) _NXDK_NOEXCEPT
+{
+    return labs(__x);
+}
+
+inline static long long abs (long long __x) _NXDK_NOEXCEPT
+{
+    return llabs(__x);
+}
+
+inline static ldiv_t div (long __x, long __y) _NXDK_NOEXCEPT
+{
+    return ldiv(__x, __y);
+}
+
+inline static lldiv_t div (long long __x, long long __y) _NXDK_NOEXCEPT
+{
+    return lldiv(__x, __y);
+}
+
+#undef _NXDK_NOEXCEPT
+
+#endif
