@@ -26,6 +26,11 @@ XBOXRT_SRCS := \
 
 XBOXRT_OBJS = $(addsuffix .obj, $(basename $(XBOXRT_SRCS)))
 
+# This file needs to be always built with -fno-rtti because it contains the
+# type_info class. If the parameter is missing, clang will generate an invalid
+# reference from type_info to its own vftable.
+$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.obj: NXDK_CXXFLAGS += -fno-rtti
+
 $(NXDK_DIR)/lib/libxboxrt.lib: $(XBOXRT_OBJS)
 
 main.exe: $(NXDK_DIR)/lib/libxboxrt.lib
