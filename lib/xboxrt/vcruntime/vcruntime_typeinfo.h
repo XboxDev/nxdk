@@ -12,8 +12,8 @@
 
 struct __std_type_info_data
 {
-    char const *_UndecoratedName;
-    char const _DecoratedName[1];
+    char *_UndecoratedName;
+    char _DecoratedName[1];
 };
 
 extern "C"
@@ -25,7 +25,7 @@ extern "C"
 class type_info
 {
 public:
-    virtual ~type_info ();
+    virtual ~type_info () noexcept;
 
     const char *name () const noexcept
     {
@@ -60,7 +60,11 @@ public:
     }
 
 private:
-    type_info (type_info const &) = delete;
+    // According to the standard, this constructor should not exist. However,
+    // not having any constructors causes LLVM to not emit a vftable.
+    type_info () noexcept;
+
+    type_info (type_info const &) noexcept = delete;
     type_info &operator= (type_info const &) = delete;
 
     mutable __std_type_info_data _Data;

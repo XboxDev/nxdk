@@ -33,3 +33,11 @@ extern "C"
         return hash;
     }
 }
+
+type_info::~type_info() noexcept
+{
+}
+
+type_info::type_info () noexcept
+{
+}
