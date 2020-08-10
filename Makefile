@@ -56,7 +56,7 @@ FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
 EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/build/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
-               -ffreestanding -nostdlib -fno-builtin -fno-exceptions \
+               -ffreestanding -nostdlib -fno-builtin \
                -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt/libc_extensions \
                -I$(NXDK_DIR)/lib/hal \
                -isystem $(NXDK_DIR)/lib/pdclib/include \
@@ -66,7 +66,7 @@ NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
                -Wno-ignored-attributes -DNXDK -D__STDC__=1
 NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
-NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS)
+NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-exceptions
 NXDK_LDFLAGS = -subsystem:windows -fixed:no -entry:XboxCRTEntry \
                -stack:$(NXDK_STACKSIZE) -safeseh:no -include:__fltused -include:__xlibc_check_stack
 
