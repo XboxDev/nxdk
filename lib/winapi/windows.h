@@ -3,6 +3,7 @@
 
 #include <debugapi.h>
 #include <errhandlingapi.h>
+#include <excpt.h>
 #include <fibersapi.h>
 #include <fileapi.h>
 #include <handleapi.h>
