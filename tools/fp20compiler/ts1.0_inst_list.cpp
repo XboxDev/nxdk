@@ -38,6 +38,14 @@ InstList& InstList::operator+=(InstPtr t)
     return *this;
 }
 
+static unsigned int FloatToRaw(float value)
+{
+    assert(sizeof(float) == 4);
+    assert(sizeof(unsigned int) == 4);
+
+    return *(unsigned int*)&value;
+}
+
 void InstList::Invoke()
 {
     int i;
@@ -218,6 +226,67 @@ void InstList::Invoke()
     }
     printf(");\n");
     printf("p += 2;\n");
+
+    // Process texture stage mode arguments
+    for (i=0; i<size; i++) {
+        switch(list[i].opcode.word) {
+        case TSP_CULL_FRAGMENT: {
+            assert(false); /* Unimplemented */
+            break;
+        }
+        case TSP_OFFSET_2D_SCALE: {
+            float matrix[2*2] = {
+                list[i].args[1], list[i].args[2],
+                list[i].args[3], list[i].args[4]
+            };
+            float offset = list[i].args[5];
+            float scale = list[i].args[6];
+
+            printf("pb_push(p++, NV097_SET_TEXTURE_SET_BUMP_ENV_MAT + %d * 64, 6);\n", i);
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[0] */\n", FloatToRaw(matrix[0]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[1] */\n", FloatToRaw(matrix[1]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[2] */\n", FloatToRaw(matrix[2]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[3] */\n", FloatToRaw(matrix[3]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_SCALE */\n", FloatToRaw(scale));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_OFFSET */\n", FloatToRaw(offset));
+            assert(false); /* Untested */
+            break;
+        }
+        case TSP_OFFSET_2D: {
+            float matrix[2*2] = {
+                list[i].args[1], list[i].args[2],
+                list[i].args[3], list[i].args[4]
+            };
+
+            printf("/* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT */\n");
+            printf("pb_push(p++, NV097_SET_TEXTURE_SET_BUMP_ENV_MAT + %d * 64, 4);\n", i);
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[0] */\n", FloatToRaw(matrix[0]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[1] */\n", FloatToRaw(matrix[1]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[2] */\n", FloatToRaw(matrix[2]));
+            printf("*p++ = 0x%08x; /* NV097_SET_TEXTURE_SET_BUMP_ENV_MAT m[3] */\n", FloatToRaw(matrix[3]));
+            break;
+        }
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_CONST_EYE_1_OF_3:
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_CONST_EYE_1_OF_3: {
+            assert(i == 1);
+
+            float eye_vector_x = list[i].args[1];
+            float eye_vector_y = list[i].args[2];
+            float eye_vector_z = list[i].args[3];
+            float eye_vector_w = 1.0f;
+
+            printf("pb_push(p++, NV097_SET_EYE_VECTOR, 4);\n");
+            printf("*p++ = 0x%08x; /* NV097_SET_EYE_VECTOR x */\n", FloatToRaw(eye_vector_x));
+            printf("*p++ = 0x%08x; /* NV097_SET_EYE_VECTOR y */\n", FloatToRaw(eye_vector_y));
+            printf("*p++ = 0x%08x; /* NV097_SET_EYE_VECTOR z */\n", FloatToRaw(eye_vector_z));
+            printf("*p++ = 0x%08x; /* NV097_SET_EYE_VECTOR w */\n", FloatToRaw(eye_vector_w));
+            assert(false); /* Untested */
+            break;
+        }
+        default:
+            break;
+        }
+    }
 
     printf("\n");
     printf("#pragma pop_macro(\"MASK\")\n");
