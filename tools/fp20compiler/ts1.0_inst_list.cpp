@@ -84,6 +84,129 @@ void InstList::Invoke()
         case TSP_PASS_THROUGH:
             op = "PASS_THROUGH";
             break;
+        case TSP_OFFSET_2D_SCALE:
+            assert(i >= 1);
+            op = "BUMPENVMAP_LUMINANCE";
+            assert(false); /* Untested */
+            break;
+        case TSP_OFFSET_2D:
+            assert(i >= 1);
+            op = "BUMPENVMAP";
+            break;
+        case TSP_DEPENDENT_AR:
+            assert(i >= 1);
+            op = "DEPENDENT_AR";
+            assert(false); /* Untested */
+            break;
+        case TSP_DEPENDENT_GB:
+            assert(i >= 1);
+            op = "DEPENDENT_GB";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_2D_1_OF_2:
+            assert(i == 1 || i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_2D_2_OF_2:
+            assert(i >= 2);
+            op = "DOT_ST";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_DEPTH_REPLACE_1_OF_2:
+            assert(i == 1 || i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_DEPTH_REPLACE_2_OF_2:
+            assert(i >= 2);
+            op = "DOT_ZW";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_3D_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_3D_2_OF_3:
+            assert(i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_3D_3_OF_3:
+            assert(i == 3);
+            op = "DOT_STR_3D";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_CUBE_MAP_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_2_OF_3:
+            assert(i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_3_OF_3:
+            assert(i == 3);
+            op = "DOT_STR_CUBE";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_EYE_FROM_QS_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_EYE_FROM_QS_2_OF_3:
+            assert(i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_EYE_FROM_QS_3_OF_3:
+            assert(i == 3);
+            op = "DOT_REFLECT_SPECULAR";
+            break;
+
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_CONST_EYE_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_CONST_EYE_2_OF_3:
+            assert(i == 2);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_REFLECT_CUBE_MAP_CONST_EYE_3_OF_3:
+            assert(i == 3);
+            op = "DOT_REFLECT_SPECULAR_CONST";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_EYE_FROM_QS_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_EYE_FROM_QS_2_OF_3:
+            assert(i == 2);
+            op = "DOT_REFLECT_DIFFUSE";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_EYE_FROM_QS_3_OF_3:
+            assert(i == 3);
+            op = "DOT_REFLECT_SPECULAR";
+            assert(false); /* Untested */
+            break;
+
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_CONST_EYE_1_OF_3:
+            assert(i == 1);
+            op = "DOT_PRODUCT";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_CONST_EYE_2_OF_3:
+            assert(i == 2);
+            op = "DOT_REFLECT_DIFFUSE";
+            break;
+        case TSP_DOT_PRODUCT_CUBE_MAP_AND_REFLECT_CUBE_MAP_CONST_EYE_3_OF_3:
+            assert(i == 3);
+            op = "DOT_REFLECT_SPECULAR_CONST";
+            assert(false); /* Untested */
+            break;
+
         default:
             assert(false);
             break;
