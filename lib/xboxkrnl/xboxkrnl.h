@@ -2626,7 +2626,7 @@ XBAPI NTSTATUS NTAPI NtWaitForSingleObject
 XBAPI NTSTATUS NTAPI NtWaitForMultipleObjectsEx
 (
     IN ULONG Count,
-    IN HANDLE Handles[],
+    IN CONST HANDLE Handles[],
     IN WAIT_TYPE WaitType,
     IN KPROCESSOR_MODE WaitMode,
     IN BOOLEAN Alertable,
