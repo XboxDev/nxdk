@@ -174,8 +174,8 @@ static const struct {
 };
 
 //Screen dimension constants
-const extern int SCREEN_WIDTH;
-const extern int SCREEN_HEIGHT;
+static const int SCREEN_WIDTH = 640;
+static const int SCREEN_HEIGHT = 480;
 #define NUM_SPRITES 10
 #define MAX_SPEED   5
 

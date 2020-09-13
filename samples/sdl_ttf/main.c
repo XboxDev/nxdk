@@ -5,8 +5,8 @@
 #include <windows.h>
 #include <stdbool.h>
 
-const extern int SCREEN_WIDTH;
-const extern int SCREEN_HEIGHT;
+static const int SCREEN_WIDTH = 640;
+static const int SCREEN_HEIGHT = 480;
 
 int main(void) {
   int initialized_SDL   = -1;
