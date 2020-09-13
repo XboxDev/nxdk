@@ -24,8 +24,8 @@ static void printIMGErrorAndReboot(void)
 }
 
 // Screen dimension constants
-const extern int SCREEN_WIDTH;
-const extern int SCREEN_HEIGHT;
+static const int SCREEN_WIDTH = 640;
+static const int SCREEN_HEIGHT = 480;
 
 void demo(void)
 {
