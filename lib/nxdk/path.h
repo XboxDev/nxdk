@@ -8,7 +8,7 @@
 #define __NXDK_PATH_H__
 
 #ifdef __cplusplus
-{
+extern "C" {
 #endif
 
 #ifndef __cplusplus
