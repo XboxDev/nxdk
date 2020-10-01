@@ -1,10 +1,10 @@
 // ******************************************************************
 // *
 // *    .,-:::::    .,::      .::::::::.    .,::      .:
-// *  ,;;;'````'    `;;;,  .,;;  ;;;'';;'   `;;;,  .,;; 
-// *  [[[             '[[,,[['   [[[__[[\.    '[[,,[['  
-// *  $$$              Y$$$P     $$""""Y$$     Y$$$P    
-// *  `88bo,__,o,    oP"``"Yo,  _88o,,od8P   oP"``"Yo,  
+// *  ,;;;'````'    `;;;,  .,;;  ;;;'';;'   `;;;,  .,;;
+// *  [[[             '[[,,[['   [[[__[[\.    '[[,,[['
+// *  $$$              Y$$$P     $$""""Y$$     Y$$$P
+// *  `88bo,__,o,    oP"``"Yo,  _88o,,od8P   oP"``"Yo,
 // *    "YUMMMMMP",m"       "Mm,""YUMMMP" ,m"       "Mm,
 // *
 // *   Cxbx->Core->Xbe.cpp
@@ -538,7 +538,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             }
 
             // for now we'll just allow any media you could want
-            m_Certificate.dwAllowedMedia = XBEIMAGE_MEDIA_TYPE_HARD_DISK | XBEIMAGE_MEDIA_TYPE_DVD_CD | XBEIMAGE_MEDIA_TYPE_MEDIA_BOARD 
+            m_Certificate.dwAllowedMedia = XBEIMAGE_MEDIA_TYPE_HARD_DISK | XBEIMAGE_MEDIA_TYPE_DVD_CD | XBEIMAGE_MEDIA_TYPE_MEDIA_BOARD
                                            | XBEIMAGE_MEDIA_TYPE_NONSECURE_HARD_DISK | XBEIMAGE_MEDIA_TYPE_NONSECURE_MODE;
 
             // TODO: allow configuration
@@ -778,6 +778,13 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
     // pass 4
     {
         m_Header.dwSizeofImage = m_SectionHeader[m_Header.dwSections-1].dwVirtualAddr + m_SectionHeader[m_Header.dwSections-1].dwVirtualSize - m_Header.dwBaseAddr;
+
+        if (m_Header.dwSizeofImage >= 64*1024*1024)
+        {
+            fprintf(stderr, "Xbe::Xbe: Image size exceeds 64MiB - this xbe will not run on retail systems\n");
+        } else if (m_Header.dwSizeofImage >= 32*1024*1024) {
+            fprintf(stderr, "Xbe::Xbe: Image size exceeds 32MiB\n");
+        }
 
         // relocate to base : 0x00010000
         {
@@ -1161,7 +1168,7 @@ void Xbe::DumpInformation(FILE *x_file)
     } else {
         AsciiFilename[0] = '\0';
     }
-    
+
     fprintf(x_file, "Entry Point                      : 0x%.08X (Retail: 0x%.08X, Debug: 0x%.08X)\n", m_Header.dwEntryAddr, m_Header.dwEntryAddr ^ XOR_EP_RETAIL, m_Header.dwEntryAddr ^ XOR_EP_DEBUG);
     fprintf(x_file, "TLS Address                      : 0x%.08X\n", m_Header.dwTLSAddr);
     fprintf(x_file, "(PE) Stack Commit                : 0x%.08X\n", m_Header.dwPeStackCommit);
@@ -1319,7 +1326,7 @@ void Xbe::DumpInformation(FILE *x_file)
 
                 fprintf(x_file, "Library Name                     : %s\n", tmp);
                 fprintf(x_file, "Version                          : %d.%d.%d\n", m_LibraryVersion[v].wMajorVersion, m_LibraryVersion[v].wMinorVersion, m_LibraryVersion[v].wBuildVersion);
- 
+
                 // print flags
                 {
                     fprintf(x_file, "Flags                            : ");
