@@ -20,15 +20,15 @@ FREETYPE_OBJS = $(addsuffix .obj, $(basename $(FREETYPE_SRCS)))
 
 $(NXDK_DIR)/lib/libfreetype.lib: $(FREETYPE_OBJS)
 
-CFLAGS += -I$(NXDK_DIR)/lib/sdl \
-          -I$(SDL_TTF_DIR) \
-          -I$(FREETYPE_DIR)/include \
-          -DXBOX
+NXDK_CFLAGS += -I$(NXDK_DIR)/lib/sdl \
+               -I$(SDL_TTF_DIR) \
+               -I$(FREETYPE_DIR)/include \
+               -DXBOX
 
-CXXFLAGS += -I$(NXDK_DIR)/lib/sdl \
-          -I$(SDL_TTF_DIR) \
-          -I$(FREETYPE_DIR)/include \
-          -DXBOX
+NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/sdl \
+                 -I$(SDL_TTF_DIR) \
+                 -I$(FREETYPE_DIR)/include \
+                 -DXBOX
 
 main.exe: $(NXDK_DIR)/lib/libSDL_ttf.lib $(NXDK_DIR)/lib/libfreetype.lib
 
