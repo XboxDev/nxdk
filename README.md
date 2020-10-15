@@ -71,7 +71,6 @@ Code Overview
 * `lib/winapi` - Xbox specific implementations of common useful WinAPI-functions.
 * `lib/xboxkrnl` - Header and import library for interfacing with the Xbox kernel.
 * `lib/xboxrt` - Miscellaneous functionality for debugging etc.
-* `lib/xlibc-rt` - Implementations of supportive functions required at runtime.
 * `tools/cxbe` - Simple converter for PE executables to the Xbox executable format, from OpenXDK.
 * `tools/fp20compiler` - Translates register combiner descriptions to Xbox pushbuffer commands.
 * `tools/vp20compiler` - Translates vertex program assembly to Xbox microcode.
