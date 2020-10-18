@@ -236,9 +236,16 @@ void debugClearScreen( void )
 	XVideoFlushFB();
 }
 
-void debugResetCursor( void ) {
+void debugResetCursor( void )
+{
 	nextRow = MARGIN;
 	nextCol = MARGIN;
+}
+
+void debugMoveCursor(int x, int y)
+{
+	nextRow = y;
+	nextCol = x;
 }
 
 void debugPrintHex(const char *buffer, int length)

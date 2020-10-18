@@ -29,6 +29,7 @@ void debugPrintBinary( int num );
 void debugPrintHex(const char *buffer, int length);
 void debugClearScreen( void );
 void debugAdvanceScreen( void );
+void debugMoveCursor(int x, int y);
 void debugResetCursor( void );
 
 #ifdef __cplusplus
