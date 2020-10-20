@@ -236,14 +236,21 @@ void debugClearScreen( void )
 	XVideoFlushFB();
 }
 
-void debugResetCursor( void )
+void debugResetCursor ( void )
 {
 	nextRow = MARGIN;
 	nextCol = MARGIN;
 }
 
-void debugMoveCursor(int x, int y)
+void debugMoveCursor (int x, int y)
 {
+	if ( x < MARGIN || x > SCREEN_WIDTH-MARGIN-FONT_WIDTH ) {
+		return;
+	}
+	if ( y < MARGIN || y > SCREEN_HEIGHT-MARGIN-FONT_HEIGHT ) {
+		return;
+	}
+	
 	nextRow = y;
 	nextCol = x;
 }
