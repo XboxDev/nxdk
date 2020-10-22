@@ -39,7 +39,8 @@ jobs:
       - name: Install Dependencies
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
-          brew update && brew install llvm
+          brew doctor || true
+          brew update-reset && brew install llvm
       - name: Build
         run: sh ./.ci_build_samples.sh
   ubuntu:
