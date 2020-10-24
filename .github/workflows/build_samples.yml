@@ -3,6 +3,22 @@ name: Build Samples
 on: [push, pull_request]
 
 jobs:
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clone Tree
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+          submodules: recursive
+      - name: Build Docker image
+        run: |
+          docker build -t nxdk ./
+      - name: Test Docker image
+        run: |
+          docker run nxdk sh -c "cd /usr/src/nxdk && sh ./.ci_build_samples.sh"
   windows:
     name: Windows
     runs-on: windows-latest
