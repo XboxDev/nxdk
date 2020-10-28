@@ -120,6 +120,8 @@ typedef struct _WIN32_FIND_DATAA {
 #define LPWIN32_FIND_DATA LPWIN32_FIND_DATAA
 #endif
 
+VOID WINAPI ZeroMemory (PVOID Destination, SIZE_T length);
+
 DWORD GetLastError (void);
 void SetLastError (DWORD error);
 
