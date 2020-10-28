@@ -47,3 +47,8 @@ SIZE_T VirtualQuery (LPCVOID lpAddress, PMEMORY_BASIC_INFORMATION lpBuffer, SIZE
 
     return sizeof(MEMORY_BASIC_INFORMATION);
 }
+
+VOID WINAPI ZeroMemory (PVOID Destination, SIZE_T length)
+{
+    RtlZeroMemory(Destination, length);
+}
