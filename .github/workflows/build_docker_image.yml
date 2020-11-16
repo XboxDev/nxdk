@@ -7,6 +7,7 @@ on:
 jobs:
   main:
     name: Docker
+    if: github.repository_owner == 'XboxDev'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
