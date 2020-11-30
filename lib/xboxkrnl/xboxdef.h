@@ -15,6 +15,7 @@ typedef int INT, *PINT, *LPINT;
 typedef long LONG, *PLONG, *LPLONG;
 typedef long long LONGLONG, *PLONGLONG;
 
+typedef unsigned char BYTE;
 typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT, CSHORT;
 typedef unsigned short WORD, WCHAR, *PWSTR;
