@@ -68,7 +68,6 @@ typedef LONG KPRIORITY;
 typedef ULONG DEVICE_TYPE;
 typedef ULONG LOGICAL;
 
-typedef unsigned char BYTE;
 typedef const char *PCSZ, *PCSTR, *LPCSTR;
 typedef char *PSZ, *PSTR;
 typedef CONST WCHAR *LPCWSTR, *PCWSTR;
