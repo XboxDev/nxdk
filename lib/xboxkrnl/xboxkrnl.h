@@ -622,7 +622,7 @@ typedef struct _FILE_TRACKING_INFORMATION
 typedef struct _OBJECT_ATTRIBUTES
 {
         HANDLE RootDirectory; /**< Optional handle to the root object directory for the path name specified by the ObjectName member. If RootDirectory is NULL, ObjectName must point to a fully qualified object name that includes the full path to the target object. If RootDirectory is non-NULL, ObjectName specifies an object name relative to the RootDirectory directory. */
-        PANSI_STRING ObjectName; /**< Pointer to a Unicode string that contains the name of the object for which a handle is to be opened. This must either be a fully qualified object name, or a relative path name to the directory specified by the RootDirectory member. */
+        PANSI_STRING ObjectName; /**< Pointer to an ANSI string that contains the name of the object for which a handle is to be opened. This must either be a fully qualified object name, or a relative path name to the directory specified by the RootDirectory member. */
         ULONG Attributes; /**< Bitmask of flags that specify object handle attributes. */
 } OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
 
@@ -1919,6 +1919,13 @@ XBAPI NTSTATUS XBAPI RtlUnicodeStringToInteger
     PULONG Value
 );
 
+/**
+ * Converts the specified Unicode source string into an ANSI string.
+ * @param DestinationString A pointer to an ANSI_STRING structure to hold the converted ANSI string. If AllocateDestinationString is TRUE, the routine allocates a new buffer to hold the string data and updates the Buffer member of DestinationString to point to the new buffer. Otherwise, the routine uses the currently specified buffer to hold the string.
+ * @param SourceString Pointer to the UNICODE_STRING structure that contains the source string to be converted to ANSI.
+ * @param AllocateDestinationString If TRUE, this function allocates a buffer for the destination string which must be deallocated by using RtlFreeAnsiString. If FALSE, the buffer specified in DestinationString will be used instead.
+ * @return STATUS_SUCCESS if the conversion was successfull, otherwise an NTSTATUS error code.
+ */
 XBAPI NTSTATUS NTAPI RtlUnicodeStringToAnsiString
 (
     OUT PSTRING DestinationString,
@@ -2069,12 +2076,22 @@ XBAPI VOID NTAPI RtlInitializeCriticalSection
 
 #define RtlDeleteCriticalSection(CriticalSection) ((void)CriticalSection)
 
+/**
+ * Initializes a counted string of Unicode characters. SourceString is used as the buffer, no memory is allocated.
+ * @param DestinationString A pointer to the UNICODE_STRING structure to be initialized.
+ * @param SourceString A pointer to a null-terminated character string which is used to initialize the counted string structure pointed to by DestinationString.
+ */
 XBAPI VOID NTAPI RtlInitUnicodeString
 (
     PUNICODE_STRING DestinationString,
     PCWSTR SourceString
 );
 
+/**
+ * Initializes a counted string of ANSI characters. SourceString is used as the buffer, no memory is allocated.
+ * @param DestinationString A pointer to the ANSI_STRING structure to be initialized.
+ * @param SourceString A pointer to a null-terminated character string which is used to initialize the counted string structure pointed to by DestinationString.
+ */
 XBAPI VOID NTAPI RtlInitAnsiString
 (
     PANSI_STRING DestinationString,
@@ -2087,11 +2104,19 @@ XBAPI VOID NTAPI RtlGetCallersAddress
     OUT PVOID *CallersCaller
 );
 
+/**
+ * Frees the string buffer allocated by RtlAnsiStringToUnicodeString.
+ * @param UnicodeString A pointer to a Unicode string whose buffer was previously allocated by RtlAnsiStringToUnicodeString.
+ */
 XBAPI VOID NTAPI RtlFreeUnicodeString
 (
     PUNICODE_STRING UnicodeString
 );
 
+/**
+ * Frees the string buffer allocated by RtlUnicodeStringToAnsiString.
+ * @param AnsiString A pointer to an ANSI string whose buffer was previously allocated by RtlUnicodeStringToAnsiString.
+ */
 XBAPI VOID NTAPI RtlFreeAnsiString
 (
     PANSI_STRING AnsiString
@@ -2331,6 +2356,13 @@ XBAPI NTSTATUS NTAPI RtlAppendStringToString
     IN PSTRING Source
 );
 
+/**
+ * Converts the specified ANSI source string into a Unicode string.
+ * @param DestinationString A pointer to a UNICODE_STRING structure to hold the converted Unicode string. If AllocateDestinationString is TRUE, the routine allocates a new buffer to hold the string data and updates the Buffer member of DestinationString to point to the new buffer. Otherwise, the routine uses the currently specified buffer to hold the string.
+ * @param SourceString Pointer to the ANSI_STRING structure that contains the source string to be converted to Unicode.
+ * @param AllocateDestinationString If TRUE, this function allocates a buffer for the destination string which must be deallocated by using RtlFreeUnicodeString. If FALSE, the buffer specified in DestinationString will be used instead.
+ * @return STATUS_SUCCESS if the conversion was successfull, otherwise an NTSTATUS error code.
+ */
 XBAPI NTSTATUS NTAPI RtlAnsiStringToUnicodeString
 (
     PUNICODE_STRING DestinationString,
@@ -2634,6 +2666,12 @@ XBAPI NTSTATUS NTAPI NtSetInformationFile
     IN FILE_INFORMATION_CLASS FileInformationClass
 );
 
+/**
+ * Sets an event to the signaled state.
+ * @param EventHandle A HANDLE to the event object to be set.
+ * @param PreviousState An optional pointer to a variable that will get set to the previous state of the event object.
+ * @return STATUS_SUCCESS on success, an NTSTATUS error code otherwise.
+ */
 XBAPI NTSTATUS NTAPI NtSetEvent
 (
     IN HANDLE EventHandle,
@@ -2823,6 +2861,12 @@ XBAPI NTSTATUS NTAPI NtQueryDirectoryFile
     IN BOOLEAN RestartScan
 );
 
+/**
+ * Sets an event to the signaled state, and immediately resets it to the non-signaled state after waking all waiting threads.
+ * @param EventHandle A HANDLE to the event object to be pulsed.
+ * @param PreviousState An optional pointer to a variable that will get set to the previous state of the event object.
+ * @return STATUS_SUCCESS on success, an NTSTATUS error code otherwise.
+ */
 XBAPI NTSTATUS NTAPI NtPulseEvent
 (
     IN HANDLE EventHandle,
@@ -3068,6 +3112,14 @@ XBAPI NTSTATUS NTAPI NtCreateFile
 #define FILE_EXISTS 0x00000004
 #define FILE_DOES_NOT_EXIST 0x00000005
 
+/**
+ * Creates an event object, sets the initial state of the event to the specified value, and opens a handle to the object.
+ * @param EventHandle A pointer to a variable that will receive the event object handle.
+ * @param ObjectAttributes A pointer to the object attributes structure supplied by the caller to be used for the specified object.
+ * @param EventType The type of the event, which can be SynchronizationEvent or a NotificationEvent.
+ * @param InitialState The initial state of the event object. Set to TRUE to initialize the event object to the Signaled state. Set to FALSE to initialize the event object to the not-Signaled state.
+ * @return STATUS_SUCCESS when the call is successfull, otherwise an NTSTATUS error code. STATUS_OBJECT_NAME_EXISTS if an event object of the same name already exists and was opened instead of creating a new one.
+ */
 XBAPI NTSTATUS NTAPI NtCreateEvent
 (
     OUT PHANDLE EventHandle,
@@ -3092,6 +3144,11 @@ XBAPI NTSTATUS NTAPI NtClose
     IN HANDLE Handle
 );
 
+/**
+ * Resets an even object to the non-signaled state.
+ * @param EventHandle A HANDLE to the event object that is to be reset.
+ * @return STATE_SUCCESS on success, an NTSTATUS error code otherwise.
+ */
 XBAPI NTSTATUS NTAPI NtClearEvent
 (
     IN HANDLE EventHandle
