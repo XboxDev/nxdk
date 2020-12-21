@@ -191,14 +191,14 @@ $(EXTRACT_XISO):
 	cmake -G "Unix Makefiles" .. $(QUIET) && \
 	$(MAKE) $(QUIET))
 
-.PHONY: clean 
+.PHONY: clean
 clean: $(CLEANRULES)
 	$(VE)rm -f $(TARGET) \
 	           main.exe main.exe.manifest main.lib \
 	           $(OBJS) $(SHADER_OBJS) $(DEPS) \
 	           $(GEN_XISO)
 
-.PHONY: distclean 
+.PHONY: distclean
 distclean: clean
 	$(VE)rm -rf $(NXDK_DIR)/tools/extract-xiso/build
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(QUIET)
