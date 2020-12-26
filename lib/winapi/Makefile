@@ -17,7 +17,8 @@ WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/sync.c \
 	$(NXDK_DIR)/lib/winapi/sysinfo.c \
 	$(NXDK_DIR)/lib/winapi/thread.c \
-	$(NXDK_DIR)/lib/winapi/tls.c
+	$(NXDK_DIR)/lib/winapi/tls.c \
+	$(NXDK_DIR)/lib/winapi/winnt.c
 
 WINAPI_OBJS = $(addsuffix .obj, $(basename $(WINAPI_SRCS)))
 
