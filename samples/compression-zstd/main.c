@@ -5,7 +5,7 @@
 #include <hal/video.h>
 #include <hal/xbox.h>
 
-#include <xboxkrnl/xboxkrnl.h>
+#include <windows.h>
 
 #include <zstd.h>
 
@@ -41,7 +41,7 @@ int main(void)
 
     debugPrint("Done.");
 
-    while (TRUE) NtYieldExecution();
+    while (TRUE) SwitchToThread();
 
     return 0;
 }
