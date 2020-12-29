@@ -226,4 +226,85 @@ typedef struct _IMAGE_TLS_DIRECTORY32
     };
 } IMAGE_TLS_DIRECTORY_32, *PIMAGE_TLS_DIRECTORY_32;
 
+
+// The XBE_ prefixed functionality is an nxdk-specific extension, and not usually found in winnt.h
+
+typedef struct _XBE_CERTIFICATE_HEADER
+{
+    DWORD SizeOfHeader;
+    DWORD TimeDateStamp;
+    DWORD TitleID;
+    WCHAR TitleName[40];
+    DWORD AlternateTitleIDs[16];
+    DWORD AllowedMedia;
+    DWORD GameRegion;
+    DWORD GameRatings;
+    DWORD DiscNumber;
+    DWORD Version;
+    BYTE LANKey[16];
+    BYTE SignatureKey[16];
+    BYTE AlternateSignatureKeys[16*16];
+} XBE_CERTIFICATE_HEADER, *PXBE_CERTIFICATE_HEADER;
+
+typedef struct _XBE_LIBRARY_HEADER
+{
+    CHAR LibraryName[8];
+    WORD MajorVersion;
+    WORD MinorVersion;
+    WORD BuildVersion;
+    DWORD LibraryFlags;
+} XBE_LIBRARY_HEADER, *PXBE_LIBRARY_HEADER;
+
+typedef struct _XBE_SECTION_HEADER
+{
+    DWORD Flags;
+    DWORD VirtualAddress;
+    DWORD VirtualSize;
+    DWORD FileAddress;
+    DWORD FileSize;
+    PCSZ SectionName;
+    LONG SectionReferenceCount;
+    WORD *HeadReferenceCount;
+    WORD *TailReferenceCount;
+    BYTE CheckSum[20];
+} XBE_SECTION_HEADER, *PXBE_SECTION_HEADER;
+
+typedef struct _XBE_FILE_HEADER
+{
+    WORD Magic;
+    UCHAR Signature[256];
+    DWORD ImageBase;
+    DWORD SizeOfHeaders;
+    DWORD SizeOfImage;
+    DWORD SizeOfImageHeader;
+    DWORD TimeDateStamp;
+    PXBE_CERTIFICATE_HEADER CertificateHeader;
+    DWORD NumberOfSections;
+    PXBE_SECTION_HEADER PointerToSectionTable;
+    DWORD InitFlags;
+    DWORD AddressOfEntryPoint;
+    PIMAGE_TLS_DIRECTORY_32 PointerToTlsDirectory;
+    DWORD SizeOfStack;
+    DWORD SizeOfHeapReserve;
+    DWORD SizeOfHeapCommit;
+    DWORD PeImageBase;
+    DWORD PeSizeOfImage;
+    DWORD PeImageCheckSum;
+    DWORD PeTimeDateStamp;
+    DWORD PeDebugPath;
+    DWORD PeDebugFilename;
+    DWORD PeDebugFilenameUnicode;
+    DWORD PointerToKernelThunkTable;
+    DWORD PointerToDebugImportTable;
+    DWORD NumberOfLibraries;
+    PXBE_LIBRARY_HEADER PointerToLibraries;
+    PXBE_LIBRARY_HEADER PointerToKernelLibrary;
+    PXBE_LIBRARY_HEADER PointerToXapiLibrary;
+    DWORD PointerToLogoBitmap;
+    DWORD SizeOfLogoBitmap;
+} XBE_FILE_HEADER, *PXBE_FILE_HEADER;
+
+#define XBE_DEFAULT_BASE (0x10000)
+#define CURRENT_XBE_HEADER ((PXBE_FILE_HEADER)XBE_DEFAULT_BASE)
+
 #endif
