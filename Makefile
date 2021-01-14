@@ -123,7 +123,7 @@ $(OUTPUT_DIR):
 ifneq ($(GEN_XISO),)
 $(GEN_XISO): $(OUTPUT_DIR)/default.xbe $(EXTRACT_XISO)
 	@echo "[ XISO     ] $@"
-	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) $@ $(QUIET)
+	$(VE) $(EXTRACT_XISO) -c $(OUTPUT_DIR) $(XISO_FLAGS) "$@" $(QUIET)
 endif
 
 $(SRCS): $(SHADER_OBJS)
