@@ -71,7 +71,7 @@ jobs:
           submodules: recursive
       - name: Install Dependencies
         run: |
-          sudo apt-get update -y && sudo apt-get install -y flex bison clang lld
+          sudo apt-get update -y && sudo apt-get install -y flex bison clang llvm lld
       - name: Build
         run: |
           export PATH=$PATH:/usr/lib/llvm-6.0/bin
