@@ -1,4 +1,4 @@
-XBE_TITLE = hello++
+XBE_TITLE = nxdk\ sample\ -\ hello++
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.cpp
 NXDK_DIR = $(CURDIR)/../..

@@ -1,4 +1,4 @@
-XBE_TITLE = triangle
+XBE_TITLE = nxdk\ sample\ -\ triangle
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.c
 SHADER_OBJS = ps.inl vs.inl
