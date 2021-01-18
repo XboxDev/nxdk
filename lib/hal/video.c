@@ -296,6 +296,11 @@ void XVideoSetFB(unsigned char *fb)
 {
 	assert(((unsigned int)fb & ~0x7FFFFFFF) == 0);
 	_fb = fb;
+
+	SIZE_T fbSize = MmQueryAllocationSize(_fb);
+	MmPersistContiguousMemory(_fb, fbSize, TRUE);
+	AvSetSavedDataAddress(_fb);
+
 	VIDEOREG(PCRTC_START) = (unsigned int)_fb & 0x7FFFFFFF;
 }
 
@@ -337,6 +342,7 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	XVideoSetVideoEnable(FALSE);
 
 	if (framebufferMemory != NULL) {
+		MmPersistContiguousMemory(framebufferMemory, screenSize, FALSE);
 		MmFreeContiguousMemory(framebufferMemory);
 	}
 	framebufferMemory = MmAllocateContiguousMemoryEx(screenSize,
@@ -357,7 +363,28 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	/* Store the framebuffer that we set; normally this is done in XVideoSetFB.
 	   However, we're using the kernel's AvSetDisplayMode here instead, so we
 	   set it here, too. */
-	_fb = framebufferMemory;
+
+	// Get previous framebuffer
+	PVOID previousFB = AvGetSavedDataAddress();
+
+	if (previousFB != 0) {
+		SIZE_T previousFBSize = MmQueryAllocationSize(previousFB);
+		// If the previous framebuffer is the same size as the one we want to create, don't create a new one and use that instead
+		if (previousFBSize == screenSize) {
+			memset(previousFB, 0x00, screenSize);
+			_fb = (unsigned char *)previousFB;
+		} else {
+			MmPersistContiguousMemory(previousFB, previousFBSize, FALSE);
+			MmFreeContiguousMemory(previousFB);
+			AvSetSavedDataAddress(NULL);
+			_fb = framebufferMemory;
+			MmPersistContiguousMemory(_fb, screenSize, TRUE);
+		}
+	} else {
+		_fb = framebufferMemory;
+		MmPersistContiguousMemory(_fb, screenSize, TRUE);
+	}
+	AvSetSavedDataAddress(_fb);
 
 	XVideoSetFlickerFilter(5);
 	XVideoSetSoftenFilter(TRUE);
