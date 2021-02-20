@@ -367,16 +367,15 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	// Get previous framebuffer
 	PVOID previousFB = AvGetSavedDataAddress();
 
-	if (previousFB != 0) {
+	if (previousFB != NULL) {
 		SIZE_T previousFBSize = MmQueryAllocationSize(previousFB);
 		// If the previous framebuffer is the same size as the one we want to create, don't create a new one and use that instead
 		if (previousFBSize == screenSize) {
-			memset(previousFB, 0x00, screenSize);
+			RtlZeroMemory(previousFB, screenSize);
 			_fb = (unsigned char *)previousFB;
 		} else {
 			MmPersistContiguousMemory(previousFB, previousFBSize, FALSE);
 			MmFreeContiguousMemory(previousFB);
-			AvSetSavedDataAddress(NULL);
 			_fb = framebufferMemory;
 			MmPersistContiguousMemory(_fb, screenSize, TRUE);
 		}
