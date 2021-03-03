@@ -1,4 +1,4 @@
-XBE_TITLE=winapi_filefind
+XBE_TITLE = winapi_filefind
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.c
 NXDK_DIR = $(CURDIR)/../..
