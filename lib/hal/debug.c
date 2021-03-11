@@ -260,7 +260,7 @@ void debugPrintHex(const char *buffer, int length)
 	char tmp[10];
 	for (int i = 0; i < length; i++)
 	{
-		sprintf(tmp, "%02x ", buffer[i]);
+		sprintf(tmp, "%02x ", buffer[i] & 0xFF);
 		debugPrint(tmp);
 	}
 }
