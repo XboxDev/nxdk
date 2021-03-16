@@ -66,6 +66,21 @@ int rand_s (unsigned int *randomValue)
     return 0;
 }
 
+unsigned short _byteswap_ushort (unsigned short val)
+{
+    return __builtin_bswap16(val);
+}
+
+unsigned long _byteswap_ulong (unsigned long val)
+{
+    return __builtin_bswap32(val);
+}
+
+unsigned __int64 _byteswap_uint64 (unsigned __int64 val)
+{
+    return __builtin_bswap64(val);
+}
+
 
 double strtod( const char * _PDCLIB_restrict nptr, char * * _PDCLIB_restrict endptr )
 {
