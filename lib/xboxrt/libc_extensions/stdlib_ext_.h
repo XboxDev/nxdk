@@ -12,6 +12,11 @@ extern "C" {
 int rand_s (unsigned int *randomValue);
 #endif
 
+// Win32 extension for reversing byte order
+unsigned short _byteswap_ushort (unsigned short val);
+unsigned long _byteswap_ulong (unsigned long val);
+unsigned __int64 _byteswap_uint64 (unsigned __int64 val);
+
 typedef void (__cdecl *_purecall_handler)(void);
 
 _purecall_handler __cdecl _get_purecall_handler (void);
