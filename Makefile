@@ -138,11 +138,11 @@ main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 
 %.obj: %.cpp
 	@echo "[ CXX      ] $@"
-	$(VE) $(CXX) $(NXDK_CXXFLAGS) $(CXXFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.cpp,%.cpp.d,$<)' -c -o '$@' '$<'
+	$(VE) $(CXX) $(NXDK_CXXFLAGS) $(CXXFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.obj,%.cpp.d,$@)' -c -o '$@' '$<'
 
 %.obj: %.c
 	@echo "[ CC       ] $@"
-	$(VE) $(CC) $(NXDK_CFLAGS) $(CFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.c,%.c.d,$<)' -c -o '$@' '$<'
+	$(VE) $(CC) $(NXDK_CFLAGS) $(CFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.obj,%.c.d,$@)' -c -o '$@' '$<'
 
 %.obj: %.s
 	@echo "[ AS       ] $@"
