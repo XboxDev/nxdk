@@ -1,4 +1,5 @@
 NXDK_SRCS := \
+	$(NXDK_DIR)/lib/nxdk/format.c \
 	$(NXDK_DIR)/lib/nxdk/mount.c \
 	$(NXDK_DIR)/lib/nxdk/path.c
 
