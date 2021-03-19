@@ -160,6 +160,9 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
 
 #define CONTAINING_RECORD(Address, Type, Field) ((Type *)((PCHAR)(Address) - (ULONG_PTR)__builtin_offsetof(Type, Field)))
 
+#define PAGE_SIZE 4096
+#define ROUND_TO_PAGES(Size) (((ULONG_PTR) (Size) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
+
 /**
  * Time information
  */
