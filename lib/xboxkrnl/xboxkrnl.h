@@ -2905,6 +2905,19 @@ XBAPI NTSTATUS NTAPI NtOpenDirectoryObject
     IN POBJECT_ATTRIBUTES ObjectAttributes
 );
 
+#define CTL_CODE(DeviceType, Function, Method, Access) (((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method))
+#define METHOD_BUFFERED 0
+#define METHOD_IN_DIRECT 1
+#define METHOD_OUT_DIRECT 2
+#define METHOD_NEITHER 3
+
+#define FILE_ANY_ACCESS 0x0000
+#define FILE_READ_ACCESS 0x0001
+#define FILE_WRITE_ACCESS 0x0002
+
+#define FILE_DEVICE_FILE_SYSTEM 0x00000009
+#define FSCTL_DISMOUNT_VOLUME CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 8, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
 XBAPI NTSTATUS NTAPI NtFsControlFile
 (
     IN HANDLE FileHandle,
@@ -2938,6 +2951,62 @@ XBAPI NTSTATUS NTAPI NtDuplicateObject
     OUT PHANDLE TargetHandle,
     IN ULONG Options
 );
+
+typedef enum _MEDIA_TYPE
+{
+    Unknown,
+    F5_1Pt2_512,
+    F3_1Pt44_512,
+    F3_2Pt88_512,
+    F3_20Pt8_512,
+    F3_720_512,
+    F5_360_512,
+    F5_320_512,
+    F5_320_1024,
+    F5_180_512,
+    F5_160_512,
+    RemovableMedia,
+    FixedMedia,
+    F3_120M_512,
+    F3_640_512,
+    F5_640_512,
+    F5_720_512,
+    F3_1Pt2_512,
+    F3_1Pt23_1024,
+    F5_1Pt23_1024,
+    F3_128Mb_512,
+    F3_230Mb_512,
+    F8_256_128,
+    F3_200Mb_512,
+    F3_240M_512,
+    F3_32M_512
+} MEDIA_TYPE, *PMEDIA_TYPE;
+
+typedef struct _DISK_GEOMETRY
+{
+    LARGE_INTEGER Cylinders;
+    MEDIA_TYPE MediaType;
+    DWORD TracksPerCylinder;
+    DWORD SectorsPerTrack;
+    DWORD BytesPerSector;
+} DISK_GEOMETRY, *PDISK_GEOMETRY;
+
+typedef struct _PARTITION_INFORMATION
+{
+    LARGE_INTEGER StartingOffset;
+    LARGE_INTEGER PartitionLength;
+    DWORD HiddenSectors;
+    DWORD PartitionNumber;
+    BYTE PartitionType;
+    BOOLEAN BootIndicator;
+    BOOLEAN RecognizedPartition;
+    BOOLEAN RewritePartition;
+} PARTITION_INFORMATION, *PPARTITION_INFORMATION;
+
+#define IOCTL_DISK_BASE 0x00000007
+
+#define IOCTL_DISK_GET_DRIVE_GEOMETRY CTL_CODE(IOCTL_DISK_BASE, 0x0000, METHOD_BUFFERED, FILE_ANY_ACCESS)
+#define IOCTL_DISK_GET_PARTITION_INFO CTL_CODE(IOCTL_DISK_BASE, 0x0001, METHOD_BUFFERED, FILE_READ_ACCESS)
 
 XBAPI NTSTATUS NTAPI NtDeviceIoControlFile
 (
