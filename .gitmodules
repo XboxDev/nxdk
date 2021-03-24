@@ -31,3 +31,6 @@
 [submodule "lib/sdl/SDL2_image"]
 	path = lib/sdl/SDL2_image
 	url = https://github.com/libsdl-org/SDL_image.git
+[submodule "lib/usb/libusbohci"]
+	path = lib/usb/libusbohci
+	url = https://github.com/XboxDev/libusbohci.git
