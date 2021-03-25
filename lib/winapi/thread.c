@@ -61,9 +61,7 @@ HANDLE CreateThread (LPSECURITY_ATTRIBUTES lpThreadAttributes, SIZE_T dwStackSiz
     HANDLE handle;
 
     if (dwStackSize == 0) {
-        // FIXME: We're directly reading the XBE StackCommit field here.
-        //        A cleaner way with proper structs would be nice.
-        dwStackSize = *((SIZE_T *)0x00010130);
+        dwStackSize = CURRENT_XBE_HEADER->SizeOfStack;
     }
 
     ULONG tlssize;
