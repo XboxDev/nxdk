@@ -3,7 +3,8 @@
     For details, see: https://creativecommons.org/publicdomain/zero/1.0/
 */
 
-.text
+.include "prelude.s.inc"
+safeseh_prelude
 
 /*
     __chkstk does not comply to any standardized calling convention.
@@ -11,6 +12,7 @@
     accordingly before returning.
     Calling __chkstk has the same effect as "subl %eax, %esp".
 */
+.text
 .globl __chkstk
 __chkstk:
     pushl %ecx

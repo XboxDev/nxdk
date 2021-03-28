@@ -1,3 +1,8 @@
+.include "prelude.s.inc"
+safeseh_prelude
+
+.text
+.balign 4
 .globl __aullshr
 __aullshr:
     shrdl %cl, %edx, %eax

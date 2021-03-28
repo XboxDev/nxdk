@@ -17,6 +17,9 @@
 
 // Modified for stdcall calling convention for use in nxdk
 
+.include "prelude.s.inc"
+safeseh_prelude
+
 .text
 .balign 4
 .globl __aullrem
