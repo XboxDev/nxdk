@@ -19,6 +19,7 @@ XBOXRT_SRCS := \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/check_stack.c \
 	$(NXDK_DIR)/lib/xboxrt/c_runtime/chkstk.s \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/purecall.c \
+	$(NXDK_DIR)/lib/xboxrt/vcruntime/stack_protection.c \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/threadsafe_statics.c \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_exception.cpp \
 	$(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.cpp \
