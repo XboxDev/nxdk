@@ -11,7 +11,7 @@
 #include <hal/video.h>
 #include <hal/xbox.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <debug.h>
+#include <hal/debug.h>
 
 #define USE_DHCP         1
 #define PKT_TMR_INTERVAL 5 /* ms */
