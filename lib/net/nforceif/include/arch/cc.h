@@ -36,7 +36,7 @@
 
 /* Include some files for defining library routines */
 #include <string.h>
-#include <debug.h>
+#include <hal/debug.h>
 #include <windows.h>
 
 #define printf debugPrint
