@@ -10,7 +10,7 @@
 #include <string.h>
 #include <hal/xbox.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <debug.h>
+#include <hal/debug.h>
 
 #if LWIP_SOCKET
 
