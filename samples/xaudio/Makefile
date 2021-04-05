@@ -1,7 +1,7 @@
 XBE_TITLE = nxdk\ sample\ -\ xaudio
 GEN_XISO = $(XBE_TITLE).iso
 SRCS = $(CURDIR)/main.c
-NXDK_DIR = $(CURDIR)/../..
+NXDK_DIR ?= $(CURDIR)/../..
 
 all: nxdk_wav.h
 
