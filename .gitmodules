@@ -1,33 +1,43 @@
 [submodule "tools/extract-xiso"]
 	path = tools/extract-xiso
 	url = https://github.com/XboxDev/extract-xiso.git
+	shallow = true
 [submodule "lib/net/lwip"]
 	path = lib/net/lwip
 	url = https://github.com/lwip-tcpip/lwip.git
+	shallow = true
 [submodule "lib/sdl/SDL2"]
 	path = lib/sdl/SDL2
 	url = https://github.com/XboxDev/nxdk-sdl.git
 	branch = nxdk
+	shallow = true
 [submodule "lib/pdclib"]
 	path = lib/pdclib
 	url = https://github.com/XboxDev/nxdk-pdclib.git
 	branch = nxdk
+	shallow = true
 [submodule "lib/sdl/SDL_ttf"]
 	path = lib/sdl/SDL_ttf
-	url = https://github.com/SDL-mirror/SDL_ttf
+	url = https://github.com/SDL-mirror/SDL_ttf.git
+	shallow = true
 [submodule "lib/libcxx"]
 	path = lib/libcxx
 	url = https://github.com/XboxDev/nxdk-libcxx.git
 	branch = nxdk
+	shallow = true
 [submodule "lib/zlib"]
 	path = lib/zlib/zlib
 	url = https://github.com/madler/zlib.git
+	shallow = true
 [submodule "lib/libpng/libpng"]
 	path = lib/libpng/libpng
 	url = https://github.com/glennrp/libpng.git
+	shallow = true
 [submodule "lib/libjpeg/libjpeg-turbo"]
 	path = lib/libjpeg/libjpeg-turbo
 	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git
+	shallow = true
 [submodule "lib/sdl/SDL_image"]
 	path = lib/sdl/SDL2_image
 	url = https://github.com/SDL-mirror/SDL_image.git
+	shallow = true
