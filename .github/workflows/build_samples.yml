@@ -9,70 +9,67 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 1
           submodules: recursive
       - name: Build Docker image
-        run: |
-          docker build -t nxdk ./
+        run: docker build -t nxdk ./
       - name: Test Docker image
-        run: |
-          docker run nxdk sh -c "cd /usr/src/nxdk && sh ./.ci_build_samples.sh"
+        run: docker run nxdk sh -ec "cd /usr/src/nxdk && ./.ci_build_samples.sh"
   windows:
     name: Windows
     runs-on: windows-latest
     timeout-minutes: 20
+    env:
+      POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 1
           submodules: recursive
       - name: Install MSYS2 & Dependencies
         run: |
           echo "Downloading MSYS2 environment..."
-          Invoke-WebRequest -Uri "https://github.com/XboxDev/nxdk-ci-environment-msys2/releases/latest/download/msys64.7z" -OutFile "msys64.7z"
+          curl -fLO "https://github.com/XboxDev/nxdk-ci-environment-msys2/releases/latest/download/msys64.7z"
           echo "Extracting MSYS2 environment..."
           7z x -y msys64.7z "-oC:\tools\"
           echo "Updating MSYS2 environment..."
-          C:\tools\msys64\usr\bin\bash.exe -lc "pacman -Syu --noconfirm"
+          C:\tools\msys64\usr\bin\bash.exe -elc "pacman -Syu --noconfirm"
       - name: Build
         env:
           MSYS2_ARCH: x86_64
           MSYSTEM: MINGW64
-        run: C:\tools\msys64\usr\bin\bash.exe -lc "cd $(cygpath $env:GITHUB_WORKSPACE) && ./.ci_build_samples.sh"
+        run: C:\tools\msys64\usr\bin\bash.exe -elc "cd $(cygpath $env:GITHUB_WORKSPACE) && ./.ci_build_samples.sh"
   macos:
     name: macOS
     runs-on: macOS-latest
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 1
           submodules: recursive
       - name: Install Dependencies
+        env:
+          HOMEBREW_NO_ANALYTICS: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
         run: |
-          export HOMEBREW_NO_INSTALL_CLEANUP=1
           brew doctor || true
           brew update-reset && brew install llvm
       - name: Build
-        run: sh ./.ci_build_samples.sh
+        run: ./.ci_build_samples.sh
   ubuntu:
     name: Ubuntu
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 1
           submodules: recursive
       - name: Install Dependencies
         run: |
-          sudo apt-get update -y && sudo apt-get install -y flex bison clang llvm lld
+          sudo apt-get -y update
+          sudo apt-get -y install llvm lld
       - name: Build
-        run: |
-          export PATH=$PATH:/usr/lib/llvm-6.0/bin
-          sh ./.ci_build_samples.sh
+        run: ./.ci_build_samples.sh

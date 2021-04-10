@@ -7,10 +7,9 @@ else
     NUMCORES=$(nproc)
 fi
 
-cd samples
-for dir in */
+for dir in samples/*/
 do
     cd "$dir"
     make -j${NUMCORES}
-    cd ..
+    cd ../..
 done
