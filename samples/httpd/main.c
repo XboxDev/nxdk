@@ -7,7 +7,6 @@
 #include "lwip/timeouts.h"
 #include "netif/etharp.h"
 #include "pktdrv.h"
-#include <hal/input.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
 #include <xboxkrnl/xboxkrnl.h>
