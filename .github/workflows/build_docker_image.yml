@@ -12,9 +12,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
-          fetch-depth: 1
           submodules: recursive
       - name: Generate tags
         id: tags
