@@ -8,7 +8,6 @@
 #include <netif/etharp.h>
 #include <pktdrv.h>
 #include <hal/video.h>
-#include <hal/input.h>
 #include <hal/xbox.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/debug.h>
