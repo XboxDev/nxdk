@@ -31,7 +31,9 @@ typedef struct
 	int                      numChannels;
 } AC97_DEVICE  __attribute__ ((aligned (8)));
 
-// note that I currently ignore sampleSizeInBits and numChannels.  They
+// The XAudio API is only supposed to be used as a backend. Using SDL2 for 
+// audio playback should be preferred for applications.
+// Note that currently `sampleSizeInBits` and `numChannels` are ignored. Both
 // are provided to cope with future enhancements. Currently supported samples
 // are 16 bit, 2 channels (stereo)
 void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, void *data);
