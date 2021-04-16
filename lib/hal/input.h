@@ -11,6 +11,7 @@ extern "C"
 #endif
 
 /* General input functions */
+__attribute__((deprecated))
 void XInput_Init(void);
 void XInput_Init_Polling(void);
 void XInput_Quit(void);
