@@ -31,13 +31,13 @@ BOOL FreeLibrary (HMODULE hLibModule)
     return TRUE;
 }
 
-static PIMAGE_EXPORT_DIRECTORY find_edataxb (void)
+static PIMAGE_EXPORT_DIRECTORY find_edata (void)
 {
     DWORD num_sections = CURRENT_XBE_HEADER->NumberOfSections;
     PXBE_SECTION_HEADER section_header_addr = CURRENT_XBE_HEADER->PointerToSectionTable;
 
     for (DWORD i = 0; i < num_sections; i++) {
-        if (memcmp(section_header_addr[i].SectionName, ".edataxb", 8) == 0) {
+        if (strcmp(section_header_addr[i].SectionName, ".edata") == 0) {
             return (PIMAGE_EXPORT_DIRECTORY)section_header_addr[i].VirtualAddress;
         }
     }
@@ -50,7 +50,7 @@ FARPROC GetProcAddress (HMODULE hModule, LPCSTR lpProcName)
     if (hModule == NULL) {
         // When no dll handle is given, the symbol gets looked up in the main module
 
-        PIMAGE_EXPORT_DIRECTORY exportdir = find_edataxb();
+        PIMAGE_EXPORT_DIRECTORY exportdir = find_edata();
         if (!exportdir) {
             SetLastError(ERROR_PROC_NOT_FOUND);
             return NULL;

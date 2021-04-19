@@ -63,7 +63,7 @@ NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
                -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
 NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-exceptions
 NXDK_LDFLAGS = -subsystem:windows -fixed -base:0x00010000 \
-               -stack:65536 -merge:.edata=.edataxb
+               -stack:65536 -merge:.edata=.edata
 
 ifeq ($(DEBUG),y)
 NXDK_ASFLAGS += -g -gdwarf-4
