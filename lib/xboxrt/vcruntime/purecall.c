@@ -11,7 +11,7 @@
 
 _purecall_handler current_purecall_handler = NULL;
 
-int __cdecl _purecall ()
+int __cdecl _purecall (void)
 {
     if (current_purecall_handler) {
         current_purecall_handler();
