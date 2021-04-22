@@ -115,7 +115,7 @@ static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 }
 
 
-void XDumpAudioStatus()
+void XDumpAudioStatus(void)
 {
 	volatile AC97_DEVICE *pac97device = &ac97Device;
 	if (pac97device)
@@ -196,7 +196,7 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 	pac97device->mmio[0x170>>2] = MmGetPhysicalAddress((void *)spdifAddress);
 
 	// default to being silent...
-	XAudioPause(pac97device);
+	XAudioPause();
 
 	// reset buffer status
 	analogBufferCount = 0;
@@ -221,7 +221,7 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 }
 
 // tell the chip it is OK to play...
-void XAudioPlay()
+void XAudioPlay(void)
 {
 	AC97_DEVICE *pac97device = &ac97Device;
 	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
@@ -230,7 +230,7 @@ void XAudioPlay()
 }
 
 // tell the chip it is paused.
-void XAudioPause()
+void XAudioPause(void)
 {
 	AC97_DEVICE *pac97device = &ac97Device;
 	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;

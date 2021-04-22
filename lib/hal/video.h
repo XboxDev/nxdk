@@ -74,9 +74,9 @@ If a value of 0 is provided for the bpp a default value of 32bpp is used.
 */
 BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p);
 
-void XVideoWaitForVBlank();
-unsigned char* XVideoGetVideoBase();
-int XVideoVideoMemorySize();
+void XVideoWaitForVBlank(void);
+unsigned char* XVideoGetVideoBase(void);
+int XVideoVideoMemorySize(void);
 
 #ifdef __cplusplus
 }
