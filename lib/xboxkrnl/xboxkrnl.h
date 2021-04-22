@@ -2128,7 +2128,7 @@ XBAPI VOID NTAPI RtlFreeAnsiString
  * Fills a specified memory area with repetitions of a ULONG value
  * @param Destination A pointer to the (ULONG-aligned) memory block which is to be filled
  * @param Length The length of the memory block which is to be filled
- * @param Fill The ULONG-value with which the memory block will be filled
+ * @param Pattern The ULONG-value with which the memory block will be filled
  */
 XBAPI VOID NTAPI RtlFillMemoryUlong
 (
@@ -2300,7 +2300,7 @@ XBAPI SIZE_T NTAPI RtlCompareMemory
 
 /**
  * Converts a single-byte character string (C-style string, NOT an ANSI_STRING object!) to an integer value
- * @param String1 Pointer to a null-terminated single-byte string
+ * @param String Pointer to a null-terminated single-byte string
  * @param Base Specifies the base (decimal, binary, octal, hexadecimal). If not given, the routine looks for prefixes in the given string (0x, 0o, 0b), default is decimal.
  * @param Value Pointer to a ULONG variable where the converted value will be stored
  * @return STATUS_SUCCESS if the string was successfully converted, STATUS_INVALID_PARAMETER otherwise
@@ -2447,8 +2447,8 @@ XBAPI NTSTATUS NTAPI PhyInitialize
 );
 
 /**
- * Read the status information from the NICs' registers
- * @param update
+ * Returns link status information either from NIC registers or from the last value cached by the kernel
+ * @param update If FALSE, the kernel returns the cached value, otherwise the hardware is polled and the cached value updated
  * @return Flags describing the status of the NIC
  */
 XBAPI DWORD NTAPI PhyGetLinkState
@@ -2607,7 +2607,7 @@ XBAPI VOID NTAPI NtUserIoApcDispatcher
 
 /**
  * Suspends the target thread and optionally returns the previous suspend count.
- * @param The handle of the thread object to suspend.
+ * @param ThreadHandle The handle of the thread object to suspend.
  * @param PreviousSuspendCount Optional pointer to a variable that receives the thread's previous suspend count.
  * @return The status of the operation.
  */
@@ -2682,7 +2682,7 @@ XBAPI NTSTATUS NTAPI NtSetEvent
 
 /**
  * Resumes the target thread (see NtSuspendThread) and optionally returns the previous suspend count.
- * @param The handle of the thread object to resume.
+ * @param ThreadHandle The handle of the thread object to resume.
  * @param PreviousSuspendCount Optional pointer to a variable that receives the thread's previous suspend count.
  * @return The status of the operation.
  */
