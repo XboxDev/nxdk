@@ -14,7 +14,7 @@ extern "C"
 
 MMRESULT timeBeginPeriod (UINT uPeriod);
 MMRESULT timeEndPeriod (UINT uPeriod);
-DWORD timeGetTime ();
+DWORD timeGetTime (void);
 
 #ifdef __cplusplus
 }

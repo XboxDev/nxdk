@@ -15,6 +15,6 @@ typedef HANDLE HWND;
 typedef HANDLE HINSTANCE;
 typedef HINSTANCE HMODULE;
 
-typedef int (FAR WINAPI *FARPROC)();
+typedef int (FAR WINAPI *FARPROC)(void);
 
 #endif
