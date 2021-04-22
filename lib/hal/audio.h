@@ -35,8 +35,8 @@ typedef struct
 // are provided to cope with future enhancements. Currently supported samples
 // are 16 bit, 2 channels (stereo)
 void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, void *data);
-void XAudioPlay();
-void XAudioPause();
+void XAudioPlay(void);
+void XAudioPause(void);
 void XAudioProvideSamples(unsigned char *buffer, unsigned short bufferLength, int isFinal);
 
 #ifdef __cplusplus

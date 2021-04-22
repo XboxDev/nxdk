@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-void XReboot();
+void XReboot(void);
 
 void XLaunchXBE(char *xbePath);
 
