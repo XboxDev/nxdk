@@ -4221,7 +4221,7 @@ XBAPI OBJECT_TYPE ExMutantObjectType;
 
 XBAPI LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 (
-    IN PLARGE_INTEGER Addend,
+    IN OUT PLARGE_INTEGER Addend,
     IN LARGE_INTEGER Increment
 );
 
@@ -4430,7 +4430,7 @@ XBAPI PSINGLE_LIST_ENTRY FASTCALL InterlockedPopEntrySList
  */
 XBAPI LONG FASTCALL InterlockedIncrement
 (
-    IN PLONG Addend
+    IN OUT LONG volatile *Addend
 );
 
 XBAPI PSINGLE_LIST_ENTRY FASTCALL InterlockedFlushSList
@@ -4440,13 +4440,13 @@ XBAPI PSINGLE_LIST_ENTRY FASTCALL InterlockedFlushSList
 
 XBAPI LONG FASTCALL InterlockedExchangeAdd
 (
-    IN OUT PLONG Addend,
+    IN OUT LONG volatile *Addend,
     IN LONG Increment
 );
 
 XBAPI LONG FASTCALL InterlockedExchange
 (
-    IN OUT PLONG Target,
+    IN OUT LONG volatile *Target,
     IN LONG Value
 );
 
@@ -4457,12 +4457,12 @@ XBAPI LONG FASTCALL InterlockedExchange
  */
 XBAPI LONG FASTCALL InterlockedDecrement
 (
-    IN PLONG Addend
+    IN OUT LONG volatile *Addend
 );
 
 XBAPI LONG FASTCALL InterlockedCompareExchange
 (
-    IN OUT PLONG Destination,
+    IN OUT LONG volatile *Destination,
     IN LONG ExChange,
     IN LONG Comparand
 );
@@ -4528,7 +4528,7 @@ XBAPI PLIST_ENTRY FASTCALL ExfInterlockedInsertHeadList
  */
 XBAPI LONGLONG FASTCALL ExInterlockedCompareExchange64
 (
-    IN PLONGLONG Destination,
+    IN OUT LONGLONG volatile *Destination,
     IN PLONGLONG Exchange,
     IN PLONGLONG Comparand
 );
