@@ -1,6 +1,6 @@
 nxdk - *the new open source xdk*
 ================================
-nxdk is a software development kit for the original Xbox. nxdk is a revitalization of [OpenXDK](https://web.archive.org/web/20170624051336/http://openxdk.sourceforge.net:80/). 
+nxdk is a software development kit for the original Xbox. nxdk is a revitalization of [OpenXDK](https://web.archive.org/web/20170624051336/http://openxdk.sourceforge.net:80/).
 It is maintained by the [XboxDev](https://github.com/XboxDev/XboxDev) community.
 
 Notable features:
@@ -40,13 +40,11 @@ OS-specific instructions for installing these prerequisites can be found in the 
     git clone --recursive https://github.com/XboxDev/nxdk.git
 
 ### Build Samples
-Samples are easily built by running the Makefile in one of the sample directories. Details can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Build-a-Sample). nxdk also supports automatic [creation of ISO files](https://github.com/XboxDev/nxdk/wiki/Create-an-XISO).
+Samples are easily built by running the activation script `bin/activate`, which will spawn a shell that is fully set up to start using nxdk, and then running the Makefile in one of the sample directories. Details can be found in the [Wiki](https://github.com/XboxDev/nxdk/wiki/Build-a-Sample). nxdk also supports automatic [creation of ISO files](https://github.com/XboxDev/nxdk/wiki/Create-an-XISO).
 
 Next Steps
 ----------
-Copy one of the sample directories to get started. You can copy it anywhere you
-like, but make sure that the `NXDK_DIR` variable in the Makefile points to
-correct place. Then, in the directory, you can simply run `make`.
+Copy one of the sample directories to get started. You can copy it anywhere you like. Run nxdk's activation script `bin/activate`, then, in the directory of your program, you can simply run `make`.
 
 Credits
 -------

@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+clang \
+    -target i386-pc-win32 \
+    -march=pentium3 \
+    -nostdlib \
+    -I${NXDK_DIR}/lib \
+    -I${NXDK_DIR}/lib/xboxrt \
+    "$@"

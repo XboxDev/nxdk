@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+eval $(./bin/activate -s)
+
 if [ $(uname) = 'Darwin' ]; then
     NUMCORES=$(sysctl -n hw.logicalcpu)
 else
