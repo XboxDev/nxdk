@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+clang \
+    -target i386-pc-win32 \
+    -march=pentium3 \
+    -fuse-ld=nxdk-link \
+    -ffreestanding \
+    -nostdlib \
+    -fno-builtin \
+    -I${NXDK_DIR}/lib/libcxx/include \
+    -I${NXDK_DIR}/lib \
+    -I${NXDK_DIR}/lib/xboxrt/libc_extensions \
+    -isystem ${NXDK_DIR}/lib/pdclib/include \
+    -I${NXDK_DIR}/lib/pdclib/platform/xbox/include \
+    -I${NXDK_DIR}/lib/winapi \
+    -I${NXDK_DIR}/lib/xboxrt/vcruntime \
+    -DNXDK \
+    -D__STDC__=1 \
+    -fno-exceptions \
+    "$@"

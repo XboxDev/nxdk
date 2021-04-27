@@ -13,12 +13,13 @@ endif
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
 
+LD  = nxdk-link
+LIB = nxdk-lib
+AS  = nxdk-as
+CC  = nxdk-cc
+CXX = nxdk-cxx
+
 ifeq ($(UNAME_S),Linux)
-LD           = lld -flavor link
-LIB          = llvm-lib
-AS           = clang
-CC           = clang
-CXX          = clang++
 ifneq ($(UNAME_M),x86_64)
 CGC          = $(NXDK_DIR)/tools/cg/linux/cgc.i386
 else
@@ -26,22 +27,12 @@ CGC          = $(NXDK_DIR)/tools/cg/linux/cgc
 endif #UNAME_M != x86_64
 endif
 ifeq ($(UNAME_S),Darwin)
-LD           = /usr/local/opt/llvm/bin/lld -flavor link
-LIB          = /usr/local/opt/llvm/bin/llvm-lib
-AS           = /usr/local/opt/llvm/bin/clang
-CC           = /usr/local/opt/llvm/bin/clang
-CXX          = /usr/local/opt/llvm/bin/clang++
 CGC          = $(NXDK_DIR)/tools/cg/mac/cgc
 endif
 ifneq (,$(findstring MSYS_NT,$(UNAME_S)))
 $(error Please use a MinGW64 shell)
 endif
 ifneq (,$(findstring MINGW,$(UNAME_S)))
-LD           = lld-link
-LIB          = llvm-lib
-AS           = clang
-CC           = clang
-CXX          = clang++
 CGC          = $(NXDK_DIR)/tools/cg/win/cgc
 endif
 
@@ -51,19 +42,6 @@ VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
 FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
 EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/build/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
-NXDK_CFLAGS  = -target i386-pc-win32 -march=pentium3 \
-               -ffreestanding -nostdlib -fno-builtin \
-               -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt/libc_extensions \
-               -isystem $(NXDK_DIR)/lib/pdclib/include \
-               -I$(NXDK_DIR)/lib/pdclib/platform/xbox/include \
-               -I$(NXDK_DIR)/lib/winapi \
-               -I$(NXDK_DIR)/lib/xboxrt/vcruntime \
-               -DNXDK -D__STDC__=1
-NXDK_ASFLAGS = -target i386-pc-win32 -march=pentium3 \
-               -nostdlib -I$(NXDK_DIR)/lib -I$(NXDK_DIR)/lib/xboxrt
-NXDK_CXXFLAGS = -I$(NXDK_DIR)/lib/libcxx/include $(NXDK_CFLAGS) -fno-exceptions
-NXDK_LDFLAGS = -subsystem:windows -fixed -base:0x00010000 \
-               -stack:65536 -merge:.edata=.edataxb
 
 ifeq ($(DEBUG),y)
 NXDK_ASFLAGS += -g -gdwarf-4

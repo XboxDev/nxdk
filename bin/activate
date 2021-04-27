@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+readlink_cmd="readlink"
+
+if [ $(uname -s) = 'Darwin' ]; then
+    export PATH=/usr/local/opt/llvm/bin/:$PATH
+    readlink_cmd="greadlink"
+fi
+
+export NXDK_DIR="${NXDK_DIR:-$(dirname $(dirname "$(${readlink_cmd} -f "$0")")../)}"
+export PATH=${NXDK_DIR}/bin:$PATH
+
+if [ "$1" = "-s" ]; then cat <<- DONE
+    export NXDK_DIR="$NXDK_DIR";
+    export PATH="$PATH";
+DONE
+else
+    exec "${@:-$SHELL}"
+fi
