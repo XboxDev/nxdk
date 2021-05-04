@@ -34,8 +34,6 @@
 
 #include "pktdrv.h"
 
-#define DISPLAYMSG
-
 //Defines number of Rx & Tx descriptors, and number of buffers -ring- for received pkts
 #define NBBUFF	32
 
