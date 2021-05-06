@@ -29,7 +29,7 @@ int main(void)
         Sleep(5000);
         return 1;
     }
-    debugPrint("Drive bitmask: 0x%x\n\n", driveBits);
+    debugPrint("Drive bitmask: 0x%lx\n\n", driveBits);
 
 
     // Reserve buffer long enough for all possible drive strings plus null-terminator
