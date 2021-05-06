@@ -16,9 +16,9 @@ void _cdecl _xlibc_check_stack (DWORD requested_size, DWORD stack_ptr)
     {
         _print("\n"
                "Stack overflow caught!\n"
-               "stack pointer: 0x%x\n"
-               "request size:  0x%x\n"
-               "stack limit:   0x%x\n"
+               "stack pointer: 0x%lx\n"
+               "request size:  0x%lx\n"
+               "stack limit:   0x%lx\n"
                "\n",
                stack_ptr, requested_size, (DWORD)current_thread->StackLimit);
 
