@@ -48,7 +48,7 @@ int main(void)
     if (error == ERROR_NO_MORE_FILES) {
         debugPrint("Done!\n");
     } else {
-        debugPrint("error: %x\n", error);
+        debugPrint("error: %lx\n", error);
     }
 
     FindClose(hFind);
