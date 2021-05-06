@@ -23,7 +23,7 @@ extern "C"
  * Prints a message to whatever debug facilities might
  * be available.
  */
-void debugPrint(const char *format, ...);
+void debugPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
 void debugPrintNum(int i);
 void debugPrintBinary( int num );
 void debugPrintHex(const char *buffer, int length);
