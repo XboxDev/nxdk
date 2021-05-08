@@ -1261,68 +1261,12 @@ typedef struct _ERWLOCK
     KSEMAPHORE ReaderSemaphore;
 } ERWLOCK, *PERWLOCK;
 
-#define EXCEPTION_NONCONTINUABLE 0x01
-#define EXCEPTION_UNWINDING 0x02
-#define EXCEPTION_EXIT_UNWIND 0x04
-#define EXCEPTION_STACK_INVALID 0x08
-#define EXCEPTION_NESTED_CALL 0x10
-#define EXCEPTION_TARGET_UNWIND 0x20
-#define EXCEPTION_COLLIDED_UNWIND 0x40
-#define EXCEPTION_UNWIND (EXCEPTION_UNWINDING | EXCEPTION_EXIT_UNWIND | EXCEPTION_TARGET_UNWIND | EXCEPTION_COLLIDED_UNWIND)
-#define EXCEPTION_MAXIMUM_PARAMETERS 15
-
-typedef struct _EXCEPTION_RECORD
-{
-    NTSTATUS ExceptionCode;
-    ULONG ExceptionFlags;
-    struct _EXCEPTION_RECORD *ExceptionRecord;
-    PVOID ExceptionAddress;
-    ULONG NumberParameters;
-    ULONG_PTR ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
-} EXCEPTION_RECORD, *PEXCEPTION_RECORD;
-
 typedef struct _XBOX_REFURB_INFO
 {
     ULONG Signature;
     ULONG PowerCycleCount;
     LARGE_INTEGER FirstSetTime;
 } XBOX_REFURB_INFO;
-
-typedef struct _FLOATING_SAVE_AREA
-{
-    WORD ControlWord;
-    WORD StatusWord;
-    WORD TagWord;
-    WORD ErrorOpcode;
-    DWORD ErrorOffset;
-    DWORD ErrorSelector;
-    DWORD DataOffset;
-    DWORD DataSelector;
-    DWORD MXCsr;
-    DWORD Reserved2;
-    BYTE RegisterArea[128];
-    BYTE XmmRegisterArea[128];
-    BYTE Reserved4[224];
-    DWORD Cr0NpxState;
-} __attribute__((packed)) FLOATING_SAVE_AREA, *PFLOATING_SAVE_AREA;
-
-typedef struct _CONTEXT
-{
-    DWORD ContextFlags;
-    FLOATING_SAVE_AREA FloatSave;
-    DWORD Edi;
-    DWORD Esi;
-    DWORD Ebx;
-    DWORD Edx;
-    DWORD Ecx;
-    DWORD Eax;
-    DWORD Ebp;
-    DWORD Eip;
-    DWORD SegCs;
-    DWORD EFlags;
-    DWORD Esp;
-    DWORD SegSs;
-} CONTEXT, *PCONTEXT;
 
 typedef struct _KFLOATING_SAVE
 {

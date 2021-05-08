@@ -2,12 +2,6 @@
 #include <eh.h>
 #include <xboxkrnl/xboxkrnl.h>
 
-typedef struct _EXCEPTION_POINTERS
-{
-    PEXCEPTION_RECORD ExceptionRecord;
-    PCONTEXT ContextRecord;
-} EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
-
 struct ScopeTableEntry
 {
     DWORD EnclosingLevel;
