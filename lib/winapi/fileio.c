@@ -167,6 +167,38 @@ BOOL WriteFile (HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
     }
 }
 
+BOOL SetEndOfFile (HANDLE hFile)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_POSITION_INFORMATION positionInfo;
+    FILE_END_OF_FILE_INFORMATION eofInfo;
+    FILE_ALLOCATION_INFORMATION allocationInfo;
+
+    status = NtQueryInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    eofInfo.EndOfFile = positionInfo.CurrentByteOffset;
+    allocationInfo.AllocationSize = positionInfo.CurrentByteOffset;
+
+    status = NtSetInformationFile(hFile, &ioStatusBlock, &eofInfo, sizeof(eofInfo), FileEndOfFileInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtSetInformationFile(hFile, &ioStatusBlock, &allocationInfo, sizeof(allocationInfo), FileAllocationInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 DWORD SetFilePointer (HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
     NTSTATUS status;
