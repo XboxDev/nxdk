@@ -15,7 +15,14 @@ jobs:
       - name: Build Docker image
         run: docker build -t nxdk ./
       - name: Test Docker image
-        run: docker run nxdk sh -ec "cd /usr/src/nxdk && ./.ci_build_samples.sh"
+        run: |
+          cd samples
+          for dir in */
+          do
+            cd "$dir"
+            docker run --rm -v `pwd`:/usr/src/app -t nxdk make -j`nproc`
+            cd ..
+          done
   windows:
     name: Windows
     runs-on: windows-latest
