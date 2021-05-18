@@ -3,3 +3,4 @@ tools/cg/mac
 tools/cg/win
 lib/sdl/SDL2/test
 lib/libcxx/test
+samples/
