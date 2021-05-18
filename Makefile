@@ -76,6 +76,13 @@ ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
 endif
 
+ifneq ($(NXDK_ONLY),)
+NXDK_CXX = y
+NXDK_NET = y
+NXDK_SDL = y
+TARGET = main.exe
+endif
+
 all: $(TARGET)
 
 include $(NXDK_DIR)/lib/Makefile
@@ -123,9 +130,14 @@ endif
 
 $(SRCS): $(SHADER_OBJS)
 
+ifneq ($(NXDK_ONLY),)
+.PHONY: main.exe
+main.exe: $(OBJS)
+else
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 	$(VE) $(LD) $(NXDK_LDFLAGS) $(LDFLAGS) -out:'$@' $^
+endif
 
 %.lib:
 	@echo "[ LIB      ] $@"
