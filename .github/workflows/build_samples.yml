@@ -7,20 +7,31 @@ jobs:
     name: Docker
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        image-name: [nxdk, nxdk-debug, nxdk-lto]
+        include:
+          - image-name: nxdk
+            build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
+          - image-name: nxdk-debug
+            build-args: buildparams=DEBUG=y
+          - image-name: nxdk-lto
+            build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
     steps:
       - name: Clone Tree
         uses: actions/checkout@v2
         with:
           submodules: recursive
       - name: Build Docker image
-        run: docker build -t nxdk ./
+        run: |
+          docker build --build-arg buildparams="${{ matrix.build-args }}" -t ${{ matrix.image-name }} ./
       - name: Test Docker image
         run: |
           cd samples
           for dir in */
           do
             cd "$dir"
-            docker run --rm -v `pwd`:/usr/src/app -t nxdk make -j`nproc`
+            docker run --rm -v `pwd`:/usr/src/app -t ${{ matrix.image-name }} make -j`nproc`
             cd ..
           done
   windows:
