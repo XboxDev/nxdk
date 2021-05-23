@@ -10,6 +10,16 @@ jobs:
     if: github.repository_owner == 'XboxDev'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        image-name: [nxdk, nxdk-debug, nxdk-lto]
+        include:
+          - image-name: nxdk
+            build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
+          - image-name: nxdk-debug
+            build-args: buildparams=DEBUG=y
+          - image-name: nxdk-lto
+            build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
     steps:
       - name: Clone Tree
         uses: actions/checkout@v2
@@ -18,7 +28,7 @@ jobs:
       - name: Generate tags
         id: tags
         run: |
-          DOCKER_IMAGE=xboxdev/nxdk
+          DOCKER_IMAGE=xboxdev/${{ matrix.image-name }}
           TAGS="${DOCKER_IMAGE}:latest"
           TAGS="$TAGS,${DOCKER_IMAGE}:git-${GITHUB_SHA::8}"
           TAGS="$TAGS,ghcr.io/${DOCKER_IMAGE}:latest"
@@ -42,6 +52,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          build-args: ${{ matrix.build-args }}
           platforms: linux/amd64,linux/386
           push: true
           tags: ${{ steps.tags.outputs.tags }}
