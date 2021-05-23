@@ -72,6 +72,12 @@ NXDK_CXXFLAGS += -g -gdwarf-4
 NXDK_LDFLAGS += -debug
 endif
 
+ifeq ($(LTO),y)
+NXDK_ASFLAGS += -flto
+NXDK_CFLAGS += -flto
+NXDK_CXXFLAGS += -flto
+endif
+
 ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
 endif
