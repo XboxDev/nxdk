@@ -25,6 +25,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+      - name: Generate timestamp
+        id: timestamp
+        run: echo ::set-output name=timestamp::$(date --rfc-3339=seconds --utc)
       - name: Generate tags
         id: tags
         run: |
@@ -56,3 +59,6 @@ jobs:
           platforms: linux/amd64,linux/386
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}
