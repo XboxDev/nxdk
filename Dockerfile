@@ -1,4 +1,4 @@
-FROM ghcr.io/xboxdev/nxdk-buildbase:git-39eb90d1
+FROM ghcr.io/xboxdev/nxdk-buildbase:git-2c3115b1
 
 COPY ./ /usr/src/nxdk/
 
