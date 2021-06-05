@@ -131,7 +131,7 @@ void debugPrintNum(int i)
 	num[8] = n2c((i >> 4) & 0x0F);
 	num[9] = n2c((i >> 0) & 0x0F);
 	num[10] = 0;
-	debugPrint(num);
+	debugPrint("%s", num);
 }
 
 void debugPrintBinary( int num )
@@ -145,7 +145,7 @@ void debugPrintBinary( int num )
 		 binNum[x++] = ' ';
    }
    binNum[x] = 0;
-   debugPrint( binNum );
+   debugPrint("%s", binNum);
 }
 
 void debugPrint(const char *format, ...)
@@ -261,6 +261,6 @@ void debugPrintHex(const char *buffer, int length)
 	for (int i = 0; i < length; i++)
 	{
 		sprintf(tmp, "%02x ", buffer[i] & 0xFF);
-		debugPrint(tmp);
+		debugPrint("%s", tmp);
 	}
 }
