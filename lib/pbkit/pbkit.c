@@ -549,7 +549,7 @@ static void pb_subprog(DWORD subprogID, DWORD paramA, DWORD paramB)
             break;
 
         default:
-            debugPrint( "Unknown subProgID %d has been detected by DPC (A=%x B=%x).\n",
+            debugPrint( "Unknown subProgID %lu has been detected by DPC (A=%lx B=%lx).\n",
                     subprogID,
                     paramA,
                     paramB  );
@@ -671,11 +671,11 @@ static DWORD pb_gr_handler(void)
                             if (nsource&NV_PGRAPH_NSOURCE_TEX_A_PROTECTION_PENDING) debugPrint("GPU Error : texture A protection error!\n");
                             if (nsource&NV_PGRAPH_NSOURCE_TEX_B_PROTECTION_PENDING) debugPrint("GPU Error : texture B protection error!\n");
 
-                            debugPrint( "Error binary flags : %08x\n"
+                            debugPrint( "Error binary flags : %08lx\n"
                                     "Channel ID : %d (0=3D)\n"
-                                    "Channel class : %x\n"
-                                    "Push buffer inner register target : %04x\n"
-                                    "Push buffer data (lo) or instance : %08x\n"
+                                    "Channel class : %lx\n"
+                                    "Push buffer inner register target : %04lx\n"
+                                    "Push buffer data (lo) or instance : %08lx\n"
                                     "Push buffer data (hi) or instance : %08x\n"
                                     "Multi-purpose register A [0x1D8C] : %08x\n"
                                     "Multi-purpose register B [0x1D90] : %08x\n\n",
@@ -848,7 +848,7 @@ static DWORD pb_fifo_handler(void)
     if (status&NV_PFIFO_INTR_0_DMA_PUSHER_PENDING)
     {
         pb_show_debug_screen();
-        debugPrint("Software Put=%08x\n",pb_Put);
+        debugPrint("Software Put=%08lx\n",(DWORD)pb_Put);
         debugPrint("Hardware Put=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_PUT));
         debugPrint("Hardware Get=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_GET));
         debugPrint("Dma push buffer engine encountered invalid data at these addresses.\n");
@@ -2189,7 +2189,7 @@ void pb_end(uint32_t *pEnd)
             TimeStamp2=KeTickCount;
             if (TimeStamp2-TimeStamp1>TICKSTIMEOUT)
             {
-                debugPrint("pb_end: Busy for too long (%d) (%08x)\n",
+                debugPrint("pb_end: Busy for too long (%lu) (%08x)\n",
                     ((DWORD)(pb_Put)-(DWORD)(pb_Head)),
                     VIDEOREG(NV_PFIFO_CACHE1_DMA_GET)
                     );
@@ -2817,7 +2817,7 @@ int pb_init(void)
         {
             //This PLL configuration doesn't create a 233.33 Mhz freq from Xtal
             //Have this issure reported so we can update source for that case
-            debugPrint("PLL=%d\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
+            debugPrint("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
             return -5;
         }
     }
