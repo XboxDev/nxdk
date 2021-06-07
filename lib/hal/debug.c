@@ -229,7 +229,7 @@ void debugClearScreen( void )
 {
 	synchronizeFramebuffer();
 
-	memset( SCREEN_FB, 0, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT) );
+	RtlZeroMemory(SCREEN_FB, ((SCREEN_BPP+7)/8) * (SCREEN_WIDTH * SCREEN_HEIGHT));
 	nextRow = MARGIN;
 	nextCol = MARGIN; 
 
