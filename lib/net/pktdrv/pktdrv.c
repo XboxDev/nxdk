@@ -766,7 +766,7 @@ int Pktdrv_Init(void)
 	}
 
 	//Write zeroes in first buffer and second buffer (descriptors)
-	memset((void *)buffers_addr, 0, 4096); 
+	RtlZeroMemory((void *)buffers_addr, 4096);
 
 	buffers_physaddr=MmGetPhysicalAddress((void *)buffers_addr);
 
