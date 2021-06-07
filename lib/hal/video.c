@@ -351,7 +351,7 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	                                                 PAGE_READWRITE |
 	                                                 PAGE_WRITECOMBINE);
 	assert(framebufferMemory != NULL);
-	memset(framebufferMemory, 0x00, screenSize);
+	RtlZeroMemory(framebufferMemory, screenSize);
 	asm __volatile__("sfence");
 
 	do
@@ -420,7 +420,7 @@ BOOL XVideoSetMode(int width, int height, int bpp, int refresh)
 		return TRUE;
 	}
 
-	memset(&vmCurrent, 0x00, sizeof(VIDEO_MODE));
+	RtlZeroMemory(&vmCurrent, sizeof(VIDEO_MODE));
 	return FALSE;
 }
 
