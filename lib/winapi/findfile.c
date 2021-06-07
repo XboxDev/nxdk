@@ -74,7 +74,7 @@ HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData)
         return INVALID_HANDLE_VALUE;
     }
 
-    memset(&fileInformation, 0, sizeof(fileInformation));
+    RtlZeroMemory(&fileInformation, sizeof(fileInformation));
     status = NtQueryDirectoryFile(handle, NULL, NULL, NULL, &ioStatusBlock, &fileInformation, sizeof(fileInformation), FileDirectoryInformation, &mask, TRUE);
 
     if (!NT_SUCCESS(status)) {
@@ -94,7 +94,7 @@ BOOL FindNextFileA (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData)
     IO_STATUS_BLOCK ioStatusBlock;
     struct FileInfo fileInformation;
 
-    memset(&fileInformation, 0, sizeof(fileInformation));
+    RtlZeroMemory(&fileInformation, sizeof(fileInformation));
     status = NtQueryDirectoryFile(hFindFile, NULL, NULL, NULL, &ioStatusBlock, &fileInformation, sizeof(fileInformation), FileDirectoryInformation, NULL, FALSE);
     if (status == STATUS_NO_MORE_FILES) {
         SetLastError(ERROR_NO_MORE_FILES);
