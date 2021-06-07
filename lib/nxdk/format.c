@@ -77,7 +77,7 @@ bool nxFormatVolume (const char *volumePath, uint32_t bytesPerCluster)
     }
 
     // Allocate the buffer for our upcoming disk writes
-    uint8_t *buffer = malloc(alignment);
+    uint8_t *buffer = MmAllocateContiguousMemory(alignment);
     if (!buffer) {
         NtClose(handle);
         SetLastError(RtlNtStatusToDosError(STATUS_INSUFFICIENT_RESOURCES));
