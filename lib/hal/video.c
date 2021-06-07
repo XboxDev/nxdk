@@ -371,7 +371,7 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 		SIZE_T previousFBSize = MmQueryAllocationSize(previousFB);
 		// If the previous framebuffer is the same size as the one we want to create, don't create a new one and use that instead
 		if (previousFBSize == screenSize) {
-			RtlZeroMemory(previousFB, screenSize);
+			memset(previousFB, 0, screenSize);
 			_fb = (unsigned char *)previousFB;
 		} else {
 			MmPersistContiguousMemory(previousFB, previousFBSize, FALSE);

@@ -84,7 +84,7 @@ bool nxFormatVolume (const char *volumePath, uint32_t bytesPerCluster)
         return false;
     }
 
-    RtlFillMemory(buffer, alignment, 0xFF);
+    memset(buffer, 0xFF, alignment);
     FATX_SUPERBLOCK *superblock = (FATX_SUPERBLOCK *)buffer;
     superblock->Signature = FATX_SIGNATURE;
     superblock->SectorsPerCluster = bytesPerCluster / diskGeometry.BytesPerSector;
@@ -104,8 +104,7 @@ bool nxFormatVolume (const char *volumePath, uint32_t bytesPerCluster)
         if (!NT_SUCCESS(status)) {
             goto close_and_return;
         }
-
-        RtlZeroMemory(buffer, alignment);
+        memset(buffer, 0, alignment);
     }
 
     // Following the superblock, write the cluster table
@@ -127,7 +126,7 @@ bool nxFormatVolume (const char *volumePath, uint32_t bytesPerCluster)
     }
 
     // Following the cluster table, write an empty root directory cluster
-    RtlFillMemory(buffer, alignment, 0xFF);
+    memset(buffer, 0xFF, alignment);
     for (size_t remainingBytes = bytesPerCluster; remainingBytes > 0; remainingBytes -= alignment, offset.QuadPart += alignment) {
         status = NtWriteFile(handle, NULL, NULL, NULL, &ioStatus, buffer, alignment, &offset);
         if (!NT_SUCCESS(status)) {
