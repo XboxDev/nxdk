@@ -37,7 +37,7 @@ void XLaunchXBE(char *xbePath)
 
     MmPersistContiguousMemory(LaunchDataPage, 0x1000, TRUE);
 
-	memset((void*)LaunchDataPage, 0, 0x1000);
+	RtlZeroMemory((void*)LaunchDataPage, 0x1000);
 
 	LaunchDataPage->Header.dwLaunchDataType = 0xFFFFFFFF;
 	LaunchDataPage->Header.dwTitleId = 0;
