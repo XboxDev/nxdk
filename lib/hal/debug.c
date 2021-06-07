@@ -216,8 +216,8 @@ void debugAdvanceScreen( void )
 	
 	unsigned char* thisScreen = SCREEN_FB + (SCREEN_WIDTH * MARGIN)  * pixelSize;
 	unsigned char* prevScreen = thisScreen+lineSize;
-		
-	memmove(thisScreen, prevScreen, screenSize);
+
+	RtlMoveMemory(thisScreen, prevScreen, screenSize);
 
 	nextRow -= (FONT_HEIGHT+1);
 	nextCol  = MARGIN; 
