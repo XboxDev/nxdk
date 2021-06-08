@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+cmake \
+    -DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake \
+    "$@"
