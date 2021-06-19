@@ -283,7 +283,7 @@ typedef struct _XBE_SECTION_HEADER
 
 typedef struct _XBE_FILE_HEADER
 {
-    WORD Magic;
+    DWORD Magic;
     UCHAR Signature[256];
     DWORD ImageBase;
     DWORD SizeOfHeaders;
