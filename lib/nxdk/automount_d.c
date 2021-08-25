@@ -11,10 +11,10 @@
 #include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
 
-__attribute__((constructor)) void automount_d_drive (void)
+__cdecl int automount_d_drive (void)
 {
     if (nxIsDriveMounted('D')) {
-        return;
+        return 0;
     }
 
     // D: doesn't exist yet, so we create it
@@ -31,4 +31,7 @@ __attribute__((constructor)) void automount_d_drive (void)
     BOOL success;
     success = nxMountDrive('D', targetPath);
     assert(success);
+
+    return 0;
 }
+__attribute__((section(".CRT$XIT"))) int (__cdecl *const automount_d_drive_p)(void) = automount_d_drive;
