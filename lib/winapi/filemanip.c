@@ -1,4 +1,5 @@
 #include <fileapi.h>
+#include <handleapi.h>
 #include <winbase.h>
 #include <winerror.h>
 #include <assert.h>
@@ -162,6 +163,15 @@ BOOL SetFileTime (HANDLE hFile, const FILETIME *lpCreationTime, const FILETIME *
     return TRUE;
 }
 
+static NTSTATUS DeleteHandle (HANDLE handle)
+{
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_DISPOSITION_INFORMATION dispositionInformation;
+    dispositionInformation.DeleteFile = TRUE;
+
+    return NtSetInformationFile(handle, &ioStatusBlock, &dispositionInformation, sizeof(dispositionInformation), FileDispositionInformation);
+}
+
 BOOL DeleteFileA (LPCTSTR lpFileName)
 {
     NTSTATUS status;
@@ -169,7 +179,6 @@ BOOL DeleteFileA (LPCTSTR lpFileName)
     ANSI_STRING path;
     OBJECT_ATTRIBUTES objectAttributes;
     IO_STATUS_BLOCK ioStatusBlock;
-    FILE_DISPOSITION_INFORMATION dispositionInformation;
 
     assert(lpFileName != NULL);
     RtlInitAnsiString(&path, lpFileName);
@@ -182,9 +191,7 @@ BOOL DeleteFileA (LPCTSTR lpFileName)
         return FALSE;
     }
 
-    dispositionInformation.DeleteFile = TRUE;
-
-    status = NtSetInformationFile(handle, &ioStatusBlock, &dispositionInformation, sizeof(dispositionInformation), FileDispositionInformation);
+    status = DeleteHandle(handle);
 
     if (!NT_SUCCESS(status)) {
         NtClose(handle);
@@ -208,7 +215,6 @@ BOOL RemoveDirectoryA (LPCSTR lpPathName)
     ANSI_STRING path;
     OBJECT_ATTRIBUTES objectAttributes;
     IO_STATUS_BLOCK ioStatusBlock;
-    FILE_DISPOSITION_INFORMATION dispositionInformation;
 
     assert(lpPathName != NULL);
     RtlInitAnsiString(&path, lpPathName);
@@ -221,9 +227,8 @@ BOOL RemoveDirectoryA (LPCSTR lpPathName)
         return FALSE;
     }
 
-    dispositionInformation.DeleteFile = TRUE;
+    status = DeleteHandle(handle);
 
-    status = NtSetInformationFile(handle, &ioStatusBlock, &dispositionInformation, sizeof(dispositionInformation), FileDispositionInformation);
     if (!NT_SUCCESS(status)) {
         SetLastError(RtlNtStatusToDosError(status));
         return FALSE;
@@ -301,6 +306,137 @@ BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
     } else {
         return TRUE;
     }
+}
+
+BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists)
+{
+    NTSTATUS status;
+    HANDLE sourceHandle;
+    HANDLE targetHandle = INVALID_HANDLE_VALUE;
+    ANSI_STRING targetPath;
+    OBJECT_ATTRIBUTES objectAttributes;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_BASIC_INFORMATION fileBasicInformation;
+    FILE_NETWORK_OPEN_INFORMATION networkOpenInformation;
+    LPVOID readBuffer = NULL;
+    SIZE_T readBufferRegionSize = 64 * 1024;
+    DWORD bytesRead;
+
+    sourceHandle = CreateFile(
+        lpExistingFileName,
+        FILE_GENERIC_READ,
+        FILE_SHARE_READ,
+        NULL,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,
+        NULL);
+    if (sourceHandle == INVALID_HANDLE_VALUE) {
+        return FALSE;
+    }
+
+    status = NtQueryInformationFile(
+        sourceHandle,
+        &ioStatusBlock,
+        &networkOpenInformation,
+        sizeof(networkOpenInformation),
+        FileNetworkOpenInformation);
+    if (!NT_SUCCESS(status)) {
+        NtClose(sourceHandle);
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    RtlInitAnsiString(&targetPath, lpNewFileName);
+    InitializeObjectAttributes(&objectAttributes, &targetPath, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
+
+    status = NtCreateFile(
+            &targetHandle,
+            FILE_GENERIC_WRITE,
+            &objectAttributes,
+            &ioStatusBlock,
+            &networkOpenInformation.AllocationSize,
+            networkOpenInformation.FileAttributes,
+            0,
+            bFailIfExists ? FILE_CREATE : FILE_SUPERSEDE,
+            FILE_SYNCHRONOUS_IO_NONALERT | FILE_NON_DIRECTORY_FILE | FILE_SEQUENTIAL_ONLY);
+    if (!NT_SUCCESS(status)) {
+        NtClose(sourceHandle);
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtAllocateVirtualMemory(&readBuffer,
+                                      0,
+                                      &readBufferRegionSize,
+                                      MEM_RESERVE | MEM_COMMIT,
+                                      PAGE_READWRITE);
+    if (!NT_SUCCESS(status)) {
+        NtClose(sourceHandle);
+        NtClose(targetHandle);
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    while (TRUE) {
+        const BYTE *bufferPos = readBuffer;
+        if (!ReadFile(sourceHandle, readBuffer, readBufferRegionSize, &bytesRead, NULL)) {
+            NtFreeVirtualMemory(&readBuffer, &readBufferRegionSize, MEM_RELEASE);
+            DeleteHandle(targetHandle);
+            NtClose(sourceHandle);
+            NtClose(targetHandle);
+            return FALSE;
+        }
+
+        if (!bytesRead) {
+            break;
+        }
+
+        while (bytesRead > 0) {
+            DWORD bytesWritten = 0;
+            if (!WriteFile(targetHandle, bufferPos, bytesRead, &bytesWritten, NULL)) {
+                NtFreeVirtualMemory(&readBuffer, &readBufferRegionSize, MEM_RELEASE);
+                DeleteHandle(targetHandle);
+                NtClose(sourceHandle);
+                NtClose(targetHandle);
+                return FALSE;
+            }
+            bytesRead -= bytesWritten;
+            bufferPos += bytesWritten;
+        }
+    }
+
+    status = NtFreeVirtualMemory(&readBuffer, &readBufferRegionSize, MEM_RELEASE);
+    assert(NT_SUCCESS(status));
+
+    RtlZeroMemory(&fileBasicInformation, sizeof(fileBasicInformation));
+    fileBasicInformation.LastWriteTime = networkOpenInformation.LastWriteTime;
+    fileBasicInformation.FileAttributes = networkOpenInformation.FileAttributes;
+    status = NtSetInformationFile(
+            targetHandle,
+            &ioStatusBlock,
+            &fileBasicInformation,
+            sizeof(fileBasicInformation),
+            FileBasicInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        NtClose(sourceHandle);
+        NtClose(targetHandle);
+        return FALSE;
+    }
+
+    status = NtClose(sourceHandle);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        NtClose(targetHandle);
+        return FALSE;
+    }
+
+    status = NtClose(targetHandle);
+    if (!NT_SUCCESS(status)) {
+      SetLastError(RtlNtStatusToDosError(status));
+      return FALSE;
+    }
+    return TRUE;
 }
 
 BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes)
