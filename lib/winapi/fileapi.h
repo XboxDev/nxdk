@@ -40,6 +40,7 @@ BOOL DeleteFileA (LPCTSTR lpFileName);
 BOOL RemoveDirectoryA (LPCSTR lpPathName);
 BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
 BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
+BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists);
 
 BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes);
 BOOL GetDiskFreeSpaceA (LPCSTR lpRootPathName, LPDWORD lpSectorsPerCluster, LPDWORD lpBytesPerSector, LPDWORD lpNumberOfFreeClusters, LPDWORD lpTotalNumberOfClusters);
@@ -57,6 +58,7 @@ DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer);
 #define RemoveDirectory(...) RemoveDirectoryA(__VA_ARGS__)
 #define CreateDirectory(...) CreateDirectoryA(__VA_ARGS__)
 #define MoveFile(...) MoveFileA(__VA_ARGS__)
+#define CopyFile(...) CopyFileA(__VA_ARGS__)
 #define GetDiskFreeSpaceEx GetDiskFreeSpaceExA
 #define GetDiskFreeSpace GetDiskFreeSpaceA
 #define GetLogicalDriveStrings GetLogicalDriveStringsA
