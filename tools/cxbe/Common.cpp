@@ -26,7 +26,7 @@ int ParseOptions(char *argv[], int argc,
             continue;
         }
 
-        // locate the colon and seperate option / parameters
+        // locate the colon and separate option / parameters
         {
             uint dwColon = (uint)-1;
 
