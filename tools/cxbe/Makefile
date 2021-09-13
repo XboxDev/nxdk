@@ -9,7 +9,7 @@ SRCS := \
 	Common.cpp \
 	Error.cpp \
 	Exe.cpp \
-	OpenXDK.cpp \
+	Logo.cpp \
 	Xbe.cpp
 
 cxbe: $(SRCS) $(INCLUDES)

@@ -26,6 +26,7 @@
 #include "Error.h"
 
 #include <stdio.h>
+#include <vector>
 
 static const int XBE_UNCOMPRESSED_LOGO_SIZE = 100*17;
 
@@ -37,7 +38,7 @@ class Xbe : public Error
         Xbe(const char *x_szFilename);
 
         // construct via Exe file object
-        Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail);
+        Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo = nullptr);
 
         // deconstructor
        ~Xbe();
@@ -53,6 +54,8 @@ class Xbe : public Error
 
         // export logo bitmap to raw monochrome data
         void ExportLogoBitmap(uint08 x_Gray[XBE_UNCOMPRESSED_LOGO_SIZE]);
+
+        static std::vector<uint08> ImageToLogoBitmap (const std::vector<uint08> &raw);
 
         // Xbe header
         struct Header
@@ -236,6 +239,8 @@ class Xbe : public Error
                 uint32 Data    : 4;
             }
             m_Sixteen;
+
+            uint08 m_Bytes[2];
         };
 };
 
@@ -266,8 +271,10 @@ const uint32 XBEIMAGE_MEDIA_TYPE_NONSECURE_HARD_DISK = 0x40000000;
 const uint32 XBEIMAGE_MEDIA_TYPE_NONSECURE_MODE      = 0x80000000;
 const uint32 XBEIMAGE_MEDIA_TYPE_MEDIA_MASK          = 0x00FFFFFF;
 
-// OpenXDK logo bitmap (used by cxbe by default)
-extern uint08 OpenXDK[];
-extern uint32 dwSizeOfOpenXDK;
+// Default logo bitmap
+extern const uint08 defaultXbeLogo[];
+extern const uint32 defaultXbeLogoSize;
+
+std::vector<uint08> pgmToLogoBitmap (const char *filename);
 
 #endif
