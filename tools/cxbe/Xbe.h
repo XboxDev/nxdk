@@ -1,10 +1,10 @@
 // ******************************************************************
 // *
 // *    .,-:::::    .,::      .::::::::.    .,::      .:
-// *  ,;;;'````'    `;;;,  .,;;  ;;;'';;'   `;;;,  .,;; 
-// *  [[[             '[[,,[['   [[[__[[\.    '[[,,[['  
-// *  $$$              Y$$$P     $$""""Y$$     Y$$$P    
-// *  `88bo,__,o,    oP"``"Yo,  _88o,,od8P   oP"``"Yo,  
+// *  ,;;;'````'    `;;;,  .,;;  ;;;'';;'   `;;;,  .,;;
+// *  [[[             '[[,,[['   [[[__[[\.    '[[,,[['
+// *  $$$              Y$$$P     $$""""Y$$     Y$$$P
+// *  `88bo,__,o,    oP"``"Yo,  _88o,,od8P   oP"``"Yo,
 // *    "YUMMMMMP",m"       "Mm,""YUMMMP" ,m"       "Mm,
 // *
 // *   Cxbx->Core->Xbe.h
@@ -264,7 +264,7 @@ const uint32 XBEIMAGE_GAME_REGION_NA                 = 0x00000001;
 const uint32 XBEIMAGE_GAME_REGION_JAPAN              = 0x00000002;
 const uint32 XBEIMAGE_GAME_REGION_RESTOFWORLD        = 0x00000004;
 const uint32 XBEIMAGE_GAME_REGION_MANUFACTURING      = 0x80000000;
- 
+
 // media type flags for Xbe certificate
 const uint32 XBEIMAGE_MEDIA_TYPE_HARD_DISK           = 0x00000001;
 const uint32 XBEIMAGE_MEDIA_TYPE_DVD_X2              = 0x00000002;
