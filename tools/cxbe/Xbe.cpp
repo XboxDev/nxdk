@@ -31,7 +31,6 @@
 // ******************************************************************
 #include "Xbe.h"
 #include "Exe.h"
-// #include "Emu.h"
 
 #include <memory.h>
 #include <locale.h>
