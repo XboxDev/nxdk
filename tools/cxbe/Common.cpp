@@ -78,7 +78,7 @@ int ParseOptions(char *argv[], int argc,
 void ShowUsage(const char *program, const char *desc, const Option *options)
 {
     printf("%s\n"
-           "\n" 
+           "\n"
            "Usage : %s [options] [%s]\n",
            desc, program, options[0].desc);
 
