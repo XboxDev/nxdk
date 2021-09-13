@@ -310,7 +310,7 @@ cleanup:
 }
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo)
 {
     ConstructorInit();
 
@@ -436,7 +436,11 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             mrc = RoundUp(mrc, 0x10);
 
             m_Header.dwLogoBitmapAddr = mrc;
-            m_Header.dwSizeofLogoBitmap = 100*17;    // Max Possible
+            if (!logo) {
+                m_Header.dwSizeofLogoBitmap = defaultXbeLogoSize;
+            } else {
+                m_Header.dwSizeofLogoBitmap = logo->size();
+            }
 
             mrc += m_Header.dwSizeofLogoBitmap;
         }
@@ -723,19 +727,21 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail)
             hwc      += 2;
         }
 
-        // write default "OpenXDK" logo bitmap
         {
-            printf("Xbe::Xbe: Generating \"OpenXDK\" Logo Bitmap...");
+            printf("Xbe::Xbe: Generating Logo Bitmap...");
 
             uint08 *RawAddr = GetAddr(m_Header.dwLogoBitmapAddr);
 
-            memset(RawAddr, 0, 100*17);
-
-            memcpy(RawAddr, OpenXDK, dwSizeOfOpenXDK);
-
-            m_Header.dwSizeofLogoBitmap = dwSizeOfOpenXDK;
-
-            printf("OK\n");
+            if (logo)
+            {
+                memcpy(RawAddr, logo->data(), logo->size());
+                printf("OK (custom)\n");
+            }
+            else
+            {
+                memcpy(RawAddr, defaultXbeLogo, defaultXbeLogoSize);
+                printf("OK (default)\n");
+            }
         }
 
         // write sections

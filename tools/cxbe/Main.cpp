@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     char szDumpFilename[OPTION_LEN+1] = {0};
     char szXbeTitle[OPTION_LEN+1]     = "Untitled";
     char szMode[OPTION_LEN+1]         = "retail";
+    char szLogo[OPTION_LEN+1]         = "";
     bool bRetail;
 
     const char *program = argv[0];
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
         { szDumpFilename, "DUMPINFO", "filename"       },
         { szXbeTitle,     "TITLE",    "title"          },
         { szMode,         "MODE",     "{debug|retail}" },
+        { szLogo,         "LOGO",     "filename"       },
         { NULL }
     };
 
@@ -95,7 +97,16 @@ int main(int argc, char *argv[])
             goto cleanup;
         }
 
-        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, bRetail);
+        std::vector<uint08> logo;
+        std::vector<uint08> *LogoPtr = nullptr;
+        if(szLogo[0] != '\0')
+        {
+            logo = pgmToLogoBitmap(szLogo);
+            logo = Xbe::ImageToLogoBitmap(logo);
+            LogoPtr = &logo;
+        }
+
+        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, bRetail, LogoPtr);
 
         if(XbeFile->GetError() != 0)
         {
