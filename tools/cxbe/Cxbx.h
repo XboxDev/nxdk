@@ -34,13 +34,6 @@
 
 #include <stdint.h>
 
-// CxbxKrnl exports, others import
-#ifndef _CXBXKRNL_INTERNAL
-#define CXBXKRNL_API __declspec(dllimport)
-#else
-#define CXBXKRNL_API __declspec(dllexport)
-#endif
-
 // Caustik's favorite typedefs
 typedef signed int     sint;
 typedef unsigned int   uint;
@@ -55,24 +48,6 @@ typedef int16_t        sint16;
 typedef int32_t        sint32;
 typedef intptr_t       sintptr;
 
-// define this to track resources for debugging purposes
-//#define _DEBUG_TRACK_VB // Vertex Buffers
-//#define _DEBUG_TRACK_VS // Vertex Shaders
-//#define _DEBUG_TRACK_PB // Push Buffers
-
-// define this to track memory allocations
-//#define _DEBUG_ALLOC
-
-// define this to trace intercepted function calls
-#define _DEBUG_TRACE
-
-// define this to trace warnings
-#define _DEBUG_WARNINGS
-
-// define these to dump textures
-//#define _DEBUG_DUMP_TEXTURE_SETTEXTURE "C:\\Aaron\\Textures\\"
-//#define _DEBUG_DUMP_TEXTURE_REGISTER   "C:\\Aaron\\Textures\\"
-
 #define VERSION "unknown"
 
 // round dwValue to the nearest multiple of dwMult
@@ -83,26 +58,5 @@ static uint32 RoundUp(uint32 dwValue, uint32 dwMult)
 
     return dwValue - (dwValue-1)%dwMult + (dwMult - 1);
 }
-
-// debug mode choices, either console screen or external file
-enum DebugMode
-{
-    DM_NONE,
-    DM_CONSOLE,
-    DM_FILE
-};
-
-// maximum number of threads cxbx can handle
-#define MAXIMUM_XBOX_THREADS 256
-
-extern volatile bool g_bPrintfOn;
-
-// convienance debug output macros
-#ifdef _DEBUG_TRACE
-#define DbgPrintf if(g_bPrintfOn) printf
-#else
-inline void null_func(...) { }
-#define DbgPrintf null_func
-#endif
 
 #endif
