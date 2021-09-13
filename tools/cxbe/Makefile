@@ -1,6 +1,4 @@
 INCLUDES := \
-	AlignPosfix1.h \
-	AlignPrefix1.h \
 	Common.h \
 	Cxbx.h \
 	Error.h \

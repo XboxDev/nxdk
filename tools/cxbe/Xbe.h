@@ -62,7 +62,6 @@ class Xbe : public Error
         void ExportLogoBitmap(uint08 x_Gray[100*17]);
 
         // Xbe header
-        #include "AlignPrefix1.h"
         struct Header
         {
             uint32 dwMagic;                         // 0x0000 - magic number [should be "XBEH"]
@@ -110,14 +109,13 @@ class Xbe : public Error
             uint32 dwLogoBitmapAddr;                // 0x0170 - logo bitmap address
             uint32 dwSizeofLogoBitmap;              // 0x0174 - logo bitmap size
         }
-        #include "AlignPosfix1.h"
+        __attribute((packed))
         m_Header;
 
         // Xbe header extra byte (used to preserve unknown data)
 		char *m_HeaderEx;
 
         // Xbe certificate
-        #include "AlignPrefix1.h"
         struct Certificate
         {
             uint32  dwSize;                               // 0x0000 - size of certificate
@@ -134,11 +132,10 @@ class Xbe : public Error
             uint08  bzSignatureKey[16];                   // 0x00C0 - signature key
             uint08  bzTitleAlternateSignatureKey[16][16]; // 0x00D0 - alternate signature keys
         }
-        #include "AlignPosfix1.h"
+        __attribute((packed))
         m_Certificate;
 
         // Xbe section header
-        #include "AlignPrefix1.h"
         struct SectionHeader
         {
             struct _Flags
@@ -167,11 +164,10 @@ class Xbe : public Error
             uint32 dwTailSharedRefCountAddr;    // tail shared page reference count address
             uint08 bzSectionDigest[20];         // section digest
         }
-        #include "AlignPosfix1.h"
+        __attribute((packed))
         *m_SectionHeader;
 
         // Xbe library versions
-        #include "AlignPrefix1.h"
         struct LibraryVersion
         {
             char   szName[8];                   // library name
@@ -187,11 +183,10 @@ class Xbe : public Error
             }
             dwFlags;
         }
-        #include "AlignPosfix1.h"
+        __attribute((packed))
         *m_LibraryVersion, *m_KernelLibraryVersion, *m_XAPILibraryVersion;
 
         // Xbe thread local storage
-        #include "AlignPrefix1.h"
         struct TLS
         {
             uint32 dwDataStartAddr;             // raw start address
@@ -201,7 +196,7 @@ class Xbe : public Error
             uint32 dwSizeofZeroFill;            // size of zero fill
             uint32 dwCharacteristics;           // characteristics
         }
-        #include "AlignPosfix1.h"
+        __attribute((packed))
         *m_TLS;
 
         // Xbe section names, each 8 bytes max and null terminated
