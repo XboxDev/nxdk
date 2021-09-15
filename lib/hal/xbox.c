@@ -9,51 +9,78 @@
 
 #define KernelMode 0
 
+#define LaunchDataPageSize 0x1000
+
 void XReboot()
 {
-	HalReturnToFirmware(HalRebootRoutine);
+    HalReturnToFirmware(HalRebootRoutine);
 }
 
-/**
- * Launches an XBE.  Examples of xbePath might be:
- *   c:\\blah.xbe
- *   c:/foo/bar.xbe
- * If the XBE is able to be launched, this method will
- * not return.  If there is a problem, then it return.
- */
-void XLaunchXBE(char *xbePath)
+int XGetLaunchInfo(unsigned long *launchDataType, const unsigned char **launchData)
 {
-#if 0
-	struct stat statbuf;
-	if (stat(xbePath, &statbuf) < 0)
-		return;
-#endif
+    *launchDataType = LDT_NONE;
+    *launchData = NULL;
 
-    if (LaunchDataPage == NULL)
-        LaunchDataPage = MmAllocateContiguousMemory(0x1000);
+    if (LaunchDataPage == NULL) {
+        LaunchDataPage = MmAllocateContiguousMemory(LaunchDataPageSize);
+        if (LaunchDataPage == NULL) {
+            return -1;
+        }
+        memset(LaunchDataPage, 0, LaunchDataPageSize);
+        LaunchDataPage->Header.dwLaunchDataType = LDT_FROM_DASHBOARD;
+    }
 
-    if (LaunchDataPage == NULL)
-		return;
+    *launchDataType = LaunchDataPage->Header.dwLaunchDataType;
+    *launchData = LaunchDataPage->LaunchData;
+    return 0;
+}
 
-    MmPersistContiguousMemory(LaunchDataPage, 0x1000, TRUE);
+void XLaunchXBE(const char *xbePath)
+{
+    XLaunchXBEEx(xbePath, NULL);
+}
 
-	memset((void*)LaunchDataPage, 0, 0x1000);
+void XLaunchXBEEx(const char *xbePath, const void *launchData)
+{
+    if (LaunchDataPage == NULL) {
+        LaunchDataPage = MmAllocateContiguousMemory(LaunchDataPageSize);
+        if (LaunchDataPage == NULL) {
+            return;
+        }
+    }
 
-	LaunchDataPage->Header.dwLaunchDataType = 0xFFFFFFFF;
-	LaunchDataPage->Header.dwTitleId = 0;
-	XConvertDOSFilenameToXBOX(xbePath, LaunchDataPage->Header.szLaunchPath);
+    // For ease of debugging.
+    PLAUNCH_DATA_PAGE launchDataPage = LaunchDataPage;
 
-	// one last thing... xbePath now looks like:
-	//   \Device\Harddisk0\Partition2\blah\doom.xbe
-	// but it has to look like:
-	//   \Device\Harddisk0\Partition2\blah;doom.xbe
-	char *lastSlash = strrchr(LaunchDataPage->Header.szLaunchPath, '\\');
-	if (lastSlash != NULL)
-	{
-		*lastSlash = ';';
-		HalReturnToFirmware(HalQuickRebootRoutine);
-	}
+    MmPersistContiguousMemory(launchDataPage, LaunchDataPageSize, TRUE);
+    memset((void*)launchDataPage, 0, LaunchDataPageSize);
 
-	// if we couldn't find a trailing slash, the conversion to
-	// the xbox path mustn't have worked, so we will return
+    launchDataPage->Header.dwLaunchDataType = LDT_TITLE;
+    launchDataPage->Header.dwTitleId = CURRENT_XBE_HEADER->CertificateHeader->TitleID;
+    launchDataPage->Header.dwFlags = 0x0000;
+
+    if (!xbePath) {
+        launchDataPage->Header.dwLaunchDataType = LDT_LAUNCH_DASHBOARD;
+    } else {
+        XConvertDOSFilenameToXBOX(xbePath, launchDataPage->Header.szLaunchPath);
+
+        // one last thing... xbePath now looks like:
+        //   \Device\Harddisk0\Partition2\blah\doom.xbe
+        // but it has to look like:
+        //   \Device\Harddisk0\Partition2\blah;doom.xbe
+        char *lastSlash = strrchr(launchDataPage->Header.szLaunchPath, '\\');
+        if (!lastSlash) {
+            // if we couldn't find a trailing slash, the conversion to
+            // the xbox path mustn't have worked, so we will return
+            return;
+        }
+
+        *lastSlash = ';';
+    }
+
+    if (launchData) {
+        memcpy(launchDataPage->LaunchData, launchData, sizeof(launchDataPage->LaunchData));
+    }
+
+    HalReturnToFirmware(HalQuickRebootRoutine);
 }
