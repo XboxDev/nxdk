@@ -9,7 +9,35 @@ extern "C"
 
 void XReboot(void);
 
-void XLaunchXBE(char *xbePath);
+/**
+ * Retrieves information persisted by the process that launched the current XBE.
+ * 
+ * launchDataType will (likely) be one of the LDT_* defines in xboxkrnl.h
+ *
+ * Returns non-zero in the case of failure.
+ */
+int XGetLaunchInfo(unsigned long *launchDataType, const unsigned char **launchData);
+
+/**
+ * Launches an XBE.  Examples of xbePath might be:
+ *   c:\\blah.xbe
+ *   c:/foo/bar.xbe
+ * If the XBE is able to be launched, this method will
+ * not return.  If there is a problem, then it return.
+ */
+void XLaunchXBE(const char *xbePath);
+
+/**
+ * Launches an XBE and sets the LAUNCH_DATA_PAGE's LaunchData, which is
+ * retrievable by the newly launched process.
+ *
+ * Examples of xbePath might be:
+ *   c:\\blah.xbe
+ *   c:/foo/bar.xbe
+ * If the XBE is able to be launched, this method will
+ * not return.  If there is a problem, then it return.
+ */
+void XLaunchXBEEx(const char *xbePath, const void *launchData);
 
 #ifdef __cplusplus
 }

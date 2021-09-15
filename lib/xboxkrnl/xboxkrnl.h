@@ -691,7 +691,9 @@ typedef struct _LAUNCH_DATA_PAGE
     UCHAR LaunchData[3072];
 } LAUNCH_DATA_PAGE, *PLAUNCH_DATA_PAGE;
 
-#define LDT_LAUNCH_DASHBOARD 1
+#define LDT_TITLE                 0
+#define LDT_LAUNCH_DASHBOARD      1
+#define LDT_FROM_DASHBOARD        2
 #define LDT_NONE 0xFFFFFFFF
 
 typedef struct _DISPATCHER_HEADER
