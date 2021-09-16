@@ -60,14 +60,14 @@ HANDLE CreateFileA (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
         creationFlags |= FILE_DELETE_ON_CLOSE;
         dwDesiredAccess |= DELETE;
     }
-    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_WRITE_THROUGH) ? FILE_NO_INTERMEDIATE_BUFFERING : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_WRITE_THROUGH) ? FILE_WRITE_THROUGH : 0;
     creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_NO_BUFFERING) ? FILE_NO_INTERMEDIATE_BUFFERING : 0;
     creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_OVERLAPPED) ? 0 : FILE_SYNCHRONOUS_IO_NONALERT;
     creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_RANDOM_ACCESS) ? FILE_RANDOM_ACCESS : 0;
     creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_SEQUENTIAL_SCAN) ? FILE_SEQUENTIAL_ONLY : 0;
-    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_BACKUP_SEMANTICS) ? FILE_OPEN_FOR_BACKUP_INTENT : 0;
+    creationFlags |= (dwFlagsAndAttributes & FILE_FLAG_BACKUP_SEMANTICS) ? FILE_OPEN_FOR_BACKUP_INTENT : FILE_NON_DIRECTORY_FILE;
 
-    status  = NtCreateFile(&handle, dwDesiredAccess | FILE_READ_ATTRIBUTES | SYNCHRONIZE, &attributes, &ioStatusBlock, NULL, dwFlagsAndAttributes, dwShareMode, creationDisposition, creationFlags);
+    status = NtCreateFile(&handle, dwDesiredAccess | FILE_READ_ATTRIBUTES | SYNCHRONIZE, &attributes, &ioStatusBlock, NULL, dwFlagsAndAttributes, dwShareMode, creationDisposition, creationFlags);
 
     if (!NT_SUCCESS(status)) {
         if (status == STATUS_OBJECT_NAME_COLLISION) {
