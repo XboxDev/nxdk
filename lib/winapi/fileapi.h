@@ -14,6 +14,7 @@ DWORD GetFileAttributesA (LPCSTR lpFileName);
 BOOL GetFileAttributesExA (LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation);
 BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes);
 
+BOOL GetFileTime (HANDLE hFile, LPFILETIME lpCreationTime, LPFILETIME lpLastAccessTime, LPFILETIME lpLastWriteTime);
 BOOL SetFileTime (HANDLE hFile, const FILETIME *lpCreationTime, const FILETIME *lpLastAccessTime, const FILETIME *lpLastWriteTime);
 
 #define CREATE_NEW 1
