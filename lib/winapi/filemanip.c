@@ -100,6 +100,38 @@ BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes)
     return TRUE;
 }
 
+BOOL SetFileTime (HANDLE hFile, const FILETIME *lpCreationTime, const FILETIME *lpLastAccessTime, const FILETIME *lpLastWriteTime)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_BASIC_INFORMATION fileBasicInfo;
+
+    ZeroMemory(&fileBasicInfo, sizeof(fileBasicInfo));
+
+    if (lpCreationTime) {
+        fileBasicInfo.CreationTime.LowPart = lpCreationTime->dwLowDateTime;
+        fileBasicInfo.CreationTime.HighPart = lpCreationTime->dwHighDateTime;
+    }
+
+    if (lpLastAccessTime) {
+        fileBasicInfo.LastAccessTime.LowPart = lpLastAccessTime->dwLowDateTime;
+        fileBasicInfo.LastAccessTime.HighPart = lpLastAccessTime->dwHighDateTime;
+    }
+
+    if (lpLastWriteTime) {
+        fileBasicInfo.LastWriteTime.LowPart = lpLastWriteTime->dwLowDateTime;
+        fileBasicInfo.LastWriteTime.HighPart = lpLastWriteTime->dwHighDateTime;
+    }
+
+    status = NtSetInformationFile(hFile, &ioStatusBlock, &fileBasicInfo, sizeof(fileBasicInfo), FileBasicInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 BOOL DeleteFileA (LPCTSTR lpFileName)
 {
     NTSTATUS status;
