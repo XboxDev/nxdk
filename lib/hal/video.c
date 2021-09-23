@@ -35,7 +35,6 @@
 #define VIDEO_R5G6B5				0x00000011
 #define VIDEO_A8R8G8B8				0x00000012
 
-static unsigned char*	framebufferMemory = NULL;
 static unsigned char*	_fb = NULL;
 static DWORD			dwEncoderSettings 	= 0;
 static VIDEO_MODE		vmCurrent = { 0, 0, 0, 0 };
@@ -297,10 +296,6 @@ void XVideoSetFB(unsigned char *fb)
 	assert(((unsigned int)fb & ~0x7FFFFFFF) == 0);
 	_fb = fb;
 
-	SIZE_T fbSize = MmQueryAllocationSize(_fb);
-	MmPersistContiguousMemory(_fb, fbSize, TRUE);
-	AvSetSavedDataAddress(_fb);
-
 	VIDEOREG(PCRTC_START) = (unsigned int)_fb & 0x7FFFFFFF;
 }
 
@@ -341,18 +336,28 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 
 	XVideoSetVideoEnable(FALSE);
 
+	PVOID framebufferMemory = AvGetSavedDataAddress();
+
 	if (framebufferMemory != NULL) {
-		MmPersistContiguousMemory(framebufferMemory, screenSize, FALSE);
-		MmFreeContiguousMemory(framebufferMemory);
+		SIZE_T frameBufferSize = MmQueryAllocationSize(framebufferMemory);
+		if (frameBufferSize != screenSize) {
+			MmPersistContiguousMemory(framebufferMemory, frameBufferSize, FALSE);
+			MmFreeContiguousMemory(framebufferMemory);
+			framebufferMemory = NULL;
+		}
 	}
-	framebufferMemory = MmAllocateContiguousMemoryEx(screenSize,
-	                                                 0x00000000, 0x7FFFFFFF,
-	                                                 0x1000,
-	                                                 PAGE_READWRITE |
-	                                                 PAGE_WRITECOMBINE);
+	if (framebufferMemory == NULL) {
+		framebufferMemory = MmAllocateContiguousMemoryEx(screenSize,
+		                                                 0x00000000, 0x7FFFFFFF,
+		                                                 0x1000,
+		                                                 PAGE_READWRITE |
+		                                                 PAGE_WRITECOMBINE);
+		MmPersistContiguousMemory(framebufferMemory, screenSize, TRUE);
+	}
+	AvSetSavedDataAddress(framebufferMemory);
 	assert(framebufferMemory != NULL);
 	memset(framebufferMemory, 0x00, screenSize);
-	asm __volatile__("sfence");
+	XVideoFlushFB();
 
 	do
 	{
@@ -363,27 +368,7 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	/* Store the framebuffer that we set; normally this is done in XVideoSetFB.
 	   However, we're using the kernel's AvSetDisplayMode here instead, so we
 	   set it here, too. */
-
-	// Get previous framebuffer
-	PVOID previousFB = AvGetSavedDataAddress();
-
-	if (previousFB != NULL) {
-		SIZE_T previousFBSize = MmQueryAllocationSize(previousFB);
-		// If the previous framebuffer is the same size as the one we want to create, don't create a new one and use that instead
-		if (previousFBSize == screenSize) {
-			memset(previousFB, 0, screenSize);
-			_fb = (unsigned char *)previousFB;
-		} else {
-			MmPersistContiguousMemory(previousFB, previousFBSize, FALSE);
-			MmFreeContiguousMemory(previousFB);
-			_fb = framebufferMemory;
-			MmPersistContiguousMemory(_fb, screenSize, TRUE);
-		}
-	} else {
-		_fb = framebufferMemory;
-		MmPersistContiguousMemory(_fb, screenSize, TRUE);
-	}
-	AvSetSavedDataAddress(_fb);
+	_fb = framebufferMemory;
 
 	XVideoSetFlickerFilter(5);
 	XVideoSetSoftenFilter(TRUE);
