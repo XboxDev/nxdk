@@ -336,6 +336,14 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 
 	XVideoSetVideoEnable(FALSE);
 
+	PVOID previousFB = AvGetSavedDataAddress();
+	if (previousFB != NULL) {
+		SIZE_T previousFBSize = MmQueryAllocationSize(previousFB);
+		MmPersistContiguousMemory(previousFB, previousFBSize, FALSE);
+		MmFreeContiguousMemory(previousFB);
+		AvSetSavedDataAddress(NULL);
+	}
+
 	if (framebufferMemory != NULL) {
 		MmFreeContiguousMemory(framebufferMemory);
 	}
