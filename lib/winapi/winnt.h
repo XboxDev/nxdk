@@ -264,7 +264,7 @@ typedef struct _XBE_LIBRARY_HEADER
     WORD MajorVersion;
     WORD MinorVersion;
     WORD BuildVersion;
-    DWORD LibraryFlags;
+    WORD LibraryFlags;
 } XBE_LIBRARY_HEADER, *PXBE_LIBRARY_HEADER;
 
 typedef struct _XBE_SECTION_HEADER
