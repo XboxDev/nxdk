@@ -230,6 +230,7 @@ BOOL RemoveDirectoryA (LPCSTR lpPathName)
     status = DeleteHandle(handle);
 
     if (!NT_SUCCESS(status)) {
+        NtClose(handle);
         SetLastError(RtlNtStatusToDosError(status));
         return FALSE;
     }
