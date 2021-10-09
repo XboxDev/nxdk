@@ -27,6 +27,8 @@
 
 #include <stdio.h>
 
+static const int XBE_UNCOMPRESSED_LOGO_SIZE = 100*17;
+
 // Xbe (Xbox Executable) file object
 class Xbe : public Error
 {
@@ -47,10 +49,10 @@ class Xbe : public Error
         void DumpInformation(FILE *x_file);
 
         // import logo bitmap from raw monochrome data
-        void ImportLogoBitmap(const uint08 x_Gray[100*17]);
+        void ImportLogoBitmap(const uint08 x_Gray[XBE_UNCOMPRESSED_LOGO_SIZE]);
 
         // export logo bitmap to raw monochrome data
-        void ExportLogoBitmap(uint08 x_Gray[100*17]);
+        void ExportLogoBitmap(uint08 x_Gray[XBE_UNCOMPRESSED_LOGO_SIZE]);
 
         // Xbe header
         struct Header
