@@ -89,5 +89,5 @@ void *usbh_virt_to_dma(void *virtual_address) {
 
 void usbh_sysprintf(const char *buffer)
 {
-    debugPrint(buffer);
+    debugPrint("%s", buffer);
 }
