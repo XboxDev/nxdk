@@ -46,7 +46,7 @@ extern "C" void _local_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame,
     const ScopeTableEntry *scopeTable = pRegistrationFrame->ScopeTable;
 
     while (true) {
-        DWORD currentTrylevel = pRegistrationFrame->TryLevel;
+        LONG currentTrylevel = pRegistrationFrame->TryLevel;
 
         if (currentTrylevel == TRYLEVEL_NONE) {
             break;
@@ -56,7 +56,7 @@ extern "C" void _local_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame,
             break;
         }
 
-        DWORD oldTrylevel = currentTrylevel;
+        LONG oldTrylevel = currentTrylevel;
         pRegistrationFrame->TryLevel = scopeTable[currentTrylevel].EnclosingLevel;
 
         if (!scopeTable[oldTrylevel].FilterFunction) {
@@ -119,14 +119,14 @@ extern "C" int _except_handler3 (_EXCEPTION_RECORD *pExceptionRecord, EXCEPTION_
     reinterpret_cast<PEXCEPTION_POINTERS *>(pRegistrationFrame)[-1] = &excptPtrs;
 
     const ScopeTableEntry *scopeTable = pRegistrationFrame->ScopeTable;
-    DWORD currentTrylevel = pRegistrationFrame->TryLevel;
+    LONG currentTrylevel = pRegistrationFrame->TryLevel;
 
     // Search all scopes from the inside out trying to find a filter that accepts the exception
     while (currentTrylevel != TRYLEVEL_NONE) {
         const void *filterFunclet = scopeTable[currentTrylevel].FilterFunction;
         if (filterFunclet) {
             const DWORD _ebp = (DWORD)&pRegistrationFrame->_ebp;
-            DWORD filterResult;
+            LONG filterResult;
 
             asm volatile (
                 "pushl %%ebp;"
