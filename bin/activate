@@ -8,7 +8,7 @@ if [ $(uname -s) = 'Darwin' ]; then
 fi
 
 export NXDK_DIR="${NXDK_DIR:-$(dirname $(dirname "$(${readlink_cmd} -f "$0")")../)}"
-export PATH=${NXDK_DIR}/bin:$PATH
+export PATH="${NXDK_DIR}/bin:$PATH"
 
 CLANG_VERSION=$(clang --version | grep version | grep -o -m 1 "[0-9]\+\.[0-9]\+\.*[0-9]*" | head -n 1)
 CLANG_VERSION_NUM=$(echo "$CLANG_VERSION" | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
