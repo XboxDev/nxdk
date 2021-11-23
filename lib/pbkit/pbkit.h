@@ -51,6 +51,24 @@ extern "C"
 #define SUBCH_3                 3
 #define SUBCH_4                 4
 
+//DMA and graphics classes
+#define DMA_CLASS_2                 0x02
+#define DMA_CLASS_3                 0x03
+#define DMA_CLASS_3D                0x3D
+#define GR_CLASS_19                 0x19
+#define GR_CLASS_30                 0x30
+#define GR_CLASS_39                 0x39
+#define GR_CLASS_62                 0x62
+#define GR_CLASS_97                 0x97
+#define GR_CLASS_9F                 0x9F
+
+struct s_CtxDma
+{
+  DWORD               ChannelID;
+  DWORD               Inst;   //Addr in PRAMIN area, unit=16 bytes blocks, baseaddr=VIDEO_BASE+NV_PRAMIN
+  DWORD               Class;
+  DWORD               isGr;
+};
 
 void    pb_show_front_screen(void); //shows scene (allows VBL synced screen swapping)
 void    pb_show_debug_screen(void); //shows debug screen (default openxdk+SDL buffer)
@@ -115,6 +133,16 @@ void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zm
 
 int pb_busy(void);
 
+
+void pb_create_dma_ctx(DWORD ChannelID,
+                       DWORD Class,
+                       DWORD Base,
+                       DWORD Limit,
+                       struct s_CtxDma *pDmaObject );
+void pb_create_gr_ctx(   int ChannelID,
+                      int Class,
+                      struct s_CtxDma *pGrObject  );
+void pb_bind_channel(struct s_CtxDma *pCtxDmaObject);
 
 #ifdef __cplusplus
 }

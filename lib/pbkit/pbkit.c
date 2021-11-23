@@ -42,15 +42,6 @@
 #define ADDR_FBMEM                  2
 #define ADDR_AGPMEM                 3
 
-#define DMA_CLASS_2                 2
-#define DMA_CLASS_3                 3
-#define DMA_CLASS_3D                    0x3D
-
-#define GR_CLASS_30                 0x30
-#define GR_CLASS_39                 0x39
-#define GR_CLASS_62                 0x62
-#define GR_CLASS_97                 0x97
-#define GR_CLASS_9F                 0x9F
 
 #define GPU_IRQ                     3
 
@@ -68,14 +59,6 @@
 #define PB_SETOUTER                 0xB2A
 #define PB_SETNOISE                 0xBAA
 #define PB_FINISHED                 0xFAB
-
-struct s_CtxDma
-{
-    DWORD               ChannelID;
-    DWORD               Inst;   //Addr in PRAMIN area, unit=16 bytes blocks, baseaddr=VIDEO_BASE+NV_PRAMIN
-    DWORD               Class;
-    DWORD               isGr;
-};
 
 static unsigned int pb_ColorFmt = NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8;
 static unsigned int pb_DepthFmt = NV097_SET_SURFACE_FORMAT_ZETA_Z24S8;
@@ -1344,7 +1327,7 @@ static void pb_prepare_tiles(void)
 
 
 
-static void pb_create_dma_ctx(  DWORD ChannelID,
+void pb_create_dma_ctx(  DWORD ChannelID,
                 DWORD Class,
                 DWORD Base,
                 DWORD Limit,
@@ -1393,7 +1376,7 @@ static void pb_create_dma_ctx(  DWORD ChannelID,
 
 
 
-static void pb_bind_channel(struct s_CtxDma *pCtxDmaObject)
+void pb_bind_channel(struct s_CtxDma *pCtxDmaObject)
 {
     DWORD       entry;
     DWORD       *p;
@@ -1628,7 +1611,7 @@ static void pb_3D_init(void)
 
 
 
-static void pb_create_gr_ctx(   int ChannelID,
+void pb_create_gr_ctx(   int ChannelID,
                 int Class,
                 struct s_CtxDma *pGrObject  )
 {
@@ -3109,6 +3092,7 @@ int pb_init(void)
     pb_create_dma_ctx(8,DMA_CLASS_3D,(DWORD)pb_DmaBuffer8,0x20,&sDmaObject8);
     pb_create_dma_ctx(6,DMA_CLASS_2,0,MAXRAM,&sDmaObject6);
 
+
     //we initialized channel 0 first, that will match graphic context 0
     pb_FifoChannelID=0;
     pb_FifoChannelsMode=NV_PFIFO_MODE_ALL_PIO;
@@ -3253,14 +3237,14 @@ int pb_init(void)
     //These commands assign DMA channels to push buffer subchannels
     //and associate some specific GPU parts to specific Dma channels
     p=pb_begin();
-    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14);
-    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16);
-    p=pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17);
-    p=pb_push1_to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13);
-    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7);
-    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17);
-    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3);
-    p=pb_push2_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11);
+    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,14);  // Class 39
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,16);  // Class 9F
+    p=pb_push1_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,17);  // Class 62
+    p=pb_push1_to(SUBCH_3D,p,NV20_TCL_PRIMITIVE_SET_MAIN_OBJECT,13);  // Class 97
+    p=pb_push1_to(SUBCH_2,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT0,7);  // NV039_SET_CONTEXT_DMA_NOTIFIES
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT5,17);  // NV09F_SET_CONTEXT_SURFACES
+    p=pb_push1_to(SUBCH_3,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT_UNKNOWN,3);  // Set operation to SRCCOPY
+    p=pb_push2_to(SUBCH_4,p,NV20_TCL_PRIMITIVE_3D_SET_OBJECT1,3,11);  // Source ch 3, Dest ch 11
     pb_end(p); //calls pb_start() which will trigger the reading and sending to GPU (asynchronous, no waiting)
 
     //setup needed for color computations
