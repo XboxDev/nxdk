@@ -32,6 +32,23 @@ extern "C" int _nested_unwind_handler (_EXCEPTION_RECORD *pExceptionRecord, EXCE
     return DISPOSITION_COLLIDED_UNWIND;
 }
 
+static inline void *call_ebp_func (void *func, void *_ebp)
+{
+    void *result;
+
+    asm volatile (
+        "pushl %%ebp;"
+        "movl %%ebx, %%ebp;"
+        "call *%%eax;"
+        "popl %%ebp;"
+        : "=a"(result)
+        : "a"(func), "b"(_ebp)
+        : "ecx", "edx", "memory"
+    );
+
+    return result;
+}
+
 extern "C" void _local_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame, int stop)
 {
     // Manually install exception handler frame
@@ -62,8 +79,7 @@ extern "C" void _local_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame,
         if (!scopeTable[oldTrylevel].FilterFunction) {
             // If no filter funclet is present, then it's a __finally statement
             // instead of an __except statement
-            auto finallyFunclet = reinterpret_cast<void (*)()>(scopeTable[oldTrylevel].HandlerFunction);
-            finallyFunclet();
+            call_ebp_func(scopeTable[oldTrylevel].HandlerFunction, &pRegistrationFrame->_ebp);
         }
     }
 
@@ -94,18 +110,7 @@ extern "C" int _except_handler3 (_EXCEPTION_RECORD *pExceptionRecord, EXCEPTION_
 
     if (pExceptionRecord->ExceptionFlags & (EXCEPTION_UNWINDING | EXCEPTION_EXIT_UNWIND)) {
         // We're in an unwinding pass, so unwind all local scopes
-        // Unwinding must be done with the ebp of the frame in which we want to unwind
-        const DWORD scopeEbp = (DWORD)&pRegistrationFrame->_ebp;
-        asm volatile (
-            "pushl %%ebp;"
-            "movl %0, %%ebp;"
-            "pushl %2;"
-            "pushl %1;"
-            "call __local_unwind2;" // Call _local_unwind2(pRegistrationFrame, TRYLEVEL_NONE);
-            "addl $8, %%esp;"
-            "popl %%ebp;"
-            : : "r"(scopeEbp), "r"(pRegistrationFrame), "i"(TRYLEVEL_NONE) : "eax", "ecx", "edx");
-
+        _local_unwind2(pRegistrationFrame, TRYLEVEL_NONE);
         return DISPOSITION_CONTINUE_SEARCH;
     }
 
@@ -146,27 +151,14 @@ extern "C" int _except_handler3 (_EXCEPTION_RECORD *pExceptionRecord, EXCEPTION_
                 const DWORD scopeEbp = (DWORD)&pRegistrationFrame->_ebp;
                 const DWORD newTrylevel = scopeTable[currentTrylevel].EnclosingLevel;
                 const DWORD handlerFunclet = (DWORD)scopeTable[currentTrylevel].HandlerFunction;
+
+                _local_unwind2(pRegistrationFrame, currentTrylevel);
+                pRegistrationFrame->TryLevel = newTrylevel;
+
                 asm volatile (
                     "movl %0, %%ebp;"
-
-                    "pushl %%ecx;"
-                    "pushl %%ebx;"
-
-                    // Unwind all scopes up to the one handling the exception
-                    "pushl %%eax;"
-                    "pushl %%edx;"
-                    "call __local_unwind2;" // _local_unwind2(pRegistrationFrame, currentTrylevel);
-                    "popl %%edx;"
-                    "addl $4, %%esp;"
-
-                    "popl %%ebx;"
-                    "popl %%ecx;"
-
-                    // Set the new trylevel in EXCEPTION_REGISTRATION_SEH3
-                    "movl %%ecx, 12(%%edx);"
-                    // Jump into the handler
                     "jmp *%%ebx;"
-                    : : "r"(scopeEbp), "a"(currentTrylevel), "b"(handlerFunclet), "c"(newTrylevel), "d"(pRegistrationFrame) : "memory");
+                    : : "r"(scopeEbp), "b"(handlerFunclet));
             }
         }
 
