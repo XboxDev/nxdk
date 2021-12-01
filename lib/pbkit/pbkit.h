@@ -144,6 +144,10 @@ void pb_create_gr_ctx(   int ChannelID,
                       struct s_CtxDma *pGrObject  );
 void pb_bind_channel(struct s_CtxDma *pCtxDmaObject);
 
+uint8_t *pb_depth_stencil_buffer();
+DWORD pb_depth_stencil_pitch();
+DWORD pb_depth_stencil_size();
+
 #ifdef __cplusplus
 }
 #endif

@@ -3712,3 +3712,16 @@ static NTAPI VOID pb_shutdown_notification_routine (PHAL_SHUTDOWN_REGISTRATION S
 {
 	pb_kill();
 }
+
+uint8_t* pb_depth_stencil_buffer()
+{
+  return (uint8_t*)pb_DepthStencilAddr;
+}
+
+DWORD pb_depth_stencil_pitch() {
+  return pb_DepthStencilPitch;
+}
+
+DWORD pb_depth_stencil_size() {
+  return pb_DSSize;
+}
