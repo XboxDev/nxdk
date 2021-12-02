@@ -52,13 +52,26 @@ struct s_CtxDma
 };
 
 // Points an existing DMA context object at a new address.
-void pb_set_dma_address (const struct s_CtxDma *context, const void *address, uint32_t limit);
+void pb_set_dma_address(const struct s_CtxDma *context, const void *address, uint32_t limit);
 
 // Binds a subchannel to the given context.
-void pb_bind_subchannel (uint32_t subchannel, const struct s_CtxDma *context);
+void pb_bind_subchannel(uint32_t subchannel, const struct s_CtxDma *context);
 
 // Returns an AGP version of the given nv2a tiled memory address.
-void *pb_agp_access (void *fb_memory_pointer);
+void *pb_agp_access(void *fb_memory_pointer);
+
+// Creates a DMA context for the given channel, class, and address space.
+void pb_create_dma_ctx(DWORD ChannelID,
+                       DWORD Class,
+                       DWORD Base,
+                       DWORD Limit,
+                       struct s_CtxDma *pDmaObject);
+
+// Binds the given DMA context.
+void pb_bind_channel(struct s_CtxDma *pCtxDmaObject);
+
+// Creates the context object for the given DMA object.
+void pb_create_gr_ctx(int ChannelID, int Class, struct s_CtxDma *pCtxDmaObject);
 
 #ifdef __cplusplus
 }
