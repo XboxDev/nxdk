@@ -1607,9 +1607,32 @@ static void pb_3D_init(void)
 #endif
 }
 
+DWORD pb_reserve_instance(DWORD size) {
+    DWORD ret = pb_FreeInst;
+    pb_FreeInst += (size>>4);
+    return ret;
+}
 
+void pb_create_gr_instance(int ChannelID,
+                           int Class,
+                           DWORD instance,
+                           DWORD flags,
+                           DWORD flags3D,
+                           struct s_CtxDma *pGrObject)
+{
+    DWORD offset = instance << 4;
+    VIDEOREG(NV_PRAMIN + offset + 0x00) = flags;
+    VIDEOREG(NV_PRAMIN + offset + 0x04) = flags3D;
+    VIDEOREG(NV_PRAMIN + offset + 0x08) = 0;
+    VIDEOREG(NV_PRAMIN + offset + 0x0C) = 0;
 
+    memset(pGrObject,0,sizeof(struct s_CtxDma));
 
+    pGrObject->ChannelID = ChannelID;
+    pGrObject->Class = Class;
+    pGrObject->isGr = 1;
+    pGrObject->Inst = instance;
+}
 
 void pb_create_gr_ctx(   int ChannelID,
                 int Class,
@@ -1643,14 +1666,13 @@ void pb_create_gr_ctx(   int ChannelID,
         }
     }
 
-    Inst=pb_FreeInst; pb_FreeInst+=(size>>4);
+    Inst = pb_reserve_instance(size);
 
     if (flags3D)
     {
         pb_3DGrCtxInst[pb_FifoChannelID]=Inst;
         pb_3D_init();
     }
-
 
     flags=Class&0x000000FF;
     flags3D=0x00000000;
@@ -1659,18 +1681,7 @@ void pb_create_gr_ctx(   int ChannelID,
 
     if (Class==GR_CLASS_97) flags3D=0x00000A00;
 
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x00)=flags;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x04)=flags3D;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x08)=0;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x0C)=0;
-
-
-    memset(pGrObject,0,sizeof(struct s_CtxDma));
-
-    pGrObject->ChannelID=ChannelID;
-    pGrObject->Class=Class;
-    pGrObject->isGr=1;
-    pGrObject->Inst=Inst;
+    pb_create_gr_instance(ChannelID, Class, Inst, flags, flags3D, pGrObject);
 }
 
 

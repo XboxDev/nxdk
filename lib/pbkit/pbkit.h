@@ -50,6 +50,7 @@ extern "C"
 #define SUBCH_2                 2
 #define SUBCH_3                 3
 #define SUBCH_4                 4
+#define NEXT_SUBCH              5
 
 //DMA and graphics classes
 #define DMA_CLASS_2                 0x02
@@ -148,6 +149,13 @@ uint8_t *pb_depth_stencil_buffer();
 DWORD pb_depth_stencil_pitch();
 DWORD pb_depth_stencil_size();
 
+DWORD pb_reserve_instance(DWORD size);
+void pb_create_gr_instance(int ChannelID,
+                        int Class,
+                        DWORD instance,
+                        DWORD flags,
+                        DWORD flags3D,
+                        struct s_CtxDma *pGrObject);
 #ifdef __cplusplus
 }
 #endif
