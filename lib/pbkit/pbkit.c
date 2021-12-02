@@ -1118,11 +1118,11 @@ static void pb_prepare_tiles(void)
 
 
 
-static void pb_create_dma_ctx(  DWORD ChannelID,
-                DWORD Class,
-                DWORD Base,
-                DWORD Limit,
-                struct s_CtxDma *pDmaObject )
+void pb_create_dma_ctx(DWORD ChannelID,
+                       DWORD Class,
+                       DWORD Base,
+                       DWORD Limit,
+                       struct s_CtxDma *pDmaObject)
 {
     DWORD           Addr;
     DWORD           AddrSpace;
@@ -1167,7 +1167,7 @@ static void pb_create_dma_ctx(  DWORD ChannelID,
 
 
 
-static void pb_bind_channel(struct s_CtxDma *pCtxDmaObject)
+void pb_bind_channel(struct s_CtxDma *pCtxDmaObject)
 {
     DWORD       entry;
     DWORD       *p;
@@ -1398,43 +1398,65 @@ static void pb_3D_init(void)
 #endif
 }
 
+static inline void pb_create_gr_instance(int ChannelID,
+                                         int Class,
+                                         DWORD instance,
+                                         DWORD flags,
+                                         DWORD flags3D,
+                                         struct s_CtxDma *pGrObject)
+{
+    DWORD offset = instance << 4;
+    VIDEOREG(NV_PRAMIN + offset + 0x00) = flags;
+    VIDEOREG(NV_PRAMIN + offset + 0x04) = flags3D;
+    VIDEOREG(NV_PRAMIN + offset + 0x08) = 0;
+    VIDEOREG(NV_PRAMIN + offset + 0x0C) = 0;
 
+    memset(pGrObject,0,sizeof(struct s_CtxDma));
 
+    pGrObject->ChannelID = ChannelID;
+    pGrObject->Class = Class;
+    pGrObject->isGr = 1;
+    pGrObject->Inst = instance;
+}
 
-
-static void pb_create_gr_ctx(   int ChannelID,
-                int Class,
-                struct s_CtxDma *pGrObject  )
+void pb_create_gr_ctx(int ChannelID,
+                      int Class,
+                      struct s_CtxDma *pGrObject)
 {
     DWORD           flags;
     DWORD           flags3D;
-
-    int         size;
-
+    int             size;
     DWORD           Inst;
 
+    flags=Class&0x000000FF;
     flags3D=0;
 
-    if (    (Class!=GR_CLASS_30)&&
-        (Class!=GR_CLASS_39)&&
-        (Class!=GR_CLASS_62)&&
-        (Class!=GR_CLASS_97)&&
-        (Class!=GR_CLASS_9F)    )
+    switch (Class)
     {
+    case GR_CLASS_97:
+        size=0x330; //816 bytes
+        flags3D=0x00000A00;
+        break;
+    case GR_CLASS_39:
+        size=16;        //16 bytes
+        flags|=0x01000000;
+        break;
+    case GR_CLASS_12:
+    case GR_CLASS_19:
+    case GR_CLASS_30:
+    case GR_CLASS_62:
+    case GR_CLASS_72:
+    case GR_CLASS_9F:
+        size=16;        //16 bytes
+        break;
+    default:
         //"CreateGrObject invalid class number"
         size=Class;
-    }
-    else
-    {
-        size=16;        //16 bytes
-        if (Class==GR_CLASS_97)
-        {
-            size=0x330; //816 bytes
-            flags3D=1;
-        }
+        break;
     }
 
-    Inst=pb_FreeInst; pb_FreeInst+=(size>>4);
+    Inst=pb_FreeInst;
+    pb_FreeInst+=(size>>4);
 
     if (flags3D)
     {
@@ -1442,26 +1464,7 @@ static void pb_create_gr_ctx(   int ChannelID,
         pb_3D_init();
     }
 
-
-    flags=Class&0x000000FF;
-    flags3D=0x00000000;
-
-    if (Class==GR_CLASS_39) flags|=0x01000000;
-
-    if (Class==GR_CLASS_97) flags3D=0x00000A00;
-
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x00)=flags;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x04)=flags3D;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x08)=0;
-    VIDEOREG(NV_PRAMIN+(Inst<<4)+0x0C)=0;
-
-
-    memset(pGrObject,0,sizeof(struct s_CtxDma));
-
-    pGrObject->ChannelID=ChannelID;
-    pGrObject->Class=Class;
-    pGrObject->isGr=1;
-    pGrObject->Inst=Inst;
+    pb_create_gr_instance(ChannelID, Class, Inst, flags, flags3D, pGrObject);
 }
 
 
@@ -2171,7 +2174,8 @@ void pb_kill(void)
 }
 
 
-void pb_set_color_format(unsigned int fmt, bool swizzled) {
+void pb_set_color_format(unsigned int fmt, bool swizzled)
+{
     pb_ColorFmt = fmt;
     assert(swizzled == false);
 }
