@@ -115,6 +115,7 @@ void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zm
 
 int pb_busy(void);
 
+void pb_print_char(char c);
 
 #ifdef __cplusplus
 }
