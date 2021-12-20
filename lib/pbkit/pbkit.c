@@ -370,7 +370,7 @@ static void pb_scrollup(void)
     memset(&pb_text_screen[ROWS-1][0],0,COLS);
 }
 
-static void pb_print_char(char c)
+void pb_print_char(char c)
 {
     if (c=='\n')
     {

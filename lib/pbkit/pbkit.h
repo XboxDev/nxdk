@@ -156,6 +156,10 @@ void pb_create_gr_instance(int ChannelID,
                         DWORD flags,
                         DWORD flags3D,
                         struct s_CtxDma *pGrObject);
+
+// Exposed so pb_print can be overridden using a version of vsprintf that
+// supports floats.
+void pb_print_char(char c);
 #ifdef __cplusplus
 }
 #endif
