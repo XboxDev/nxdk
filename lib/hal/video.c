@@ -367,8 +367,8 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	   set it here, too. */
 	_fb = framebufferMemory;
 
-	XVideoSetFlickerFilter(5);
-	XVideoSetSoftenFilter(TRUE);
+	XVideoSetFlickerFilter(0);
+	XVideoSetSoftenFilter(FALSE);
 
 	for(i = 0; i < 256; i++) {
 		defaultGammaRampEntries[i].red = i;
