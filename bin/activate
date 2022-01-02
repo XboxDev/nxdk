@@ -22,5 +22,5 @@ if [ "$1" = "-s" ]; then cat <<- DONE
     export PATH="$PATH";
 DONE
 else
-    exec "${@:-$SHELL}"
+    exec "${@:-${SHELL:-sh}}"
 fi
