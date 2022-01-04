@@ -16,5 +16,6 @@ clang \
     -I${NXDK_DIR}/lib/xboxrt/vcruntime \
     -DNXDK \
     -D__STDC__=1 \
+    -U__STDC_NO_THREADS__ \
     -fno-exceptions \
     "$@"
