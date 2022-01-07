@@ -172,7 +172,7 @@ static NTSTATUS DeleteHandle (HANDLE handle)
     return NtSetInformationFile(handle, &ioStatusBlock, &dispositionInformation, sizeof(dispositionInformation), FileDispositionInformation);
 }
 
-BOOL DeleteFileA (LPCTSTR lpFileName)
+BOOL DeleteFileA (LPCSTR lpFileName)
 {
     NTSTATUS status;
     HANDLE handle;
@@ -271,7 +271,7 @@ BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttrib
     }
 }
 
-BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName)
+BOOL MoveFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName)
 {
     NTSTATUS status;
     HANDLE handle;

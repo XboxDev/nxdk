@@ -36,10 +36,10 @@ HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindNextFileA (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindClose (HANDLE hFindFile);
 
-BOOL DeleteFileA (LPCTSTR lpFileName);
+BOOL DeleteFileA (LPCSTR lpFileName);
 BOOL RemoveDirectoryA (LPCSTR lpPathName);
 BOOL CreateDirectoryA (LPCSTR lpPathName, LPSECURITY_ATTRIBUTES lpSecurityAttributes);
-BOOL MoveFileA (LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName);
+BOOL MoveFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName);
 BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExists);
 
 BOOL GetDiskFreeSpaceExA (LPCSTR lpDirectoryName, PULARGE_INTEGER lpFreeBytesAvailableToCaller, PULARGE_INTEGER lpTotalNumberOfBytes, PULARGE_INTEGER lpTotalNumberOfFreeBytes);
