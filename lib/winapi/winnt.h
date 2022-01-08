@@ -267,20 +267,6 @@ typedef struct _XBE_LIBRARY_HEADER
     WORD LibraryFlags;
 } XBE_LIBRARY_HEADER, *PXBE_LIBRARY_HEADER;
 
-typedef struct _XBE_SECTION_HEADER
-{
-    DWORD Flags;
-    DWORD VirtualAddress;
-    DWORD VirtualSize;
-    DWORD FileAddress;
-    DWORD FileSize;
-    PCSZ SectionName;
-    LONG SectionReferenceCount;
-    WORD *HeadReferenceCount;
-    WORD *TailReferenceCount;
-    BYTE CheckSum[20];
-} XBE_SECTION_HEADER, *PXBE_SECTION_HEADER;
-
 typedef struct _XBE_FILE_HEADER
 {
     DWORD Magic;

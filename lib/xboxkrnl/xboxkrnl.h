@@ -874,20 +874,6 @@ typedef enum _FIRMWARE_REENTRY
     HalMaximumRoutine
 } FIRMWARE_REENTRY;
 
-typedef struct _XBEIMAGE_SECTION
-{
-    ULONG SectionFlags;
-    ULONG virtualAddress;
-    ULONG VirtuaSize;
-    ULONG PointerToRawData;
-    ULONG SizeOfRawData;
-    PUCHAR SectionName;
-    ULONG SectionReferenceCount;
-    PSHORT HeadSharedPageReferenceCount;
-    PSHORT TailSharedPageReferenceCount;
-    UCHAR SectionDigest[20];
-} XBEIMAGE_SECTION, *PXBEIMAGE_SECTION;
-
 typedef struct _OBJECT_TYPE
 {
     PVOID AllocateProcedure;
@@ -1574,7 +1560,7 @@ typedef VOID (NTAPI *PKSYSTEM_ROUTINE) (
  */
 XBAPI NTSTATUS NTAPI XeUnloadSection
 (
-    IN OUT PXBEIMAGE_SECTION Section
+    IN OUT PXBE_SECTION_HEADER Section
 );
 
 XBAPI UCHAR XePublicKeyData[284];
@@ -1586,7 +1572,7 @@ XBAPI UCHAR XePublicKeyData[284];
  */
 XBAPI NTSTATUS NTAPI XeLoadSection
 (
-    IN PXBEIMAGE_SECTION Section
+    IN PXBE_SECTION_HEADER Section
 );
 
 XBAPI ANSI_STRING XeImageFileName[1];
