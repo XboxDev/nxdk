@@ -184,4 +184,18 @@ typedef struct _RTL_CRITICAL_SECTION
 #define FILE_ATTRIBUTE_TEMPORARY 0x00000100
 #define INVALID_FILE_ATTRIBUTES 0xFFFFFFFF
 
+typedef struct _XBE_SECTION_HEADER
+{
+    DWORD Flags;
+    DWORD VirtualAddress;
+    DWORD VirtualSize;
+    DWORD FileAddress;
+    DWORD FileSize;
+    PCSZ SectionName;
+    LONG SectionReferenceCount;
+    WORD *HeadReferenceCount;
+    WORD *TailReferenceCount;
+    BYTE CheckSum[20];
+} XBE_SECTION_HEADER, *PXBE_SECTION_HEADER;
+
 #endif
