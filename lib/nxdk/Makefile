@@ -1,7 +1,8 @@
 NXDK_SRCS := \
 	$(NXDK_DIR)/lib/nxdk/format.c \
 	$(NXDK_DIR)/lib/nxdk/mount.c \
-	$(NXDK_DIR)/lib/nxdk/path.c
+	$(NXDK_DIR)/lib/nxdk/path.c \
+	$(NXDK_DIR)/lib/nxdk/xbe.c
 
 NXDK_OBJS = $(addsuffix .obj, $(basename $(NXDK_SRCS)))
 
