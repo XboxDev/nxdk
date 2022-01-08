@@ -520,5 +520,3 @@
 #define NV_PRAMIN						0x00700000
 
 #define NV_USER							0x00800000
-
-
