@@ -17,7 +17,6 @@
 
 #include <hal/video.h>
 #include <hal/xbox.h>
-#include <hal/io.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/debug.h>
 #include <stdbool.h>
