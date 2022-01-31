@@ -12,6 +12,7 @@ ZLIB_SRCS = $(ZLIB_DIR)/adler32.c \
 ZLIB_OBJS = $(addsuffix .obj, $(basename $(ZLIB_SRCS)))
 
 NXDK_CFLAGS += -I $(ZLIB_DIR) -DZ_SOLO
+NXDK_CXXFLAGS += -I $(ZLIB_DIR) -DZ_SOLO
 
 $(NXDK_DIR)/lib/libzlib.lib: $(ZLIB_OBJS)
 
