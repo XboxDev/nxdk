@@ -1,0 +1,39 @@
+name: Bug Report
+description: Report a general issue with nxdk, specific to issues within this repository
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please, fill out this form with concise information.
+  - type: textarea
+    attributes:
+      label: Bug Description
+      description: |
+        A brief description of the problem, including steps to reproduce the issue and any relevant screenshots of the problem.
+
+        Tip: You can attach images by clicking this area to highlight it and then dragging files in.
+      placeholder: |
+        Insert the issue you are having here
+
+        Steps to reproduce this issue:
+        1. ...
+        2. ...
+        3. ...
+        etc.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A brief description of the expected behavior.
+      placeholder: |
+        The expected way this should function should be *insert answer here*
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: Additional information of how you have identified this issue/test cases to help prove (and potentially fix the issue occurring, if applicable)
+      placeholder: |
+        *insert testcase/other valid information here
