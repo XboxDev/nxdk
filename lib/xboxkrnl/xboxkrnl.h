@@ -1729,6 +1729,12 @@ XBAPI XBOX_KEY_DATA XboxEEPROMKey;
 
 XBAPI XBOX_KEY_DATA XboxAlternateSignatureKeys[];
 
+/**
+ * Writes a number of USHORT values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PUSHORT)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer containing the values to be written.
+ * @param Count Specifies the number of values to be written to the port.
+ */
 XBAPI VOID NTAPI WRITE_PORT_BUFFER_USHORT
 (
     IN PUSHORT Port,
@@ -1736,6 +1742,12 @@ XBAPI VOID NTAPI WRITE_PORT_BUFFER_USHORT
     IN ULONG Count
 );
 
+/**
+ * Writes a number of ULONG values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PULONG)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer containing the values to be written.
+ * @param Count Specifies the number of values to be written to the port.
+ */
 XBAPI VOID NTAPI WRITE_PORT_BUFFER_ULONG
 (
     IN PULONG Port,
@@ -1743,6 +1755,12 @@ XBAPI VOID NTAPI WRITE_PORT_BUFFER_ULONG
     IN ULONG Count
 );
 
+/**
+ * Writes a number of UCHAR values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PUCHAR)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer containing the values to be written.
+ * @param Count Specifies the number of values to be written to the port.
+ */
 XBAPI VOID NTAPI WRITE_PORT_BUFFER_UCHAR
 (
     IN PUCHAR Port,
@@ -2302,6 +2320,12 @@ XBAPI NTSTATUS NTAPI RtlAnsiStringToUnicodeString
     BOOLEAN AllocateDestinationString
 );
 
+/**
+ * Reads a number of USHORT values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PUSHORT)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer into which the array of values will be written.
+ * @param Count Specifies the number of values to be read from the port and written into the buffer.
+ */
 XBAPI VOID NTAPI READ_PORT_BUFFER_USHORT
 (
     IN PUSHORT Port,
@@ -2309,6 +2333,12 @@ XBAPI VOID NTAPI READ_PORT_BUFFER_USHORT
     IN ULONG Count
 );
 
+/**
+ * Reads a number of ULONG values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PULONG)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer into which the array of values will be written.
+ * @param Count Specifies the number of values to be read from the port and written into the buffer.
+ */
 XBAPI VOID NTAPI READ_PORT_BUFFER_ULONG
 (
     IN PULONG Port,
@@ -2316,6 +2346,12 @@ XBAPI VOID NTAPI READ_PORT_BUFFER_ULONG
     IN ULONG Count
 );
 
+/**
+ * Reads a number of UCHAR values from the specified port address into a buffer.
+ * @param Port The memory mapped I/O address of the port. E.g., `(PUCHAR)0x0cf8` for port 0x0CF8.
+ * @param Buffer Pointer to a buffer into which the array of values will be written.
+ * @param Count Specifies the number of values to be read from the port and written into the buffer.
+ */
 XBAPI VOID NTAPI READ_PORT_BUFFER_UCHAR
 (
     IN PUCHAR Port,
