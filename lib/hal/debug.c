@@ -154,7 +154,7 @@ void debugPrint(const char *format, ...)
 	unsigned short len;
 	va_list argList;
 	va_start(argList, format);
-	vsprintf(buffer, format, argList);
+	vsnprintf(buffer, sizeof(buffer), format, argList);
 	va_end(argList);
 
 	synchronizeFramebuffer();
