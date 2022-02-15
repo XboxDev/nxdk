@@ -2,6 +2,7 @@
 
 // SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
 // SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2022 Ryan Wendland
 
 #ifndef __SYNCHAPI_H__
 #define __SYNCHAPI_H__
@@ -62,6 +63,15 @@ DWORD WaitForMultipleObjects (DWORD nCount, const HANDLE *lpHandles, BOOL bWaitA
 
 HANDLE CreateSemaphore (LPSECURITY_ATTRIBUTES lpSemaphoreAttributes, LONG lInitialCount, LONG lMaximumCount, LPCSTR lpName);
 BOOL ReleaseSemaphore (HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousCount);
+
+HANDLE CreateMutexA (LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName);
+BOOL ReleaseMutex (HANDLE hMutex);
+
+#ifndef UNICODE
+#define CreateMutex CreateMutexA
+#else
+#error nxdk does not support the Unicode API
+#endif
 
 #ifdef __cplusplus
 }

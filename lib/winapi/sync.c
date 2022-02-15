@@ -2,6 +2,7 @@
 
 // SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
 // SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2022 Ryan Wendland
 
 #include <synchapi.h>
 #include <assert.h>
@@ -528,6 +529,50 @@ BOOL ReleaseSemaphore (HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousC
     NTSTATUS status;
 
     status = NtReleaseSemaphore(hSemaphore, lReleaseCount, lpPreviousCount);
+    if (NT_SUCCESS(status)) {
+        return TRUE;
+    }
+
+    SetLastError(RtlNtStatusToDosError(status));
+    return FALSE;
+}
+
+HANDLE CreateMutexA (LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING obj_name;
+    OBJECT_ATTRIBUTES obj_attributes;
+    POBJECT_ATTRIBUTES obj_attributes_ptr;
+
+    if (lpName) {
+        RtlInitAnsiString(&obj_name, lpName);
+        InitializeObjectAttributes(&obj_attributes, &obj_name, OBJ_OPENIF, ObWin32NamedObjectsDirectory(), NULL);
+        obj_attributes_ptr = &obj_attributes;
+    } else {
+        obj_attributes_ptr = NULL;
+    }
+
+    status = NtCreateMutant(&handle, obj_attributes_ptr, bInitialOwner);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return NULL;
+    }
+
+    if (status == STATUS_OBJECT_NAME_EXISTS) {
+        SetLastError(ERROR_ALREADY_EXISTS);
+    } else {
+        SetLastError(0);
+    }
+
+    return handle;
+}
+
+BOOL ReleaseMutex (HANDLE hMutex)
+{
+    NTSTATUS status;
+
+    status = NtReleaseMutant(hMutex, NULL);
     if (NT_SUCCESS(status)) {
         return TRUE;
     }
