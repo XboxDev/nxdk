@@ -359,6 +359,11 @@
  */
 #define LWIP_SINGLE_NETIF               1
 
+/**
+ * LWIP_NETIF_API==1: Support netif api (in netifapi.c)
+ */
+#define LWIP_NETIF_API                  1
+
 /*
    ------------------------------------
    ---------- LOOPIF options ----------
