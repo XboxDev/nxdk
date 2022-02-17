@@ -2,6 +2,7 @@ NXDK_SRCS := \
 	$(NXDK_DIR)/lib/nxdk/configsector.c \
 	$(NXDK_DIR)/lib/nxdk/format.c \
 	$(NXDK_DIR)/lib/nxdk/mount.c \
+	$(NXDK_DIR)/lib/nxdk/net.c \
 	$(NXDK_DIR)/lib/nxdk/path.c \
 	$(NXDK_DIR)/lib/nxdk/xbe.c
 
