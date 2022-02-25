@@ -57,6 +57,15 @@ typedef struct _FLOATING_SAVE_AREA
     DWORD Cr0NpxState;
 } __attribute__((packed)) FLOATING_SAVE_AREA, *PFLOATING_SAVE_AREA;
 
+// ContextFlags usage
+#define CONTEXT_X86                                0x00010000  // generic x86 processor flag
+#define CONTEXT_i386                 CONTEXT_X86               // backward compatiblity
+#define CONTEXT_CONTROL             (CONTEXT_X86 | 0x00000001)
+#define CONTEXT_INTEGER             (CONTEXT_X86 | 0x00000002)
+#define CONTEXT_SEGMENTS            (CONTEXT_X86 | 0x00000004)
+#define CONTEXT_FLOATING_POINT      (CONTEXT_X86 | 0x00000008)
+#define CONTEXT_EXTENDED_REGISTERS  (CONTEXT_X86 | 0x00000020) // cpu specific extensions
+
 typedef struct _CONTEXT
 {
     DWORD ContextFlags;
