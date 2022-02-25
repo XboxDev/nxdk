@@ -13,6 +13,8 @@ typedef struct _EXCEPTION_REGISTRATION
 
 #define GetExceptionCode _exception_code
 
+#define GetExceptionInformation() ((struct _EXCEPTION_POINTERS*)_exception_info())
+
 #define EXCEPTION_EXECUTE_HANDLER 1
 #define EXCEPTION_CONTINUE_SEARCH 0
 #define EXCEPTION_CONTINUE_EXECUTION (-1)
