@@ -24,6 +24,7 @@ static __cdecl VOID fls_init (VOID)
     InitializeCriticalSection(&fls_lock);
     InitializeListHead(&fls_nodes_list);
 }
+#pragma comment(linker, "/include:___fls_init_p")
 __attribute__((section(".CRT$XXT"))) void (__cdecl *const __fls_init_p)(void) = fls_init;
 
 VOID fls_register_thread (VOID)
