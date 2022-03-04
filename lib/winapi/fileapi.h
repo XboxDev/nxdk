@@ -28,6 +28,7 @@ BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTE
 
 DWORD GetFileSize (HANDLE hFile, LPDWORD lpFileSizeHigh);
 BOOL GetFileSizeEx (HANDLE hFile, PLARGE_INTEGER lpFileSize);
+BOOL SetEndOfFile (HANDLE hFile);
 
 HANDLE FindFirstFileA (LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData);
 BOOL FindNextFileA (HANDLE hFindFile, LPWIN32_FIND_DATAA lpFindFileData);

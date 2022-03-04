@@ -287,6 +287,32 @@ BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTE
     }
 }
 
+BOOL SetEndOfFile (HANDLE hFile)
+{
+    // Get current position in file
+    LONG highPosDWORD = 0;
+    PLONG lpHighPosDWORD = &highPosDWORD;
+    DWORD lowPosDWORD = SetFilePointer(hFile, 0, lpHighPosDWORD, FILE_CURRENT);
+
+    // Combine low and high position DWORDs for full position
+    LONGLONG fullCurrentPos;
+    fullCurrentPos = highPosDWORD;
+    fullCurrentPos = fullCurrentPos << 32 | lowPosDWORD;
+
+
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_END_OF_FILE_INFORMATION fileEOFInfo;
+    fileEOFInfo.EndOfFile.QuadPart = fullCurrentPos;
+
+    NTSTATUS status = NtSetInformationFile(hFile, &ioStatusBlock, &fileEOFInfo, sizeof(fileEOFInfo), FileEndOfFileInformation);
+    if (NT_SUCCESS(status)) {
+        return FALSE;
+    }
+    else {
+        return TRUE;
+    }
+}
+
 DWORD GetFileSize (HANDLE hFile, LPDWORD lpFileSizeHigh)
 {
     LARGE_INTEGER fileSize;
