@@ -1,16 +1,13 @@
 //pbKit header
-// This library is free software; you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation; either version 2.1 of the
-// License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, see <http://www.gnu.org/licenses/>
+
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2007 Guillaume Lamonoca
+// SPDX-FileCopyrightText: 2017 espes
+// SPDX-FileCopyrightText: 2017-2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2018-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019 Lucas Jansson
+// SPDX-FileCopyrightText: 2021 Erik Abair
 
 #ifndef _PBKIT_H_
 #define _PBKIT_H_
