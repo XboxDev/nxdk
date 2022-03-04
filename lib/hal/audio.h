@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2003 Andy Green
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2021 Bennet Blischke
+
 #ifndef HAL_AUDIO_H
 #define HAL_AUDIO_H
 

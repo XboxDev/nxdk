@@ -1,3 +1,12 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2003 Andy Green
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2005-2006 Richard Osborne
+// SPDX-FileCopyrightText: 2006 Guillaume Lamonoca
+// SPDX-FileCopyrightText: 2017-2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2020-2021 Stefan Schmidt
+
 #include <string.h>
 #include <stdbool.h>
 #include <hal/audio.h>
