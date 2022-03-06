@@ -1,4 +1,4 @@
-#include <hal/debug.h>
+#include <nxdk/log_console.h>
 #include <hal/video.h>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -16,17 +16,17 @@ int main(void) {
   SDL_Texture  *texture  = NULL;
 
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
-  
+
   initialized_SDL = SDL_VideoInit(NULL);
   if (initialized_SDL != 0) {
-    debugPrint("SDL_VideoInit failed: %s", SDL_GetError());
+    nxLogPrintf("SDL_VideoInit failed: %s", SDL_GetError());
     Sleep(2000);
     goto cleanup;
   }
 
   initialized_TTF = TTF_Init();
   if (initialized_TTF != 0) {
-    debugPrint("TTF_Init failed: %s", TTF_GetError());
+    nxLogPrintf("TTF_Init failed: %s", TTF_GetError());
     Sleep(2000);
     goto cleanup;
   }
@@ -40,14 +40,14 @@ int main(void) {
                             SCREEN_WIDTH, SCREEN_HEIGHT,
                             SDL_WINDOW_SHOWN);
   if (window == NULL) {
-    debugPrint("Window creation failed: %s", SDL_GetError());
+    nxLogPrintf("Window creation failed: %s", SDL_GetError());
     Sleep(2000);
     goto cleanup;
   }
 
   renderer = SDL_CreateRenderer(window, -1, 0);
   if (renderer == NULL) {
-    debugPrint("CreateRenderer failed: %s\n", SDL_GetError());
+    nxLogPrintf("CreateRenderer failed: %s\n", SDL_GetError());
     Sleep(2000);
     goto cleanup;
   }
@@ -56,7 +56,7 @@ int main(void) {
   const int font_size = 96;
   font = TTF_OpenFont(font_path, font_size);
   if (font == NULL) {
-    debugPrint("Couldn't load font: %s", TTF_GetError());
+    nxLogPrintf("Couldn't load font: %s", TTF_GetError());
     Sleep(2000);
     goto cleanup;
   }
@@ -65,7 +65,7 @@ int main(void) {
   surface = TTF_RenderText_Blended(font, "nxdk", font_color);
   TTF_CloseFont(font);
   if (surface == NULL) {
-    debugPrint("TTF_RenderText failed: %s", TTF_GetError());
+    nxLogPrintf("TTF_RenderText failed: %s", TTF_GetError());
     Sleep(2000);
     goto cleanup;
   }
@@ -73,7 +73,7 @@ int main(void) {
   texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_FreeSurface(surface);
   if (texture == NULL) {
-    debugPrint("Couldn't create texture: %s\n", SDL_GetError());
+    nxLogPrintf("Couldn't create texture: %s\n", SDL_GetError());
     Sleep(2000);
     goto cleanup;
   }
@@ -99,7 +99,7 @@ int main(void) {
         break;
       }
     }
- 
+
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, &outputPosition);
@@ -122,6 +122,6 @@ cleanup:
   if (initialized_SDL == 0) {
     SDL_Quit();
   }
-  
+
   return 0;
 }

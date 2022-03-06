@@ -1,4 +1,4 @@
-#include <hal/debug.h>
+#include <nxdk/log_console.h>
 #include <hal/video.h>
 #include <windows.h>
 #include <usbh_lib.h>
@@ -9,14 +9,14 @@
 */
 void device_connection_callback(UDEV_T *udev, int status)
 {
-    debugPrint("Device connected on USB hub port %u (VID: %04x PID: %04x)\n", udev->port_num,
+    nxLogPrintf("Device connected on USB hub port %u (VID: %04x PID: %04x)\n", udev->port_num,
                                                                               udev->descriptor.idVendor,
                                                                               udev->descriptor.idProduct);
 }
 
 void device_disconnect_callback(UDEV_T *udev, int status)
 {
-     debugPrint("Device disconnected on USB hub port %u (VID: %04x PID: %04x)\n", udev->port_num,
+     nxLogPrintf("Device disconnected on USB hub port %u (VID: %04x PID: %04x)\n", udev->port_num,
                                                                                   udev->descriptor.idVendor,
                                                                                   udev->descriptor.idProduct);
 }
@@ -27,7 +27,7 @@ int main(void)
 
     usbh_core_init();
     usbh_install_conn_callback(&device_connection_callback, &device_disconnect_callback);
-    debugPrint("Plug and unplug USB devices to print the USB device VID and PID\n");
+    nxLogPrintf("Plug and unplug USB devices to print the USB device VID and PID\n");
 
     while (1) {
         usbh_pooling_hubs();

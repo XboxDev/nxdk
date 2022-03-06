@@ -6,8 +6,9 @@
 
 #include <stdbool.h>
 #include <stdlib_ext_.h>
+
+#include <nxdk/log.h>
 #include <windows.h>
-#include <hal/debug.h>
 
 _purecall_handler current_purecall_handler = NULL;
 
@@ -17,7 +18,7 @@ int __cdecl _purecall (void)
         current_purecall_handler();
     }
 
-    debugPrint("Pure virtual function called!\n");
+    nxLogPrint("Pure virtual function called!\n");
 
     // Make sure the handler doesn't return
     while(true) {

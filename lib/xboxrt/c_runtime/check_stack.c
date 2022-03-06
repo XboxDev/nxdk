@@ -1,11 +1,11 @@
 #include <errhandlingapi.h>
-#include <hal/debug.h>
+#include <nxdk/log.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 #ifdef DEBUG_CONSOLE
     #define _print DbgPrint
 #else
-    #define _print debugPrint
+    #define _print nxLogPrintf
 #endif
 
 void _cdecl _xlibc_check_stack (DWORD requested_size, DWORD stack_ptr)

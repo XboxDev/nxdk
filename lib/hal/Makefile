@@ -1,6 +1,5 @@
 HAL_SRCS := \
 	$(NXDK_DIR)/lib/hal/audio.c \
-	$(NXDK_DIR)/lib/hal/debug.c \
 	$(NXDK_DIR)/lib/hal/fileio.c \
 	$(NXDK_DIR)/lib/hal/led.c \
 	$(NXDK_DIR)/lib/hal/video.c \

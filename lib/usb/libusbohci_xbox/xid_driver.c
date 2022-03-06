@@ -17,8 +17,8 @@
 
 //#define ENABLE_USBH_XID_DEBUG
 #ifdef ENABLE_USBH_XID_DEBUG
-#include <hal/debug.h>
-#define USBH_XID_DEBUG debugPrint
+#include <nxdk/log_console.h>
+#define USBH_XID_DEBUG nxLogPrint
 #else
 #define USBH_XID_DEBUG(...)
 #endif
@@ -202,8 +202,8 @@ UDEV_DRV_T xid_driver =
 };
 
 /**
- * @brief Adds a callback function when an XID interface is connected or removed. Pass NULL to remove the callback. 
- * 
+ * @brief Adds a callback function when an XID interface is connected or removed. Pass NULL to remove the callback.
+ *
  * @param conn_func  The user's connection callback function.
  * @param disconn_func The user's disconnection callback function.
  */
@@ -214,7 +214,7 @@ void usbh_install_xid_conn_callback(XID_CONN_FUNC *conn_func, XID_CONN_FUNC *dis
 
 /**
  * @brief Initialises the XID driver with the USB backend.
- * 
+ *
  */
 void usbh_xid_init(void) {
     usbh_register_driver(&xid_driver);
@@ -322,7 +322,7 @@ static int32_t queue_int_xfer(xid_dev_t *xid_dev, uint8_t dir, uint8_t ep_addr, 
 
 /**
  * @brief Reads an interrupt in endpoint. This is a nonblocking function. The received data can be read from the callback function.
- * 
+ *
  * @param xid_dev Pointer to the XID device.
  * @param ep_addr The endpoint address to read. If ep_addr equal zero, the first interrupt in endpoint found will be used.
  * @param rx_complete_callback The user's receive complete callback function with the form `void my_callback(UTR_T *utr)`.
@@ -336,7 +336,7 @@ int32_t usbh_xid_read(xid_dev_t *xid_dev, uint8_t ep_addr, void *rx_complete_cal
 /**
  * @brief Queues a write to an interrupt out endpoint. This is a nonblocking function. The total amount of transfers that can be queued is
  * set by XID_MAX_TRANSFER_QUEUE.
- * 
+ *
  * @param xid_dev Pointer to the XID device.
  * @param ep_addr The endpoint address to write. If ep_addr equal zero, the first interrupt out endpoint found will be used.
  * @param txbuff The user transmit buffer
@@ -350,11 +350,11 @@ int32_t usbh_xid_write(xid_dev_t *xid_dev, uint8_t ep_addr, uint8_t *txbuff, uin
 
 /**
  * @brief Send a rumble command to an xid game controller.
- * 
+ *
  * @param xid_dev Pointer to the XID device.
  * @param l_value Value of the low frequency rumble. 0 to 0xFFFF.
  * @param h_value Value of the high frequency rumble. 0 to 0xFFFF.
- * @return USBH_OK or the error. 
+ * @return USBH_OK or the error.
  */
 int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value){
     if (xid_dev->xid_desc.bType != XID_TYPE_GAMECONTROLLER)
@@ -374,7 +374,7 @@ int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value){
 
 /**
  * @brief Returns the xid_type.
- * 
+ *
  * @param xid_dev Pointer to the XID device.
  * @return xid_type. Refer to xid_type enum.
  */

@@ -15,7 +15,7 @@
 #include <hal/video.h>
 #include <hal/xbox.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/debug.h>
+#include <nxdk/log.h>
 #include <stdbool.h>
 #include <assert.h>
 
@@ -545,7 +545,7 @@ static void pb_subprog(DWORD subprogID, DWORD paramA, DWORD paramB)
             break;
 
         default:
-            debugPrint( "Unknown subProgID %lu has been detected by DPC (A=%lx B=%lx).\n",
+            nxLogPrintf( "Unknown subProgID %lu has been detected by DPC (A=%lx B=%lx).\n",
                     subprogID,
                     paramA,
                     paramB  );
@@ -645,29 +645,29 @@ static DWORD pb_gr_handler(void)
                         {
                             pb_show_debug_screen();
 
-                            debugPrint("\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_DATA_ERROR_PENDING) debugPrint("GPU Error : invalid data error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_PROTECTION_ERROR_PENDING) debugPrint("GPU Error : protection error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_RANGE_EXCEPTION_PENDING) debugPrint("GPU Error : range exception error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_COLOR_PENDING) debugPrint("GPU Error : color buffer limit error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_ZETA_PENDING) debugPrint("GPU Error : zeta buffer limit error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_DMA_R_PROTECTION_PENDING) debugPrint("GPU Error : dma read protection error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_DMA_W_PROTECTION_PENDING) debugPrint("GPU Error : dma write protection error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_FORMAT_EXCEPTION_PENDING) debugPrint("GPU Error : format exception error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_PATCH_EXCEPTION_PENDING) debugPrint("GPU Error : patch exception error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_STATE_INVALID_PENDING) debugPrint("GPU Error : object state invalid error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_DOUBLE_NOTIFY_PENDING) debugPrint("GPU Error : double notify error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_NOTIFY_IN_USE_PENDING) debugPrint("GPU Error : notify in use error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_METHOD_CNT_PENDING) debugPrint("GPU Error : method count error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_BFR_NOTIFICATION_PENDING) debugPrint("GPU Error : buffer notification error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_DMA_VTX_PROTECTION_PENDING) debugPrint("GPU Error : DMA vertex protection error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_IDX_INLINE_REUSE_PENDING) debugPrint("Graphics index inline reuse error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_INVALID_OPERATION_PENDING) debugPrint("GPU Error : invalid operation error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_FD_INVALID_OPERATION_PENDING) debugPrint("GPU Error : FD invalid operation error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_TEX_A_PROTECTION_PENDING) debugPrint("GPU Error : texture A protection error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_TEX_B_PROTECTION_PENDING) debugPrint("GPU Error : texture B protection error!\n");
+                            nxLogPrint("\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_DATA_ERROR_PENDING) nxLogPrint("GPU Error : invalid data error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_PROTECTION_ERROR_PENDING) nxLogPrint("GPU Error : protection error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_RANGE_EXCEPTION_PENDING) nxLogPrint("GPU Error : range exception error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_COLOR_PENDING) nxLogPrint("GPU Error : color buffer limit error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_ZETA_PENDING) nxLogPrint("GPU Error : zeta buffer limit error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_DMA_R_PROTECTION_PENDING) nxLogPrint("GPU Error : dma read protection error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_DMA_W_PROTECTION_PENDING) nxLogPrint("GPU Error : dma write protection error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_FORMAT_EXCEPTION_PENDING) nxLogPrint("GPU Error : format exception error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_PATCH_EXCEPTION_PENDING) nxLogPrint("GPU Error : patch exception error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_STATE_INVALID_PENDING) nxLogPrint("GPU Error : object state invalid error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_DOUBLE_NOTIFY_PENDING) nxLogPrint("GPU Error : double notify error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_NOTIFY_IN_USE_PENDING) nxLogPrint("GPU Error : notify in use error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_METHOD_CNT_PENDING) nxLogPrint("GPU Error : method count error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_BFR_NOTIFICATION_PENDING) nxLogPrint("GPU Error : buffer notification error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_DMA_VTX_PROTECTION_PENDING) nxLogPrint("GPU Error : DMA vertex protection error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_IDX_INLINE_REUSE_PENDING) nxLogPrint("Graphics index inline reuse error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_INVALID_OPERATION_PENDING) nxLogPrint("GPU Error : invalid operation error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_FD_INVALID_OPERATION_PENDING) nxLogPrint("GPU Error : FD invalid operation error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_TEX_A_PROTECTION_PENDING) nxLogPrint("GPU Error : texture A protection error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_TEX_B_PROTECTION_PENDING) nxLogPrint("GPU Error : texture B protection error!\n");
 
-                            debugPrint( "Error binary flags : %08lx\n"
+                            nxLogPrintf( "Error binary flags : %08lx\n"
                                     "Channel ID : %d (0=3D)\n"
                                     "Channel class : %lx\n"
                                     "Push buffer inner register target : %04lx\n"
@@ -684,9 +684,9 @@ static DWORD pb_gr_handler(void)
                                     VIDEOREG(NV_PGRAPH_PARAMETER_A),
                                     VIDEOREG(NV_PGRAPH_PARAMETER_B)     );
 
-                            if (pb_trace_mode==0) debugPrint("Report is accurate only if pb_trace_mode=1 (slower)\n");
+                            if (pb_trace_mode==0) nxLogPrint("Report is accurate only if pb_trace_mode=1 (slower)\n");
 
-                            debugPrint("System halted\n");
+                            nxLogPrint("System halted\n");
 
                             //calling XReboot() from here doesn't work well.
 
@@ -844,10 +844,10 @@ static DWORD pb_fifo_handler(void)
     if (status&NV_PFIFO_INTR_0_DMA_PUSHER_PENDING)
     {
         pb_show_debug_screen();
-        debugPrint("Software Put=%08lx\n",(DWORD)pb_Put);
-        debugPrint("Hardware Put=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_PUT));
-        debugPrint("Hardware Get=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_GET));
-        debugPrint("Dma push buffer engine encountered invalid data at these addresses.\n");
+        nxLogPrintf("Software Put=%08lx\n",(DWORD)pb_Put);
+        nxLogPrintf("Hardware Put=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_PUT));
+        nxLogPrintf("Hardware Get=%08x\n",VIDEOREG(NV_PFIFO_CACHE1_DMA_GET));
+        nxLogPrint("Dma push buffer engine encountered invalid data at these addresses.\n");
 
         VIDEOREG(NV_PFIFO_INTR_0)=NV_PFIFO_INTR_0_DMA_PUSHER_RESET;
         VIDEOREG(NV_PFIFO_CACHE1_DMA_STATE)=NV_PFIFO_CACHE1_DMA_STATE_METHOD_COUNT_0;
@@ -1180,7 +1180,7 @@ void pb_assign_tile(    int tile_index,
     DWORD               EncodedZStartTag;
     DWORD               EncodedZOffset;
 #ifdef DBG
-    if ((tile_addr&0x3fff)||(tile_size&0x3fff)) debugPrint("pb_assign_tile: addr & size not well aligned\n");
+    if ((tile_addr&0x3fff)||(tile_size&0x3fff)) nxLogPrint("pb_assign_tile: addr & size not well aligned\n");
 #endif
     old_dma_push=pb_wait_until_tiles_not_busy();
 
@@ -1546,7 +1546,7 @@ static void pb_3D_init(void)
     //theoretically, offset=0x36B0/4=0xDAC
 
 #ifdef DBG
-    if (offset+4!=0x36B0/4) debugPrint("pb_3D_init: bad final value for offset\n");
+    if (offset+4!=0x36B0/4) nxLogPrint("pb_3D_init: bad final value for offset\n");
 #endif
     //floating point post-initializations in cmn structure
 
@@ -1620,7 +1620,7 @@ static void pb_3D_init(void)
 
 #ifdef DBG
     //at this point pb_GrCtxID and pb_FifoChannelID must be different
-    //debugPrint("pb_3D_init: gr=%d fifo=%d\n",pb_GrCtxID,pb_FifoChannelID);
+    //nxLogPrint("pb_3D_init: gr=%d fifo=%d\n",pb_GrCtxID,pb_FifoChannelID);
 #endif
 }
 
@@ -1704,7 +1704,7 @@ static void pb_start(void)
 #ifdef DBG
         if ((*(pb_DmaUserAddr+0x44/4))>0x04000000)
         {
-            debugPrint("pb_start: wrong GetAddr\n");
+            nxLogPrint("pb_start: wrong GetAddr\n");
             return;
         }
 #endif
@@ -1731,7 +1731,7 @@ static void pb_jump_to_head(void)
 #ifdef DBG
     if (pb_BeginEndPair)
     {
-        debugPrint("pb_reset musn't be called inside a begin-end block.\n");
+        nxLogPrint("pb_reset musn't be called inside a begin-end block.\n");
         return;
     }
 #endif
@@ -1750,7 +1750,7 @@ static void pb_jump_to_head(void)
         if ((*(pb_DmaUserAddr+0x44/4))>0x04000000)
         {
 #ifdef DBG
-            debugPrint("pb_reset: bad getaddr\n");
+            nxLogPrint("pb_reset: bad getaddr\n");
 #endif
             return;
         }
@@ -1758,7 +1758,7 @@ static void pb_jump_to_head(void)
 
         if (KeTickCount-TimeStampTicks>TICKSTIMEOUT)
         {
-            debugPrint("pb_reset: too long\n");
+            nxLogPrint("pb_reset: too long\n");
             break;
         }
 
@@ -1786,7 +1786,7 @@ int pb_busy(void)
 #ifdef DBG
     if (GetAddr>0x04000000)
     {
-        debugPrint("pb_busy: wrong GetAddr\n");
+        nxLogPrint("pb_busy: wrong GetAddr\n");
         return 0;
     }
 #endif
@@ -1823,7 +1823,7 @@ DWORD *pb_extra_buffer(int buffer_index)
 {
     if (buffer_index>=pb_ExtraBuffersCount)
     {
-        debugPrint("pb_extra_buffer: buffer index out of range\n");
+        nxLogPrint("pb_extra_buffer: buffer index out of range\n");
         return NULL;
     }
 
@@ -1954,7 +1954,7 @@ void pb_target_extra_buffer(int buffer_index)
 {
     if (buffer_index>=pb_ExtraBuffersCount)
     {
-        debugPrint("pb_target_extra_buffer: buffer index out of range\n");
+        nxLogPrint("pb_target_extra_buffer: buffer index out of range\n");
         return;
     }
 
@@ -2065,7 +2065,7 @@ void pb_draw_text_screen(void)
 void pb_extra_buffers(int n)
 {
     if (n>MAX_EXTRA_BUFFERS)
-        debugPrint("Too many extra buffers\n");
+        nxLogPrint("Too many extra buffers\n");
     else
         pb_ExtraBuffersCount=n;
 }
@@ -2073,14 +2073,14 @@ void pb_extra_buffers(int n)
 void pb_size(DWORD size)
 {
     if (pb_running)
-        debugPrint("Can't set size while push buffer Dma engine is running.\n");
+        nxLogPrint("Can't set size while push buffer Dma engine is running.\n");
     else
     {
         if (size<64*1024)
-            debugPrint("Push buffer size must be equal or larger than 64Kb.\n");
+            nxLogPrint("Push buffer size must be equal or larger than 64Kb.\n");
         else
         if ((size-1)&size)
-            debugPrint("Push buffer size must be a power of 2.\n");
+            nxLogPrint("Push buffer size must be a power of 2.\n");
         else
         pb_Size=size;
     }
@@ -2096,9 +2096,9 @@ void pb_reset(void)
 uint32_t *pb_begin(void)
 {
 #ifdef DBG
-    if (pb_Put>=pb_Tail) debugPrint("ERROR! Push buffer overflow! Use pb_reset more often or enlarge push buffer!\n");
+    if (pb_Put>=pb_Tail) nxLogPrint("ERROR! Push buffer overflow! Use pb_reset more often or enlarge push buffer!\n");
 
-    if (pb_BeginEndPair==1) debugPrint("pb_begin without a pb_end earlier\n");
+    if (pb_BeginEndPair==1) nxLogPrint("pb_begin without a pb_end earlier\n");
     pb_BeginEndPair=1;
     pb_PushIndex=0;
     pb_PushNext=pb_Put;
@@ -2159,12 +2159,12 @@ void pb_end(uint32_t *pEnd)
 #ifdef DBG
     if (pEnd!=pb_PushNext)
     {
-        debugPrint("pb_end: input pointer invalid or not following previous write addresses\n");
+        nxLogPrint("pb_end: input pointer invalid or not following previous write addresses\n");
         assert(false);
     }
     if (pb_BeginEndPair==0)
     {
-        debugPrint("pb_end without a pb_begin\n");
+        nxLogPrint("pb_end without a pb_begin\n");
         assert(false);
     }
     pb_BeginEndPair=0;
@@ -2185,7 +2185,7 @@ void pb_end(uint32_t *pEnd)
             TimeStamp2=KeTickCount;
             if (TimeStamp2-TimeStamp1>TICKSTIMEOUT)
             {
-                debugPrint("pb_end: Busy for too long (%lu) (%08x)\n",
+                nxLogPrintf("pb_end: Busy for too long (%lu) (%08x)\n",
                     ((DWORD)(pb_Put)-(DWORD)(pb_Head)),
                     VIDEOREG(NV_PFIFO_CACHE1_DMA_GET)
                     );
@@ -2201,19 +2201,19 @@ void pb_push_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD nparam)
 #ifdef DBG
     if (p!=pb_PushNext)
     {
-        debugPrint("pb_push_to: new write address invalid or not following previous write addresses\n");
+        nxLogPrint("pb_push_to: new write address invalid or not following previous write addresses\n");
         assert(false);
     }
     if (pb_BeginEndPair==0)
     {
-        debugPrint("pb_push_to: missing pb_begin earlier\n");
+        nxLogPrint("pb_push_to: missing pb_begin earlier\n");
         assert(false);
     }
     pb_PushIndex += 1 + nparam;
     pb_PushNext += 1 + nparam;
     if (pb_PushIndex>128)
     {
-        debugPrint("pb_push_to: begin-end block musn't exceed 128 dwords\n");
+        nxLogPrint("pb_push_to: begin-end block musn't exceed 128 dwords\n");
         assert(false);
     }
 #endif
@@ -2502,7 +2502,7 @@ void pb_kill(void)
     HalRegisterShutdownNotification(&pb_shutdown_registration, FALSE);
 
 #ifdef DBG
-//  debugPrint("Waiting until Dma is not busy\n");
+//  nxLogPrint("Waiting until Dma is not busy\n");
 #endif
     if (pb_Put)
     {
@@ -2519,7 +2519,7 @@ void pb_kill(void)
         {
             if ((*(pb_DmaUserAddr+0x44/4))>0x04000000)
             {
-                debugPrint("pb_kill: Bad get addr\n");
+                nxLogPrint("pb_kill: Bad get addr\n");
                 break;
             }
 
@@ -2528,13 +2528,13 @@ void pb_kill(void)
 
             if (KeTickCount-TimeStampTicks>TICKSTIMEOUT)
             {
-                debugPrint("pb_kill: Dma busy for too long\n");
+                nxLogPrint("pb_kill: Dma busy for too long\n");
                 break;
             }
         }
     }
 #ifdef DBG
-//  if (KeTickCount-TimeStampTicks<=TICKSTIMEOUT) debugPrint("Dma not busy. All is ok.\n");
+//  if (KeTickCount-TimeStampTicks<=TICKSTIMEOUT) nxLogPrint("Dma not busy. All is ok.\n");
 #endif
 
     //wait until screen swapping is finished (if one is on its way)
@@ -2813,7 +2813,7 @@ int pb_init(void)
         {
             //This PLL configuration doesn't create a 233.33 Mhz freq from Xtal
             //Have this issure reported so we can update source for that case
-            debugPrint("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
+            nxLogPrintf("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
             return -5;
         }
     }
@@ -3215,7 +3215,7 @@ int pb_init(void)
     TimeStamp1=KeTickCount;
 
 #ifdef DBG
-//  debugPrint("Waiting undil DMA is ready\n");
+//  nxLogPrint("Waiting undil DMA is ready\n");
 #endif
     //wait until DMA is ready
     while(1)
@@ -3224,7 +3224,7 @@ int pb_init(void)
 
         if (GetAddr>0x04000000)
         {
-            debugPrint("pb_init: Bad getaddr\n");
+            nxLogPrint("pb_init: Bad getaddr\n");
             pb_kill();
             return -9;
         }
@@ -3237,13 +3237,13 @@ int pb_init(void)
 
         if (TimeStamp2-TimeStamp1>TICKSTIMEOUT)
         {
-            debugPrint("pb_init: Dma didn't get ready in time\n");
+            nxLogPrint("pb_init: Dma didn't get ready in time\n");
             pb_kill();
             return -10;
         }
     }
 #ifdef DBG
-//  debugPrint("Dma is ready!!!\n");
+//  nxLogPrint("Dma is ready!!!\n");
 #endif
 
     *((DWORD *)0x80000000)=0xFFFFFFFF;
@@ -3310,7 +3310,7 @@ int pb_init(void)
     //Frame buffers creation
     //So far, tested only with 640*480 32 bits (default openxdk res)
     //Even if it's a waste of memory, for now, we will leave the openxdk (& SDL)
-    //default frame buffer untouched. debugPrint (& SDL) will still target it.
+    //default frame buffer untouched. nxLogPrint (& SDL) will still target it.
     //We will provide functions pb_show_debug_screen() and pb_show_front_screen()
     //in order to let user (developper) toggle between screens at will.
 
@@ -3396,7 +3396,7 @@ int pb_init(void)
     Size=Pitch*VSize;
 
     //verify 64 bytes alignment for size of a frame buffer
-    if (Size&(64-1)) debugPrint("pb_init: FBSize is not well aligned.\n");
+    if (Size&(64-1)) nxLogPrint("pb_init: FBSize is not well aligned.\n");
 
     pb_FBSize=Size;
 
@@ -3469,7 +3469,7 @@ int pb_init(void)
     Size=Pitch*VSize;
 
     //verify 64 bytes alignment for size of a frame buffer
-    if (Size&(64-1)) debugPrint("pb_init: DSSize is not well aligned.\n");
+    if (Size&(64-1)) nxLogPrint("pb_init: DSSize is not well aligned.\n");
 
     pb_DSSize=Size;
 
@@ -3523,7 +3523,7 @@ int pb_init(void)
         Size=Pitch*VSize;
 
         //verify 64 bytes alignment for size of a frame buffer
-        if (Size&(64-1)) debugPrint("pb_init: EXSize is not well aligned.\n");
+        if (Size&(64-1)) nxLogPrint("pb_init: EXSize is not well aligned.\n");
 
         //multiply size by number of physical frame buffers in order to obtain global size
         EXSize=Size*pb_ExtraBuffersCount;

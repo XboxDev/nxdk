@@ -91,7 +91,7 @@ low_level_init(struct netif *netif)
 
   if (!Pktdrv_Init())
   {
-    debugPrint("Failed to initialize packet driver!\n");
+    nxLogPrint("Failed to initialize packet driver!\n");
     abort();
   }
 
@@ -141,7 +141,7 @@ low_level_init(struct netif *netif)
 
   if (!g_rx_buffer || !g_tx_buffer)
   {
-    debugPrint("Failed to allocate packet buffer!\n");
+    nxLogPrint("Failed to allocate packet buffer!\n");
     abort();
   }
 }

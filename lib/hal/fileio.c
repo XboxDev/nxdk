@@ -1,10 +1,10 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <hal/fileio.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/debug.h>
-#include <stdbool.h>
 
 // #define DEBUG
 

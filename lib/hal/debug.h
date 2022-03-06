@@ -1,39 +1,46 @@
-//
-//	Debug output scrolling code submitted by Robin Mulloy
-//
-//
-#ifndef HAL_DEBUG_H
-#define HAL_DEBUG_H
+#pragma once
 
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
 
-#define WHITE   0x00FFFFFF
-#define BLACK   0x00000000
+#include <stdarg.h>
 
-#define WHITE_16BPP   0xFFFF
-#define BLACK_16BPP  0x0000
+#include <nxdk/log.h>
+#include <nxdk/log_console.h>
 
-#define WHITE_15BPP   0x7FFF
-#define BLACK_15BPP  0x0000
+#warning hal/debug.h is deprecated. Consider using nxLogPrintf instead.
 
-/**
- * Prints a message to whatever debug facilities might
- * be available.
- */
-void debugPrint(const char *format, ...) __attribute__((format(printf, 1, 2)));
-void debugPrintNum(int i);
-void debugPrintBinary( int num );
-void debugPrintHex(const char *buffer, int length);
-void debugClearScreen( void );
-void debugAdvanceScreen( void );
-void debugMoveCursor(int x, int y);
-void debugResetCursor( void );
+#define debugPrint(format, ...) { nxLogConsoleRegister(); nxLogPrintf(format, ##__VA_ARGS__); }
 
-#ifdef __cplusplus
+#define debugPrintNum(x) debugPrint("%d", x)
+#define debugClearScreen nxLogConsoleClear
+#define debugAdvanceScreen nxLogConsoleAdvance
+#define debugMoveCursor nxLogConsoleMoveCursor
+#define debugResetCursor nxLogConsoleMoveCursor(25, 25);
+
+void debugPrintBinary(int num)
+{
+    int8_t x = 0;
+    char binary_number[50] = { 0 };
+
+    for(int8_t i = 31; i >= 0; i--)
+    {
+        binary_number[x++] = 0x30 + ((num & (0x01 << i))?1:0);
+
+        if((i % 4) == 0) binary_number[x++] = ' ';
+    }
+
+    binary_number[x] = 0;
+    debugPrint("%s", binary_number);
 }
-#endif
 
+void debugPrintHex(const char* buffer, int length)
+{
+    for (int32_t i = 0; i < length; i++) debugPrint("0x%02x ", buffer[i]);
+}
+
+#if defined(__cplusplus)
+}
 #endif

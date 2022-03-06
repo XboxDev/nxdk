@@ -1,8 +1,9 @@
 #include <stdint.h>
 #include <stdarg.h>
+#include <nxdk/log.h>
 #include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/debug.h>
+
 #include "usbh_config_xbox.h"
 
 extern void OHCI_IRQHandler(void);
@@ -89,5 +90,5 @@ void *usbh_virt_to_dma(void *virtual_address) {
 
 void usbh_sysprintf(const char *buffer)
 {
-    debugPrint("%s", buffer);
+    nxLogPrint(buffer);
 }

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <windows.h>
 #include <nxdk/mount.h>
-#include <hal/debug.h>
+#include <nxdk/log_console.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
 
@@ -13,12 +13,12 @@ int main(void)
     // Mount C:
     BOOL ret = nxMountDrive('C', "\\Device\\Harddisk0\\Partition2\\");
     if (!ret) {
-        debugPrint("Failed to mount C: drive!\n");
+        nxLogPrint("Failed to mount C: drive!\n");
         Sleep(5000);
         return 1;
     }
 
-    debugPrint("Content of C:\\\n");
+    nxLogPrint("Content of C:\\\n");
 
     WIN32_FIND_DATA findFileData;
     HANDLE hFind;
@@ -27,28 +27,28 @@ int main(void)
     // no matter whether they contain a dot or not
     hFind = FindFirstFile("C:\\*.*", &findFileData);
     if (hFind == INVALID_HANDLE_VALUE) {
-        debugPrint("FindFirstHandle() failed!\n");
+        nxLogPrint("FindFirstHandle() failed!\n");
         Sleep(5000);
         return 1;
     }
 
     do {
         if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            debugPrint("Directory: ");
+            nxLogPrint("Directory: ");
         } else {
-            debugPrint("File     : ");
+            nxLogPrint("File     : ");
         }
 
-        debugPrint("%s\n", findFileData.cFileName);
+        nxLogPrintf("%s\n", findFileData.cFileName);
     } while (FindNextFile(hFind, &findFileData) != 0);
 
-    debugPrint("\n");
+    nxLogPrint("\n");
 
     DWORD error = GetLastError();
     if (error == ERROR_NO_MORE_FILES) {
-        debugPrint("Done!\n");
+        nxLogPrint("Done!\n");
     } else {
-        debugPrint("error: %lx\n", error);
+        nxLogPrintf("error: %lx\n", error);
     }
 
     FindClose(hFind);

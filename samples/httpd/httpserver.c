@@ -1,4 +1,3 @@
-
 #include "lwip/opt.h"
 #include "lwip/arch.h"
 #include "lwip/api.h"
@@ -6,6 +5,8 @@
 #include "httpserver.h"
 
 #include <string.h>
+
+#include <nxdk/log.h>
 #include <hal/xbox.h>
 
 #if LWIP_NETCONN
@@ -46,19 +47,19 @@ http_server_netconn_serve(struct netconn *conn)
   err_t err;
   ip_addr_t naddr;
   u16_t port = 0;
-  
-  /* Read the data from the port, blocking if nothing yet there. 
+
+  /* Read the data from the port, blocking if nothing yet there.
    We assume the request (the part we care about) is in one netbuf */
   err = netconn_recv(conn, &inbuf);
-  
+
   if (err == ERR_OK) {
 
     netbuf_data(inbuf, (void**)&buf, &buflen);
 
     /* Get and display remote ip address and request headers */
     netconn_peer(conn, &naddr, &port);
-    debugPrint("[Request from %s]\n", ip4addr_ntoa(ip_2_ip4(&naddr)));
-    for (int i = 0; i < buflen; i++) debugPrint("%c", buf[i]);
+    nxLogPrintf("[Request from %s]\n", ip4addr_ntoa(ip_2_ip4(&naddr)));
+    for (int i = 0; i < buflen; i++) nxLogPrintf("%c", buf[i]);
 
     if ((buflen >= 9) && (memcmp(buf, "GET /quit", 9) == 0))
     {
@@ -81,7 +82,7 @@ http_server_netconn_serve(struct netconn *conn)
   }
   /* Close the connection (server closes in HTTP) */
   netconn_close(conn);
-  
+
   /* Delete the buffer (netconn_recv gives us ownership,
    so we have to make sure to deallocate the buffer) */
   netbuf_delete(inbuf);
@@ -94,17 +95,17 @@ http_server_netconn_thread(void *arg)
   struct netconn *conn, *newconn;
   err_t err;
   LWIP_UNUSED_ARG(arg);
-  
+
   /* Create a new TCP connection handle */
   conn = netconn_new(NETCONN_TCP);
   LWIP_ERROR("http_server: invalid conn", (conn != NULL), return;);
-  
+
   /* Bind to port 80 (HTTP) with default IP address */
   netconn_bind(conn, NULL, 80);
-  
+
   /* Put the connection into LISTEN state */
   netconn_listen(conn);
-  
+
   do {
     err = netconn_accept(conn, &newconn);
     if (err == ERR_OK) {

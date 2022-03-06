@@ -1,4 +1,4 @@
-#include <hal/debug.h>
+#include <nxdk/log_console.h>
 #include <hal/xbox.h>
 #include <hal/video.h>
 #include <windows.h>
@@ -9,16 +9,16 @@
 
 static void printSDLErrorAndReboot(void)
 {
-    debugPrint("SDL_Error: %s\n", SDL_GetError());
-    debugPrint("Rebooting in 5 seconds.\n");
+    nxLogPrintf("SDL_Error: %s\n", SDL_GetError());
+    nxLogPrint("Rebooting in 5 seconds.\n");
     Sleep(5000);
     XReboot();
 }
 
 static void printIMGErrorAndReboot(void)
 {
-    debugPrint("SDL_Image Error: %s\n", IMG_GetError());
-    debugPrint("Rebooting in 5 seconds.\n");
+    nxLogPrintf("SDL_Image Error: %s\n", IMG_GetError());
+    nxLogPrint("Rebooting in 5 seconds.\n");
     Sleep(5000);
     XReboot();
 }
@@ -42,6 +42,8 @@ void demo(void)
         printSDLErrorAndReboot();
     }
 
+    nxLogConsoleRegister();
+
     window = SDL_CreateWindow("Demo",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
@@ -49,7 +51,7 @@ void demo(void)
         SDL_WINDOW_SHOWN);
     if(window == NULL)
     {
-        debugPrint( "Window could not be created!\n");
+        nxLogPrint( "Window could not be created!\n");
         SDL_VideoQuit();
         printSDLErrorAndReboot();
     }

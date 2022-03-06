@@ -10,9 +10,10 @@
   freely.
 */
 /* Simple program:  Create a native window and attach an SDL renderer */
-#include <hal/debug.h>
+
 #include <hal/xbox.h>
 #include <hal/video.h>
+#include <nxdk/log_console.h>
 #include <windows.h>
 #include "stdio.h"
 #include "string.h"
@@ -20,8 +21,8 @@
 
 static void printSDLErrorAndReboot(void)
 {
-    debugPrint("SDL_Error: %s\n", SDL_GetError());
-    debugPrint("Rebooting in 5 seconds.\n");
+    nxLogPrintf("SDL_Error: %s\n", SDL_GetError());
+    nxLogPrint("Rebooting in 5 seconds.\n");
     Sleep(5000);
     XReboot();
 }
@@ -279,6 +280,8 @@ void demo(void)
         printSDLErrorAndReboot();
     }
 
+    nxLogConsoleRegister(); // TODO: verify whether this *really* works with SDL (lol)
+
     driver = SDL_GetCurrentVideoDriver();
 
     window = SDL_CreateWindow("Demo",
@@ -288,7 +291,7 @@ void demo(void)
         SDL_WINDOW_SHOWN);
     if(window == NULL)
     {
-        debugPrint( "Window could not be created!\n");
+        nxLogPrint( "Window could not be created!\n");
         SDL_VideoQuit();
         printSDLErrorAndReboot();
     }

@@ -1,5 +1,5 @@
-#include <hal/debug.h>
 #include <hal/video.h>
+#include <nxdk/log_console.h>
 #include <SDL.h>
 #include <windows.h>
 #include <pbkit/pbkit.h>
@@ -12,16 +12,17 @@ int main(void)
   bool pbk_init = false, sdl_init = false;
 
   XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+  nxLogConsoleRegister();
 
   sdl_init = SDL_Init(SDL_INIT_GAMECONTROLLER) == 0;
   if (!sdl_init) {
-    debugPrint("SDL_Init failed: %s\n", SDL_GetError());
+    nxLogPrintf("SDL_Init failed: %s\n", SDL_GetError());
     goto wait_then_cleanup;
   }
 
   pbk_init = pb_init() == 0;
   if (!pbk_init) {
-    debugPrint("pbkit init failed\n");
+    nxLogPrint("pbkit init failed\n");
     goto wait_then_cleanup;
   }
 
@@ -119,6 +120,6 @@ cleanup:
   if (sdl_init) {
     SDL_Quit();
   }
-  
+
   return 0;
 }

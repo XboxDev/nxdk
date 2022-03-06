@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <hal/xbox.h>
+#include <nxdk/log.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/debug.h>
 
 #if LWIP_SOCKET
 
@@ -67,7 +67,7 @@ http_server_bsd(void) {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
     if ((rv = getaddrinfo(NULL, PORT, &hints, &ai)) != 0) {
-        debugPrint("Error: selectserver\n");
+        nxLogPrint("Error: selectserver\n");
         exit(1);
     }
 
@@ -90,7 +90,7 @@ http_server_bsd(void) {
 
     // if we got here, it means we didn't get bound
     if (p == NULL) {
-        debugPrint("Error: selectserver: failed to bind\n");
+        nxLogPrint("Error: selectserver: failed to bind\n");
         exit(2);
     }
 
@@ -98,7 +98,7 @@ http_server_bsd(void) {
 
     // listen
     if (listen(listener, 10) == -1) {
-        debugPrint("Error: listen\n");
+        nxLogPrint("Error: listen\n");
         exit(3);
     }
 
@@ -112,7 +112,7 @@ http_server_bsd(void) {
     for(;;) {
         read_fds = master; // copy it
         if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
-            debugPrint("Error: select\n");
+            nxLogPrint("Error: select\n");
             exit(4);
         }
 
@@ -127,7 +127,7 @@ http_server_bsd(void) {
                                    &addrlen);
 
                     if (newfd == -1) {
-                        debugPrint("Error: accept\n");
+                        nxLogPrint("Error: accept\n");
                     } else {
                         FD_SET(newfd, &master); // add to master set
                         if (newfd > fdmax) {    // keep track of the max

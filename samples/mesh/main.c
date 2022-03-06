@@ -13,8 +13,8 @@
 #include <string.h>
 #include <strings.h>
 #include <windows.h>
+#include <nxdk/log_console.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <hal/debug.h>
 #include "math3d.h"
 
 static uint32_t *alloc_vertices;
@@ -74,9 +74,10 @@ int main(void)
     float     m_viewport[4][4];
 
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+    nxLogConsoleRegister();
 
     if ((status = pb_init())) {
-        debugPrint("pb_init Error %d\n", status);
+        nxLogPrintf("pb_init Error %d\n", status);
         Sleep(2000);
         return 1;
     }
@@ -221,11 +222,11 @@ int main(void)
         /* Set vertex position attribute */
         set_attrib_pointer(0, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(Vertex), &alloc_vertices[0]);
-        
+
         /* Set vertex normal attribute */
         set_attrib_pointer(2, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(Vertex), &alloc_vertices[3]);
-        
+
         /* Set texture coordinate attribute */
         set_attrib_pointer(9, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            2, sizeof(Vertex), &alloc_vertices[6]);

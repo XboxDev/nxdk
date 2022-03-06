@@ -1,4 +1,4 @@
-#include <hal/debug.h>
+#include <nxdk/log_console.h>
 #include <hal/video.h>
 #include <hal/xbox.h>
 #include <windows.h>
@@ -74,7 +74,7 @@ int main(void)
     }
 
     /* Enable playback */
-    debugPrint("Playing voice...\n");
+    nxLogPrint("Playing voice...\n");
     XAudioPlay();
 
     /* Audio will be played by hardware, we can loop here (or handle game logic)
@@ -82,7 +82,7 @@ int main(void)
      * samples are required.
      */
     while (1) {
-        debugPrint("Number of callbacks: %d\n", callback_count);
+        nxLogPrintf("Number of callbacks: %d\n", callback_count);
         Sleep(500);
     }
 

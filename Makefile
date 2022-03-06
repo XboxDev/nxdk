@@ -41,7 +41,8 @@ CXBE         = $(NXDK_DIR)/tools/cxbe/cxbe
 VP20COMPILER = $(NXDK_DIR)/tools/vp20compiler/vp20compiler
 FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
 EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/build/extract-xiso
-TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
+UDPLOGGER	 = $(NXDK_DIR)/tools/udplogger/udplogger
+TOOLS        = cxbe vp20compiler fp20compiler extract-xiso udplogger
 
 ifeq ($(DEBUG),y)
 NXDK_ASFLAGS += -g -gdwarf-4
@@ -177,6 +178,11 @@ $(EXTRACT_XISO):
 	cmake -G "Unix Makefiles" .. $(QUIET) && \
 	$(MAKE) $(QUIET))
 
+udplogger: $(UDPLOGGER)
+$(UDPLOGGER):
+	@echo "[ BUILD    ] $@"
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/udplogger $(QUIET)
+
 .PHONY: clean
 clean: $(CLEANRULES)
 	$(VE)rm -f $(TARGET) \
@@ -190,6 +196,7 @@ distclean: clean
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/fp20compiler distclean $(QUIET)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/vp20compiler distclean $(QUIET)
 	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/cxbe clean $(QUIET)
+	$(VE)$(MAKE) -C $(NXDK_DIR)/tools/udplogger clean $(QUIET)
 	$(VE)bash -c "if [ -d $(OUTPUT_DIR) ]; then rmdir $(OUTPUT_DIR); fi"
 
 -include $(DEPS)
