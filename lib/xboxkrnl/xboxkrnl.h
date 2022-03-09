@@ -3329,7 +3329,7 @@ XBAPI BOOLEAN NTAPI MmIsAddressValid
     IN PVOID VirtualAddress
 );
 
-XBAPI PMMGLOBALDATA MmGlobalData;
+XBAPI MMGLOBALDATA MmGlobalData;
 
 /**
  * Returns the physical address for a virtual address.
