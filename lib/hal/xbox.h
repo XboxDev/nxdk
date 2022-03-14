@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2005 Robin Mulloy
+// SPDX-FileCopyrightText: 2005 Tom Burns
+// SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2022 Erik Abair
+
 #ifndef HAL_XBOX_H
 #define HAL_XBOX_H
 
