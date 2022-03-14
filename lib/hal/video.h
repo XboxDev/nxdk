@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2005 Robin Mulloy
+// SPDX-FileCopyrightText: 2006 Tom Burns
+// SPDX-FileCopyrightText: 2006 Richard Osborne
+// SPDX-FileCopyrightText: 2017-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019 Lucas Jansson
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2022 Ryan Wendland
+
 #ifndef HAL_VIDEO_H
 #define HAL_VIDEO_H
 

@@ -1,3 +1,16 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2005 Robin Mulloy
+// SPDX-FileCopyrightText: 2006 Tom Burns
+// SPDX-FileCopyrightText: 2006 Guillaume Lamonoca
+// SPDX-FileCopyrightText: 2006 Richard Osborne
+// SPDX-FileCopyrightText: 2017-2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2019 Lucas Jansson
+// SPDX-FileCopyrightText: 2021 Kosmas Raptis
+// SPDX-FileCopyrightText: 2021 GXTX
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2022 Ryan Wendland
+
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/xbox.h>
 #include <hal/video.h>
