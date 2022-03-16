@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Samuel Cuella
+
 #ifndef __MINWINBASE_H__
 #define __MINWINBASE_H__
 
@@ -18,7 +23,7 @@ typedef struct _OVERLAPPED
     HANDLE hEvent;
 } OVERLAPPED, *LPOVERLAPPED;
 
-typedef struct _SYSTEMTIME 
+typedef struct _SYSTEMTIME
 {
     WORD wYear;
     WORD wMonth;

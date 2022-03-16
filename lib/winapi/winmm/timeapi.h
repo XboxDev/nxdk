@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 #ifndef __WINMM_TIMEAPI_H__
 #define __WINMM_TIMEAPI_H__
 

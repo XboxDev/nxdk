@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #include <windows.h>
 #include <string.h>
 #include <xboxkrnl/xboxkrnl.h>

@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #ifndef __PROFILEAPI_H__
 #define __PROFILEAPI_H__
 

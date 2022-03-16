@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 Erik Abair
+
 #include <fileapi.h>
 #include <handleapi.h>
 #include <winbase.h>

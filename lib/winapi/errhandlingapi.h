@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #ifndef __ERRHANDLINGAPI_H__
 #define __ERRHANDLINGAPI_H__
 

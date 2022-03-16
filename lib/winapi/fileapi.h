@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 Erik Abair
+
 #ifndef __FILEAPI_H__
 #define __FILEAPI_H__
 

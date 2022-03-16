@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
+
 #ifndef __PROCESSTHREADSAPI_H__
 #define __PROCESSTHREADSAPI_H__
 

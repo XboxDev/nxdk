@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+
 #ifndef __WINERROR_H__
 #define __WINERROR_H__
 

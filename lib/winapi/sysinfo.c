@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Samuel Cuella
+
 #include <sysinfoapi.h>
 #include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>

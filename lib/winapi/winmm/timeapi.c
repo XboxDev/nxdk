@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #include <timeapi.h>
 #include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>

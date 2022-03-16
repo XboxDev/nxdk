@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+
 #include <windows.h>
 #include <assert.h>
 #include <stdint.h>

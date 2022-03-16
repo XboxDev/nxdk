@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #ifndef __SYNCHAPI_H__
 #define __SYNCHAPI_H__
 

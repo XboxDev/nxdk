@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Jannik Vogel
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #include <windows.h>
 #include <winnt.h>
 

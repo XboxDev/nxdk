@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #ifndef __WINMM_MMSYSTEM_H__
 #define __WINMM_MMSYSTEM_H__
 

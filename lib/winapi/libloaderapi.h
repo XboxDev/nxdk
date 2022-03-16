@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #ifndef __LIBLOADERAPI_H__
 #define __LIBLOADERAPI_H__
 

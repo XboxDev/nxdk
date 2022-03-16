@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Jannik Vogel
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 Lucas Jansson
+
 #ifndef __WINNT_H__
 #define __WINNT_H__
 

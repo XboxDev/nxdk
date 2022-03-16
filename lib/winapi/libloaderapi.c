@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 #include <libloaderapi.h>
 #include <winbase.h>
 #include <windef.h>

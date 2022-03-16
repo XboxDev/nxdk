@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #include <windows.h>
 
 BOOL IsBadWritePtr (LPVOID lp, UINT_PTR ucb)

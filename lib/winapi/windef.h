@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019-2020 Jannik Vogel
+
 #ifndef __WINDEF_H__
 #define __WINDEF_H__
 
