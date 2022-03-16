@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Samuel Cuella
+
 #ifndef __SYSINFOAPI_H__
 #define __SYSINFOAPI_H__
 

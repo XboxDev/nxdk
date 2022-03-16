@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #ifndef __SHLOBJ_CORE_H__
 #define __SHLOBJ_CORE_H__
 

@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #ifndef __FIBERSAPI_INTERNAL__H__
 #define __FIBERSAPI_INTERNAL__H__
 
