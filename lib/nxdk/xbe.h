@@ -1,8 +1,6 @@
-/*
- * Copyright (c) 2022 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2022 Stefan Schmidt
 
 #ifndef __NXDK_XBE_H__
 #define __NXDK_XBE_H__

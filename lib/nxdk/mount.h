@@ -1,8 +1,6 @@
-/*
- * Copyright (c) 2019 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
 
 #ifndef __NXDK_MOUNT_H__
 #define __NXDK_MOUNT_H__
