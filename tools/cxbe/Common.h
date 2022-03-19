@@ -1,6 +1,7 @@
-// Licensed under GPLv2 or (at your option) any later version.
-// Copyright (C) 2019 Jannik Vogel
-// Copyright (C) 2002-2003 Aaron Robinson <caustik@caustik.com>
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+// SPDX-FileCopyrightText: 2002-2003 Aaron Robinson <caustik@caustik.com>
+// SPDX-FileCopyrightText: 2019 Jannik Vogel
 
 #ifndef COMMON_H
 #define COMMON_H
