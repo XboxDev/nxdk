@@ -1,8 +1,7 @@
-/*
- * Copyright (c) 2019 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Kosmas Raptis
 
 #include "mount.h"
 #include <stdio.h>

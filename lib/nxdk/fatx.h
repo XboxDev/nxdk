@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 #ifndef __NXDK_FATX_H__
 #define __NXDK_FATX_H__
 

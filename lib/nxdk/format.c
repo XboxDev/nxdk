@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2021-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 GXTX
+
 #include <nxdk/format.h>
 #include <nxdk/fatx.h>
 

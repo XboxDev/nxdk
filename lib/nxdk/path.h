@@ -1,8 +1,7 @@
-/*
- * Copyright (c) 2019 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Lucas Jansson
 
 #ifndef __NXDK_PATH_H__
 #define __NXDK_PATH_H__

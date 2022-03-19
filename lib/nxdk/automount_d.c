@@ -1,8 +1,6 @@
-/*
- * Copyright (c) 2019 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
 
 #include <nxdk/mount.h>
 #include <nxdk/path.h>
