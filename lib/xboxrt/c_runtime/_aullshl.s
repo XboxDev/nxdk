@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2018-2021 Stefan Schmidt
+
 .include "prelude.s.inc"
 safeseh_prelude
 

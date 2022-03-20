@@ -1,5 +1,7 @@
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// SPDX-License-Identifier: MIT OR NCSA
+
+// SPDX-FileCopyrightText: 2008 Stephen Canon
+// SPDX-FileCopyrightText: 2018-2021 Stefan Schmidt
 
 // du_int __umoddi3(du_int a, du_int b);
 
@@ -11,9 +13,6 @@
 // This is targeted at 32-bit x86 *only*, as this can be done directly in hardware
 // on x86_64.  The performance goal is ~40 cycles per divide, which is faster than
 // currently possible via simulation of integer divides on the x87 unit.
-//
-
-// Stephen Canon, December 2008
 
 // Modified for stdcall calling convention for use in nxdk
 

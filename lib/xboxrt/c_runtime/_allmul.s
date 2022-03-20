@@ -1,5 +1,7 @@
-// This file is dual licensed under the MIT and the University of Illinois Open
-// Source Licenses. See LICENSE.TXT for details.
+// SPDX-License-Identifier: MIT OR NCSA
+
+// SPDX-FileCopyrightText: 2008 Stephen Canon
+// SPDX-FileCopyrightText: 2018-2021 Stefan Schmidt
 
 // di_int __muldi3(di_int a, di_int b);
 
