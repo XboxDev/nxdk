@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+# SPDX-License-Identifier: CC0-1.0
+
+# SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 clang \
     -target i386-pc-win32 \
     -march=pentium3 \
