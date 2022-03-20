@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2018-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #include <errhandlingapi.h>
 #include <hal/debug.h>
 #include <xboxkrnl/xboxkrnl.h>

@@ -1,7 +1,6 @@
-/*
-    This file is licensed under the CC0 1.0.
-    For details, see: https://creativecommons.org/publicdomain/zero/1.0/
-*/
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2018-2021 Stefan Schmidt
 
 .include "prelude.s.inc"
 safeseh_prelude

@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 // This creates a special symbol with the least significant bit set.
 // It signals to the linker that this code is SafeSEH-compatible.
 .macro safeseh_prelude
