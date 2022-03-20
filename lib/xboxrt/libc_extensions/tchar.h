@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Stefan Schmidt
+
 #ifndef _XBOXRT_TCHAR_H
 #define _XBOXRT_TCHAR_H
 
 /**
  * @file tchar.h
  * @author Stefan Schmidt
- * This specific file is licensed under the CC0 1.0.
- * See https://creativecommons.org/publicdomain/zero/1.0/ for details.
  *
  * tchar.h is an MS extension to provide mappings for building applications that use
  * multi-byte character strings, Unicode or single-byte character strings, from

@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Jannik Vogel
+
 #ifndef XBOXRT_CRTDBG
 #define XBOXRT_CRTDBG
 
