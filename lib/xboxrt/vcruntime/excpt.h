@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2022 RadWolfie
+
 #ifndef __VCRUNTIME_EXCPT_H__
 #define __VCRUNTIME_EXCPT_H__
 

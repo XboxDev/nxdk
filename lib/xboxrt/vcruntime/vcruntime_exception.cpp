@@ -1,8 +1,6 @@
-/*
- * Copyright (c) 2019 Stefan Schmidt
- *
- * Licensed under the MIT License
- */
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
 
 #include <assert.h>
 #include <stdlib.h>

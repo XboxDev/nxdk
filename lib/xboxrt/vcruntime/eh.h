@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Stefan Schmidt
+
 #ifndef __VCRUNTIME_EH_H__
 #define __VCRUNTIME_EH_H__
 
