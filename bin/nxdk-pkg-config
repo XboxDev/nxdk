@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+# SPDX-License-Identifier: CC0-1.0
+
+# SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 export PKG_CONFIG_DIR=""
 export PKG_CONFIG_PATH=""
 export PKG_CONFIG_SYSROOT_DIR=""

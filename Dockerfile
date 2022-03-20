@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: CC0-1.0
+
+# SPDX-FileCopyrightText: 2020-2022 Stefan Schmidt
+
 FROM ghcr.io/xboxdev/nxdk-buildbase:git-2c3115b1 AS builder
 
 COPY ./ /usr/src/nxdk/
