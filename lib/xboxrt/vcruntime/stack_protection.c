@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2021 Stefan Schmidt
+
 #include <assert.h>
 #define _CRT_RAND_S
 #include <stdlib.h>

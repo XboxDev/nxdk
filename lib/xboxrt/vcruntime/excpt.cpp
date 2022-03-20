@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 Lucas Jansson
+
 #include <excpt.h>
 #include <eh.h>
 #include <xboxkrnl/xboxkrnl.h>
