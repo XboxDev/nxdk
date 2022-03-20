@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2015 espes
+
 #ifndef XBOXRT_STRINGS
 #define XBOXRT_STRINGS
 

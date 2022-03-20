@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019 Sean Koppenhafer
+// SPDX-FileCopyrightText: 2019 Stefan Schmidt
+
 #ifndef _XBOXRT_WCHAR_H
 #define _XBOXRT_WCHAR_H
 

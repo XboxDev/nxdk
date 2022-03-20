@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
+
 #include <assert.h>
 #include <errno.h>
 #include <ctype.h>

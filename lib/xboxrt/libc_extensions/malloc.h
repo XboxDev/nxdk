@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2020 Stefan Schmidt
+
 #ifndef _XBOXRT_MALLOC_H_
 #define _XBOXRT_MALLOC_H_
 

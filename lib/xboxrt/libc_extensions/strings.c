@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2015 espes
+
 int ffs(int mask) {
     if (mask == 0)
         return 0;
