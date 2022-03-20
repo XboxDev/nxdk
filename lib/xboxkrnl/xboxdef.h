@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: CC0-1.0
+
+// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019-2020 Jannik Vogel
+// SPDX-FileCopyrightText: 2019 Matt Borgerson
+// SPDX-FileCopyrightText: 2022 RadWolfie
+
 #ifndef __XBOXDEF_H__
 #define __XBOXDEF_H__
 

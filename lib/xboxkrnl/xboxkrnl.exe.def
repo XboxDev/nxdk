@@ -1,6 +1,6 @@
-; Copyright (C) 2017 Stefan Schmidt
-; This specific file is licensed under the CC0 1.0.
-; Look here for details: https://creativecommons.org/publicdomain/zero/1.0/
+; SPDX-License-Identifier: CC0-1.0
+
+; SPDX-FileCopyrightText: 2017 Stefan Schmidt
 
 LIBRARY xboxkrnl.exe
 
