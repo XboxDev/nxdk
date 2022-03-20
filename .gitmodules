@@ -1,3 +1,11 @@
+# SPDX-License-Identifier: CC0-1.0
+
+# SPDX-FileCopyrightText: 2016-2019 Matt Borgerson
+# SPDX-FileCopyrightText: 2018 Lucas Jansson
+# SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
+# SPDX-FileCopyrightText: 2021 Margen67
+# SPDX-FileCopyrightText: 2021 Ryan Wendland
+
 [submodule "tools/extract-xiso"]
 	path = tools/extract-xiso
 	url = https://github.com/XboxDev/extract-xiso.git
