@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: CC0-1.0
+
+// SPDX-FileCopyrightText: 2020-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2021 RadWolfie
+// SPDX-FileCopyrightText: 2022 Ryan Wendland
+
+
 #ifndef _NTSTATUS_
 #define _NTSTATUS_
 

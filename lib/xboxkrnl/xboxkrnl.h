@@ -1,9 +1,13 @@
+// SPDX-License-Identifier: CC0-1.0
+
+// SPDX-FileCopyrightText: 2017-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2018-2021 Jannik Vogel
+// SPDX-FileCopyrightText: 2018 Sean Koppenhafer
+// SPDX-FileCopyrightText: 2022 Erik Abair
+
 /**
  * @file xboxkrnl.h
- * @author Stefan Schmidt
  * @brief The complete interface to the Xbox-Kernel.
- * This specific file is licensed under the CC0 1.0.
- * Look here for details: https://creativecommons.org/publicdomain/zero/1.0/
  */
 
 #pragma once
