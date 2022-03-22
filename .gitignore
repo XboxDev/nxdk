@@ -1,3 +1,11 @@
+# SPDX-License-Identifier: CC0-1.0
+
+# SPDX-FileCopyrightText: 2015 espes
+# SPDX-FileCopyrightText: 2016 Matt Borgerson
+# SPDX-FileCopyrightText: 2017 Luke Usher
+# SPDX-FileCopyrightText: 2018-2019 Stefan Schmidt
+# SPDX-FileCopyrightText: 2019 Jannik Vogel
+
 .DS_Store
 *.exe
 *.exe.manifest
