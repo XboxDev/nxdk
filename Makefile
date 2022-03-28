@@ -62,7 +62,6 @@ endif
 
 ifneq ($(NXDK_ONLY),)
 NXDK_CXX = y
-NXDK_NET = y
 NXDK_SDL = y
 TARGET = main.exe
 endif
@@ -76,9 +75,7 @@ ifneq ($(NXDK_CXX),)
 include $(NXDK_DIR)/lib/libcxx/Makefile.nxdk
 endif
 
-ifneq ($(NXDK_NET),)
 include $(NXDK_DIR)/lib/net/Makefile
-endif
 
 ifneq ($(NXDK_SDL),)
 include $(NXDK_DIR)/lib/sdl/SDL2/Makefile.xbox
