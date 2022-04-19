@@ -18,7 +18,7 @@ endif
 
 all:
 	@mkdir -p $(OUTPUT_DIR)
-	@cargo build $(RUSTFLAGS)
+	@cargo +nightly build $(RUSTFLAGS)
 	@cp $(EXEC_DIR)/$(PROJECT_NAME).exe ./main.exe
 	$(CXBE) -OUT:default.xbe -TITLE:$(XBE_TITLE) ./main.exe
 	@mv default.xbe $(OUTPUT_DIR)
