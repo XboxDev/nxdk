@@ -1,0 +1,32 @@
+{
+  "abi-return-struct-as-int": true,
+  "arch": "x86",
+  "cpu": "pentium3",
+  "data-layout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32-a:0:32-S32",
+  "dll-prefix": "",
+  "dll-suffix": ".dll",
+  "env": "msvc",
+  "exe-suffix": ".exe",
+  "executables": true,
+  "is-like-msvc": false,
+  "is-like-windows": true,
+  "linker-flavor": "lld-link",
+  "linker-is-gnu": false,
+  "lld-flavor": "link",
+  "llvm-target": "i386-pc-win32",
+  "max-atomic-width": 64,
+  "os": "none",
+  "pre-link-args": {
+    "lld-link": [
+      "-subsystem:windows",
+      "-fixed",
+      "-base:0x00010000",
+      "-stack:65536",
+      "-merge:.edata=.edataxb"
+    ]
+  },
+  "requires-uwtable": true,
+  "target-pointer-width": "32",
+  "target-family": "windows",
+  "vendor": "pc"
+}
