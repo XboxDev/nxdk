@@ -1,4 +1,8 @@
-set(NXDK_DIR $ENV{NXDK_DIR})
+if(DEFINED ENV{NXDK_DIR})
+    set(NXDK_DIR $ENV{NXDK_DIR})
+else()
+    message(FATAL_ERROR "The environment variable NXDK_DIR needs to be defined.")
+endif()
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_VERSION 1)
