@@ -1,6 +1,10 @@
 #ifndef __NXDK_NET_H__
 #define __NXDK_NET_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 typedef enum nx_net_mode_t_
@@ -27,5 +31,8 @@ typedef struct nx_net_parameters_t_
 int nxNetInit(const nx_net_parameters_t *parameters);
 int nxNetShutdown();
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
