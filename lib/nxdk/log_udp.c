@@ -4,40 +4,9 @@
 
 #include "log_udp.h"
 
-#include <lwip/arch.h>
-#include <lwip/debug.h>
-#include <lwip/dhcp.h>
-#include <lwip/init.h>
-#include <lwip/netdb.h>
-#include <lwip/netif.h>
-#include <lwip/opt.h>
 #include <lwip/sockets.h>
-#include <lwip/sys.h>
-#include <lwip/tcpip.h>
-#include <lwip/timeouts.h>
-#include <netif/etharp.h>
-#include <pktdrv.h>
 
-#define UDP_USE_DHCP 1
 #define UDP_LOG_PORT 4405
-
-#ifdef NXDK_UDP_USE_INTERNAL_NETIF_IMPL
-struct netif* g_pnetif, nforce_netif;
-
-err_t nforceif_init(struct netif* netif);
-
-static void tcpip_init_done(void* arg)
-{
-	sys_sem_signal((sys_sem_t*)arg);
-}
-
-static void packet_timer(void *arg)
-{
-    LWIP_UNUSED_ARG(arg);
-    Pktdrv_ReceivePackets();
-    sys_timeout(5, packet_timer, NULL);
-}
-#endif
 
 static int udp_socket;
 static struct sockaddr_in udp_sockaddr;

@@ -52,13 +52,17 @@ size_t console_log_function(const char* message, size_t length)
                 switch (video_mode.bpp)
                 {
                 case 32:
-                    *((uint32_t*)(framebuffer + fb_offset)) = (log_console_font[message[i] * ((8 + 7) / 8) * 16 + font_offset]) & mask ? 0x00FFFFFF : 0x00000000;
+                    *((uint32_t*)(framebuffer + fb_offset)) =
+                        (log_console_font[message[i] * ((8 + 7) / 8) * 16 + font_offset]) & mask ? 0x00FFFFFF : 0x00000000;
+
                     fb_offset += sizeof(uint32_t);
                     break;
 
                 case 16:
                 case 15:
-                    *((uint16_t*)(framebuffer + fb_offset)) = (log_console_font[message[i] * ((8 + 7) / 8) * 16 + font_offset]) & mask ? (video_mode.bpp == 16 ? 0xFFFF : 0x7fff) : 0x0000;
+                    *((uint16_t*)(framebuffer + fb_offset)) =
+                        (log_console_font[message[i] * ((8 + 7) / 8) * 16 + font_offset]) & mask ? (video_mode.bpp == 16 ? 0xFFFF : 0x7fff) : 0x0000;
+
                     fb_offset += sizeof(uint16_t);
                     break;
                 }
@@ -134,9 +138,15 @@ uint8_t nxLogConsoleAdvance()
              height_one_line    = base * 16,
              height_all_lines   = base * video_mode.height;
 
-    for (uint32_t i = 0; i < height_all_lines - height_one_line; i += 4) *(uint32_t*)(framebuffer + i) = *(uint32_t*)(framebuffer + (height_one_line + i));
+    for (uint32_t i = 0; i < height_all_lines - height_one_line; i += 4)
+    {
+        *(uint32_t*)(framebuffer + i) = *(uint32_t*)(framebuffer + (height_one_line + i));
+    }
 
-    for (uint32_t i = 0; i < height_one_line; i += 4) *(uint32_t*)(framebuffer + ((height_all_lines - height_one_line) + i)) = 0;
+    for (uint32_t i = 0; i < height_one_line; i += 4)
+    {
+        *(uint32_t*)(framebuffer + ((height_all_lines - height_one_line) + i)) = 0;
+    }
 
     XVideoFlushFB();
 
