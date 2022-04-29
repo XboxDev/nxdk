@@ -2,7 +2,7 @@
  * Copyright (c) 2001-2003 Swedish Institute of Computer Science.
  * Copyright (c) 2015 Matt Borgerson
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
@@ -26,7 +26,7 @@
  * OF SUCH DAMAGE.
  *
  * This file is part of the lwIP TCP/IP stack.
- *
+ * 
  * Author: Adam Dunkels <adam@sics.se>
  * Xbox Support: Matt Borgerson
  *

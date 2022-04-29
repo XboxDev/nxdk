@@ -86,7 +86,7 @@ int main(void)
 
 #if USE_DHCP
 	nxLogPrint("Waiting for DHCP...\n");
-	while (dhcp_supplied_address(g_pnetif) == 0) SwitchToThread();
+	while (dhcp_supplied_address(g_pnetif) == 0) NtYieldExecution();
 
 	nxLogPrint("DHCP bound!\n");
 #endif
@@ -94,7 +94,7 @@ int main(void)
 	nxLogPrintf("\nIP address.. %s\nMask........ %s\nGateway..... %s\n\n", ip4addr_ntoa(netif_ip4_addr(g_pnetif)), ip4addr_ntoa(netif_ip4_netmask(g_pnetif)), ip4addr_ntoa(netif_ip4_gw(g_pnetif)));
 
 	http_server_netconn_init();
-	while (1) SwitchToThread();
+	while (1) NtYieldExecution();
 
 	Pktdrv_Quit();
 	return 0;
