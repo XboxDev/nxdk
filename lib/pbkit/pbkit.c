@@ -18,6 +18,7 @@
 #include <hal/debug.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <winapi/synchapi.h>
 
 #include "pbkit.h"
 #include "outer.h"
@@ -690,7 +691,9 @@ static DWORD pb_gr_handler(void)
 
                             //calling XReboot() from here doesn't work well.
 
-                            while(1) {};
+                            while(1) {
+                              Sleep(2000);
+                            };
                         }
                     }
                 }
