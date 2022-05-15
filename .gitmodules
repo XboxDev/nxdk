@@ -42,3 +42,6 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/ftp"]
+	path = lib/ftp
+	url = https://github.com/dracc/nxdk-ftp
