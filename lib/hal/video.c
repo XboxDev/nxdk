@@ -211,8 +211,8 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	}
 	DWORD dwEnc = XVideoGetEncoderSettings();
 	
-	DWORD dwAdapter = dwEnc & 0x000000FF;
-	DWORD dwStandard = dwEnc & 0x0000FF00;
+	DWORD dwAdapter = dwEnc & VIDEO_ADAPTER_MASK;
+	DWORD dwStandard = dwEnc & VIDEO_STANDARD_MASK;
 
 	bool is_pal = (dwStandard == VIDEO_REGION_PAL);
 
@@ -229,7 +229,7 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	{
 		if(is_pal)
 		{
-			refresh = (dwEnc & 0x00400000) ? 60 : 50;
+			refresh = (dwEnc & VIDEO_60Hz) ? 60 : 50;
 		} else {
 			refresh = 60;
 		}
@@ -238,7 +238,7 @@ BOOLEAN XVideoListModes(VIDEO_MODE *vm, int bpp, int refresh, void **p)
 	{
 		pVidMode = &vidModes[position];
 
-		if((pVidMode->dwFlags & 0x000000FF) != dwAdapter)
+		if((pVidMode->dwFlags & VIDEO_ADAPTER_MASK) != dwAdapter)
 			continue;
 
 		if(pVidMode->dwStandard != dwStandard)
