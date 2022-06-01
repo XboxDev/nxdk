@@ -22,10 +22,17 @@ extern "C"
 #define VIDEO_ENC_FLICKERFILTER     11
 #define VIDEO_ENC_SOFTEN_FILTER     14
 
-// Defines for video resolution modes
+// Flags for video settings
 #define VIDEO_MODE_720P   0x20000
 #define VIDEO_MODE_1080I  0x40000
 #define VIDEO_MODE_480P   0x80000
+#define VIDEO_60Hz   0x400000
+#define VIDEO_50Hz   0x800000
+#define VIDEO_WIDESCREEN  0x010000
+#define VIDEO_LETTERBOX   0x100000
+
+#define VIDEO_ADAPTER_MASK  0x000000FF
+#define VIDEO_STANDARD_MASK 0x0000FF00
 
 //Defines for refresh rates
 #define REFRESH_50HZ                50
