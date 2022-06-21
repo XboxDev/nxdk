@@ -42,3 +42,6 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/jsoncpp/jsoncpp"]
+	path = lib/jsoncpp/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
