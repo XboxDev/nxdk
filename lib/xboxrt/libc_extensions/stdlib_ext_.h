@@ -73,3 +73,13 @@ inline static lldiv_t div (long long __x, long long __y) _NXDK_NOEXCEPT
 #undef _NXDK_NOEXCEPT
 
 #endif
+
+static void *_aligned_malloc (size_t size, size_t alignment)
+{
+    return aligned_alloc(alignment, size);
+}
+
+static void _aligned_free (void *memblock)
+{
+    free(memblock);
+}
