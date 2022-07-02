@@ -94,6 +94,7 @@ QUIET=>/dev/null
 endif
 
 DEPS := $(filter %.c.d, $(SRCS:.c=.c.d))
+DEPS += $(filter %.cc.d, $(SRCS:.cc=.cc.d))
 DEPS += $(filter %.cpp.d, $(SRCS:.cpp=.cpp.d))
 
 $(OUTPUT_DIR)/default.xbe: main.exe $(OUTPUT_DIR) $(CXBE)
@@ -127,6 +128,10 @@ endif
 %.obj: %.cpp
 	@echo "[ CXX      ] $@"
 	$(VE) $(CXX) $(NXDK_CXXFLAGS) $(CXXFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.obj,%.cpp.d,$@)' -c -o '$@' '$<'
+
+%.obj: %.cc
+	@echo "[ CXX      ] $@"
+	$(VE) $(CXX) $(NXDK_CXXFLAGS) $(CXXFLAGS) -MD -MP -MT '$@' -MF '$(patsubst %.obj,%.cc.d,$@)' -c -o '$@' '$<'
 
 %.obj: %.c
 	@echo "[ CC       ] $@"

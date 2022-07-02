@@ -1,0 +1,5 @@
+Name: fmt
+Description: A modern formatting library
+Version: 8.1.1
+Libs: ${NXDK_DIR}/lib/fmt.lib
+Cflags: -I${NXDK_DIR}/lib/fmt/fmt/include

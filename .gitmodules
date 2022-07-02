@@ -42,3 +42,7 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/fmt/fmt"]
+	path = lib/fmt/fmt
+	url = https://github.com/glebm/fmt.git
+	branch = nxdk
