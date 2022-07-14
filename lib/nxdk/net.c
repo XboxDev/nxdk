@@ -42,7 +42,7 @@ int nxNetInit(const nx_net_parameters_t *parameters)
     ip4_addr_t ipaddr, netmask, gateway;
     bool ipv4_dhcp;
     ip_addr_t dns[2];
-    bool dns_override = false;
+    memset(dns, 0, sizeof(dns));
 
     if (!parameters || parameters->ipv4_mode == NX_NET_AUTO) {
         nxdk_network_config_sector_t configSector;
@@ -79,7 +79,6 @@ int nxNetInit(const nx_net_parameters_t *parameters)
                                  (configSector.manual.secondaryDns >> 24 & 0xff));
             dns[0].type = IPADDR_TYPE_V4;
             dns[1].type = IPADDR_TYPE_V4;
-            dns_override = true;
         }
     } else if (parameters->ipv4_mode == NX_NET_DHCP) {
         ipv4_dhcp = true;
@@ -152,12 +151,14 @@ int nxNetInit(const nx_net_parameters_t *parameters)
                                  (parameters->ipv4_dns2 >> 24 & 0xff));
             dns[0].type = IPADDR_TYPE_V4;
             dns[1].type = IPADDR_TYPE_V4;
-            dns_override = true;
         }
     }
 
-    if (dns_override) {
-        dns_setserver(2, dns);
+    if (dns[0].u_addr.ip4.addr != 0) {
+        dns_setserver(0, &dns[0]);
+    }
+    if (dns[1].u_addr.ip4.addr != 0) {
+        dns_setserver(1, &dns[1]);
     }
 
     return 0;
