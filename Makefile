@@ -10,6 +10,10 @@ ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
 endif
 
+ifeq ($(NXDK_ENV),)
+$(error Please setup your shell using $(NXDK_DIR)/bin/activate)
+endif
+
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
 
