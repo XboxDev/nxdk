@@ -18,7 +18,9 @@ extern "C" {
 
 typedef struct
 {
-    uint8_t unknown1[0x40];
+    uint8_t unknown1[0x28];
+    uint8_t hmac[0x14];
+    uint32_t headerV2;
 
     uint32_t dhcpFlags;
     uint32_t unknown2;
@@ -48,6 +50,7 @@ typedef struct
 } __attribute__ ((packed)) nxdk_network_config_sector_t;
 
 bool nxLoadNetworkConfig(nxdk_network_config_sector_t *config);
+bool nxSaveNetworkConfig(const nxdk_network_config_sector_t *config);
 
 #ifdef __cplusplus
 }

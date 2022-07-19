@@ -31,6 +31,10 @@ typedef struct
     DWORD footer;
 }  __attribute__ ((packed)) NXDK_CONFIG_SECTOR;
 
+_Static_assert(sizeof(NXDK_CONFIG_SECTOR) == NXDK_HDD_SECTOR_SIZE, "NXDK_CONFIG_SECTOR size mismatch");
+_Static_assert(sizeof(nxdk_network_config_sector_t) == NXDK_CONFIG_DATA_SIZE, "nxdk_network_config_sector_t size mismatch");
+
+#define NXDK_NETWORK_CONFIG_HEADERV2 'XBV2'
 #define NXDK_NETWORK_CONFIG_FOOTER 'XBCP'
 
 HANDLE nxOpenConfigPartition ()
@@ -79,8 +83,6 @@ DWORD nxNetworkConfigChecksum(NXDK_CONFIG_SECTOR *sectorData, UINT size)
 bool nxLoadNetworkConfigSector(HANDLE hPartition, UINT sectorIndex, BYTE *buffer, UINT size)
 {
     NXDK_CONFIG_SECTOR configSector;
-
-    _Static_assert(sizeof(configSector) == 512, "NXDK_CONFIG_SECTOR size mismatch");
 
     assert(hPartition != INVALID_HANDLE_VALUE);
     if (hPartition == INVALID_HANDLE_VALUE) {
@@ -146,4 +148,65 @@ bool nxLoadNetworkConfig(nxdk_network_config_sector_t *config)
     nxCloseConfigPartition(hPartition);
 
     return true;
+}
+
+bool nxSaveNetworkConfigSector(HANDLE hPartition, UINT sectorIndex, const BYTE *buffer, UINT size)
+{
+    NXDK_CONFIG_SECTOR configSector;
+
+    assert(hPartition != INVALID_HANDLE_VALUE);
+    if (hPartition == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    assert(sectorIndex < NXDK_CONFIG_SECTOR_COUNT);
+    if (sectorIndex >= NXDK_CONFIG_SECTOR_COUNT) {
+        return false;
+    }
+
+    if (size != NXDK_CONFIG_DATA_SIZE) {
+        return false;
+    }
+
+    LARGE_INTEGER offset;
+    offset.QuadPart = (8 + sectorIndex) * NXDK_HDD_SECTOR_SIZE;
+
+    configSector.header = NXDK_CONFIG_SECTOR_HEADER;
+    configSector.footer = NXDK_CONFIG_SECTOR_FOOTER;
+    configSector.unknown1 = 1;
+    configSector.unknown2 = 1;
+    configSector.checksum = 0;
+
+    memcpy(configSector.data, buffer, NXDK_CONFIG_DATA_SIZE);
+
+    configSector.checksum = ~nxNetworkConfigChecksum(&configSector, NXDK_HDD_SECTOR_SIZE);
+
+    IO_STATUS_BLOCK statusBlock;
+    NTSTATUS status = NtWriteFile(hPartition, 0, NULL, NULL, &statusBlock, &configSector, NXDK_HDD_SECTOR_SIZE, &offset);
+
+    if (!NT_SUCCESS(status)) {
+        return false;
+    }
+
+    return true;
+}
+
+bool nxSaveNetworkConfig(const nxdk_network_config_sector_t *config)
+{
+    HANDLE hPartition = nxOpenConfigPartition();
+
+    assert(hPartition != INVALID_HANDLE_VALUE);
+    if (hPartition == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    nxdk_network_config_sector_t configVar;
+    memcpy(&configVar, config, sizeof(configVar));
+    configVar.headerV2 = NXDK_NETWORK_CONFIG_HEADERV2;
+    configVar.footer = NXDK_NETWORK_CONFIG_FOOTER;
+    XcHMAC(XboxHDKey, XBOX_KEY_LENGTH, (PUCHAR)&configVar.headerV2, 0x1b0, (PUCHAR)&configVar.headerV2, 4, configVar.hmac);
+
+    bool result = nxSaveNetworkConfigSector(hPartition, 0, (const BYTE *)&configVar, sizeof(nxdk_network_config_sector_t));
+    nxCloseConfigPartition(hPartition);
+    return result;
 }
