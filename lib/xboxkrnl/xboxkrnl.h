@@ -2418,10 +2418,16 @@ XBAPI NTSTATUS NTAPI PhyInitialize
     PVOID param OPTIONAL
 );
 
+#define XNET_ETHERNET_LINK_ACTIVE 0x01
+#define XNET_ETHERNET_LINK_100MBPS 0x02
+#define XNET_ETHERNET_LINK_10MBPS 0x04
+#define XNET_ETHERNET_LINK_FULL_DUPLEX 0x08
+#define XNET_ETHERNET_LINK_HALF_DUPLEX 0x10
+
 /**
  * Returns link status information either from NIC registers or from the last value cached by the kernel
  * @param update If FALSE, the kernel returns the cached value, otherwise the hardware is polled and the cached value updated
- * @return Flags describing the status of the NIC
+ * @return Flags describing the status of the NIC. See XNET_ETHERNET_LINK bit masks.
  */
 XBAPI DWORD NTAPI PhyGetLinkState
 (
