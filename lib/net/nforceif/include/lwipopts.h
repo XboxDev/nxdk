@@ -334,6 +334,7 @@
  * will fit into TCP's 16 bit field.
  */
 #define TCP_WND                         (45 * TCP_MSS)
+#define TCP_SND_BUF                     (TCP_WND)
 
 /*
    ----------------------------------
