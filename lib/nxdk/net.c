@@ -15,11 +15,10 @@
 #include <lwip/netifapi.h>
 #include <lwip/tcpip.h>
 #include <lwip/timeouts.h>
-#include <pktdrv.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 
-err_t nforceif_init(struct netif *netif);
+err_t nvnetif_init(struct netif *netif);
 
 struct netif *g_pnetif;
 static struct netif nforce_netif;
@@ -28,13 +27,6 @@ static void tcpip_init_done(void *arg)
 {
     KEVENT *init_complete = arg;
     KeSetEvent(init_complete, IO_NO_INCREMENT, FALSE);
-}
-
-static void packet_timer(void *arg)
-{
-    LWIP_UNUSED_ARG(arg);
-    Pktdrv_ReceivePackets();
-    sys_timeout(5 /* ms */, packet_timer, NULL);
 }
 
 int nxNetInit(const nx_net_parameters_t *parameters)
@@ -113,7 +105,7 @@ int nxNetInit(const nx_net_parameters_t *parameters)
     KeWaitForSingleObject(&tcpip_init_complete, Executive, KernelMode, FALSE, NULL);
 
     g_pnetif = &nforce_netif;
-    err_t err = netifapi_netif_add(&nforce_netif, &ipaddr, &netmask, &gateway, NULL, nforceif_init, tcpip_input);
+    err_t err = netifapi_netif_add(&nforce_netif, &ipaddr, &netmask, &gateway, NULL, nvnetif_init, tcpip_input);
     if (err != ERR_OK) {
         debugPrint("netif_add failed\n");
         return -1;
@@ -121,8 +113,6 @@ int nxNetInit(const nx_net_parameters_t *parameters)
 
     netifapi_netif_set_default(&nforce_netif);
     netifapi_netif_set_up(&nforce_netif);
-
-    packet_timer(NULL);
 
     if (ipv4_dhcp) {
         netifapi_dhcp_start(&nforce_netif);
