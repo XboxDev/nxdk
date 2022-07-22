@@ -113,7 +113,7 @@ int nxNetInit(const nx_net_parameters_t *parameters)
     KeWaitForSingleObject(&tcpip_init_complete, Executive, KernelMode, FALSE, NULL);
 
     g_pnetif = &nforce_netif;
-    err_t err = netifapi_netif_add(&nforce_netif, &ipaddr, &netmask, &gateway, NULL, nforceif_init, ethernet_input);
+    err_t err = netifapi_netif_add(&nforce_netif, &ipaddr, &netmask, &gateway, NULL, nforceif_init, tcpip_input);
     if (err != ERR_OK) {
         debugPrint("netif_add failed\n");
         return -1;
