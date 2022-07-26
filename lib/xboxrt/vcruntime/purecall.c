@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
 
 #include <stdbool.h>
-#include <stdlib_ext_.h>
+#include <stdlib.h>
 #include <windows.h>
 #include <hal/debug.h>
 
