@@ -1,3 +1,11 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2006 Richard Osborne
+// SPDX-FileCopyrightText: 2017-2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019 Lucas Jansson
+// SPDX-FileCopyrightText: 2019 Jannik Vogel
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
