@@ -1,3 +1,16 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2005 Robin Mulloy
+// SPDX-FileCopyrightText: 2005 Tom Burns
+// SPDX-FileCopyrightText: 2006 Richard Osborne
+
+// SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019 Jannik Vogel
+// SPDX-FileCopyrightText: 2020 Bennet Blischke
+// SPDX-FileCopyrightText: 2020 Matthew Lawson
+
+
 //
 //	Debug output scrolling code submitted by Robin Mulloy
 //
