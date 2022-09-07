@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+
+// SPDX-FileCopyrightText: 2004 Craig Edwards
+// SPDX-FileCopyrightText: 2017-2020 Stefan Schmidt
+
 #ifndef HAL_FILEIO_H
 #define HAL_FILEIO_H
 
