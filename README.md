@@ -48,7 +48,7 @@ Copy one of the sample directories to get started. You can copy it anywhere you 
 
 Credits
 -------
-- [OpenXDK](https://web.archive.org/web/20170624051336/http://openxdk.sourceforge.net:80/) is the inspiration for nxdk, and large parts of it have been reused. (License: GPLv2)
+- [OpenXDK](https://web.archive.org/web/20170624051336/http://openxdk.sourceforge.net:80/) is the inspiration for nxdk, and large parts of it have been reused. (License: MIT)
 - Large parts of [pbkit](https://web.archive.org/web/20141024145308/http://forums.xbox-scene.com/index.php?/topic/573524-pbkit/), by openxdkman, are included, with modifications. (License: MIT)
 - A network stack is included based on [lwIP](http://savannah.nongnu.org/projects/lwip/) (License: Modified BSD)
 - A libc is included based on [PDCLib](https://github.com/DevSolar/pdclib) (License: CC0)
