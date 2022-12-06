@@ -19,7 +19,7 @@ jobs:
             build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Build Docker image
@@ -42,7 +42,7 @@ jobs:
       POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Install MSYS2 & Dependencies
@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Install Dependencies
@@ -82,7 +82,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Clone Tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Install Dependencies
