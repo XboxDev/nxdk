@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC0-1.0
 
-// SPDX-FileCopyrightText: 2017-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2017-2023 Stefan Schmidt
 // SPDX-FileCopyrightText: 2018-2021 Jannik Vogel
 // SPDX-FileCopyrightText: 2018 Sean Koppenhafer
 // SPDX-FileCopyrightText: 2022 Erik Abair
@@ -1844,6 +1844,14 @@ XBAPI WCHAR NTAPI RtlUpcaseUnicodeChar
     WCHAR SourceCharacter
 );
 
+/**
+ * Initiates an unwind of procedure call frames
+ * THIS FUNCTION IS NOT SAFE TO CALL FROM C CODE! It does not follow the stdcall convention and trashes registers that are supposed to be callee-saved.
+ * @param TargetFrame A pointer to the call frame that is the target of the unwind. If this parameter is NULL, the function performs an exit unwind.
+ * @param TargetIp The continuation address of the unwind. If NULL, the function will return normally. This parameter is ignored if TargetFrame is NULL.
+ * @param ExceptionRecord A pointer to an EXCEPTION_RECORD structure.
+ * @param ReturnValue A value to be placed in the integer function return register before continuing execution.
+ */
 XBAPI VOID NTAPI RtlUnwind
 (
     IN PVOID TargetFrame OPTIONAL,
