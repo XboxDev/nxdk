@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-// SPDX-FileCopyrightText: 2020-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2020-2023 Stefan Schmidt
 // SPDX-FileCopyrightText: 2021 Lucas Jansson
 
 #include <excpt.h>
@@ -97,21 +97,25 @@ extern "C" void _local_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame,
 
 extern "C" void _global_unwind2 (EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame)
 {
+    // This looks like it could be a normal C function call, but it can't.
+    // Despite looking like an stdcall function, RtlUnwind doesn't follow its
+    // calling convention and happily destroys register values.
+    // We work around this by using %eax for the parameter and adding
+    // everything else to the clobber list.
     asm volatile (
         "pushl $0;"
         "pushl $0;"
-        "pushl 1f;"
+        "pushl $0;"
         "pushl %0;"
         "call _RtlUnwind@16;"
-        "1:;"
-        : : "r"(pRegistrationFrame));
+        : : "a"(pRegistrationFrame) : "ebx", "ecx", "edx", "esi", "edi", "ebp");
 }
 
 extern "C" int _except_handler3 (_EXCEPTION_RECORD *pExceptionRecord, EXCEPTION_REGISTRATION_SEH3 *pRegistrationFrame, _CONTEXT *pContextRecord, EXCEPTION_REGISTRATION **pDispatcherContext)
 {
     // Clear the direction flag - the function triggering the exception might
     // have modified it, but it's expected to not be set
-    asm volatile ("cld;");
+    asm volatile ("cld;" ::: "memory");
 
     if (pExceptionRecord->ExceptionFlags & (EXCEPTION_UNWINDING | EXCEPTION_EXIT_UNWIND)) {
         // We're in an unwinding pass, so unwind all local scopes
@@ -126,7 +130,7 @@ extern "C" int _except_handler3 (_EXCEPTION_RECORD *pExceptionRecord, EXCEPTION_
     EXCEPTION_POINTERS excptPtrs;
     excptPtrs.ExceptionRecord = pExceptionRecord;
     excptPtrs.ContextRecord = pContextRecord;
-    reinterpret_cast<PEXCEPTION_POINTERS *>(pRegistrationFrame)[-1] = &excptPtrs;
+    reinterpret_cast<volatile PEXCEPTION_POINTERS *>(pRegistrationFrame)[-1] = &excptPtrs;
 
     const ScopeTableEntry *scopeTable = pRegistrationFrame->ScopeTable;
     LONG currentTrylevel = pRegistrationFrame->TryLevel;
