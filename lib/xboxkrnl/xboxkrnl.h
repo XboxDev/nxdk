@@ -113,7 +113,7 @@ typedef CONST UNICODE_STRING *PCUNICODE_STRING;
 
 #define IsListEmpty(ListHead) ((ListHead)->Flink == (ListHead))
 
-#define RemoveHeadList(Listhead) (ListHead)->Flink;{RemoveEntryList((ListHead)->Flink)}
+#define RemoveHeadList(ListHead) (ListHead)->Flink;{RemoveEntryList((ListHead)->Flink)}
 
 #define RemoveTailList(ListHead) (ListHead)->Blink;{RemoveEntryList((ListHead)->Blink)}
 
