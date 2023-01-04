@@ -2806,18 +2806,7 @@ int pb_init(void)
     odiv=1;
     pdiv=(VIDEOREG(NV_PRAMDAC_NVPLL_COEFF)&NV_PRAMDAC_NVPLL_COEFF_PDIV)>>16;
 
-    if (mdiv)
-    {
-        //Xtal in Xbox is at 16.666 Mhz but we want 31.25Mhz for GPU...
-        if (((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv!=233333324)
-        {
-            //This PLL configuration doesn't create a 233.33 Mhz freq from Xtal
-            //Have this issure reported so we can update source for that case
-            debugPrint("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
-            return -5;
-        }
-    }
-    else
+    if (!mdiv)
     {
         pb_kill();
         return -5; //invalid GPU internal PLL (Phase Locked Loop=GPU freq generator)
@@ -2828,7 +2817,6 @@ int pb_init(void)
     VIDEOREG(NV_PTIMER_DENOMINATOR)=7629;
 
     VIDEOREG(NV_PTIMER_ALARM_0)=0xFFFFFFFF;
-
 
     //The Gpu instance memory is a special place in PRAMIN area (VRAM attached to RAM?)
     //Essential Gpu data will be stored there, for, I guess, top speed access.
