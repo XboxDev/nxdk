@@ -55,7 +55,7 @@
 #define GPU_IRQ                     3
 
 #define XTAL_16MHZ                  16.6667f
-#define DW_XTAL_16MHZ                   16666666
+#define DW_XTAL_16MHZ                   16666667
 
 #define MAX_EXTRA_BUFFERS               8
 
@@ -2808,27 +2808,31 @@ int pb_init(void)
 
     if (mdiv)
     {
-        //Xtal in Xbox is at 16.666 Mhz but we want 31.25Mhz for GPU...
-        if (((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv!=233333324)
+        DWORD num = ((DW_XTAL_16MHZ * ndiv) / (odiv << pdiv)) / mdiv;
+        DWORD den = 1000000000 / 32; // timer frequency
+
+        while (!((num | den) & 1))
         {
-            //This PLL configuration doesn't create a 233.33 Mhz freq from Xtal
-            //Have this issure reported so we can update source for that case
-            debugPrint("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
-            return -5;
+            num >>= 1;
+            den >>= 1;
         }
+
+        while ((0x1FFFE < num || 0x1FFFE < den))
+        {
+            num >>= 1;
+            den >>= 1;
+        }
+
+        //program GPU timer
+        VIDEOREG(NV_PTIMER_NUMERATOR) = (num + 1) >> 1;
+        VIDEOREG(NV_PTIMER_DENOMINATOR) = (den + 1) >> 1;
+        VIDEOREG(NV_PTIMER_ALARM_0) = 0xFFFFFFFF;
     }
     else
     {
         pb_kill();
         return -5; //invalid GPU internal PLL (Phase Locked Loop=GPU freq generator)
     }
-
-    //program GPU timer in order to obtain 31.25Mhz (we assume PLL creates 233.33Mhz)
-    VIDEOREG(NV_PTIMER_NUMERATOR)=56968; //233333324/56968*7629=31247365 (31.25Mhz)
-    VIDEOREG(NV_PTIMER_DENOMINATOR)=7629;
-
-    VIDEOREG(NV_PTIMER_ALARM_0)=0xFFFFFFFF;
-
 
     //The Gpu instance memory is a special place in PRAMIN area (VRAM attached to RAM?)
     //Essential Gpu data will be stored there, for, I guess, top speed access.
