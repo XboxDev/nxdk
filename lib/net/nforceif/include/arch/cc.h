@@ -35,20 +35,16 @@
 #define LWIP_ARCH_CC_H
 
 /* Include some files for defining library routines */
+#include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 #include <hal/debug.h>
 #include <windows.h>
 
-#define printf debugPrint
-#define fflush(...)
-void abort(void);
-
 //#define MEM_ALIGNMENT 4
 
 /* Define platform endianness */
-//#ifndef BYTE_ORDER
 #define BYTE_ORDER LITTLE_ENDIAN
-//#endif /* BYTE_ORDER */
 
 /* Define generic types used in lwIP */
 typedef unsigned   char    u8_t;
@@ -70,11 +66,7 @@ typedef unsigned long mem_ptr_t;
 #define X32_F "x"
 
 /* If only we could use C99 and get %zu */
-#if defined(__x86_64__)
-#define SZT_F "lu"
-#else
 #define SZT_F "u"
-#endif
 
 /* Compiler hints for packing structures */
 #define PACK_STRUCT_FIELD(x) x
@@ -83,14 +75,9 @@ typedef unsigned long mem_ptr_t;
 #define PACK_STRUCT_END
 
 /* Plaform specific diagnostic output */
-#define LWIP_PLATFORM_DIAG(x)	do {printf x;} while(0)
+#define LWIP_PLATFORM_DIAG(x)	do {debugPrint x;} while(0)
 
-#ifdef LWIP_UNIX_EMPTY_ASSERT
-#define LWIP_PLATFORM_ASSERT(x)
-#else
-#define LWIP_PLATFORM_ASSERT(x) do {printf("Assertion \"%s\" failed at line %d in %s\n", \
-                                     x, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
-#endif
+#define LWIP_PLATFORM_ASSERT(x) do {assert(x);} while(0)
 
 #define LWIP_RAND() ((u32_t)GetTickCount()) /* Not really random... */
 
