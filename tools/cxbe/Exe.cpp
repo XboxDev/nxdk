@@ -6,9 +6,14 @@
 // SPDX-FileCopyrightText: 2021 Stefan Schmidt
 
 #include "Exe.h"
+#include "Xbe.h"
 
-#include <stdio.h>
 #include <memory.h>
+#include <locale.h>
+#include <stdlib.h>
+#include <time.h>
+#include <cstring>
+#include <cstdio>
 
 // construct via Exe file
 Exe::Exe(const char *x_szFilename)
@@ -176,6 +181,39 @@ cleanup:
 
     return;
 }
+
+Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail) {
+    
+    ConstructorInit();
+
+    time_t CurrentTime;
+
+    time(&CurrentTime);
+
+    printf("Exe::Exe: Pass 1 (Simple Pass)...");
+    
+    //pass 1
+    {
+        //standard Pe magic Number
+        m_Header.m_magic = *(uint32 *)"PE\0\0";
+        //m_Header.dwBaseAddr = 0x00010000;
+        //we want the same number of sections as our xbe file
+        m_Header.m_sections= x_Xbe->dwSections; 
+        //copies of various same header values
+        {
+            m_Header.m_OptionalHeader.m_sizeof_stack_reserve = x_Xbe->dwPeStackCommit;
+            m_Header.m_OptionalHeader.m_sizeof_heap_reserve= x_Xbe->dwPeHeapReserve;
+            m_OptionalHeader.m_sizeof_heap_commit= x_Xbe->dwPeHeapCommit;
+            m_OptionalHeader.m_sizeof_image= x_Xbe-> dwPeSizeofImage;
+            //dwPeChecksum    Is this needed?
+            m_Header.m_timedate=X_Xbe->dwPeTimeDate;
+        }
+            
+        
+    }
+    
+}
+
 
 // constructor initialization
 void Exe::ConstructorInit()
