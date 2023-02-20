@@ -235,7 +235,7 @@ Exe::Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail) {
         //pass 2
         {
             // make-room cursor
-            uint32 mrc = m_OptionalHeader.m_image_base + sizeof(m_Header+m_OptionalHeader); // This seems more logical than just m_Header
+            uint32 mrc = m_OptionalHeader.m_image_base + sizeof(m_Header) + sizeof(m_OptionalHeader) ; // This seems more logical than just m_Header
 
 
         }
