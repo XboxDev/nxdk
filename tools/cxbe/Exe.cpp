@@ -182,7 +182,7 @@ cleanup:
     return;
 }
 
-Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail) {
+Exe::Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail) {
     
     ConstructorInit();
 
@@ -196,17 +196,48 @@ Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail) {
     {
         //standard Pe magic Number
         m_Header.m_magic = *(uint32 *)"PE\0\0";
+        //always i386
+        m_Header.m_machine= IMAGE_FILE_MACHINE_I386;
         //m_Header.dwBaseAddr = 0x00010000;
         //we want the same number of sections as our xbe file
-        m_Header.m_sections= x_Xbe->dwSections; 
+        m_Header.m_sections= (uint16) x_Xbe->m_Header.dwSections;
+        //magic number
+        m_Header.m_characteristics = 0x010F; //ripped from EmuExe.cpp
+
+
+
         //copies of various same header values
         {
-            m_Header.m_OptionalHeader.m_sizeof_stack_reserve = x_Xbe->dwPeStackCommit;
-            m_Header.m_OptionalHeader.m_sizeof_heap_reserve= x_Xbe->dwPeHeapReserve;
-            m_OptionalHeader.m_sizeof_heap_commit= x_Xbe->dwPeHeapCommit;
-            m_OptionalHeader.m_sizeof_image= x_Xbe-> dwPeSizeofImage;
+            m_OptionalHeader.m_sizeof_stack_reserve = x_Xbe->m_Header.dwPeStackCommit;
+            m_OptionalHeader.m_sizeof_heap_reserve= x_Xbe->m_Header.dwPeHeapReserve;
+            m_OptionalHeader.m_sizeof_heap_commit= x_Xbe->m_Header.dwPeHeapCommit;
+            m_OptionalHeader.m_sizeof_image= x_Xbe-> m_Header.dwPeSizeofImage;
             //dwPeChecksum    Is this needed?
-            m_Header.m_timedate=X_Xbe->dwPeTimeDate;
+            m_Header.m_timedate=x_Xbe->m_Header.dwPeTimeDate;
+            m_OptionalHeader.m_image_base= x_Xbe->m_Header.dwBaseAddr;
+
+        }
+        // optional header init
+        {
+            m_Header.m_sizeof_optional_header =sizeof(OptionalHeader);
+            m_OptionalHeader.m_magic=0x010B;
+            m_OptionalHeader.m_file_alignment= PE_FILE_ALIGN;
+            m_OptionalHeader.m_section_alignment= PE_SEGM_ALIGN;
+            m_OptionalHeader.m_sizeof_headers= sizeof (bzDOSStub)+ sizeof(m_Header);
+            m_OptionalHeader.m_sizeof_headers += sizeof (m_OptionalHeader)+ sizeof(*m_SectionHeader)*m_Header.m_sections;
+            m_OptionalHeader.m_sizeof_headers = RoundUp(m_OptionalHeader.m_sizeof_headers, PE_FILE_ALIGN);
+            m_OptionalHeader.m_data_directories = 0x10;
+        }
+
+        printf("OK\n");
+        printf("Exe::Exe: Pass 2 (Calculating Requirements)...");
+
+        //pass 2
+        {
+            // make-room cursor
+            uint32 mrc = m_OptionalHeader.m_image_base + sizeof(m_Header+m_OptionalHeader); // This seems more logical than just m_Header
+
+
         }
             
         
