@@ -1331,11 +1331,11 @@ static void pb_prepare_tiles(void)
 
 
 
-void pb_create_dma_ctx(  DWORD ChannelID,
+void pb_create_dma_ctx(DWORD ChannelID,
                 DWORD Class,
                 DWORD Base,
                 DWORD Limit,
-                struct s_CtxDma *pDmaObject )
+                struct s_CtxDma *pDmaObject)
 {
     DWORD           Addr;
     DWORD           AddrSpace;
@@ -1611,7 +1611,8 @@ static void pb_3D_init(void)
 #endif
 }
 
-DWORD pb_reserve_instance(DWORD size) {
+DWORD pb_reserve_instance(DWORD size)
+{
     DWORD ret = pb_FreeInst;
     pb_FreeInst += (size>>4);
     return ret;
@@ -2626,12 +2627,14 @@ void pb_kill(void)
 }
 
 
-void pb_set_color_format(unsigned int fmt, bool swizzled) {
+void pb_set_color_format(unsigned int fmt, bool swizzled)
+{
     pb_ColorFmt = fmt;
     assert(swizzled == false);
 }
 
-void pb_set_fb_size_multiplier(unsigned int multiplier) {
+void pb_set_fb_size_multiplier(unsigned int multiplier)
+{
     assert(multiplier > 0);
     pb_FBSizeMultiplier = multiplier;
 }
@@ -3737,10 +3740,12 @@ uint8_t* pb_depth_stencil_buffer()
   return (uint8_t*)pb_DepthStencilAddr;
 }
 
-DWORD pb_depth_stencil_pitch() {
+DWORD pb_depth_stencil_pitch()
+{
   return pb_DepthStencilPitch;
 }
 
-DWORD pb_depth_stencil_size() {
+DWORD pb_depth_stencil_size()
+{
   return pb_DSSize;
 }
