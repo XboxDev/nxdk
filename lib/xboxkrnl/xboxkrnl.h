@@ -2460,7 +2460,7 @@ XBAPI NTSTATUS NTAPI ObReferenceObjectByName
     OUT PVOID *Object
 );
 
-XBAPI BOOLEAN NTAPI ObReferenceObjectByHandle
+XBAPI NTSTATUS NTAPI ObReferenceObjectByHandle
 (
     IN HANDLE Handle,
     IN POBJECT_TYPE ObjectType OPTIONAL,
