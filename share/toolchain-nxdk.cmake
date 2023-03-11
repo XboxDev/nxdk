@@ -45,4 +45,7 @@ set(_CMAKE_C_IPO_SUPPORTED_BY_CMAKE YES)
 set(_CMAKE_C_IPO_MAY_BE_SUPPORTED_BY_COMPILER YES)
 set(CMAKE_C_COMPILE_OPTIONS_IPO -flto)
 
+# TODO: CMAKE_MODULE_PATH is intended for project level than toolchain,
+#       find out what's wrong with CMAKE_FIND_ROOT_PATH as it is not working for some reason?
+set(CMAKE_MODULE_PATH "${NXDK_DIR}/share/cmake/Modules")
 set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path to pkg-config")
