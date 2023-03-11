@@ -2,4 +2,4 @@ Name: libjpeg
 Description: A SIMD-accelerated JPEG codec that provides the libjpeg API
 Version: 2.0.4
 Libs: ${NXDK_DIR}/lib/libjpeg.lib
-Cflags: -I${NXDK_DIR}/lib/libjpeg/libjpeg-turbo -I$(NXDK_DIR)/lib/libjpeg
+Cflags: -I${NXDK_DIR}/lib/libjpeg/libjpeg-turbo -I${NXDK_DIR}/lib/libjpeg
