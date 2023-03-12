@@ -3,5 +3,5 @@ Description: zlib compression library
 Version: 1.2.11
 
 Requires:
-Libs: ${NXDK_DIR}/lib/libzlib.lib
+Libs: -l${NXDK_DIR}/lib/libzlib.lib
 Cflags: -I${NXDK_DIR}/lib/zlib/zlib -DZ_SOLO
