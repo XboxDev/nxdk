@@ -2,5 +2,5 @@ Name: libpng
 Description: Loads and saves PNG files
 Version: 1.6.37
 Requires: zlib
-Libs: ${NXDK_DIR}/lib/libpng.lib
+Libs: -l${NXDK_DIR}/lib/libpng.lib
 Cflags: -I${NXDK_DIR}/lib/libpng -I${NXDK_DIR}/lib/libpng/libpng
