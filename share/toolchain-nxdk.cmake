@@ -19,7 +19,7 @@ set(WIN32 1)
 set(NXDK 1)
 
 set(CMAKE_C_COMPILER "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-cc")
-set(CMAKE_C_STANDARD_LIBRARIES "${NXDK_DIR}/lib/libwinapi.lib ${NXDK_DIR}/lib/xboxkrnl/libxboxkrnl.lib ${NXDK_DIR}/lib/libxboxrt.lib  ${NXDK_DIR}/lib/libpdclib.lib ${NXDK_DIR}/lib/libnxdk_hal.lib ${NXDK_DIR}/lib/libnxdk.lib ${NXDK_DIR}/lib/nxdk_usb.lib") #"${CMAKE_CXX_STANDARD_LIBRARIES_INIT}"
+set(CMAKE_C_STANDARD_LIBRARIES "${NXDK_DIR}/lib/libwinapi.lib ${NXDK_DIR}/lib/xboxkrnl/libxboxkrnl.lib ${NXDK_DIR}/lib/libxboxrt.lib  ${NXDK_DIR}/lib/libpdclib.lib ${NXDK_DIR}/lib/libnxdk_hal.lib ${NXDK_DIR}/lib/libnxdk.lib ${NXDK_DIR}/lib/nxdk_usb.lib ${NXDK_DIR}/lib/libnxdk_net.lib") #"${CMAKE_CXX_STANDARD_LIBRARIES_INIT}"
 set(CMAKE_C_LINK_EXECUTABLE "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-link <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -out:<TARGET> <LINK_LIBRARIES>")
 
 set(CMAKE_CXX_COMPILER "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-cxx")
