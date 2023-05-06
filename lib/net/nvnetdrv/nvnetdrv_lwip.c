@@ -86,11 +86,13 @@ void rx_callback(void *buffer, uint16_t length)
  *
  * @param netif the already initialized lwip network interface structure
  * for this nforceif
+ * @return ERR_OK if low level initiliazation succeeds
+ *         ERR_IF if any failure
  */
-static void low_level_init(struct netif *netif)
+static err_t low_level_init(struct netif *netif)
 {
     if (nvnetdrv_init(RX_BUFF_CNT, rx_callback) < 0) {
-        abort();
+        return ERR_IF;
     }
 
     /* set MAC hardware address length */
@@ -120,6 +122,8 @@ static void low_level_init(struct netif *netif)
     }
 #endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
     g_pnetif = netif;
+
+    return ERR_OK;
 }
 
 /**
@@ -270,7 +274,5 @@ err_t nvnetif_init(struct netif *netif)
     nforceif->ethaddr = (struct eth_addr *)&(netif->hwaddr[0]);
 
     /* initialize the hardware */
-    low_level_init(netif);
-
-    return ERR_OK;
+    return low_level_init(netif);
 }
