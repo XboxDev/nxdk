@@ -891,6 +891,16 @@ typedef struct _OBJECT_TYPE
     ULONG PoolTag;
 } OBJECT_TYPE, *POBJECT_TYPE;
 
+typedef struct _OBJECT_HEADER {
+	LONG PointerCount;
+	LONG HandleCount;
+	POBJECT_TYPE Type;
+	ULONG Flags;
+	QUAD Body;
+} OBJECT_HEADER, *POBJECT_HEADER;
+
+#define OBJECT_TO_OBJECT_HEADER(Object) CONTAINING_RECORD(Object, OBJECT_HEADER, Body)
+
 typedef VOID (NTAPI *PKDEFERRED_ROUTINE) (
     IN PKDPC Dpc,
     IN PVOID DeferredContext,
