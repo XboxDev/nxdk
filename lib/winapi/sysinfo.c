@@ -2,8 +2,10 @@
 
 // SPDX-FileCopyrightText: 2019 Stefan Schmidt
 // SPDX-FileCopyrightText: 2020 Samuel Cuella
+// SPDX-FileCopyrightText: 2023 Ryan Wendland
 
 #include <sysinfoapi.h>
+#include <timezoneapi.h>
 #include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
 
@@ -49,4 +51,42 @@ void GetSystemInfo (LPSYSTEM_INFO lpSystemInfo)
     lpSystemInfo->dwActiveProcessorMask = 1;
     lpSystemInfo->dwNumberOfProcessors = 1;
     lpSystemInfo->dwAllocationGranularity = 4096;
+}
+
+void GetLocalTime (LPSYSTEMTIME lpSystemTime)
+{
+    assert(lpSystemTime != NULL);
+
+    LARGE_INTEGER kTime;
+    TIME_FIELDS timeFields;
+    TIME_ZONE_INFORMATION tzInfo;
+    LONG bias;
+
+    switch (GetTimeZoneInformation(&tzInfo)) {
+        case TIME_ZONE_ID_UNKNOWN:
+            bias = tzInfo.Bias;
+            break;
+        case TIME_ZONE_ID_STANDARD:
+            bias = tzInfo.Bias + tzInfo.StandardBias;
+            break;
+        case TIME_ZONE_ID_DAYLIGHT:
+            bias = tzInfo.Bias + tzInfo.DaylightBias;
+            break;
+        default:
+            bias = 0;
+            break;
+    }
+
+    KeQuerySystemTime(&kTime);
+    kTime.QuadPart -= (bias * 60LL * 10000000LL);
+
+    RtlTimeToTimeFields(&kTime, &timeFields);
+    lpSystemTime->wYear = timeFields.Year;
+    lpSystemTime->wMonth = timeFields.Month;
+    lpSystemTime->wDay = timeFields.Day;
+    lpSystemTime->wHour = timeFields.Hour;
+    lpSystemTime->wMinute = timeFields.Minute;
+    lpSystemTime->wSecond = timeFields.Second;
+    lpSystemTime->wMilliseconds = timeFields.Millisecond;
+    lpSystemTime->wDayOfWeek = timeFields.Weekday;
 }
