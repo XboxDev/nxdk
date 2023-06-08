@@ -4216,6 +4216,9 @@ XBAPI OBJECT_TYPE ExSemaphoreObjectType;
 #define XC_ENCRYPTED_SECTION              0xFFFE
 #define XC_MAX_ALL                        0xFFFF
 
+// This bit is set in XC_MISC when automatic daylight savings time (DST) adjustment is disabled
+#define XC_MISC_FLAG_DISABLE_DST 0x02
+
 XBAPI NTSTATUS NTAPI ExSaveNonVolatileSetting
 (
     IN ULONG ValueIndex,
