@@ -15,6 +15,9 @@ class Exe : public Error
     public:
         // construct via Exe file
         Exe(const char *x_szFilename);
+        
+        // Construct via Xbe file
+        Exe(class Xbe *x_Xbe, const char *x_szTitle, bool x_bRetail);
 
         // deconstructor
        ~Exe();
