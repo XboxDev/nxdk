@@ -13,9 +13,6 @@
 
 #define MAXPATH 80
 #define MAXDRIVE 3
-#define MAXDIR 66
-#define MAXFILE 9
-#define MAXEXT 5
 
 /*
  * These silently succeed, since they wouldn't have any effect on the program at all
