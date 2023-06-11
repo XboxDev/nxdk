@@ -11,5 +11,3 @@ char* _getwd(char* path_name);
 int _getdrive(void);
 int _mkdir(const char* pathname);
 int _rmdir(const char* pathname);
-void _fnmerge(char* path, const char* drive, const char* dir, const char* name, const char* ext);
-char* _searchpath(const char* file);

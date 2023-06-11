@@ -13,7 +13,7 @@
 
 
 /*
- * These silently succeed, since they wouldn't have any effect on the program at all
+ * TODO: Make a working directory system?
  */
 
 int _chdir(char* path) {
@@ -23,10 +23,6 @@ int _chdir(char* path) {
 int _chdrive(int drive) {
     return 0;
 }
-
-/*
- * The Xbox has no concept of current working directory, so these can't work
- */
 
 char* _getcwd(char* buffer, size_t length) {
     errno = -EINVAL;
@@ -41,15 +37,6 @@ char* _getwd(char* path_name) {
 int _getdrive(void) {
     errno = -EINVAL;
     return 0;
-}
-
-/*
- * There's no path variable on the Xbox, so this can't work
- */
-
-char* _searchpath(const char* file) {
-    errno = -EINVAL;
-    return NULL;
 }
 
 /*
@@ -95,12 +82,4 @@ int _rmdir(const char* pathname) {
 
         return -1;
     }
-}
-
-void fnmerge(char* path, const char* drive, const char* dir, const char* name, const char* ext) {
-
-}
-
-void fnsplit(const char* path, char* drive, char* dir, char* name, char* ext) {
-
 }
