@@ -11,8 +11,6 @@
 
 // Made referencing https://www.digitalmars.com/rtl/direct.html, retrieved 2023-06-10, copyrighted 1999-2018 by Digital Mars
 
-#define MAXPATH 80
-#define MAXDRIVE 3
 
 /*
  * These silently succeed, since they wouldn't have any effect on the program at all
