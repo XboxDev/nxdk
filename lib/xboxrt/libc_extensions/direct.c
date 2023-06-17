@@ -47,22 +47,27 @@ static int convert_error(DWORD winerror)
 
 int _chdir(char* path) {
     assert(0);
+    return -1; // Unreachable
 }
 
 int _chdrive(int drive) {
     assert(0);
+    return -1; // Unreachable
 }
 
 char* _getcwd(char* buffer, size_t length) {
     assert(0);
+    return NULL; // Unreachable
 }
 
 char* _getwd(char* path_name) {
     assert(0);
+    return NULL; // Unreachable
 }
 
 int _getdrive(void) {
     assert(0);
+    return -1; // Unreachable
 }
 
 /*
