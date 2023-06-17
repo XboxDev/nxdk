@@ -46,26 +46,23 @@ static int convert_error(DWORD winerror)
  */
 
 int _chdir(char* path) {
-    return 0;
+    assert(0);
 }
 
 int _chdrive(int drive) {
-    return 0;
+    assert(0);
 }
 
 char* _getcwd(char* buffer, size_t length) {
-    errno = -EINVAL;
-    return NULL;
+    assert(0);
 }
 
 char* _getwd(char* path_name) {
-    errno = -EINVAL;
-    return NULL;
+    assert(0);
 }
 
 int _getdrive(void) {
-    errno = -EINVAL;
-    return 0;
+    assert(0);
 }
 
 /*
