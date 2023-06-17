@@ -11,6 +11,35 @@
 
 // Made referencing https://www.digitalmars.com/rtl/direct.html, retrieved 2023-06-10, copyrighted 1999-2018 by Digital Mars
 
+static int convert_error(DWORD winerror)
+{
+    switch (winerror) {
+        case ERROR_FILE_NOT_FOUND:
+        case ERROR_PATH_NOT_FOUND:
+        case ERROR_FILENAME_EXCED_RANGE:
+        case ERROR_BAD_PATHNAME:
+            return ENOENT;
+            break;
+        case ERROR_ALREADY_EXISTS:
+        case ERROR_FILE_EXISTS:
+            return EEXIST;
+            break;
+        case ERROR_NOT_LOCKED:
+        case ERROR_ACCESS_DENIED:
+            return EACCES;
+            break;
+        case ERROR_INVAID_PARAMETER:
+        case ERROR_INVALID_FUNCTION:
+            return EINVAL;
+            break;
+        case ERROR_NOT_ENOUGH_MEMORY:
+            return ENOMEM;
+            break;
+        case ERROR_DIR_NOT_EMPTY:
+            return ENOTEMPTY;
+            break;
+    }
+}
 
 /*
  * TODO: Make a working directory system?
