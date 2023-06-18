@@ -28,7 +28,7 @@ static int convert_error(DWORD winerror)
         case ERROR_ACCESS_DENIED:
             return EACCES;
             break;
-        case ERROR_INVAID_PARAMETER:
+        case ERROR_INVALID_PARAMETER:
         case ERROR_INVALID_FUNCTION:
             return EINVAL;
             break;
