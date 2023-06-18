@@ -9,9 +9,11 @@
 #include <stdbool.h>
 #include <windows.h>
 #include <assert.h>
+#include <hal/debug.h>
 
 // Made referencing https://www.digitalmars.com/rtl/direct.html, retrieved 2023-06-10, copyrighted 1999-2018 by Digital Mars
 
+// Only call this function in the case there actually is an error
 static int convert_error(DWORD winerror)
 {
     switch (winerror) {
@@ -39,6 +41,9 @@ static int convert_error(DWORD winerror)
         case ERROR_DIR_NOT_EMPTY:
             return ENOTEMPTY;
             break;
+        default:
+            debugPrint("WARNING: Unknown win32 error code 0x%08x, returning EINVAL", winerror);
+            return EINVAL;
     }
 }
 
