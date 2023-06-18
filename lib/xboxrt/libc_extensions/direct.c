@@ -89,13 +89,7 @@ int _mkdir(const char* pathname) {
     if (result == true) {
         return 0;
     } else {
-        DWORD err = GetLastError();
-
-        if (err == ERROR_ALREADY_EXISTS) {
-            errno = EACCES;
-        } else if (err == ERROR_PATH_NOT_FOUND) {
-            errno = ENOENT;
-        }
+        errno = convert_error(GetLastError());
 
         return -1;
     }
@@ -109,13 +103,7 @@ int _rmdir(const char* pathname) {
     if (result == true) {
         return 0;
     } else {
-        DWORD err = GetLastError();
-
-        if (err == ERROR_ALREADY_EXISTS) {
-            errno = EACCES;
-        } else if (err == ERROR_PATH_NOT_FOUND) {
-            errno = ENOENT;
-        }
+        errno = convert_error(GetLastError());
 
         return -1;
     }
