@@ -42,7 +42,7 @@ static int convert_error(DWORD winerror)
             return ENOTEMPTY;
             break;
         default:
-            debugPrint("WARNING: Unknown win32 error code 0x%08x, returning EINVAL", winerror);
+            debugPrint("WARNING: Unknown win32 error code 0x%08lx, returning EINVAL", winerror);
             return EINVAL;
     }
 }
