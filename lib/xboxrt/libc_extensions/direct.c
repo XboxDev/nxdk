@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <windows.h>
+#include <assert.h>
 
 // Made referencing https://www.digitalmars.com/rtl/direct.html, retrieved 2023-06-10, copyrighted 1999-2018 by Digital Mars
 
