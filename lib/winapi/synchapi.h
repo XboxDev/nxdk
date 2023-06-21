@@ -67,8 +67,14 @@ BOOL ReleaseSemaphore (HANDLE hSemaphore, LONG lReleaseCount, LPLONG lpPreviousC
 HANDLE CreateMutexA (LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCSTR lpName);
 BOOL ReleaseMutex (HANDLE hMutex);
 
+HANDLE CreateEventA (LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCSTR lpName);
+BOOL SetEvent (HANDLE hEvent);
+BOOL ResetEvent (HANDLE hEvent);
+BOOL PulseEvent (HANDLE hEvent);
+
 #ifndef UNICODE
 #define CreateMutex CreateMutexA
+#define CreateEvent CreateEventA
 #else
 #error nxdk does not support the Unicode API
 #endif

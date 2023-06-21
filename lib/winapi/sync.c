@@ -580,3 +580,80 @@ BOOL ReleaseMutex (HANDLE hMutex)
     SetLastError(RtlNtStatusToDosError(status));
     return FALSE;
 }
+
+HANDLE CreateEventA (LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCSTR lpName)
+{
+    NTSTATUS status;
+    HANDLE handle;
+    ANSI_STRING obj_name;
+    OBJECT_ATTRIBUTES obj_attributes;
+    POBJECT_ATTRIBUTES obj_attributes_ptr;
+    EVENT_TYPE event;
+
+    if (lpName) {
+        RtlInitAnsiString(&obj_name, lpName);
+        InitializeObjectAttributes(&obj_attributes, &obj_name, OBJ_OPENIF, ObWin32NamedObjectsDirectory(), NULL);
+        obj_attributes_ptr = &obj_attributes;
+    } else {
+        obj_attributes_ptr = NULL;
+    }
+
+    if (bManualReset) {
+        event = NotificationEvent;
+    } else {
+        event = SynchronizationEvent;
+    }
+
+    status = NtCreateEvent(&handle, obj_attributes_ptr, event, bInitialState);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return NULL;
+    }
+
+    if (status == STATUS_OBJECT_NAME_EXISTS) {
+        SetLastError(ERROR_ALREADY_EXISTS);
+    } else {
+        SetLastError(0);
+    }
+
+    return handle;
+}
+
+BOOL SetEvent (HANDLE hEvent)
+{
+    NTSTATUS status;
+
+    status = NtSetEvent(hEvent, NULL);
+    if (NT_SUCCESS(status)) {
+        return TRUE;
+    }
+
+    SetLastError(RtlNtStatusToDosError(status));
+    return FALSE;
+}
+
+BOOL ResetEvent (HANDLE hEvent)
+{
+    NTSTATUS status;
+
+    status = NtClearEvent(hEvent);
+    if (NT_SUCCESS(status)) {
+        return TRUE;
+    }
+
+    SetLastError(RtlNtStatusToDosError(status));
+    return FALSE;
+}
+
+BOOL PulseEvent (HANDLE hEvent)
+{
+    NTSTATUS status;
+
+    status = NtPulseEvent(hEvent, NULL);
+    if (NT_SUCCESS(status)) {
+        return TRUE;
+    }
+
+    SetLastError(RtlNtStatusToDosError(status));
+    return FALSE;
+}
