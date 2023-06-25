@@ -119,7 +119,11 @@ Xbe::Xbe(const char *x_szFilename)
 
             if(fread(&m_SectionHeader[v], sizeof(*m_SectionHeader), 1, XbeFile) != 1)
             {
-                sprintf(szBuffer, "Unexpected end of file while reading Xbe Section Header %d (%Xh)", v, v);
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected end of file while reading Xbe Section Header %d (%Xh)",
+                         v,
+                         v);
                 SetError(szBuffer, true);
                 goto cleanup;
             }
@@ -171,7 +175,11 @@ Xbe::Xbe(const char *x_szFilename)
 
             if(fread(&m_LibraryVersion[v], sizeof(*m_LibraryVersion), 1, XbeFile) != 1)
             {
-                sprintf(szBuffer, "Unexpected end of file while reading Xbe Library Version %d (%Xh)", v, v);
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected end of file while reading Xbe Library Version %d (%Xh)",
+                         v,
+                         v);
                 SetError(szBuffer, true);
                 goto cleanup;
             }
@@ -253,7 +261,12 @@ Xbe::Xbe(const char *x_szFilename)
 
             if(fread(m_bzSection[v], RawSize, 1, XbeFile) != 1)
             {
-                sprintf(szBuffer, "Unexpected end of file while reading Xbe Section %d (%Xh) (%s)", v, v, m_szSectionName[v]);
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected end of file while reading Xbe Section %d (%Xh) (%s)",
+                         v,
+                         v,
+                         m_szSectionName[v]);
                 SetError(szBuffer, true);
                 goto cleanup;
             }
@@ -969,7 +982,11 @@ void Xbe::Export(const char *x_szXbeFilename)
 
             if(fwrite(&m_SectionHeader[v], sizeof(*m_SectionHeader), 1, XbeFile) != 1)
             {
-                sprintf(szBuffer, "Unexpected write error while writing Xbe Section %d (%Xh)", v, v);
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected write error while writing Xbe Section %d (%Xh)",
+                         v,
+                         v);
                 SetError(szBuffer, false);
                 goto cleanup;
             }
@@ -999,7 +1016,12 @@ void Xbe::Export(const char *x_szXbeFilename)
 
             if(fwrite(m_bzSection[v], RawSize, 1, XbeFile) != 1)
             {
-                sprintf(szBuffer, "Unexpected write error while writing Xbe Section %d (%Xh) (%s)", v, v, m_szSectionName[v]);
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected write error while writing Xbe Section %d (%Xh) (%s)",
+                         v,
+                         v,
+                         m_szSectionName[v]);
                 SetError(szBuffer, false);
                 goto cleanup;
             }
