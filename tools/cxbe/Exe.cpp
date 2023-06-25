@@ -109,7 +109,7 @@ Exe::Exe(const char *x_szFilename)
             if(fread(&m_SectionHeader[v], sizeof(SectionHeader), 1, ExeFile) != 1)
             {
                 char buffer[255];
-                sprintf(buffer, "Could not read PE section header %d (%Xh)", v, v);
+                snprintf(buffer, sizeof(buffer), "Could not read PE section header %d (%Xh)", v, v);
                 SetError(buffer, true);
                 goto cleanup;
             }
@@ -148,7 +148,7 @@ Exe::Exe(const char *x_szFilename)
                 if(fread(m_bzSection[v], raw_size, 1, ExeFile) != 1)
                 {
                     char buffer[255];
-                    sprintf(buffer, "Could not read PE section %d (%Xh)", v, v);
+                    snprintf(buffer, sizeof(buffer), "Could not read PE section %d (%Xh)", v, v);
                     SetError(buffer, true);
                     goto cleanup;
                 }
@@ -267,7 +267,7 @@ void Exe::Export(const char *x_szExeFilename)
             if(fwrite(&m_SectionHeader[v], sizeof(SectionHeader), 1, ExeFile) != 1)
             {
                 char buffer[255];
-                sprintf(buffer, "Could not write PE section header %d (%Xh)", v, v);
+                snprintf(buffer, sizeof(buffer), "Could not write PE section header %d (%Xh)", v, v);
                 SetError(buffer, false);
                 goto cleanup;
             }
@@ -298,7 +298,7 @@ void Exe::Export(const char *x_szExeFilename)
             if(fwrite(m_bzSection[v], RawSize, 1, ExeFile) != 1)
             {
                 char buffer[255];
-                sprintf(buffer, "Could not write PE section %d (%Xh)", v, v);
+                snprintf(buffer, sizeof(buffer), "Could not write PE section %d (%Xh)", v, v);
                 SetError(buffer, false);
                 goto cleanup;
             }
