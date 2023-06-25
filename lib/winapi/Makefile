@@ -10,6 +10,7 @@ WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/filemanip.c \
 	$(NXDK_DIR)/lib/winapi/findfile.c \
 	$(NXDK_DIR)/lib/winapi/handleapi.c \
+	$(NXDK_DIR)/lib/winapi/ioapi.c \
 	$(NXDK_DIR)/lib/winapi/memory.c \
 	$(NXDK_DIR)/lib/winapi/libloaderapi.c \
 	$(NXDK_DIR)/lib/winapi/profiling.c \
