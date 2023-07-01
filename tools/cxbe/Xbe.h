@@ -10,6 +10,7 @@
 
 #include "Error.h"
 
+#include <list>
 #include <stdio.h>
 #include <vector>
 
@@ -197,6 +198,12 @@ class Xbe : public Error
 
         // addr of area reserved for import table names converted from ASCII to wide characters.
         uint32 m_ImportNameAddr;
+
+        // Import table for non-kernel DLLs.
+        std::vector<XBE_IMAGE_IMPORT_DESCRIPTOR> m_NonKernelImportDescriptors;
+
+        // Resolved names of any non-kernel import descriptors.
+        std::list<std::vector<uint16> > m_NonKernelImportNames;
 
         // retrieve thread local storage data address
         uint08 *GetTLSData() { if(m_TLS == 0) return 0; else return GetAddr(m_TLS->dwDataStartAddr); }

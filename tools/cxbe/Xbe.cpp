@@ -9,6 +9,7 @@
 #include "Xbe.h"
 #include "Exe.h"
 
+#include <cctype>
 #include <memory.h>
 #include <locale.h>
 #include <stdlib.h>
@@ -160,6 +161,59 @@ Xbe::Xbe(const char *x_szFilename)
         }
     }
 
+    // read non-kernel imports
+    if (m_Header.dwNonKernelImportDirAddr)
+    {
+        printf("Xbe::Xbe: Reading non-kernel import table...\n");
+
+        fseek(XbeFile, m_Header.dwNonKernelImportDirAddr - m_Header.dwBaseAddr, SEEK_SET);
+        XBE_IMAGE_IMPORT_DESCRIPTOR descriptor;
+        uint32 index = 0;
+        do
+        {
+            if (fread(&descriptor, sizeof(descriptor), 1, XbeFile) != 1)
+            {
+                snprintf(szBuffer,
+                         sizeof(szBuffer),
+                         "Unexpected end of file while reading non-kernel import %d (%Xh)",
+                         index,
+                         index);
+                SetError(szBuffer, true);
+                goto cleanup;
+
+            }
+            if (descriptor.FirstThunk)
+            {
+                m_NonKernelImportDescriptors.emplace_back(descriptor);
+            }
+        } while(descriptor.FirstThunk);
+
+        std::vector<XBE_IMAGE_IMPORT_DESCRIPTOR>::const_iterator it = m_NonKernelImportDescriptors.begin();
+        std::vector<XBE_IMAGE_IMPORT_DESCRIPTOR>::const_iterator it_end = m_NonKernelImportDescriptors.end();
+        for (; it != it_end; ++it)
+        {
+            fseek(XbeFile, it->WideCharName - m_Header.dwBaseAddr, SEEK_SET);
+            std::vector<uint16> name;
+
+            char buffer[2];
+            do
+            {
+                if (fread(&buffer, sizeof(buffer), 1, XbeFile) != 1)
+                {
+                    snprintf(szBuffer,
+                             sizeof(szBuffer),
+                             "Unexpected end of file while reading name for non-kernel import from %d (%Xh)",
+                             it->WideCharName,
+                             it->WideCharName);
+                    SetError(szBuffer, true);
+                    goto cleanup;
+                }
+                name.emplace_back(*(reinterpret_cast<uint16*>(buffer)));
+            } while(buffer[0] != 0);
+            m_NonKernelImportNames.push_back(name);
+        }
+    }
+
     // read Xbe library versions
     if(m_Header.dwLibraryVersionsAddr != 0)
     {
@@ -168,6 +222,7 @@ Xbe::Xbe(const char *x_szFilename)
         fseek(XbeFile, m_Header.dwLibraryVersionsAddr - m_Header.dwBaseAddr, SEEK_SET);
 
         m_LibraryVersion = new LibraryVersion[m_Header.dwLibraryVersions];
+        bool is_cxbe_generated = false;
 
         for(uint32 v=0;v<m_Header.dwLibraryVersions;v++)
         {
@@ -184,6 +239,10 @@ Xbe::Xbe(const char *x_szFilename)
                 goto cleanup;
             }
 
+            if (!strcmp("CXBE0", m_LibraryVersion[v].szName))
+            {
+                is_cxbe_generated = true;
+            }
             printf("OK\n");
         }
 
@@ -193,20 +252,24 @@ Xbe::Xbe(const char *x_szFilename)
 
             if(m_Header.dwKernelLibraryVersionAddr == 0)
             {
-                SetError("Could not locate kernel library version", true);
-                goto cleanup;
+                if (!is_cxbe_generated)
+                {
+                    SetError("Could not locate kernel library version", true);
+                    goto cleanup;
+                }
             }
-
-            fseek(XbeFile, m_Header.dwKernelLibraryVersionAddr - m_Header.dwBaseAddr, SEEK_SET);
-
-            m_KernelLibraryVersion = new LibraryVersion;
-
-            if(fread(m_KernelLibraryVersion, sizeof(*m_LibraryVersion), 1, XbeFile) != 1)
+            else
             {
-                SetError("Unexpected end of file while reading Xbe Kernel Version", true);
-                goto cleanup;
-            }
+                fseek(XbeFile, m_Header.dwKernelLibraryVersionAddr - m_Header.dwBaseAddr, SEEK_SET);
 
+                m_KernelLibraryVersion = new LibraryVersion;
+
+                if(fread(m_KernelLibraryVersion, sizeof(*m_LibraryVersion), 1, XbeFile) != 1)
+                {
+                    SetError("Unexpected end of file while reading Xbe Kernel Version", true);
+                    goto cleanup;
+                }
+            }
             printf("OK\n");
         }
 
@@ -216,20 +279,24 @@ Xbe::Xbe(const char *x_szFilename)
 
             if(m_Header.dwXAPILibraryVersionAddr == 0)
             {
-                SetError("Could not locate Xapi Library Version", true);
-                goto cleanup;
+                if (!is_cxbe_generated)
+                {
+                    SetError("Could not locate Xapi Library Version", true);
+                    goto cleanup;
+                }
             }
-
-            fseek(XbeFile, m_Header.dwXAPILibraryVersionAddr - m_Header.dwBaseAddr, SEEK_SET);
-
-            m_XAPILibraryVersion = new LibraryVersion;
-
-            if(fread(m_XAPILibraryVersion, sizeof(*m_LibraryVersion), 1, XbeFile) != 1)
+            else
             {
-                SetError("Unexpected end of file while reading Xbe Xapi Version", true);
-                goto cleanup;
-            }
+                fseek(XbeFile, m_Header.dwXAPILibraryVersionAddr - m_Header.dwBaseAddr, SEEK_SET);
 
+                m_XAPILibraryVersion = new LibraryVersion;
+
+                if(fread(m_XAPILibraryVersion, sizeof(*m_LibraryVersion), 1, XbeFile) != 1)
+                {
+                    SetError("Unexpected end of file while reading Xbe Xapi Version", true);
+                    goto cleanup;
+                }
+            }
             printf("OK\n");
         }
     }
@@ -1072,21 +1139,19 @@ cleanup:
         fclose(XbeFile);
         XbeFile = NULL;
     }
-
-    return;
 }
 
 // constructor initialization
 void Xbe::ConstructorInit()
 {
-    m_HeaderEx             = 0;
-    m_SectionHeader        = 0;
-    m_szSectionName        = 0;
-    m_LibraryVersion       = 0;
-    m_KernelLibraryVersion = 0;
-    m_XAPILibraryVersion   = 0;
-    m_TLS                  = 0;
-    m_bzSection            = 0;
+    m_HeaderEx              = nullptr;
+    m_SectionHeader         = nullptr;
+    m_szSectionName         = nullptr;
+    m_LibraryVersion        = nullptr;
+    m_KernelLibraryVersion  = nullptr;
+    m_XAPILibraryVersion    = nullptr;
+    m_TLS                   = nullptr;
+    m_bzSection             = nullptr;
 }
 
 // returns xbe timestamp date as string (reuses ctime buffer)
@@ -1384,6 +1449,38 @@ void Xbe::DumpInformation(FILE *x_file)
     else
     {
         fprintf(x_file, "(This XBE contains no TLS)\n");
+    }
+
+    if (m_Header.dwNonKernelImportDirAddr)
+    {
+        fprintf(x_file, "Dumping non-Kernel import table...\n");
+        fprintf(x_file, "\n");
+
+        std::vector<XBE_IMAGE_IMPORT_DESCRIPTOR>::const_iterator descriptor = m_NonKernelImportDescriptors.begin();
+        std::list<std::vector<uint16> >::const_iterator name = m_NonKernelImportNames.begin();
+        for (; descriptor != m_NonKernelImportDescriptors.end() && name != m_NonKernelImportNames.end(); ++descriptor, ++name)
+        {
+            fprintf(x_file, "First Thunk Address              : 0x%.08X\n", descriptor->FirstThunk);
+            fprintf(x_file, "Name Address                     : 0x%.08X\n", descriptor->WideCharName);
+            fprintf(x_file, "Name Value                       : ");
+            std::vector<uint16>::const_iterator it = name->begin();
+            for (; it != name->end(); ++it)
+            {
+                fprintf(x_file, "%.04X", *it);
+            }
+            fprintf(x_file, "\n");
+            fprintf(x_file, "Name Value (ASCII)               : ");
+            for (it = name->begin(); it != name->end() && *it; ++it)
+            {
+                if (*it < 0xFF && isprint(*it & 0xFF)) {
+                    fprintf(x_file, "%c", (*it) & 0xFF);
+                } else {
+                    fprintf(x_file, "?");
+                }
+
+            }
+            fprintf(x_file, "\n");
+        }
     }
 }
 
