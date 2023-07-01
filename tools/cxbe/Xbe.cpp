@@ -16,6 +16,10 @@
 #include <cstring>
 #include <cstdio>
 
+
+static const char kKernelImageName[] = "xboxkrnl.exe";
+static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra_bytes);
+
 // construct via Xbe file
 Xbe::Xbe(const char *x_szFilename)
 {
@@ -346,7 +350,6 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
         // build time/date
         m_Header.dwTimeDate = CurrentTime;
 
-        // TODO: generate valid addr if necessary
         m_Header.dwNonKernelImportDirAddr = 0;
 
         // Need one or more library version, otherwise VerifierX on XDKs crashes
@@ -362,6 +365,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
     printf("Xbe::Xbe: Pass 2 (Calculating Requirements)...");
 
     // pass 2
+    uint32 non_kernel_import_table_bytes = 0;
     {
         // make-room cursor
         uint32 mrc = m_Header.dwBaseAddr + sizeof(m_Header);
@@ -391,6 +395,27 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                     s++;
 
                 mrc += s + 1;
+            }
+        }
+
+        // make room for non-kernel imports and a null terminator
+        {
+            uint32 name_bytes = 0;
+            uint32 num_entries = CountNonKernelImportTableEntries(x_Exe, &name_bytes);
+            if (num_entries) {
+                if (x_bRetail) {
+                    printf("Xbe::Xbe: Non-kernel imports detected in RETAIL mode. Ignoring...\n");
+                } else {
+                    non_kernel_import_table_bytes = mrc;
+                    mrc = RoundUp(mrc, 0x04);
+                    m_Header.dwNonKernelImportDirAddr = mrc;
+                    mrc += (1 + num_entries) * sizeof(XBE_IMAGE_IMPORT_DESCRIPTOR);
+                    mrc = RoundUp(mrc, 0x04);
+                    m_ImportNameAddr = mrc;
+                    mrc += name_bytes;
+                    mrc = RoundUp(mrc, 0x04);
+                    non_kernel_import_table_bytes = mrc - non_kernel_import_table_bytes;
+                }
             }
         }
 
@@ -676,6 +701,12 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
             szBuffer = m_HeaderEx + hwc - (m_Header.dwBaseAddr + sizeof(m_Header));
         }
 
+        // Reserve space for the non-kernel import table.
+        {
+            szBuffer += non_kernel_import_table_bytes;
+            hwc += non_kernel_import_table_bytes;
+        }
+
         // Write (placeholder) library versions
         {
             m_LibraryVersion = new LibraryVersion[m_Header.dwLibraryVersions];
@@ -750,6 +781,12 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
                 printf("OK\n");
             }
+        }
+
+        // process kernel and debug thunk tables
+        if (!ProcessImportTable(x_Exe, x_bRetail))
+        {
+            goto cleanup;
         }
     }
 
@@ -830,34 +867,6 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
             printf("OK (%d Fixups)\n", fixCount);
         }
-
-        // locate kernel thunk table
-        {
-            // unfortunately, GCC doesn't populate the IAT entry in the data directory
-            // so if the value is 0, then it could mean there are no imports, or it
-            // could mean the EXE was compiled by GCC
-            uint32 ktRVA = x_Exe->m_OptionalHeader.m_image_data_directory[12].m_virtual_addr;
-
-            if(ktRVA == 0)
-            {
-                // lets check to see if there is an import section. if so, look at offset 16
-                // for the RVA of the Import Address Table
-                uint32 importRVA = x_Exe->m_OptionalHeader.m_image_data_directory[1].m_virtual_addr;
-
-                if(importRVA != 0)
-                {
-                    uint08 *importSection = GetAddr(importRVA + m_Header.dwPeBaseAddr);
-
-                    ktRVA = *(uint32 *)&importSection[16];
-                }
-            }
-
-            uint32 kt = ktRVA + m_Header.dwPeBaseAddr;
-
-            kt ^= (x_bRetail ? XOR_KT_RETAIL : XOR_KT_DEBUG );
-
-            m_Header.dwKernelImageThunkAddr = kt;
-        }
     }
 
 cleanup:
@@ -867,8 +876,6 @@ cleanup:
         printf("FAILED!\n");
         printf("Xbe::Xbe: ERROR -> %s\n", GetError());
     }
-
-    return;
 }
 
 // deconstructor
@@ -1526,4 +1533,108 @@ uint08 *Xbe::GetLogoBitmap(uint32 x_dwSize)
     }
 
     return 0;
+}
+
+// returns the count of import table entries other than the kernel.
+// extra_bytes will be populated with the number of bytes necessary to hold the
+// import names after conversion to wide character strings.
+static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra_bytes)
+{
+    *extra_bytes = 0;
+    uint32 idtRVA = x_Exe->m_OptionalHeader.m_image_data_directory[IMAGE_DIRECTORY_ENTRY_IMPORT].m_virtual_addr;
+    if(idtRVA == 0)
+    {
+        return 0;
+    }
+
+    uint32 count = 0;
+    const IMAGE_IMPORT_DESCRIPTOR *descr = reinterpret_cast<const IMAGE_IMPORT_DESCRIPTOR *>(x_Exe->ReadAddr(idtRVA));
+    for (; descr->FirstThunk; ++descr)
+    {
+        uint32 nameRVA = descr->Name;
+        const char *name = reinterpret_cast<const char *>(x_Exe->ReadAddr(nameRVA));
+        if (strcasecmp(name, kKernelImageName) != 0)
+        {
+            *extra_bytes += (strlen(name) + 1) * 2;
+            ++count;
+        }
+    }
+
+    return count;
+}
+
+// sets the dwKernelImageThunkAddr and dwNonKernelImportDirAddr fields from the given Exe.
+bool Xbe::ProcessImportTable(class Exe *x_Exe, bool x_bRetail)
+{
+    uint32 idtRVA = x_Exe->m_OptionalHeader.m_image_data_directory[IMAGE_DIRECTORY_ENTRY_IMPORT].m_virtual_addr;
+    if(idtRVA == 0)
+    {
+        printf("Xbe::ProcessImportTable: No import directory found, exe may be invalid.\n");
+        return true;
+    }
+
+    uint32 kernel_thunk_addr = 0;
+    const IMAGE_IMPORT_DESCRIPTOR *peDescriptor = reinterpret_cast<const IMAGE_IMPORT_DESCRIPTOR *>(GetAddr(idtRVA + m_Header.dwPeBaseAddr));
+    XBE_IMAGE_IMPORT_DESCRIPTOR *xbeDescriptor = nullptr;
+    char *wideCharName = nullptr;
+    uint32 nextImportNameAddr = m_ImportNameAddr;
+    if (m_Header.dwNonKernelImportDirAddr)
+    {
+        xbeDescriptor = reinterpret_cast<XBE_IMAGE_IMPORT_DESCRIPTOR *>(GetAddr(m_Header.dwNonKernelImportDirAddr));
+        if (!xbeDescriptor)
+        {
+            SetError("Xbe::ProcessImportTable: Non kernel imports exist but target descriptor table is null", true);
+            return false;
+        }
+
+        wideCharName = reinterpret_cast<char*>(GetAddr(m_ImportNameAddr));
+        if (!wideCharName)
+        {
+            SetError("Xbe::ProcessImportTable: Non kernel imports exist but target name table is null", true);
+            return false;
+        }
+    }
+
+    for (int32 i = 0; peDescriptor->FirstThunk; ++i, ++peDescriptor)
+    {
+        uint32 nameRVA = peDescriptor->Name;
+        const char *name = reinterpret_cast<const char *>(GetAddr(nameRVA + m_Header.dwPeBaseAddr));
+        if (!strcasecmp(name, kKernelImageName))
+        {
+            kernel_thunk_addr = peDescriptor->FirstThunk + m_Header.dwPeBaseAddr;
+        }
+        else if (xbeDescriptor)
+        {
+            xbeDescriptor->FirstThunk = peDescriptor->FirstThunk + m_Header.dwPeBaseAddr;
+            xbeDescriptor->WideCharName = nextImportNameAddr;
+
+            size_t len = strlen(name) + 1;
+            for (uint32 ch = 0; ch < len; ++ch) {
+                *wideCharName++ = name[ch];
+                *wideCharName++ = 0;
+                nextImportNameAddr += 2;
+            }
+            ++xbeDescriptor;
+        }
+    }
+
+    if (kernel_thunk_addr == 0)
+    {
+        printf("Xbe::ProcessImportTable: No kernel (%s) imports, exe may be invalid.\n", kKernelImageName);
+    }
+
+    kernel_thunk_addr ^= (x_bRetail ? XOR_KT_RETAIL : XOR_KT_DEBUG);
+
+    m_Header.dwKernelImageThunkAddr = kernel_thunk_addr;
+
+    if (xbeDescriptor)
+    {
+        if (x_bRetail)
+        {
+            printf("Xbe::ProcessImportTable: Non-kernel imports found in retail image, exe may be invalid.\n");
+        }
+        memset(xbeDescriptor, 0, sizeof(*xbeDescriptor));
+    }
+
+    return true;
 }
