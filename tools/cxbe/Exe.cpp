@@ -180,8 +180,8 @@ cleanup:
 // constructor initialization
 void Exe::ConstructorInit()
 {
-    m_SectionHeader = 0;
-    m_bzSection     = 0;
+    m_SectionHeader = nullptr;
+    m_bzSection     = nullptr;
 }
 
 // deconstructor
@@ -326,6 +326,10 @@ cleanup:
     return;
 }
 
+const uint08 *Exe::ReadAddr(uint32 x_dwVirtualAddress) const {
+    return const_cast<Exe*>(this)->GetAddr(x_dwVirtualAddress);
+}
+
 // return a modifiable pointer inside this structure that corresponds to a virtual address
 uint08 *Exe::GetAddr(uint32 x_dwVirtualAddress)
 {
@@ -338,5 +342,5 @@ uint08 *Exe::GetAddr(uint32 x_dwVirtualAddress)
             return &m_bzSection[v][x_dwVirtualAddress - virt_addr];
     }
 
-    return 0;
+    return nullptr;
 }

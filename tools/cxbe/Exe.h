@@ -9,6 +9,18 @@
 
 #include "Error.h"
 
+typedef struct IMAGE_IMPORT_DESCRIPTOR
+{
+    union {
+        uint32 Characteristics;
+        uint32 OriginalFirstThunk;
+    } DUMMYUNIONNAME;
+    uint32 TimeDateStamp;
+    uint32 ForwarderChain;
+    uint32 Name;
+    uint32 FirstThunk;
+} IMAGE_IMPORT_DESCRIPTOR;
+
 // Exe (PE) file object
 class Exe : public Error
 {
@@ -126,6 +138,9 @@ class Exe : public Error
 
         // array of section data
         uint08 **m_bzSection;
+
+        // return a const pointer inside this structure that corresponds to a virtual address
+        const uint08 *ReadAddr(uint32 x_dwVirtualAddress) const;
 
     protected:
         // protected default constructor

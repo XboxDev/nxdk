@@ -15,6 +15,12 @@
 
 static const int XBE_UNCOMPRESSED_LOGO_SIZE = 100*17;
 
+typedef struct XBE_IMAGE_IMPORT_DESCRIPTOR
+{
+    uint32 FirstThunk;
+    uint32 WideCharName;
+} __attribute((packed)) XBE_IMAGE_IMPORT_DESCRIPTOR;
+
 // Xbe (Xbox Executable) file object
 class Xbe : public Error
 {
@@ -189,6 +195,9 @@ class Xbe : public Error
         // Xbe ascii title, translated from certificate title
         char m_szAsciiTitle[40+1];
 
+        // addr of area reserved for import table names converted from ASCII to wide characters.
+        uint32 m_ImportNameAddr;
+
         // retrieve thread local storage data address
         uint08 *GetTLSData() { if(m_TLS == 0) return 0; else return GetAddr(m_TLS->dwDataStartAddr); }
 
@@ -204,6 +213,9 @@ class Xbe : public Error
 
         // return a modifiable pointer to logo bitmap data
         uint08 *GetLogoBitmap(uint32 x_dwSize);
+
+        // sets the dwKernelImageThunkAddr and dwNonKernelImportDirAddr fields from the given Exe.
+        bool ProcessImportTable(class Exe *x_Exe, bool x_bRetail);
 
         // used to encode/decode logo bitmap data
         union LogoRLE
