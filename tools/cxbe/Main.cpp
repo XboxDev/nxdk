@@ -21,17 +21,17 @@ int main(int argc, char *argv[])
     char szXbeTitle[OPTION_LEN + 1] = "Untitled";
     char szMode[OPTION_LEN + 1] = "retail";
     char szLogo[OPTION_LEN + 1] = "";
+    char szDebugPath[OPTION_LEN + 1] = "";
     bool bRetail;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
-    Option options[] = { { szExeFilename, NULL, "exefile" },
-                         { szXbeFilename, "OUT", "filename" },
-                         { szDumpFilename, "DUMPINFO", "filename" },
-                         { szXbeTitle, "TITLE", "title" },
-                         { szMode, "MODE", "{debug|retail}" },
-                         { szLogo, "LOGO", "filename" },
-                         { NULL } };
+    Option options[] = {
+        { szExeFilename, NULL, "exefile" },         { szXbeFilename, "OUT", "filename" },
+        { szDumpFilename, "DUMPINFO", "filename" }, { szXbeTitle, "TITLE", "title" },
+        { szMode, "MODE", "{debug|retail}" },       { szLogo, "LOGO", "filename" },
+        { szDebugPath, "DEBUGPATH", "path" },       { NULL }
+    };
 
     if(ParseOptions(argv, argc, options, szErrorMessage))
     {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, bRetail, LogoPtr);
+        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {
