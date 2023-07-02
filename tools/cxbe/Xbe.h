@@ -168,7 +168,7 @@ class Xbe : public Error
             dwFlags;
         }
         __attribute((packed))
-        *m_LibraryVersion, *m_KernelLibraryVersion, *m_XAPILibraryVersion;
+        *m_LibraryVersion;
 
         // Xbe thread local storage
         struct TLS

@@ -73,12 +73,10 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
         m_Header.dwNonKernelImportDirAddr = 0;
 
-        // Need one or more library version, otherwise VerifierX on XDKs crashes
-        m_Header.dwLibraryVersions = 1;
-
-        // TODO: generate these values
-        m_Header.dwKernelLibraryVersionAddr = 0;
-        m_Header.dwXAPILibraryVersionAddr = 0;
+        // TODO: See if VerifierX needs a dummy library to avoid crashing.
+        //   Now that the kernel and XAPI versions are stubbed the CXBE dummy
+        //   may no longer be necessary.
+        m_Header.dwLibraryVersions = 3;
     }
 
     printf("OK\n");
@@ -142,15 +140,8 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
         // make room for library versions
         {
-            if (m_Header.dwLibraryVersions == 0)
-            {
-                m_Header.dwLibraryVersionsAddr = 0;
-            }
-            else
-            {
-                m_Header.dwLibraryVersionsAddr = mrc;
-                mrc += m_Header.dwLibraryVersions * static_cast<uint32>(sizeof(*m_LibraryVersion));
-            }
+            m_Header.dwLibraryVersionsAddr = mrc;
+            mrc += m_Header.dwLibraryVersions * static_cast<uint32>(sizeof(*m_LibraryVersion));
         }
 
         // make room for debug path / debug file names
@@ -431,8 +422,13 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
         // Write (placeholder) library versions
         {
             m_LibraryVersion = new LibraryVersion[m_Header.dwLibraryVersions];
+            uint32 library_versions_size = sizeof(*m_LibraryVersion) * m_Header.dwLibraryVersions;
+            memset(m_LibraryVersion, 0, library_versions_size);
 
-            for(uint32 v = 0; v < m_Header.dwLibraryVersions; ++v)
+            LibraryVersion &kernel_library_version = m_LibraryVersion[m_Header.dwLibraryVersions - 2];
+            LibraryVersion &xapi_library_version = m_LibraryVersion[m_Header.dwLibraryVersions - 1];
+
+            for(uint32 v = 0; v < m_Header.dwLibraryVersions - 2; ++v)
             {
                 char tmp[9];
 
@@ -442,19 +438,34 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                 {
                     m_LibraryVersion[v].szName[c] = tmp[c];
                 }
-                m_LibraryVersion[v].wMajorVersion = 0;
-                m_LibraryVersion[v].wMinorVersion = 0;
-                m_LibraryVersion[v].wBuildVersion = 0;
+                m_LibraryVersion[v].wMajorVersion = 1;
+                m_LibraryVersion[v].wMinorVersion = 2;
+                m_LibraryVersion[v].wBuildVersion = 3;
                 m_LibraryVersion[v].dwFlags.QFEVersion = 0;
                 m_LibraryVersion[v].dwFlags.Approved = 0;
                 m_LibraryVersion[v].dwFlags.bDebugBuild = 0;
-
-                // write library version
-                memcpy(szBuffer, &m_LibraryVersion[v], sizeof(*m_LibraryVersion));
-
-                szBuffer += sizeof(*m_LibraryVersion);
-                hwc += sizeof(*m_LibraryVersion);
             }
+
+            memcpy(kernel_library_version.szName, "XBOXKRNL", sizeof(kernel_library_version.szName));
+            kernel_library_version.wMajorVersion = 1;
+            kernel_library_version.wMinorVersion = 0;
+            kernel_library_version.wBuildVersion = 0;
+            kernel_library_version.dwFlags.QFEVersion = 1;
+            kernel_library_version.dwFlags.Approved = 1;
+            kernel_library_version.dwFlags.bDebugBuild = false;
+
+            memcpy(xapi_library_version.szName, "XAPILIB", sizeof(xapi_library_version.szName));
+            xapi_library_version.wMajorVersion = 1;
+            xapi_library_version.wMinorVersion = 0;
+            xapi_library_version.wBuildVersion = 0;
+            xapi_library_version.dwFlags.QFEVersion = 1;
+            xapi_library_version.dwFlags.Approved = 1;
+            xapi_library_version.dwFlags.bDebugBuild = false;
+
+            // write library version
+            memcpy(szBuffer, m_LibraryVersion, library_versions_size);
+            szBuffer += library_versions_size;
+            hwc += library_versions_size;
         }
 
         // write debug path / debug file names
@@ -610,8 +621,6 @@ Xbe::~Xbe()
         delete[] m_bzSection;
     }
 
-    delete   m_XAPILibraryVersion;
-    delete   m_KernelLibraryVersion;
     delete[] m_LibraryVersion;
     delete   m_TLS;
     delete[] m_szSectionName;
@@ -791,8 +800,6 @@ void Xbe::ConstructorInit()
     m_SectionHeader        = 0;
     m_szSectionName        = 0;
     m_LibraryVersion       = 0;
-    m_KernelLibraryVersion = 0;
-    m_XAPILibraryVersion   = 0;
     m_TLS                  = 0;
     m_bzSection            = 0;
 }
