@@ -25,9 +25,6 @@ typedef struct XBE_IMAGE_IMPORT_DESCRIPTOR
 class Xbe : public Error
 {
     public:
-        // construct via Xbe file
-        Xbe(const char *x_szFilename);
-
         // construct via Exe file object
         Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo = nullptr);
 
