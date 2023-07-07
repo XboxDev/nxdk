@@ -1,0 +1,10 @@
+﻿---
+BasedOnStyle: Microsoft
+ColumnLimit: '100'
+Cpp11BracedListStyle: 'false'
+IndentCaseLabels: 'true'
+Language: Cpp
+PenaltyBreakBeforeFirstCallParameter: '0'
+SpaceBeforeParens: Never
+
+...

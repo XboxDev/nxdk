@@ -5,37 +5,36 @@
 // SPDX-FileCopyrightText: 2019 Jannik Vogel
 // SPDX-FileCopyrightText: 2021 Stefan Schmidt
 
+#include "Common.h"
 #include "Exe.h"
 #include "Xbe.h"
-#include "Common.h"
 
 #include <string.h>
 
 // program entry point
 int main(int argc, char *argv[])
 {
-    char szErrorMessage[ERROR_LEN+1]  = {0};
-    char szExeFilename[OPTION_LEN+1]  = {0};
-    char szXbeFilename[OPTION_LEN+1]  = {0};
-    char szDumpFilename[OPTION_LEN+1] = {0};
-    char szXbeTitle[OPTION_LEN+1]     = "Untitled";
-    char szMode[OPTION_LEN+1]         = "retail";
-    char szLogo[OPTION_LEN+1]         = "";
+    char szErrorMessage[ERROR_LEN + 1] = { 0 };
+    char szExeFilename[OPTION_LEN + 1] = { 0 };
+    char szXbeFilename[OPTION_LEN + 1] = { 0 };
+    char szDumpFilename[OPTION_LEN + 1] = { 0 };
+    char szXbeTitle[OPTION_LEN + 1] = "Untitled";
+    char szMode[OPTION_LEN + 1] = "retail";
+    char szLogo[OPTION_LEN + 1] = "";
     bool bRetail;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
-    Option options[] = {
-        { szExeFilename,  NULL,       "exefile"        },
-        { szXbeFilename,  "OUT",      "filename"       },
-        { szDumpFilename, "DUMPINFO", "filename"       },
-        { szXbeTitle,     "TITLE",    "title"          },
-        { szMode,         "MODE",     "{debug|retail}" },
-        { szLogo,         "LOGO",     "filename"       },
-        { NULL }
-    };
+    Option options[] = { { szExeFilename, NULL, "exefile" },
+                         { szXbeFilename, "OUT", "filename" },
+                         { szDumpFilename, "DUMPINFO", "filename" },
+                         { szXbeTitle, "TITLE", "title" },
+                         { szMode, "MODE", "{debug|retail}" },
+                         { szLogo, "LOGO", "filename" },
+                         { NULL } };
 
-    if(ParseOptions(argv, argc, options, szErrorMessage)) {
+    if(ParseOptions(argv, argc, options, szErrorMessage))
+    {
         goto cleanup;
     }
 

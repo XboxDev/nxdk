@@ -7,8 +7,8 @@
 
 #include "Exe.h"
 
-#include <stdio.h>
 #include <memory.h>
+#include <stdio.h>
 
 // construct via Exe file
 Exe::Exe(const char *x_szFilename)
@@ -38,11 +38,11 @@ Exe::Exe(const char *x_szFilename)
             goto cleanup;
         }
 
-        if(m_DOSHeader.m_magic == *(uint16*)"MZ")
+        if(m_DOSHeader.m_magic == *(uint16 *)"MZ")
         {
             printf("Found, Ignoring...");
 
-            if(fread(&m_DOSHeader.m_cblp, sizeof(m_DOSHeader)-2, 1, ExeFile) != 1)
+            if(fread(&m_DOSHeader.m_cblp, sizeof(m_DOSHeader) - 2, 1, ExeFile) != 1)
             {
                 SetError("Unexpected read error while reading DOS stub", true);
                 goto cleanup;
@@ -68,7 +68,7 @@ Exe::Exe(const char *x_szFilename)
             goto cleanup;
         }
 
-        if(m_Header.m_magic != *(uint32*)"PE\0\0")
+        if(m_Header.m_magic != *(uint32 *)"PE\0\0")
         {
             SetError("Invalid file (could not locate PE header)", true);
             goto cleanup;
@@ -93,7 +93,7 @@ Exe::Exe(const char *x_szFilename)
             goto cleanup;
         }
 
-         printf("OK\n");
+        printf("OK\n");
     }
 
     // read section headers
@@ -102,7 +102,7 @@ Exe::Exe(const char *x_szFilename)
 
         printf("Exe::Exe: Reading Section Headers...\n");
 
-        for(uint32 v=0;v<m_Header.m_sections;v++)
+        for(uint32 v = 0; v < m_Header.m_sections; v++)
         {
             printf("Exe::Exe: Reading Section Header 0x%.04X...", v);
 
@@ -122,9 +122,9 @@ Exe::Exe(const char *x_szFilename)
     {
         printf("Exe::Exe: Reading Sections...\n");
 
-        m_bzSection = new uint08*[m_Header.m_sections];
+        m_bzSection = new uint08 *[m_Header.m_sections];
 
-        for(uint32 v=0;v<m_Header.m_sections;v++)
+        for(uint32 v = 0; v < m_Header.m_sections; v++)
         {
             printf("Exe::Exe: Reading Section 0x%.04X...", v);
 
@@ -181,7 +181,7 @@ cleanup:
 void Exe::ConstructorInit()
 {
     m_SectionHeader = NULL;
-    m_bzSection     = NULL;
+    m_bzSection = NULL;
 }
 
 // deconstructor
@@ -189,7 +189,7 @@ Exe::~Exe()
 {
     if(m_bzSection != 0)
     {
-        for(uint32 v=0;v<m_Header.m_sections;v++)
+        for(uint32 v = 0; v < m_Header.m_sections; v++)
             delete[] m_bzSection[v];
 
         delete[] m_bzSection;
@@ -260,14 +260,15 @@ void Exe::Export(const char *x_szExeFilename)
     {
         printf("Exe::Export: Writing Section Headers...\n");
 
-        for(uint32 v=0;v<m_Header.m_sections;v++)
+        for(uint32 v = 0; v < m_Header.m_sections; v++)
         {
             printf("Exe::Export: Writing Section Header 0x%.04X...", v);
 
             if(fwrite(&m_SectionHeader[v], sizeof(SectionHeader), 1, ExeFile) != 1)
             {
                 char buffer[255];
-                snprintf(buffer, sizeof(buffer), "Could not write PE section header %d (%Xh)", v, v);
+                snprintf(
+                    buffer, sizeof(buffer), "Could not write PE section header %d (%Xh)", v, v);
                 SetError(buffer, false);
                 goto cleanup;
             }
@@ -280,7 +281,7 @@ void Exe::Export(const char *x_szExeFilename)
     {
         printf("Exe::Export: Writing Sections...\n");
 
-        for(uint32 v=0;v<m_Header.m_sections;v++)
+        for(uint32 v = 0; v < m_Header.m_sections; v++)
         {
             printf("Exe::Export: Writing Section 0x%.04X...", v);
 
@@ -326,19 +327,20 @@ cleanup:
     return;
 }
 
-const uint08 *Exe::ReadAddr(uint32 x_dwVirtualAddress) const {
-    return const_cast<Exe*>(this)->GetAddr(x_dwVirtualAddress);
+const uint08 *Exe::ReadAddr(uint32 x_dwVirtualAddress) const
+{
+    return const_cast<Exe *>(this)->GetAddr(x_dwVirtualAddress);
 }
 
 // return a modifiable pointer inside this structure that corresponds to a virtual address
 uint08 *Exe::GetAddr(uint32 x_dwVirtualAddress)
 {
-    for(uint32 v=0;v<m_Header.m_sections;v++)
+    for(uint32 v = 0; v < m_Header.m_sections; v++)
     {
         uint32 virt_addr = m_SectionHeader[v].m_virtual_addr;
         uint32 virt_size = m_SectionHeader[v].m_virtual_size;
 
-        if( (x_dwVirtualAddress >= virt_addr) && (x_dwVirtualAddress < (virt_addr + virt_size)) )
+        if((x_dwVirtualAddress >= virt_addr) && (x_dwVirtualAddress < (virt_addr + virt_size)))
             return &m_bzSection[v][x_dwVirtualAddress - virt_addr];
     }
 

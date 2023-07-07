@@ -14,13 +14,13 @@
 bool Error::ClearError()
 {
     if(m_bFatal)
-		return false;
+        return false;
 
     delete[] m_szError;
 
     m_szError = 0;
 
-    m_bFatal  = false;
+    m_bFatal = false;
 
     return true;
 }
@@ -30,7 +30,7 @@ void Error::SetError(const char *x_szError, bool x_bFatal)
 {
     if(m_szError == 0)
     {
-        m_szError = new char[ERROR_LEN+1];
+        m_szError = new char[ERROR_LEN + 1];
         m_szError[ERROR_LEN] = '\0';
     }
 

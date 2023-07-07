@@ -11,18 +11,18 @@
 #include <stdint.h>
 
 // Caustik's favorite typedefs
-typedef signed int     sint;
-typedef unsigned int   uint;
-typedef int8_t         int08;
-typedef int16_t        int16;
-typedef int32_t        int32;
-typedef uint8_t        uint08;
-typedef uint16_t       uint16;
-typedef uint32_t       uint32;
-typedef int8_t         sint08;
-typedef int16_t        sint16;
-typedef int32_t        sint32;
-typedef intptr_t       sintptr;
+typedef signed int sint;
+typedef unsigned int uint;
+typedef int8_t int08;
+typedef int16_t int16;
+typedef int32_t int32;
+typedef uint8_t uint08;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef int8_t sint08;
+typedef int16_t sint16;
+typedef int32_t sint32;
+typedef intptr_t sintptr;
 
 #define VERSION "unknown"
 
@@ -32,7 +32,7 @@ static uint32 RoundUp(uint32 dwValue, uint32 dwMult)
     if(dwMult == 0)
         return dwValue;
 
-    return dwValue - (dwValue-1)%dwMult + (dwMult - 1);
+    return dwValue - (dwValue - 1) % dwMult + (dwMult - 1);
 }
 
 #endif

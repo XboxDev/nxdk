@@ -11,14 +11,13 @@
 #include <string.h>
 
 // parse command line
-int ParseOptions(char *argv[], int argc,
-                 const Option *options, char *szErrorMessage)
+int ParseOptions(char *argv[], int argc, const Option *options, char *szErrorMessage)
 {
-    for(int v=1;v<argc;v++)
+    for(int v = 1; v < argc; v++)
     {
         const Option *option = NULL;
-        char *szOption       = 0;
-        char *szParam        = 0;
+        char *szOption = 0;
+        char *szParam = 0;
 
         // if this isn't an option, it must be the default option
         if(argv[v][0] != '-')
@@ -31,7 +30,7 @@ int ParseOptions(char *argv[], int argc,
         {
             uint dwColon = (uint)-1;
 
-            for(uint c=1;argv[v][c] != 0;c++)
+            for(uint c = 1; argv[v][c] != 0; c++)
             {
                 if(argv[v][c] == ':')
                 {
@@ -49,7 +48,7 @@ int ParseOptions(char *argv[], int argc,
             argv[v][dwColon] = '\0';
 
             szOption = &argv[v][1];
-            szParam  = &argv[v][dwColon + 1];
+            szParam = &argv[v][dwColon + 1];
         }
 
         // interpret the current switch
@@ -98,8 +97,8 @@ void ShowUsage(const char *program, const char *desc, const Option *options)
     }
 }
 
-int GenerateFilename(char *szNewPath, const char *szNewExtension,
-                     const char *szOldPath, const char *szOldExtension)
+int GenerateFilename(char *szNewPath, const char *szNewExtension, const char *szOldPath,
+                     const char *szOldExtension)
 {
     strncpy(szNewPath, szOldPath, OPTION_LEN);
 
@@ -107,16 +106,16 @@ int GenerateFilename(char *szNewPath, const char *szNewExtension,
 
     // locate last \ or / (if there are any)
     {
-        for(int c=0;szNewPath[c] != 0;c++)
+        for(int c = 0; szNewPath[c] != 0; c++)
             if(szNewPath[c] == '\\' || szNewPath[c] == '/')
-                szFilename = &szNewPath[c+1];
+                szFilename = &szNewPath[c + 1];
     }
 
     // locate and remove last . (if there are any)
     {
         char *szWorking = szFilename;
 
-        for(int c=0;szFilename[c] != 0;c++)
+        for(int c = 0; szFilename[c] != 0; c++)
             if(szFilename[c] == '.')
                 szWorking = &szFilename[c];
 
