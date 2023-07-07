@@ -180,8 +180,8 @@ cleanup:
 // constructor initialization
 void Exe::ConstructorInit()
 {
-    m_SectionHeader = nullptr;
-    m_bzSection     = nullptr;
+    m_SectionHeader = NULL;
+    m_bzSection     = NULL;
 }
 
 // deconstructor
@@ -342,5 +342,5 @@ uint08 *Exe::GetAddr(uint32 x_dwVirtualAddress)
             return &m_bzSection[v][x_dwVirtualAddress - virt_addr];
     }
 
-    return nullptr;
+    return NULL;
 }
