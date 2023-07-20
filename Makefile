@@ -5,9 +5,6 @@ endif
 ifeq ($(XBE_TITLE),)
 XBE_TITLE = nxdk_app
 endif
-ifeq ($(XBE_TITLEID),)
-XBE_TITLEID = FFFF0002
-endif
 
 ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
