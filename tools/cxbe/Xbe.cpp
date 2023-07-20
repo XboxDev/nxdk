@@ -20,8 +20,8 @@ static const char kKernelImageName[] = "xboxkrnl.exe";
 static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra_bytes);
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRetail,
-         const std::vector<uint08> *logo)
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
+         bool x_bRetail, const std::vector<uint08> *logo)
 {
     ConstructorInit();
 
@@ -285,10 +285,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRe
                 XBEIMAGE_MEDIA_TYPE_MEDIA_BOARD | XBEIMAGE_MEDIA_TYPE_NONSECURE_HARD_DISK |
                 XBEIMAGE_MEDIA_TYPE_NONSECURE_MODE;
 
-            // TODO: allow configuration
-            m_Certificate.dwGameRegion = XBEIMAGE_GAME_REGION_MANUFACTURING |
-                                         XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
-                                         XBEIMAGE_GAME_REGION_RESTOFWORLD;
+            m_Certificate.dwGameRegion = x_dwRegions;
 
             // TODO: allow configuration
             m_Certificate.dwGameRatings = 0xFFFFFFFF;

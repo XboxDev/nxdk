@@ -26,8 +26,8 @@ class Xbe : public Error
 {
   public:
     // construct via Exe file object
-    Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRetail,
-        const std::vector<uint08> *logo = nullptr);
+    Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
+        bool x_bRetail, const std::vector<uint08> *logo = nullptr);
 
     // deconstructor
     ~Xbe();
