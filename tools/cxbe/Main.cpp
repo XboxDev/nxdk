@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     char szLogo[OPTION_LEN + 1] = "";
 
     bool bRetail;
-    uint32 dwTitleId = 0x4358270F; // CX-9999
+    uint32 dwTitleId = 0xFFFF0002;
     uint32 dwRegions;
     uint32 dwVersion;
 
@@ -87,8 +87,8 @@ int main(int argc, char *argv[])
         }
         else
         {
-            char titlechar[2] = { 'C', 'X' };
-            unsigned titleno = 9999;
+            char titlechar[2] = { (char)0xFF, (char)0xFF };
+            unsigned titleno = 0x0002;
             sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno);
             if(titleno > 0xFFFF)
             {
