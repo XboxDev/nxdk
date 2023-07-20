@@ -170,8 +170,8 @@ class Xbe : public Error
         uint32 dwCharacteristics; // characteristics
     } __attribute((packed)) * m_TLS;
 
-    // Xbe section names, each 8 bytes max and null terminated
-    char (*m_szSectionName)[9];
+    // Xbe section names, each 255 bytes max and null terminated
+    char (*m_szSectionName)[256];
 
     // Xbe sections
     uint08 **m_bzSection;
