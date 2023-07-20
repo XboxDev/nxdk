@@ -20,7 +20,8 @@ static const char kKernelImageName[] = "xboxkrnl.exe";
 static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra_bytes);
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo)
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRetail,
+         const std::vector<uint08> *logo)
 {
     ConstructorInit();
 
@@ -259,8 +260,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
             m_Certificate.dwTimeDate = CurrentTime;
 
-            // TODO: generate in the form CX-9999
-            m_Certificate.dwTitleId = 0xFFFF0002;
+            m_Certificate.dwTitleId = x_dwTitleID;
 
             // title name
             memset(m_Certificate.wszTitleName, 0, sizeof(m_Certificate.wszTitleName));
