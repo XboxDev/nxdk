@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     bool bRetail;
     uint32 dwTitleId = 0xFFFF0002;
-    uint32 dwRegions;
+    uint32 dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN | XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;;
     uint32 dwVersion;
 
     const char *program = argv[0];
@@ -87,9 +87,13 @@ int main(int argc, char *argv[])
         }
         else
         {
-            char titlechar[2] = { (char)0xFF, (char)0xFF };
-            unsigned titleno = 0x0002;
-            sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno);
+            char titlechar[2];
+            unsigned titleno;
+            if (sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
+            {
+                strncpy(szErrorMessage, "invalid TITLEID", ERROR_LEN);
+                goto cleanup;
+            }
             if(titleno > 0xFFFF)
             {
                 printf("WARNING: Title ID number too high (max is 65535)\n");
@@ -102,6 +106,7 @@ int main(int argc, char *argv[])
     // interpret region flags
     if(szXbeRegions[0])
     {
+        dwRegions = 0;
         char c;
         for(int i = 0; (c = szXbeRegions[i]); ++i)
         {
@@ -109,11 +114,6 @@ int main(int argc, char *argv[])
             {
                 case '-':;
                     dwRegions = 0;
-                    goto breakfor;
-                case 'a':;
-                    dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
-                                XBEIMAGE_GAME_REGION_RESTOFWORLD |
-                                XBEIMAGE_GAME_REGION_MANUFACTURING;
                     goto breakfor;
                 case 'n':;
                     dwRegions |= XBEIMAGE_GAME_REGION_NA;
@@ -133,11 +133,6 @@ int main(int argc, char *argv[])
             }
         }
     breakfor:;
-    }
-    else
-    {
-        dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
-                    XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;
     }
 
     // interpret version
