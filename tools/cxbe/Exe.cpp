@@ -99,6 +99,7 @@ Exe::Exe(const char *x_szFilename)
     // read section headers
     {
         m_SectionHeader = new SectionHeader[m_Header.m_sections];
+        m_SectionHeader_longname = new SectionHeader_longname[m_Header.m_sections];
 
         printf("Exe::Exe: Reading Section Headers...\n");
 
@@ -112,6 +113,44 @@ Exe::Exe(const char *x_szFilename)
                 snprintf(buffer, sizeof(buffer), "Could not read PE section header %d (%Xh)", v, v);
                 SetError(buffer, true);
                 goto cleanup;
+            }
+
+            // interpret long section names
+            if(m_SectionHeader[v].m_name[0] == '/')
+            {
+                m_SectionHeader_longname[v].m_offset = 0;
+                for(uint32 i = 1; i < 8; ++i)
+                {
+                    char c = m_SectionHeader[v].m_name[i];
+                    if(c < '0' || c > '9')
+                        break;
+                    m_SectionHeader_longname[v].m_offset *= 10;
+                    m_SectionHeader_longname[v].m_offset += c - '0';
+                }
+                m_SectionHeader_longname[v].m_longname = new char[256]();
+
+                long tmppos = ftell(ExeFile);
+                fseek(ExeFile, m_Header.m_symbol_table_addr + m_SectionHeader_longname[v].m_offset,
+                      SEEK_SET);
+
+                uint32 i = 0;
+                while(i < 255)
+                {
+                    int c = fgetc(ExeFile);
+                    if(!c || c == EOF)
+                        break;
+                    m_SectionHeader_longname[v].m_longname[i] = c;
+                    ++i;
+                }
+                m_SectionHeader_longname[v].m_longname[i] = 0;
+
+                fseek(ExeFile, tmppos, SEEK_SET);
+                printf(" (long: offset=%u name=%s) ", m_SectionHeader_longname[v].m_offset,
+                       m_SectionHeader_longname[v].m_longname);
+            }
+            else
+            {
+                m_SectionHeader_longname[v].m_longname = NULL;
             }
 
             printf("OK %d\n", v);
@@ -181,6 +220,7 @@ cleanup:
 void Exe::ConstructorInit()
 {
     m_SectionHeader = NULL;
+    m_SectionHeader_longname = NULL;
     m_bzSection = NULL;
 }
 
@@ -190,12 +230,16 @@ Exe::~Exe()
     if(m_bzSection != 0)
     {
         for(uint32 v = 0; v < m_Header.m_sections; v++)
+        {
+            delete[] m_SectionHeader_longname[v].m_longname;
             delete[] m_bzSection[v];
+        }
 
         delete[] m_bzSection;
     }
 
     delete[] m_SectionHeader;
+    delete[] m_SectionHeader_longname;
 }
 
 // export to Exe file

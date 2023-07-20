@@ -171,8 +171,10 @@ class Xbe : public Error
         uint32 dwCharacteristics; // characteristics
     } __attribute((packed)) * m_TLS;
 
-    // Xbe section names, each 8 bytes max and null terminated
-    char (*m_szSectionName)[9];
+    // Xbe section names, each 255 bytes max and null terminated
+    // Old value was 8 which caused problems
+    // For example, $$XTIMAGE and $$XSIMAGE are 9 bytes long not including null
+    char (*m_szSectionName)[256];
 
     // Xbe sections
     uint08 **m_bzSection;

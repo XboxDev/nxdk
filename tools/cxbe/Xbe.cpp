@@ -111,8 +111,16 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
             {
                 uint32 s = 0;
 
-                while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
-                    s++;
+                if(x_Exe->m_SectionHeader_longname[v].m_longname)
+                {
+                    while(s < 255 && x_Exe->m_SectionHeader_longname[v].m_longname[s] != '\0')
+                        s++;
+                }
+                else
+                {
+                    while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                        s++;
+                }
 
                 mrc += s + 1;
             }
@@ -325,7 +333,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
         // write section headers / section names
         {
-            m_szSectionName = new char[m_Header.dwSections][9];
+            m_szSectionName = new char[m_Header.dwSections][256];
 
             m_SectionHeader = new SectionHeader[m_Header.dwSections];
 
@@ -411,10 +419,21 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                     memset(secn, 0, 8);
 
                     m_SectionHeader[v].dwSectionNameAddr = hwc_secn;
-                    while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                    if(x_Exe->m_SectionHeader_longname[v].m_longname)
                     {
-                        m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader[v].m_name[s];
-                        s++;
+                        while(s < 255 && x_Exe->m_SectionHeader_longname[v].m_longname[s] != '\0')
+                        {
+                            m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader_longname[v].m_longname[s];
+                            s++;
+                        }
+                    }
+                    else
+                    {
+                        while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                        {
+                            m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader[v].m_name[s];
+                            s++;
+                        }
                     }
 
                     m_szSectionName[v][s] = '\0';
