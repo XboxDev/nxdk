@@ -32,8 +32,8 @@ static size_t BasenameOffset(const std::string &path)
 }
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo,
-         const char *x_szDebugPath)
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRetail,
+         const std::vector<uint08> *logo, const char *x_szDebugPath)
 {
     ConstructorInit();
 
@@ -279,8 +279,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
             m_Certificate.dwTimeDate = CurrentTime;
 
-            // TODO: generate in the form CX-9999
-            m_Certificate.dwTitleId = 0xFFFF0002;
+            m_Certificate.dwTitleId = x_dwTitleID;
 
             // title name
             memset(m_Certificate.wszTitleName, 0, sizeof(m_Certificate.wszTitleName));
@@ -305,10 +304,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                 XBEIMAGE_MEDIA_TYPE_MEDIA_BOARD | XBEIMAGE_MEDIA_TYPE_NONSECURE_HARD_DISK |
                 XBEIMAGE_MEDIA_TYPE_NONSECURE_MODE;
 
-            // TODO: allow configuration
-            m_Certificate.dwGameRegion = XBEIMAGE_GAME_REGION_MANUFACTURING |
-                                         XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
-                                         XBEIMAGE_GAME_REGION_RESTOFWORLD;
+            m_Certificate.dwGameRegion = x_dwRegions;
 
             // TODO: allow configuration
             m_Certificate.dwGameRatings = 0xFFFFFFFF;

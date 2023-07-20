@@ -19,18 +19,26 @@ int main(int argc, char *argv[])
     char szXbeFilename[OPTION_LEN + 1] = { 0 };
     char szDumpFilename[OPTION_LEN + 1] = { 0 };
     char szXbeTitle[OPTION_LEN + 1] = "Untitled";
+    char szXbeTitleID[OPTION_LEN + 1] = "";
     char szMode[OPTION_LEN + 1] = "retail";
     char szLogo[OPTION_LEN + 1] = "";
     char szDebugPath[OPTION_LEN + 1] = "";
+
     bool bRetail;
+    uint32 dwTitleId = 0xFFFF0002;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
     Option options[] = {
-        { szExeFilename, NULL, "exefile" },         { szXbeFilename, "OUT", "filename" },
-        { szDumpFilename, "DUMPINFO", "filename" }, { szXbeTitle, "TITLE", "title" },
-        { szMode, "MODE", "{debug|retail}" },       { szLogo, "LOGO", "filename" },
-        { szDebugPath, "DEBUGPATH", "path" },       { NULL }
+        { szExeFilename, NULL, "exefile" },
+        { szXbeFilename, "OUT", "filename" },
+        { szDumpFilename, "DUMPINFO", "filename" },
+        { szXbeTitle, "TITLE", "title" },
+        { szXbeTitleID, "TITLEID", "{%c%c-%u|%x}" },
+        { szMode, "MODE", "{debug|retail}" },
+        { szLogo, "LOGO", "filename" },
+        { szDebugPath, "DEBUGPATH", "path" },
+        { NULL }
     };
 
     if(ParseOptions(argv, argc, options, szErrorMessage))
@@ -52,6 +60,40 @@ int main(int argc, char *argv[])
     {
         printf("WARNING: Title too long, trimming\n");
         szXbeTitle[40] = '\0';
+    }
+
+    // interpret title id
+    if(szXbeTitleID[0])
+    {
+        bool hex = true;
+        for(int i = 0; szXbeTitleID[i]; ++i)
+        {
+            if(szXbeTitleID[i] == '-')
+            {
+                hex = false;
+                break;
+            }
+        }
+        if(hex)
+        {
+            sscanf(szXbeTitleID, "%x", &dwTitleId);
+        }
+        else
+        {
+            char titlechar[2];
+            unsigned titleno;
+            if (sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
+            {
+                strncpy(szErrorMessage, "invalid TITLEID", ERROR_LEN);
+                goto cleanup;
+            }
+            if(titleno > 0xFFFF)
+            {
+                printf("WARNING: Title ID number too high (max is 65535)\n");
+                titleno = 0xFFFF;
+            }
+            dwTitleId = (titlechar[0] << 24) | (titlechar[1] << 16) | titleno;
+        }
     }
 
     // verify we received the required parameters
@@ -90,7 +132,7 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, bRetail, LogoPtr, szDebugPath);
+        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, dwTitleId, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {
