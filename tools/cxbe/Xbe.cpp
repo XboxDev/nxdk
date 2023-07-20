@@ -533,7 +533,8 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
                 uint32 RawSize = m_SectionHeader[v].dwSizeofRaw;
 
-                m_bzSection[v] = new uint08[RawSize];
+                m_bzSection[v] = new uint08[RawSize + 1];
+                m_bzSection[v][RawSize] = 0;
 
                 memcpy(m_bzSection[v], x_Exe->m_bzSection[v], RawSize);
 
