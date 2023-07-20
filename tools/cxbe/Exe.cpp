@@ -146,16 +146,15 @@ Exe::Exe(const char *x_szFilename)
                 m_SectionHeader_longname[v].m_longname[i] = 0;
 
                 fseek(ExeFile, tmppos, SEEK_SET);
-                printf(" (long: offset=%u name=%s) ", m_SectionHeader_longname[v].m_offset,
+                printf("OK %d (long)\n", v, m_SectionHeader_longname[v].m_offset,
                        m_SectionHeader_longname[v].m_longname);
             }
             else
             {
             notlong:;
                 m_SectionHeader_longname[v].m_longname = NULL;
+                printf("OK %d\n", v);
             }
-
-            printf("OK %d\n", v);
         }
     }
 
