@@ -122,8 +122,10 @@ Exe::Exe(const char *x_szFilename)
                 for(uint32 i = 1; i < 8; ++i)
                 {
                     char c = m_SectionHeader[v].m_name[i];
-                    if(c < '0' || c > '9')
+                    if(!c)
                         break;
+                    if(c < '0' || c > '9') // not a long section after all?
+                        goto notlong;
                     m_SectionHeader_longname[v].m_offset *= 10;
                     m_SectionHeader_longname[v].m_offset += c - '0';
                 }
@@ -133,14 +135,13 @@ Exe::Exe(const char *x_szFilename)
                 fseek(ExeFile, m_Header.m_symbol_table_addr + m_SectionHeader_longname[v].m_offset,
                       SEEK_SET);
 
-                uint32 i = 0;
-                while(i < 255)
+                uint32 i;
+                for(i = 0; i < 255; ++i)
                 {
                     int c = fgetc(ExeFile);
                     if(!c || c == EOF)
                         break;
                     m_SectionHeader_longname[v].m_longname[i] = c;
-                    ++i;
                 }
                 m_SectionHeader_longname[v].m_longname[i] = 0;
 
@@ -150,6 +151,7 @@ Exe::Exe(const char *x_szFilename)
             }
             else
             {
+            notlong:;
                 m_SectionHeader_longname[v].m_longname = NULL;
             }
 
