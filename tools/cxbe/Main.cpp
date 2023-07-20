@@ -9,6 +9,7 @@
 #include "Exe.h"
 #include "Xbe.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 // program entry point
@@ -21,12 +22,14 @@ int main(int argc, char *argv[])
     char szXbeTitle[OPTION_LEN + 1] = "Untitled";
     char szXbeTitleID[OPTION_LEN + 1] = "";
     char szXbeRegions[OPTION_LEN + 1] = "";
+    char szXbeVersion[OPTION_LEN + 1] = "";
     char szMode[OPTION_LEN + 1] = "retail";
     char szLogo[OPTION_LEN + 1] = "";
 
     bool bRetail;
     uint32 dwTitleId = 0x4358270F; // CX-9999
     uint32 dwRegions;
+    uint32 dwVersion;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
@@ -39,6 +42,7 @@ int main(int argc, char *argv[])
         { szXbeRegions, "REGION",
           "{-|[n][j][w][m]|a}\n"
           "    -=none, n=North America, j=Japan, w=world, m=manufacturing, a=njwm" },
+        { szXbeVersion, "VERSION", "version" },
         { szMode, "MODE", "{debug|retail}" },
         { szLogo, "LOGO", "filename" },
         { NULL }
@@ -136,6 +140,16 @@ int main(int argc, char *argv[])
                     XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;
     }
 
+    // interpret version
+    if(szXbeVersion[0])
+    {
+        dwVersion = strtoul(szXbeVersion, NULL, 0);
+    }
+    else
+    {
+        dwVersion = 0;
+    }
+
     // verify we received the required parameters
     if(szExeFilename[0] == '\0')
     {
@@ -172,7 +186,8 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, bRetail, LogoPtr);
+        Xbe *XbeFile =
+            new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr);
 
         if(XbeFile->GetError() != 0)
         {

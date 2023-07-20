@@ -21,7 +21,7 @@ static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra
 
 // construct via Exe file object
 Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
-         bool x_bRetail, const std::vector<uint08> *logo)
+         uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo)
 {
     ConstructorInit();
 
@@ -293,8 +293,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
             // always disk 0, AFAIK
             m_Certificate.dwDiskNumber = 0;
 
-            // TODO: allow configuration
-            m_Certificate.dwVersion = 0;
+            m_Certificate.dwVersion = x_dwVersion;
 
             // generate blank LAN, signature, and alternate signature keys
             {
