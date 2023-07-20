@@ -5,6 +5,9 @@ endif
 ifeq ($(XBE_TITLE),)
 XBE_TITLE = nxdk_app
 endif
+ifeq ($(XBE_TITLEID),)
+XBE_TITLEID = FFFF0002
+endif
 
 ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
@@ -98,7 +101,8 @@ DEPS += $(filter %.cpp.d, $(SRCS:.cpp=.cpp.d))
 
 $(OUTPUT_DIR)/default.xbe: main.exe $(OUTPUT_DIR) $(CXBE)
 	@echo "[ CXBE     ] $@"
-	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $< $(QUIET)
+	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) -TITLEID:$(XBE_TITLEID) \
+	    -REGION:$(XBE_REGION) -VERSION:$(XBE_VERSION) $< $(QUIET)
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR);
@@ -118,6 +122,7 @@ else
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
 	$(VE) $(LD) $(NXDK_LDFLAGS) $(LDFLAGS) -out:'$@' $^
+	$(VE) objcopy --rename-section 'XTIMAGE=$$$$XTIMAGE' --rename-section 'XSIMAGE=$$$$XSIMAGE' $@ || exit 0
 endif
 
 %.lib:
