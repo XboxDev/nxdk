@@ -357,14 +357,27 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
 
                 memset(&m_SectionHeader[v].dwFlags, 0, sizeof(m_SectionHeader->dwFlags));
 
-                if(characteristics & IMAGE_SCN_MEM_WRITE)
-                    m_SectionHeader[v].dwFlags.bWritable = true;
+                // check for $$XTIMAGE or $$XSIMAGE and set the correct flags
+                if(x_Exe->m_SectionHeader_longname[v].m_longname &&
+                   (!strcmp(x_Exe->m_SectionHeader_longname[v].m_longname, "$$XTIMAGE") ||
+                    !strcmp(x_Exe->m_SectionHeader_longname[v].m_longname, "$$XSIMAGE")))
+                {
+                    m_SectionHeader[v].dwFlags.bInsertedFile = true;
+                    m_SectionHeader[v].dwFlags.bHeadPageRO = true;
+                    m_SectionHeader[v].dwFlags.bTailPageRO = true;
+                }
+                else
+                {
+                    if(characteristics & IMAGE_SCN_MEM_WRITE)
+                        m_SectionHeader[v].dwFlags.bWritable = true;
 
-                if((characteristics & IMAGE_SCN_MEM_EXECUTE) ||
-                   (characteristics & IMAGE_SCN_CNT_CODE))
-                    m_SectionHeader[v].dwFlags.bExecutable = true;
+                    if((characteristics & IMAGE_SCN_MEM_EXECUTE) ||
+                       (characteristics & IMAGE_SCN_CNT_CODE))
+                        m_SectionHeader[v].dwFlags.bExecutable = true;
 
-                m_SectionHeader[v].dwFlags.bPreload = true;
+                    m_SectionHeader[v].dwFlags.bPreload = true;
+                }
+
                 m_SectionHeader[v].dwVirtualAddr =
                     x_Exe->m_SectionHeader[v].m_virtual_addr + m_Header.dwPeBaseAddr;
 
