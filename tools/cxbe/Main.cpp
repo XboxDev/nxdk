@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
         { szXbeTitle, "TITLE", "title" },
         { szXbeTitleID, "TITLEID", "{%c%c-%u|%x}" },
         { szXbeRegions, "REGION",
-          "{-|[n][j][w][m]|a}\n"
-          "    -=none, n=North America, j=Japan, w=world, m=manufacturing, a=njwm" },
+          "{-|[n][j][w][m]}\n"
+          "    -=none, n=North America, j=Japan, w=world, m=manufacturing" },
         { szXbeVersion, "VERSION", "version" },
         { szMode, "MODE", "{debug|retail}" },
         { szLogo, "LOGO", "filename" },
