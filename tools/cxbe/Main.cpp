@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
 
     bool bRetail;
     uint32 dwTitleId = 0xFFFF0002;
-    uint32 dwRegions;
+    uint32 dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
+                       XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;
     uint32 dwVersion;
 
     const char *program = argv[0];
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
         {
             char titlechar[2];
             unsigned titleno;
-            if (sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
+            if(sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
             {
                 strncpy(szErrorMessage, "invalid TITLEID", ERROR_LEN);
                 goto cleanup;
@@ -192,8 +193,8 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile =
-            new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr, szDebugPath);
+        Xbe *XbeFile = new Xbe(
+            ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {
