@@ -375,7 +375,11 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
                        (characteristics & IMAGE_SCN_CNT_CODE))
                         m_SectionHeader[v].dwFlags.bExecutable = true;
 
-                    m_SectionHeader[v].dwFlags.bPreload = true;
+                    char *name = (x_Exe->m_SectionHeader_longname[v].m_longname)
+                                     ? x_Exe->m_SectionHeader_longname[v].m_longname
+                                     : (char *)x_Exe->m_SectionHeader[v].m_name;
+                    m_SectionHeader[v].dwFlags.bPreload =
+                        (strcmp(name, ".debug") && strncmp(name, ".debug_", 7));
                 }
 
                 m_SectionHeader[v].dwVirtualAddr =
