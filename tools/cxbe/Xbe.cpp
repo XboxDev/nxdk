@@ -9,6 +9,7 @@
 #include "Xbe.h"
 #include "Exe.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <locale.h>
@@ -513,8 +514,12 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                 printf("Xbe::Xbe: Generating Section %.04X...", v);
 
                 uint32 RawSize = m_SectionHeader[v].dwSizeofRaw;
+                uint32 VirtSize = m_SectionHeader[v].dwVirtualSize;
+                uint32 maxSize = std::max(VirtSize, RawSize);
 
-                m_bzSection[v] = new uint08[RawSize];
+                m_bzSection[v] = new uint08[maxSize];
+
+                memset(m_bzSection[v], 0, maxSize);
 
                 memcpy(m_bzSection[v], x_Exe->m_bzSection[v], RawSize);
 
