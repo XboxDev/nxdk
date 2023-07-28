@@ -28,26 +28,26 @@ int main(int argc, char *argv[])
     char szDebugPath[OPTION_LEN + 1] = "";
     bool bRetail;
     uint32 dwTitleId = 0xFFFF0002;
-    uint32 dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN | XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;;
+    uint32 dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
+                       XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;
+    ;
     uint32 dwVersion;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
-    Option options[] = {
-        { szExeFilename, NULL, "exefile" },
-        { szXbeFilename, "OUT", "filename" },
-        { szDumpFilename, "DUMPINFO", "filename" },
-        { szXbeTitle, "TITLE", "title" },
-        { szXbeTitleID, "TITLEID", "{%c%c-%u|%x}" },
-        { szXbeRegions, "REGION",
-          "{-|[n][j][w][m]}\n"
-          "    -=none, n=North America, j=Japan, w=world, m=manufacturing" },
-        { szXbeVersion, "VERSION", "version" },
-        { szMode, "MODE", "{debug|retail}" },
-        { szDebugPath, "DEBUGPATH", "path" },
-        { szLogo, "LOGO", "filename" },
-        { NULL }
-    };
+    Option options[] = { { szExeFilename, NULL, "exefile" },
+                         { szXbeFilename, "OUT", "filename" },
+                         { szDumpFilename, "DUMPINFO", "filename" },
+                         { szXbeTitle, "TITLE", "title" },
+                         { szXbeTitleID, "TITLEID", "{%c%c-%u|%x}" },
+                         { szXbeRegions, "REGION",
+                           "{-|[n][j][w][m]}\n"
+                           "    -=none, n=North America, j=Japan, w=world, m=manufacturing" },
+                         { szXbeVersion, "VERSION", "version" },
+                         { szMode, "MODE", "{debug|retail}" },
+                         { szDebugPath, "DEBUGPATH", "path" },
+                         { szLogo, "LOGO", "filename" },
+                         { NULL } };
 
     if(ParseOptions(argv, argc, options, szErrorMessage))
     {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         {
             char titlechar[2];
             unsigned titleno;
-            if (sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
+            if(sscanf(szXbeTitleID, "%c%c-%u", &titlechar[0], &titlechar[1], &titleno) != 3)
             {
                 strncpy(szErrorMessage, "invalid TITLEID", ERROR_LEN);
                 goto cleanup;
@@ -182,8 +182,8 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile =
-            new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr, szDebugPath);
+        Xbe *XbeFile = new Xbe(
+            ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {
