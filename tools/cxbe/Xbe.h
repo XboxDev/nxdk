@@ -27,11 +27,11 @@ class Xbe : public Error
   public:
     // construct via Exe file object
     Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
-        uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo = nullptr);
+        uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo = nullptr,
+        const char *x_szDebugPath = nullptr);
 
     // deconstructor
     ~Xbe();
-
     // export to Xbe file
     void Export(const char *x_szXbeFilename);
 

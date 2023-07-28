@@ -9,6 +9,7 @@
 #include "Xbe.h"
 #include "Exe.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <locale.h>
@@ -19,9 +20,20 @@
 static const char kKernelImageName[] = "xboxkrnl.exe";
 static uint32 CountNonKernelImportTableEntries(class Exe *x_Exe, uint32_t *extra_bytes);
 
+static size_t BasenameOffset(const std::string &path)
+{
+    size_t sep_offset = path.find_last_of("/\\");
+    if(sep_offset == std::string::npos)
+    {
+        return 0;
+    }
+
+    return sep_offset + 1;
+}
+
 // construct via Exe file object
 Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
-         uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo)
+         uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo, const char *x_szDebugPath)
 {
     ConstructorInit();
 
@@ -30,6 +42,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
     time(&CurrentTime);
 
     printf("Xbe::Xbe: Pass 1 (Simple Pass)...");
+    std::string debug_path = x_szDebugPath;
 
     // pass 1
     {
@@ -167,12 +180,17 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
 
         // make room for debug path / debug file names
         {
-            // TODO: allow this to be configured, right now we will just null out these values
-            m_Header.dwDebugUnicodeFilenameAddr = mrc;
-            m_Header.dwDebugPathnameAddr = mrc;
-            m_Header.dwDebugFilenameAddr = mrc;
+            uint32 path_bytes = debug_path.size() + 1;
+            size_t sep_offset = BasenameOffset(debug_path);
+            uint32 filename_bytes = path_bytes - sep_offset;
 
-            mrc += 2;
+            mrc = RoundUp(mrc, 0x04);
+            m_Header.dwDebugUnicodeFilenameAddr = mrc;
+            mrc = RoundUp(mrc + filename_bytes * 2, 0x04);
+
+            m_Header.dwDebugPathnameAddr = mrc;
+            m_Header.dwDebugFilenameAddr = m_Header.dwDebugPathnameAddr + sep_offset;
+            mrc += path_bytes;
         }
 
         // make room for largest possible logo bitmap
@@ -246,6 +264,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
             uint32 ExSize = RoundUp(m_Header.dwSizeofHeaders - sizeof(m_Header), 0x1000);
 
             m_HeaderEx = new char[ExSize];
+            memset(m_HeaderEx, 0, ExSize);
 
             printf("OK\n");
         }
@@ -509,10 +528,17 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
 
         // write debug path / debug file names
         {
-            *(uint16 *)szBuffer = 0x0000;
+            uint08 *debug_path_field = GetAddr(m_Header.dwDebugPathnameAddr);
+            uint32 path_size_with_terminator = debug_path.size() + 1;
+            memcpy(debug_path_field, debug_path.c_str(), path_size_with_terminator);
 
-            szBuffer += 2;
-            hwc += 2;
+            uint08 *unicode_filename = GetAddr(m_Header.dwDebugUnicodeFilenameAddr);
+            uint08 *filename = GetAddr(m_Header.dwDebugFilenameAddr);
+            do
+            {
+                *unicode_filename++ = *filename++;
+                *unicode_filename++ = 0;
+            } while(*filename);
         }
 
         {
@@ -545,9 +571,12 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_d
                 printf("Xbe::Xbe: Generating Section %.04X...", v);
 
                 uint32 RawSize = m_SectionHeader[v].dwSizeofRaw;
+                uint32 VirtSize = m_SectionHeader[v].dwVirtualSize;
+                uint32 maxSize = std::max(VirtSize, RawSize);
 
-                m_bzSection[v] = new uint08[RawSize + 1];
-                m_bzSection[v][RawSize] = 0;
+                m_bzSection[v] = new uint08[maxSize];
+
+                memset(m_bzSection[v], 0, maxSize);
 
                 memcpy(m_bzSection[v], x_Exe->m_bzSection[v], RawSize);
 
@@ -922,7 +951,7 @@ void Xbe::DumpInformation(FILE *x_file)
         fprintf(x_file, "\n");
     }
 
-    char AsciiFilename[40];
+    char AsciiFilename[40] = { 0 };
 
     setlocale(LC_ALL, "English");
 

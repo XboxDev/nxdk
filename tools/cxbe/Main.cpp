@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     char szXbeVersion[OPTION_LEN + 1] = "";
     char szMode[OPTION_LEN + 1] = "retail";
     char szLogo[OPTION_LEN + 1] = "";
-
+    char szDebugPath[OPTION_LEN + 1] = "";
     bool bRetail;
     uint32 dwTitleId = 0xFFFF0002;
     uint32 dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN | XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;;
@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
           "    -=none, n=North America, j=Japan, w=world, m=manufacturing" },
         { szXbeVersion, "VERSION", "version" },
         { szMode, "MODE", "{debug|retail}" },
+        { szDebugPath, "DEBUGPATH", "path" },
         { szLogo, "LOGO", "filename" },
         { NULL }
     };
@@ -182,7 +183,7 @@ int main(int argc, char *argv[])
         }
 
         Xbe *XbeFile =
-            new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr);
+            new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, dwVersion, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {

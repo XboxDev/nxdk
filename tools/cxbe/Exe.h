@@ -7,6 +7,8 @@
 #ifndef EXE_H
 #define EXE_H
 
+#include <string>
+
 #include "Error.h"
 
 typedef struct IMAGE_IMPORT_DESCRIPTOR
