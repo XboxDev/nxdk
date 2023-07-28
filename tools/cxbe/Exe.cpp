@@ -7,6 +7,7 @@
 
 #include "Exe.h"
 
+#include <algorithm>
 #include <memory.h>
 #include <stdio.h>
 
@@ -170,10 +171,12 @@ Exe::Exe(const char *x_szFilename)
 
             uint32 raw_size = m_SectionHeader[v].m_sizeof_raw;
             uint32 raw_addr = m_SectionHeader[v].m_raw_addr;
+            uint32 virt_size = m_SectionHeader[v].m_virtual_size;
+            uint32 max_size = std::max(virt_size, raw_size);
 
-            m_bzSection[v] = new uint08[raw_size];
+            m_bzSection[v] = new uint08[max_size];
 
-            memset(m_bzSection[v], 0, raw_size);
+            memset(m_bzSection[v], 0, max_size);
 
             if(raw_size == 0)
             {
