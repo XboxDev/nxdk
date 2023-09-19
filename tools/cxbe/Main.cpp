@@ -20,12 +20,14 @@ int main(int argc, char *argv[])
     char szDumpFilename[OPTION_LEN + 1] = { 0 };
     char szXbeTitle[OPTION_LEN + 1] = "Untitled";
     char szXbeTitleID[OPTION_LEN + 1] = "";
+    char szXbeRegions[OPTION_LEN + 1] = "";
     char szMode[OPTION_LEN + 1] = "retail";
     char szLogo[OPTION_LEN + 1] = "";
     char szDebugPath[OPTION_LEN + 1] = "";
 
     bool bRetail;
     uint32 dwTitleId = 0xFFFF0002;
+    uint32 dwRegions;
 
     const char *program = argv[0];
     const char *program_desc = "CXBE EXE to XBE (win32 to Xbox) Relinker (Version: " VERSION ")";
@@ -35,6 +37,9 @@ int main(int argc, char *argv[])
         { szDumpFilename, "DUMPINFO", "filename" },
         { szXbeTitle, "TITLE", "title" },
         { szXbeTitleID, "TITLEID", "{%c%c-%u|%x}" },
+        { szXbeRegions, "REGION",
+          "{-|[n][j][w][m]}\n"
+          "    -=none, n=North America, j=Japan, w=world, m=manufacturing" },
         { szMode, "MODE", "{debug|retail}" },
         { szLogo, "LOGO", "filename" },
         { szDebugPath, "DEBUGPATH", "path" },
@@ -96,6 +101,47 @@ int main(int argc, char *argv[])
         }
     }
 
+    // interpret region flags
+    if(szXbeRegions[0])
+    {
+        char c;
+        for(int i = 0; (c = szXbeRegions[i]); ++i)
+        {
+            switch(c)
+            {
+                case '-':;
+                    dwRegions = 0;
+                    goto breakfor;
+                case 'a':;
+                    dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
+                                XBEIMAGE_GAME_REGION_RESTOFWORLD |
+                                XBEIMAGE_GAME_REGION_MANUFACTURING;
+                    goto breakfor;
+                case 'n':;
+                    dwRegions |= XBEIMAGE_GAME_REGION_NA;
+                    break;
+                case 'j':;
+                    dwRegions |= XBEIMAGE_GAME_REGION_JAPAN;
+                    break;
+                case 'w':;
+                    dwRegions |= XBEIMAGE_GAME_REGION_RESTOFWORLD;
+                    break;
+                case 'm':;
+                    dwRegions |= XBEIMAGE_GAME_REGION_MANUFACTURING;
+                    break;
+                default:;
+                    printf("WARNING: Invalid region char: %c\n", c);
+                    break;
+            }
+        }
+    breakfor:;
+    }
+    else
+    {
+        dwRegions = XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
+                    XBEIMAGE_GAME_REGION_RESTOFWORLD | XBEIMAGE_GAME_REGION_MANUFACTURING;
+    }
+
     // verify we received the required parameters
     if(szExeFilename[0] == '\0')
     {
@@ -132,7 +178,7 @@ int main(int argc, char *argv[])
             LogoPtr = &logo;
         }
 
-        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, dwTitleId, bRetail, LogoPtr, szDebugPath);
+        Xbe *XbeFile = new Xbe(ExeFile, szXbeTitle, dwTitleId, dwRegions, bRetail, LogoPtr, szDebugPath);
 
         if(XbeFile->GetError() != 0)
         {

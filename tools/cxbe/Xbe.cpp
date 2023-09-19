@@ -32,8 +32,8 @@ static size_t BasenameOffset(const std::string &path)
 }
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, bool x_bRetail,
-         const std::vector<uint08> *logo, const char *x_szDebugPath)
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
+         bool x_bRetail, const std::vector<uint08> *logo, const char *x_szDebugPath)
 {
     ConstructorInit();
 
