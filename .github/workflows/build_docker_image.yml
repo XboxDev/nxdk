@@ -17,10 +17,10 @@ jobs:
             tag: latest
           - image-name: nxdk-debug
             build-args: buildparams=DEBUG=y
-            tag: lto
+            tag: debug
           - image-name: nxdk-lto
             build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
-            tag: debug
+            tag: lto
     steps:
       - name: Clone Tree
         uses: actions/checkout@v3
