@@ -2,5 +2,5 @@ Name: SDL2_image
 Description: image loading library for Simple DirectMedia Layer
 Version: 2.0.5
 Requires: sdl2 >= 2.0.9 libjpeg libpng
-Libs: ${NXDK_DIR}/lib/libSDL2_image.lib
+Libs: -l${NXDK_DIR}/lib/libSDL2_image.lib
 Cflags: -I${NXDK_DIR}/lib/sdl/SDL2_image

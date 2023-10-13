@@ -18,6 +18,9 @@ clang \
     -I${NXDK_DIR}/lib/pdclib/platform/xbox/include \
     -I${NXDK_DIR}/lib/winapi \
     -I${NXDK_DIR}/lib/xboxrt/vcruntime \
+    -I${NXDK_DIR}/lib/net/lwip/src/include \
+    -I${NXDK_DIR}/lib/net/nforceif/include \
+    -I${NXDK_DIR}/lib/net/nvnetdrv \
     -DNXDK \
     -D__STDC__=1 \
     -U__STDC_NO_THREADS__ \
