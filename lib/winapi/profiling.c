@@ -19,6 +19,6 @@ BOOL QueryPerformanceFrequency (LARGE_INTEGER *lpFrequency)
 {
     assert(lpFrequency != NULL);
 
-    lpFrequency->QuadPart = KeQueryPerformanceFrequency();
+    lpFrequency->QuadPart = 733333333;
     return TRUE;
 }
