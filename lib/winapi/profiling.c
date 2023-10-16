@@ -11,7 +11,7 @@ BOOL QueryPerformanceCounter (LARGE_INTEGER *lpPerformanceCount)
 {
     assert(lpPerformanceCount != NULL);
 
-    lpPerformanceCount->QuadPart = KeQueryPerformanceCounter();
+    lpPerformanceCount->QuadPart = __rdtsc();
     return TRUE;
 }
 
