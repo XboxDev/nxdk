@@ -10,28 +10,19 @@
 #include <stddef.h>
 #include <xboxkrnl/xboxkrnl.h>
 
-BOOL QueryPerformanceCounter (LARGE_INTEGER *lpPerformanceCount)
-{
-    assert(lpPerformanceCount != NULL);
-
-    lpPerformanceCount->QuadPart = __rdtsc();
-    return TRUE;
-}
-
-BOOL QueryPerformanceFrequency (LARGE_INTEGER *lpFrequency)
-{
-    assert(lpFrequency != NULL);
-
 #ifdef USE_RDTSC_FOR_FREQ
-    #define AVG_SET 10
-    ULARGE_INTEGER f_rdtsc, avg;
-    ULONG f_ticks = 0;
+static LARGE_INTEGER frequency = {0, 0};
+static void __attribute__((constructor)) PrimeQueryPerformanceFrequency ()
+{
+    #define AVG_SET 2
+    ULARGE_INTEGER f_rdtsc, avg = {0, 0}, s_rdtsc;
+    ULONG f_ticks = 0, s_ticks = 0;
 
-    avg.QuadPart = 0;
+    Sleep(500);
 
     for (int i = 0; i < AVG_SET; i++) {
-        ULARGE_INTEGER s_rdtsc;
-        ULONG s_ticks;
+        // If we call rdtsc too fast we'll end up with div by 0
+        Sleep(200);
 
         s_rdtsc.QuadPart = __rdtsc();
         s_ticks = KeTickCount;
@@ -45,11 +36,25 @@ BOOL QueryPerformanceFrequency (LARGE_INTEGER *lpFrequency)
         // Skip the first result as invalid
         if (i)
             avg.QuadPart += s_rdtsc.QuadPart;
-        
-        // If we call rdtsc too fast we'll end up with div by 0
-        Sleep(10);
     }
-    lpFrequency->QuadPart = (avg.QuadPart / (AVG_SET - 1)) * 1000;
+    frequency.QuadPart = avg.QuadPart / (AVG_SET - 1) * 1000LL;
+}
+#endif
+
+BOOL QueryPerformanceCounter (LARGE_INTEGER *lpPerformanceCount)
+{
+    assert(lpPerformanceCount != NULL);
+
+    lpPerformanceCount->QuadPart = __rdtsc();
+    return TRUE;
+}
+
+BOOL QueryPerformanceFrequency (LARGE_INTEGER *lpFrequency)
+{
+    assert(lpFrequency != NULL);
+
+#ifdef USE_RDTSC_FOR_FREQ
+    lpFrequency->QuadPart = frequency.QuadPart;
 #else
     lpFrequency->QuadPart = 733333333;
 #endif
