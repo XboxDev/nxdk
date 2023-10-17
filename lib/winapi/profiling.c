@@ -11,33 +11,32 @@
 #include <xboxkrnl/xboxkrnl.h>
 
 #ifdef USE_RDTSC_FOR_FREQ
-static LARGE_INTEGER frequency = {0, 0};
+static LARGE_INTEGER frequency = {{0, 0}};
 static void __attribute__((constructor)) PrimeQueryPerformanceFrequency ()
 {
-    #define AVG_SET 2
-    ULARGE_INTEGER f_rdtsc, avg = {0, 0}, s_rdtsc;
+    ULARGE_INTEGER f_rdtsc = {{0, 0}}, s_rdtsc = {{0, 0}};
     ULONG f_ticks = 0, s_ticks = 0;
 
-    Sleep(500);
+    KeEnterCriticalRegion();
 
-    for (int i = 0; i < AVG_SET; i++) {
-        // If we call rdtsc too fast we'll end up with div by 0
-        Sleep(200);
+    // The values generated after launching aren't accurate, give it time to increment...
+    Sleep(700);
 
-        s_rdtsc.QuadPart = __rdtsc();
-        s_ticks = KeTickCount;
+    f_rdtsc.QuadPart = __rdtsc();
+    f_ticks = KeTickCount;
 
-        s_rdtsc.QuadPart -= f_rdtsc.QuadPart;
-        s_rdtsc.QuadPart /= s_ticks - f_ticks;
+    Sleep(200);
 
-        f_rdtsc.QuadPart = __rdtsc();
-        f_ticks = KeTickCount;
+    s_rdtsc.QuadPart = __rdtsc();
+    s_ticks = KeTickCount;
 
-        // Skip the first result as invalid
-        if (i)
-            avg.QuadPart += s_rdtsc.QuadPart;
-    }
-    frequency.QuadPart = avg.QuadPart / (AVG_SET - 1) * 1000LL;
+    s_rdtsc.QuadPart -= f_rdtsc.QuadPart;
+    s_rdtsc.QuadPart /= s_ticks - f_ticks;
+
+    frequency.QuadPart = s_rdtsc.QuadPart;
+    frequency.QuadPart *= 1000LL;
+
+    KeLeaveCriticalRegion();
 }
 #endif
 
