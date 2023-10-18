@@ -14,26 +14,26 @@
 static LARGE_INTEGER frequency = {{0, 0}};
 static void __attribute__((constructor)) PrimeQueryPerformanceFrequency ()
 {
-    ULARGE_INTEGER f_rdtsc = {{0, 0}}, s_rdtsc = {{0, 0}};
-    ULONG f_ticks = 0, s_ticks = 0;
+    ULARGE_INTEGER start_rdtsc = {{0, 0}}, end_rdtsc = {{0, 0}};
+    ULONG start_ticks = 0, end_ticks = 0;
 
     KeEnterCriticalRegion();
 
     // The values generated after launching aren't accurate, give it time to increment...
     Sleep(700);
 
-    f_rdtsc.QuadPart = __rdtsc();
-    f_ticks = KeTickCount;
+    start_rdtsc.QuadPart = __rdtsc();
+    start_ticks = KeTickCount;
 
     Sleep(200);
 
-    s_rdtsc.QuadPart = __rdtsc();
-    s_ticks = KeTickCount;
+    end_rdtsc.QuadPart = __rdtsc();
+    end_ticks = KeTickCount;
 
-    s_rdtsc.QuadPart -= f_rdtsc.QuadPart;
-    s_rdtsc.QuadPart /= s_ticks - f_ticks;
+    end_rdtsc.QuadPart -= start_rdtsc.QuadPart;
+    end_rdtsc.QuadPart /= end_ticks - start_ticks;
 
-    frequency.QuadPart = s_rdtsc.QuadPart;
+    frequency.QuadPart = end_rdtsc.QuadPart;
     frequency.QuadPart *= 1000LL;
 
     KeLeaveCriticalRegion();
