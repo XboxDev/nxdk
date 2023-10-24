@@ -15,11 +15,11 @@ static LARGE_INTEGER frequency = {{0, 0}};
 static void __attribute__((constructor)) PrimeQueryPerformanceFrequency ()
 {
     #define BASE_CLOCK_FLOAT 16.666667f
-    #define NV_PRAMDAC_PLL_COEFF *(volatile ULONG *)0xFD680500
-    #define NV_PTIMER_NUM *(volatile ULONG *)0xFD009200
-    #define NV_PTIMER_DEN *(volatile ULONG *)0xFD009210
-    #define NV_PTIMER_COUNT 0xFD009400
-    #define ASM_LOOPS 1024 * 4
+    #define NV_PRAMDAC_PLL_COEFF *(volatile ULONG*)0xFD680500
+    #define NV_PTIMER_NUM *(volatile ULONG*)0xFD009200
+    #define NV_PTIMER_DEN *(volatile ULONG*)0xFD009210
+    #define NV_PTIMER_COUNT *(volatile ULONG*)0xFD009400
+    #define KE_STALL 10
 
     ULARGE_INTEGER rdtsc_count_1 = {{0, 0}}, rdtsc_count_2 = {{0, 0}};
     DWORD ptimer_count_1 = 0, ptimer_count_2 = 0;
@@ -33,60 +33,39 @@ static void __attribute__((constructor)) PrimeQueryPerformanceFrequency ()
 
     KeEnterCriticalRegion();
 
+    // Turn off caches
     __asm
     {
-        push eax
-        push edx
-        push ecx
-
         cli
         sfence
-
-        // Turn off caches
         mov eax, cr0
         or eax, 1 << 30 // Set CD bit
         mov cr0, eax
         wbinvd
 
-        // Reset PTIMER
-        mov eax, [NV_PTIMER_COUNT]
-        and eax, ~(0xFFFFFFE0) // First 5 bits are not used
-        mov [NV_PTIMER_COUNT], eax
+    }
 
-        rdtsc
-        mov rdtsc_count_1.LowPart, eax
-        mov rdtsc_count_1.HighPart, edx
-        
-        mov eax, [NV_PTIMER_COUNT]
-        mov ptimer_count_1, eax
+    // Reset the counter
+    NV_PTIMER_COUNT &= ~(0xFFFFFFE0); // First 5 bits are not used
 
-        // Spin for a bit
-        mov eax, ASM_LOOPS
-        loop_1:
-        dec eax
-        jnz loop_1
+    rdtsc_count_1.QuadPart = __rdtsc();
+    ptimer_count_1 = NV_PTIMER_COUNT;
 
-        rdtsc
-        mov rdtsc_count_2.LowPart, eax
-        mov rdtsc_count_2.HighPart, edx
-        
-        mov eax, [NV_PTIMER_COUNT]
-        mov ptimer_count_2, eax
+    KeStallExecutionProcessor(KE_STALL);
 
-        // Without this, invaldidating the cache below will crash the system
+    rdtsc_count_2.QuadPart = __rdtsc();
+    ptimer_count_2 = NV_PTIMER_COUNT;
+
+    __asm
+    {
         sfence
-
         mov eax, cr0
         and eax, ~(1 << 30) // Clear CD bit
         mov cr0, eax
         wbinvd
-
         sti
-
-        pop ecx
-        pop edx
-        pop eax
     }
+
     KeLeaveCriticalRegion();
 
     double ptimer_diff = (ptimer_count_2 >> 5) - (ptimer_count_1 >> 5);
