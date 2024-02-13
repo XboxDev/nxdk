@@ -134,6 +134,8 @@ void WINAPI OutputDebugStringA (LPCTSTR lpOutputString);
 
 BOOL IsBadWritePtr (LPVOID lp, UINT_PTR ucb);
 
+BOOL GetOverlappedResult (HANDLE hFile, LPOVERLAPPED lpOverlapped, LPDWORD lpNumberOfBytesTransferred, BOOL bWait);
+
 #ifndef UNICODE
 #define OutputDebugString OutputDebugStringA
 #else
