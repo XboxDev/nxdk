@@ -384,14 +384,6 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                 m_SectionHeader[v].dwVirtualAddr =
                     x_Exe->m_SectionHeader[v].m_virtual_addr + m_Header.dwPeBaseAddr;
 
-                if(v < m_Header.dwSections - 1)
-                    m_SectionHeader[v].dwVirtualSize =
-                        x_Exe->m_SectionHeader[v + 1].m_virtual_addr -
-                        x_Exe->m_SectionHeader[v].m_virtual_addr;
-                else
-                    m_SectionHeader[v].dwVirtualSize =
-                        RoundUp(x_Exe->m_SectionHeader[v].m_virtual_size, 4);
-
                 m_SectionHeader[v].dwRawAddr = SectionCursor;
 
                 // calculate sizeof_raw by locating the last non-zero value in the raw section data
@@ -409,6 +401,20 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
                     // word aligned
                     m_SectionHeader[v].dwSizeofRaw = RoundUp(r + 2, 4);
+                }
+
+                // calculate virtual size
+                if(v < m_Header.dwSections - 1)
+                    m_SectionHeader[v].dwVirtualSize =
+                        x_Exe->m_SectionHeader[v + 1].m_virtual_addr -
+                        x_Exe->m_SectionHeader[v].m_virtual_addr;
+                else {
+                    m_SectionHeader[v].dwVirtualSize =
+                        RoundUp(x_Exe->m_SectionHeader[v].m_virtual_size, 4);
+
+                    // force virtual size to be at least as large as the raw size
+                    m_SectionHeader[v].dwVirtualSize = std::max(m_SectionHeader[v].dwSizeofRaw,
+                        m_SectionHeader[v].dwVirtualSize);
                 }
 
                 SectionCursor += RoundUp(m_SectionHeader[v].dwSizeofRaw, 0x1000);
