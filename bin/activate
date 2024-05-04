@@ -8,7 +8,7 @@
 readlink_cmd="readlink"
 
 if [ $(uname -s) = 'Darwin' ]; then
-    export PATH=/usr/local/opt/llvm/bin/:$PATH
+    export PATH=/opt/homebrew/opt/llvm/bin/:/usr/local/opt/llvm/bin/:$PATH
     readlink_cmd="greadlink"
 fi
 
