@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // SPDX-FileCopyrightText: 2019 Jannik Vogel
-// SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
+// SPDX-FileCopyrightText: 2019-2024 Stefan Schmidt
 // SPDX-FileCopyrightText: 2021 Lucas Jansson
 
 #ifndef __WINNT_H__
@@ -13,7 +13,10 @@ typedef LONG HRESULT;
 
 typedef CHAR *LPSTR;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wlanguage-extension-token"
 typedef signed __int64 LONG64, *PLONG64;
+#pragma clang diagnostic pop
 
 LONG64 InterlockedExchange64 (LONG64 volatile *Target, LONG64 Value);
 PVOID InterlockedExchangePointer (PVOID volatile *Target, PVOID Value);
