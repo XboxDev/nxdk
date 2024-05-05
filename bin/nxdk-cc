@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: CC0-1.0
 
-# SPDX-FileCopyrightText: 2021-2022 Stefan Schmidt
+# SPDX-FileCopyrightText: 2021-2024 Stefan Schmidt
 
 clang \
     -target i386-pc-win32 \
@@ -17,6 +17,7 @@ clang \
     -I${NXDK_DIR}/lib/pdclib/platform/xbox/include \
     -I${NXDK_DIR}/lib/winapi \
     -I${NXDK_DIR}/lib/xboxrt/vcruntime \
+    -Wno-builtin-macro-redefined \
     -DNXDK \
     -D__STDC__=1 \
     -U__STDC_NO_THREADS__ \
