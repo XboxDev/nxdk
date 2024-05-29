@@ -794,8 +794,9 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
     // We don't check for buffer overrun here, because the Semaphore already protects us
     size_t descriptors_index = g_txRingTail;
     while (
-        !atomic_compare_exchange_weak(&g_txRingTail, &descriptors_index, (descriptors_index + count) % g_txRingSize))
-        ;
+        !atomic_compare_exchange_weak(&g_txRingTail, &descriptors_index, (descriptors_index + count) % g_txRingSize)) {
+        descriptors_index = g_txRingTail;
+    }
 
     for (size_t i = 0; i < count; i++) {
         size_t current_descriptor_index = (descriptors_index + i) % g_txRingSize;
@@ -815,11 +816,11 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
     // Terminate descriptor chain
     g_txRing[(descriptors_index + count - 1) % g_txRingSize].flags |= NV_TX_LASTPACKET;
 
-    // Enable first descriptor last to keep the NIC from sending incomplete packets
-    g_txRing[descriptors_index].flags |= NV_TX_VALID;
-
     // Keep track of how many descriptors are in use
     g_txPendingCount += count;
+
+    // Enable first descriptor last to keep the NIC from sending incomplete packets
+    g_txRing[descriptors_index].flags |= NV_TX_VALID;
 
     // Inform that NIC that we have TX packet waiting
     reg32(NvRegTxRxControl) = NVREG_TXRXCTL_KICK;
