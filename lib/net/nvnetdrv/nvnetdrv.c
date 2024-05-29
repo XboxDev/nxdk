@@ -333,19 +333,25 @@ static void nvnetdrv_handle_irq (void)
             break;
         }
 
+        // We need to handle MII irq before acknowledging it to prevent link state IRQ occurring
+        // during polling of the link state register
+        if (irq & NVREG_IRQ_LINK) {
+            nvnetdrv_handle_mii_irq(mii, false);
+        }
+
         // Acknowledge interrupts
         reg32(NvRegMIIStatus) = mii;
         reg32(NvRegIrqStatus) = irq;
 
-        // Handle interrupts
+        // Handle TX/RX interrupts
         if (irq & NVREG_IRQ_RX_ALL) {
             nvnetdrv_handle_rx_irq();
         }
         if (irq & NVREG_IRQ_TX_ALL) {
             nvnetdrv_handle_tx_irq();
         }
-        if (irq & NVREG_IRQ_LINK) {
-            nvnetdrv_handle_mii_irq(mii, false);
+        if (irq & NVREG_IRQ_RX_NOBUF) {
+            reg32(NvRegTxRxControl) = NVREG_TXRXCTL_GET;
         }
     }
 }
