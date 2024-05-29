@@ -724,8 +724,6 @@ void nvnetdrv_stop_txrx (void)
 
 int nvnetdrv_acquire_tx_descriptors (size_t count)
 {
-    NTSTATUS status;
-
     // Sanity check
     assert(count > 0);
     // Avoid excessive requests
@@ -735,40 +733,21 @@ int nvnetdrv_acquire_tx_descriptors (size_t count)
         return false;
     }
 
-    while (true) {
-        // Wait for TX descriptors to become available
-        KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, NULL);
-
-        if (!g_running) {
-            return false;
-        }
-
-        // We want to try claim all tx descriptors at once without sleeping.
-        size_t i = 0;
-        for (i = 0; i < count - 1; i++) {
-            // Try to acquire remaining descriptors without sleeping
-            status = KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, NO_SLEEP);
-            if (!NT_SUCCESS(status) || status == STATUS_TIMEOUT) {
-                // Couldn't acquire all at once, back off
-                KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, i + 1, NULL);
-                if (status == STATUS_TIMEOUT) {
-                    // Sleep for 10 microseconds to avoid immediate re-locking
-                    KeDelayExecutionThread(UserMode, FALSE, TEN_MICRO);
-                    // Retry
-                    break;
-                } else {
-                    return false;
-                }
+    // First let's try claim descriptors without sleeping, if that fails we sleep
+    PLARGE_INTEGER timeout = NO_SLEEP;
+    for (size_t i = 0; i < count; i++) {
+        NTSTATUS status = KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, timeout);
+        if (!NT_SUCCESS(status) || !g_running) {
+            if (i > 0) {
+                KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, i, FALSE);
             }
-        }
-
-        if (!g_running) {
+            assert(!g_running);
             return false;
         }
-
-        // If we have claimed all the tx descriptors. We are done.
-        if (i == (count - 1)) {
-            break;
+        // Try again, but wait now
+        if (status == STATUS_TIMEOUT) {
+            i--;
+            timeout = NULL;
         }
     }
     return true;
