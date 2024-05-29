@@ -203,3 +203,4 @@ enum {
 #define NV_RX_FRAMINGERR      (1 << 13)
 #define NV_RX_ERROR           (1 << 14)
 #define NV_RX_AVAIL           (1 << 15)
+#define NV_RX_ERROR_MASK      (NV_RX_ERROR1|NV_RX_ERROR2|NV_RX_ERROR3|NV_RX_ERROR4|NV_RX_CRCERR|NV_RX_OVERFLOW)
