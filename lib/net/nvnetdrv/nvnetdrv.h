@@ -17,18 +17,18 @@
 #define TX_RING_SIZE 64
 #endif
 
-// Must be greated than max thernet frame size. A multiple of page size prevents page boundary crossing
+// Must be greater than max ethernet frame size. A multiple of page size prevents page boundary crossing
 #define NVNET_RX_BUFF_LEN (PAGE_SIZE / 2)
 
 // NVNET error codes
-#define NVNET_OK 0
-#define NVNET_NO_MEM -1
-#define NVNET_NO_MAC -2
+#define NVNET_OK      0
+#define NVNET_NO_MEM  -1
+#define NVNET_NO_MAC  -2
 #define NVNET_PHY_ERR -3
 #define NVNET_SYS_ERR -4
 
-typedef void (*nvnetdrv_rx_callback_t) (void *buffer, uint16_t length);
-typedef void (*nvnetdrv_tx_callback_t) (void *userdata);
+typedef void (*nvnetdrv_rx_callback_t)(void *buffer, uint16_t length);
+typedef void (*nvnetdrv_tx_callback_t)(void *userdata);
 
 typedef struct _nvnetdrv_descriptor_t
 {
@@ -66,7 +66,7 @@ void nvnetdrv_stop (void);
  * Returns the ethernet MAC Address.
  * @return A pointer to an array containing the 6 byte ethernet MAC address.
  */
-const uint8_t *nvnetdrv_get_ethernet_addr ();
+const uint8_t *nvnetdrv_get_ethernet_addr (void);
 
 /**
  * Reserves 1-4 descriptors. If the requested number is not immediately available,
@@ -92,6 +92,6 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
  * This function is thread-safe.
  * @param buffer_virt Pointer to the buffer given out by nvnetdrv.
  */
-void nvnetdrv_rx_release(void *buffer_virt);
+void nvnetdrv_rx_release (void *buffer_virt);
 
 #endif

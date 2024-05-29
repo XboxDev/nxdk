@@ -5,26 +5,25 @@
 // SPDX-FileCopyrightText: 2022 Stefan Schmidt
 // SPDX-FileCopyrightText: 2022 Ryan Wendland
 
-#include "lwip/opt.h"
 #include "lwip/def.h"
+#include "lwip/ethip6.h"
 #include "lwip/mem.h"
+#include "lwip/mld6.h"
+#include "lwip/opt.h"
 #include "lwip/pbuf.h"
+#include "lwip/snmp.h"
 #include "lwip/stats.h"
 #include "lwip/sys.h"
-#include "lwip/snmp.h"
-#include "lwip/ethip6.h"
-#include "lwip/mld6.h"
 #include "netif/etharp.h"
 #include "netif/ppp/pppoe.h"
 #include "nvnetdrv.h"
-#include <xboxkrnl/xboxkrnl.h>
 #include <assert.h>
+#include <xboxkrnl/xboxkrnl.h>
 
 /* Define those to better describe your network interface. */
-#define IFNAME0 'x'
-#define IFNAME1 'b'
+#define IFNAME0     'x'
+#define IFNAME1     'b'
 #define RX_BUFF_CNT (RX_RING_SIZE)
-
 
 #define LINK_SPEED_OF_YOUR_NETIF_IN_BPS 100 * 1000 * 1000 /* 100 Mbps */
 
@@ -54,25 +53,25 @@ typedef struct
 } rx_pbuf_t;
 
 LWIP_MEMPOOL_DECLARE(RX_POOL, RX_BUFF_CNT, sizeof(rx_pbuf_t), "Zero-copy RX PBUF pool");
-void rx_pbuf_free_callback(struct pbuf *p)
+void rx_pbuf_free_callback (struct pbuf *p)
 {
     rx_pbuf_t *rx_pbuf = (rx_pbuf_t *)p;
     nvnetdrv_rx_release(rx_pbuf->buff);
     LWIP_MEMPOOL_FREE(RX_POOL, rx_pbuf);
 }
 
-void rx_callback(void *buffer, uint16_t length)
+void rx_callback (void *buffer, uint16_t length)
 {
     rx_pbuf_t *rx_pbuf = (rx_pbuf_t *)LWIP_MEMPOOL_ALLOC(RX_POOL);
     LWIP_ASSERT("RX_POOL full\n", rx_pbuf != NULL);
     rx_pbuf->p.custom_free_function = rx_pbuf_free_callback;
     rx_pbuf->buff = buffer;
     struct pbuf *p = pbuf_alloced_custom(PBUF_RAW,
-                                        length + ETH_PAD_SIZE,
-                                        PBUF_REF,
-                                        &rx_pbuf->p,
-                                        buffer - ETH_PAD_SIZE,
-                                        NVNET_RX_BUFF_LEN - ETH_PAD_SIZE);
+                                         length + ETH_PAD_SIZE,
+                                         PBUF_REF,
+                                         &rx_pbuf->p,
+                                         buffer - ETH_PAD_SIZE,
+                                         NVNET_RX_BUFF_LEN - ETH_PAD_SIZE);
 
     if (g_pnetif->input(p, g_pnetif) != ERR_OK) {
         pbuf_free(p);
@@ -89,7 +88,7 @@ void rx_callback(void *buffer, uint16_t length)
  * @return ERR_OK if low level initiliazation succeeds
  *         ERR_IF if any failure
  */
-static err_t low_level_init(struct netif *netif)
+static err_t low_level_init (struct netif *netif)
 {
     if (nvnetdrv_init(RX_BUFF_CNT, rx_callback) < 0) {
         return ERR_IF;
@@ -114,8 +113,7 @@ static err_t low_level_init(struct netif *netif)
      * All-nodes link-local is handled by default, so we must let the hardware know
      * to allow multicast packets in.
      * Should set mld_mac_filter previously. */
-    if (netif->mld_mac_filter != NULL)
-    {
+    if (netif->mld_mac_filter != NULL) {
         ip6_addr_t ip6_allnodes_ll;
         ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
         netif->mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
@@ -132,7 +130,7 @@ static err_t low_level_init(struct netif *netif)
  *
  * @param userdata the pbuf address, supplied by low_level_output
  */
-void tx_pbuf_free_callback(void *userdata)
+void tx_pbuf_free_callback (void *userdata)
 {
     struct pbuf *p = (struct pbuf *)userdata;
     pbuf_free(p);
@@ -154,7 +152,7 @@ void tx_pbuf_free_callback(void *userdata)
  *             dropped because of memory failure (except for the TCP timers).
  */
 
-static err_t low_level_output(struct netif *netif, struct pbuf *p)
+static err_t low_level_output (struct netif *netif, struct pbuf *p)
 {
 #if ETH_PAD_SIZE
     pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
@@ -162,16 +160,16 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
     nvnetdrv_descriptor_t descriptors[4];
     size_t pbufCount = 0;
-    for (struct pbuf *q = p; q != NULL; q = q->next)
-    {
+    for (struct pbuf *q = p; q != NULL; q = q->next) {
         assert(p->len < 4096);
         descriptors[pbufCount].addr = q->payload;
         descriptors[pbufCount].length = q->len;
         descriptors[pbufCount].callback = NULL;
 
         pbufCount++;
-        if (pbufCount > 4)
+        if (pbufCount > 4) {
             return ERR_MEM;
+        }
 
         const uint32_t addr_start = (uint32_t)q->payload;
         const uint32_t addr_end = ((uint32_t)q->payload + q->len);
@@ -182,8 +180,9 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
             const uint32_t length_b = addr_end - addr_boundary;
 
             // Buffer ends right at page boundary, so no problem
-            if (length_b == 0)
+            if (length_b == 0) {
                 continue;
+            }
 
             // Fixup the descriptor
             descriptors[pbufCount - 1].length = length_a;
@@ -194,8 +193,9 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
             descriptors[pbufCount].callback = NULL;
 
             pbufCount++;
-            if (pbufCount > 4)
+            if (pbufCount > 4) {
                 return ERR_MEM;
+            }
         }
     }
 
@@ -234,7 +234,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
  *                 ERR_MEM if private data couldn't be allocated
  *                 any other err_t on error
  */
-err_t nvnetif_init(struct netif *netif)
+err_t nvnetif_init (struct netif *netif)
 {
     struct nforceif *nforceif;
 
