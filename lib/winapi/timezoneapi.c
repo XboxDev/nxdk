@@ -18,10 +18,15 @@ typedef struct
 
 // Determine the day of the week given a year, month and day
 // https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week#Methods_in_computer_code
-static UCHAR GetDayOfWeek (SHORT year, UCHAR month, UCHAR day)
+static UCHAR GetDayOfWeek (INT year, INT month, INT day)
 {
-    return (day += month < 3 ? year-- : year - 2, 23 *
-            month / 9 + day + 4 + year / 4 - year / 100 + year / 400) % 7;
+    if (month < 3) {
+        day += year;
+        year--;
+    } else {
+        day += year - 2;
+    }
+    return (day + 23 * month / 9 + 4 + year / 4 - year / 100 + year / 400) % 7;
 }
 
 static UCHAR GetDaysInMonth (SHORT year, UCHAR month)
