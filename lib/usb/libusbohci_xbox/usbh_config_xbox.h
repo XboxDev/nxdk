@@ -45,7 +45,7 @@
 #define MAX_ALT_PER_IFACE      12      /*!< maximum number of alternative interfaces per interface    */
 #endif
 #ifndef MAX_EP_PER_IFACE
-#define MAX_EP_PER_IFACE       8       /*!< maximum number of endpoints per interface                 */
+#define MAX_EP_PER_IFACE       15      /*!< maximum number of endpoints per interface                 */
 #endif
 #ifndef MAX_HUB_DEVICE
 #define MAX_HUB_DEVICE         8       /*!< Maximum number of hub devices                             */
