@@ -18,7 +18,7 @@ FARPROC GetProcAddress (HMODULE hModule, LPCSTR lpProcName);
 
 #ifndef UNICODE
 #define LoadLibraryEx LoadLibraryExA
-#define LoadLibrary LoadLibraryA
+#define LoadLibrary   LoadLibraryA
 #else
 #error nxdk does not support the Unicode API
 #endif

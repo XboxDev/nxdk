@@ -5,13 +5,12 @@
 #ifndef __SHLOBJ_CORE_H__
 #define __SHLOBJ_CORE_H__
 
-#include <windef.h>
 #include <minwinbase.h>
+#include <windef.h>
 #include <winnt.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #ifndef CSIDL_APPDATA

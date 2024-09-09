@@ -11,12 +11,13 @@
 extern "C" {
 #endif
 
-#define TIME_ZONE_ID_UNKNOWN 0
+#define TIME_ZONE_ID_UNKNOWN  0
 #define TIME_ZONE_ID_STANDARD 1
 #define TIME_ZONE_ID_DAYLIGHT 2
-#define TIME_ZONE_ID_INVALID ((DWORD)0xFFFFFFFF)
+#define TIME_ZONE_ID_INVALID  ((DWORD)0xFFFFFFFF)
 
-typedef struct _TIME_ZONE_INFORMATION {
+typedef struct _TIME_ZONE_INFORMATION
+{
     LONG Bias;
     WCHAR StandardName[32];
     SYSTEMTIME StandardDate;

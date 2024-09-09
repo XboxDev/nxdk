@@ -8,8 +8,8 @@
 #define __SYNCHAPI_H__
 
 #include <stdint.h>
-#include <windef.h>
 #include <winbase.h>
+#include <windef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,7 +34,6 @@ VOID WakeAllConditionVariable (PCONDITION_VARIABLE ConditionVariable);
 // UninitializeConditionVariable is an nxdk extension to free associated system resources
 VOID UninitializeConditionVariable (PCONDITION_VARIABLE ConditionVariable);
 
-
 void AcquireSRWLockExclusive (PSRWLOCK SRWLock);
 void AcquireSRWLockShared (PSRWLOCK SRWLock);
 void InitializeSRWLock (PSRWLOCK SRWLock);
@@ -47,11 +46,11 @@ BOOL InitOnceExecuteOnce (PINIT_ONCE InitOnce, PINIT_ONCE_FN InitFn, PVOID Conte
 BOOL InitOnceBeginInitialize (LPINIT_ONCE lpInitOnce, DWORD dwFlags, PBOOL fPending, LPVOID *lpContext);
 BOOL InitOnceComplete (LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext);
 
-#define WAIT_ABANDONED ((DWORD)0x00000080L) // same as STATUS_ABANDONED_WAIT_0
+#define WAIT_ABANDONED     ((DWORD)0x00000080L) // same as STATUS_ABANDONED_WAIT_0
 #define WAIT_IO_COMPLETION ((DWORD)0x000000C0L) // same as STATUS_USER_APC
-#define WAIT_OBJECT_0 ((DWORD)0x00000000L) // same as STATUS_WAIT_0
-#define WAIT_TIMEOUT ((DWORD)0x00000102L) // same as STATUS_TIMEOUT
-#define WAIT_FAILED ((DWORD)0xFFFFFFFFL)
+#define WAIT_OBJECT_0      ((DWORD)0x00000000L) // same as STATUS_WAIT_0
+#define WAIT_TIMEOUT       ((DWORD)0x00000102L) // same as STATUS_TIMEOUT
+#define WAIT_FAILED        ((DWORD)0xFFFFFFFFL)
 
 VOID Sleep (DWORD dwMilliseconds);
 DWORD SleepEx (DWORD dwMilliseconds, BOOL bAlertable);

@@ -2,11 +2,11 @@
 
 // SPDX-FileCopyrightText: 2023 Ryan Wendland
 
+#include <assert.h>
+#include <string.h>
 #include <timezoneapi.h>
 #include <winbase.h>
-#include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
-#include <string.h>
 
 typedef struct
 {

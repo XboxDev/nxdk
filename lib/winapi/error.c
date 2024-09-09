@@ -2,8 +2,8 @@
 
 // SPDX-FileCopyrightText: 2019 Stefan Schmidt
 
-#include <winbase.h>
 #include <threads.h>
+#include <winbase.h>
 
 static thread_local DWORD lastError = 0;
 

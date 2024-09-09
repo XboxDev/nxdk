@@ -2,8 +2,8 @@
 
 // SPDX-FileCopyrightText: 2019 Stefan Schmidt
 
-#include <windows.h>
 #include <string.h>
+#include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 VOID RaiseException (DWORD dwExceptionCode, DWORD dwExceptionFlags, DWORD nNumberOfArguments, const ULONG_PTR *lpArguments)

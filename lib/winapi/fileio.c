@@ -2,11 +2,11 @@
 
 // SPDX-FileCopyrightText: 2019-2021 Stefan Schmidt
 
-#include <fileapi.h>
-#include <winerror.h>
 #include <assert.h>
+#include <fileapi.h>
 #include <stdbool.h>
 #include <string.h>
+#include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 HANDLE CreateFileA (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
@@ -77,7 +77,7 @@ HANDLE CreateFileA (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
         if (status == STATUS_OBJECT_NAME_COLLISION) {
             SetLastError(ERROR_FILE_EXISTS);
         } else if (status == STATUS_FILE_IS_A_DIRECTORY) {
-            if (lpFileName[path.Length-1] == '\\') {
+            if (lpFileName[path.Length - 1] == '\\') {
                 SetLastError(ERROR_PATH_NOT_FOUND);
             } else {
                 SetLastError(ERROR_ACCESS_DENIED);
@@ -190,7 +190,7 @@ BOOL WriteFile (HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWrite, LPD
         lpOverlapped->InternalHigh = 0;
 
         status = NtWriteFile(hFile, lpOverlapped->hEvent, NULL, NULL, (PIO_STATUS_BLOCK)&lpOverlapped->Internal,
-                            (PVOID)lpBuffer, nNumberOfBytesToWrite, &overlappedOffset);
+                             (PVOID)lpBuffer, nNumberOfBytesToWrite, &overlappedOffset);
 
         // The write can finish immediately. Handle this case
         if (NT_SUCCESS(status) && status != STATUS_PENDING) {
@@ -341,7 +341,7 @@ BOOL SetFilePointerEx (HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTE
         case FILE_CURRENT:
             status = NtQueryInformationFile(hFile, &ioStatusBlock, &positionInfo, sizeof(positionInfo), FilePositionInformation);
 
-            if(!NT_SUCCESS(status)) {
+            if (!NT_SUCCESS(status)) {
                 SetLastError(RtlNtStatusToDosError(status));
                 return FALSE;
             }

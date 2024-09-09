@@ -2,8 +2,8 @@
 
 // SPDX-FileCopyrightText: 2019 Stefan Schmidt
 
-#include <profileapi.h>
 #include <assert.h>
+#include <profileapi.h>
 #include <stddef.h>
 #include <xboxkrnl/xboxkrnl.h>
 

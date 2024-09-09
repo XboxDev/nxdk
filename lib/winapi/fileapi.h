@@ -6,13 +6,12 @@
 #ifndef __FILEAPI_H__
 #define __FILEAPI_H__
 
-#include <windef.h>
 #include <winbase.h>
+#include <windef.h>
 #include <winnt.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 DWORD GetFileAttributesA (LPCSTR lpFileName);
@@ -22,10 +21,10 @@ BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes);
 BOOL GetFileTime (HANDLE hFile, LPFILETIME lpCreationTime, LPFILETIME lpLastAccessTime, LPFILETIME lpLastWriteTime);
 BOOL SetFileTime (HANDLE hFile, const FILETIME *lpCreationTime, const FILETIME *lpLastAccessTime, const FILETIME *lpLastWriteTime);
 
-#define CREATE_NEW 1
-#define CREATE_ALWAYS 2
-#define OPEN_EXISTING 3
-#define OPEN_ALWAYS 4
+#define CREATE_NEW        1
+#define CREATE_ALWAYS     2
+#define OPEN_EXISTING     3
+#define OPEN_ALWAYS       4
 #define TRUNCATE_EXISTING 5
 
 HANDLE CreateFileA (LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
@@ -54,19 +53,19 @@ DWORD GetLogicalDrives (VOID);
 DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer);
 
 #ifndef UNICODE
-#define GetFileAttributes GetFileAttributesA
-#define GetFileAttributesEx GetFileAttributesExA
-#define SetFileAttributes SetFileAttributesA
-#define CreateFile CreateFileA
-#define FindFirstFile FindFirstFileA
-#define FindNextFile FindNextFileA
-#define DeleteFile(...) DeleteFileA(__VA_ARGS__)
-#define RemoveDirectory(...) RemoveDirectoryA(__VA_ARGS__)
-#define CreateDirectory(...) CreateDirectoryA(__VA_ARGS__)
-#define MoveFile(...) MoveFileA(__VA_ARGS__)
-#define CopyFile(...) CopyFileA(__VA_ARGS__)
-#define GetDiskFreeSpaceEx GetDiskFreeSpaceExA
-#define GetDiskFreeSpace GetDiskFreeSpaceA
+#define GetFileAttributes      GetFileAttributesA
+#define GetFileAttributesEx    GetFileAttributesExA
+#define SetFileAttributes      SetFileAttributesA
+#define CreateFile             CreateFileA
+#define FindFirstFile          FindFirstFileA
+#define FindNextFile           FindNextFileA
+#define DeleteFile(...)        DeleteFileA(__VA_ARGS__)
+#define RemoveDirectory(...)   RemoveDirectoryA(__VA_ARGS__)
+#define CreateDirectory(...)   CreateDirectoryA(__VA_ARGS__)
+#define MoveFile(...)          MoveFileA(__VA_ARGS__)
+#define CopyFile(...)          CopyFileA(__VA_ARGS__)
+#define GetDiskFreeSpaceEx     GetDiskFreeSpaceExA
+#define GetDiskFreeSpace       GetDiskFreeSpaceA
 #define GetLogicalDriveStrings GetLogicalDriveStringsA
 #else
 #error nxdk does not support the Unicode API

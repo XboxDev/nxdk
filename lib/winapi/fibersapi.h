@@ -8,8 +8,7 @@
 #include <winbase.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 DWORD FlsAlloc (PFLS_CALLBACK_FUNCTION lpCallback);

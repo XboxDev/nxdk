@@ -8,8 +8,7 @@
 #include <windef.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #define MMSYSERR_NOERROR 0
