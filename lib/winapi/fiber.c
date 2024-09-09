@@ -2,10 +2,10 @@
 
 // SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
 
-#include <windows.h>
 #include <assert.h>
 #include <stdint.h>
 #include <threads.h>
+#include <windows.h>
 
 // Each thread gets a node to keep track of its FLS data.
 // Threads must register themselves, so their FLS nodes can be put into a list
@@ -29,7 +29,7 @@ static __cdecl VOID fls_init (VOID)
     InitializeListHead(&fls_nodes_list);
 }
 #pragma comment(linker, "/include:___fls_init_p")
-__attribute__((section(".CRT$XXT"))) void (__cdecl *const __fls_init_p)(void) = fls_init;
+__attribute__((section(".CRT$XXT"))) void(__cdecl *const __fls_init_p)(void) = fls_init;
 
 VOID fls_register_thread (VOID)
 {
@@ -70,11 +70,13 @@ DWORD FlsAlloc (PFLS_CALLBACK_FUNCTION lpCallback)
     EnterCriticalSection(&fls_lock);
 
     for (size_t i = 0; i < (FLS_MAXIMUM_AVAILABLE / 32); i++) {
-        if (fls_bitmap[i] == 0xFFFFFFFF) continue;
+        if (fls_bitmap[i] == 0xFFFFFFFF) {
+            continue;
+        }
 
         unsigned int index = __builtin_ctz(~fls_bitmap[i]);
         fls_bitmap[i] |= (1 << index);
-        retval = i*32 + index;
+        retval = i * 32 + index;
         fls_dtors[retval] = lpCallback;
         break;
     }

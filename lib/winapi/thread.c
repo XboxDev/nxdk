@@ -4,16 +4,16 @@
 
 #include <assert.h>
 #include <errno.h>
-#include <string.h>
-#include <processthreadsapi.h>
-#include <process.h>
 #include <fibersapi_internal_.h>
+#include <process.h>
+#include <processthreadsapi.h>
+#include <string.h>
 #include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 extern const IMAGE_TLS_DIRECTORY_32 _tls_used;
 
-uintptr_t __cdecl _beginthreadex (void *_Security, unsigned _StackSize, _beginthreadex_proc_type _StartAddress, void *_ArgList, unsigned _InitFlag, unsigned *_ThrdAddr)
+uintptr_t __cdecl _beginthreadex(void *_Security, unsigned _StackSize, _beginthreadex_proc_type _StartAddress, void *_ArgList, unsigned _InitFlag, unsigned *_ThrdAddr)
 {
     HANDLE thread;
     thread = CreateThread(_Security, _StackSize, (LPTHREAD_START_ROUTINE)_StartAddress, _ArgList, _InitFlag, (LPDWORD)_ThrdAddr);
@@ -25,7 +25,7 @@ uintptr_t __cdecl _beginthreadex (void *_Security, unsigned _StackSize, _beginth
     return (uintptr_t)thread;
 }
 
-void __cdecl _endthreadex (unsigned _ReturnCode)
+void __cdecl _endthreadex(unsigned _ReturnCode)
 {
     ExitThread(_ReturnCode);
 }

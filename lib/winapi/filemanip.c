@@ -3,14 +3,14 @@
 // SPDX-FileCopyrightText: 2019-2022 Stefan Schmidt
 // SPDX-FileCopyrightText: 2021 Erik Abair
 
-#include <fileapi.h>
-#include <handleapi.h>
-#include <winbase.h>
-#include <winerror.h>
 #include <assert.h>
 #include <ctype.h>
+#include <fileapi.h>
+#include <handleapi.h>
 #include <stdbool.h>
 #include <string.h>
+#include <winbase.h>
+#include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 DWORD GetFileAttributesA (LPCSTR lpFileName)
@@ -356,15 +356,15 @@ BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExi
     InitializeObjectAttributes(&objectAttributes, &targetPath, OBJ_CASE_INSENSITIVE, ObDosDevicesDirectory(), NULL);
 
     status = NtCreateFile(
-            &targetHandle,
-            FILE_GENERIC_WRITE,
-            &objectAttributes,
-            &ioStatusBlock,
-            &networkOpenInformation.AllocationSize,
-            networkOpenInformation.FileAttributes,
-            0,
-            bFailIfExists ? FILE_CREATE : FILE_SUPERSEDE,
-            FILE_SYNCHRONOUS_IO_NONALERT | FILE_NON_DIRECTORY_FILE | FILE_SEQUENTIAL_ONLY);
+        &targetHandle,
+        FILE_GENERIC_WRITE,
+        &objectAttributes,
+        &ioStatusBlock,
+        &networkOpenInformation.AllocationSize,
+        networkOpenInformation.FileAttributes,
+        0,
+        bFailIfExists ? FILE_CREATE : FILE_SUPERSEDE,
+        FILE_SYNCHRONOUS_IO_NONALERT | FILE_NON_DIRECTORY_FILE | FILE_SEQUENTIAL_ONLY);
     if (!NT_SUCCESS(status)) {
         NtClose(sourceHandle);
         SetLastError(RtlNtStatusToDosError(status));
@@ -372,10 +372,10 @@ BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExi
     }
 
     status = NtAllocateVirtualMemory(&readBuffer,
-                                      0,
-                                      &readBufferRegionSize,
-                                      MEM_RESERVE | MEM_COMMIT,
-                                      PAGE_READWRITE);
+                                     0,
+                                     &readBufferRegionSize,
+                                     MEM_RESERVE | MEM_COMMIT,
+                                     PAGE_READWRITE);
     if (!NT_SUCCESS(status)) {
         NtClose(sourceHandle);
         NtClose(targetHandle);
@@ -418,11 +418,11 @@ BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExi
     fileBasicInformation.LastWriteTime = networkOpenInformation.LastWriteTime;
     fileBasicInformation.FileAttributes = networkOpenInformation.FileAttributes;
     status = NtSetInformationFile(
-            targetHandle,
-            &ioStatusBlock,
-            &fileBasicInformation,
-            sizeof(fileBasicInformation),
-            FileBasicInformation);
+        targetHandle,
+        &ioStatusBlock,
+        &fileBasicInformation,
+        sizeof(fileBasicInformation),
+        FileBasicInformation);
     if (!NT_SUCCESS(status)) {
         SetLastError(RtlNtStatusToDosError(status));
         NtClose(sourceHandle);
@@ -439,8 +439,8 @@ BOOL CopyFileA (LPCSTR lpExistingFileName, LPCSTR lpNewFileName, BOOL bFailIfExi
 
     status = NtClose(targetHandle);
     if (!NT_SUCCESS(status)) {
-      SetLastError(RtlNtStatusToDosError(status));
-      return FALSE;
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
     }
     return TRUE;
 }
@@ -555,7 +555,8 @@ DWORD GetLogicalDrives (VOID)
     ANSI_STRING path;
     HANDLE handle;
     OBJECT_ATTRIBUTES attributes;
-    struct {
+    struct
+    {
         OBJECT_DIRECTORY_INFORMATION objDirInfo;
         CHAR filenameBuf[2];
     } objDirInfoBuf;
@@ -614,7 +615,7 @@ DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer)
     }
 
     if (nBufferLength == 0 || nBufferLength < requiredBufLength) {
-        return requiredBufLength+1;
+        return requiredBufLength + 1;
     }
 
     for (int bit = 0; bit < 26; bit++) {

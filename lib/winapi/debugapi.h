@@ -8,8 +8,7 @@
 #include <windef.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 BOOL IsDebuggerPresent (VOID);

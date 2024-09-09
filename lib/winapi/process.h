@@ -8,14 +8,13 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-typedef unsigned (__stdcall *_beginthreadex_proc_type)(void *);
+typedef unsigned(__stdcall *_beginthreadex_proc_type)(void *);
 
-uintptr_t __cdecl _beginthreadex (void *_Security, unsigned _StackSize, _beginthreadex_proc_type _StartAddress, void *_ArgList, unsigned _InitFlag, unsigned *_ThrdAddr);
-void __cdecl _endthreadex (unsigned _ReturnCode);
+uintptr_t __cdecl _beginthreadex(void *_Security, unsigned _StackSize, _beginthreadex_proc_type _StartAddress, void *_ArgList, unsigned _InitFlag, unsigned *_ThrdAddr);
+void __cdecl _endthreadex(unsigned _ReturnCode);
 
 #ifdef __cplusplus
 }

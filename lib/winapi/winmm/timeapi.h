@@ -6,12 +6,11 @@
 #ifndef __WINMM_TIMEAPI_H__
 #define __WINMM_TIMEAPI_H__
 
-#include <windef.h>
 #include <mmsystem.h>
+#include <windef.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #define TIMERR_NOERROR 0
@@ -26,4 +25,3 @@ DWORD timeGetTime (void);
 #endif
 
 #endif
-

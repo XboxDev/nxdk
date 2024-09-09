@@ -18,8 +18,8 @@
 #include <profileapi.h>
 #include <synchapi.h>
 #include <sysinfoapi.h>
+#include <timezoneapi.h>
 #include <winbase.h>
 #include <winerror.h>
-#include <timezoneapi.h>
 
 #endif

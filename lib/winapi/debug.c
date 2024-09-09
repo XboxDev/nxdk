@@ -24,5 +24,5 @@ void WINAPI OutputDebugStringA (LPCTSTR lpOutputString)
 
     __asm__ __volatile__("mov $1, %%eax\n" // $1 = BREAKPOINT_PRINT
                          "int $0x2D\n"
-                         "int $3\n": :"c" (&s));
+                         "int $3\n" : : "c"(&s));
 }

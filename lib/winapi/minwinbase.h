@@ -9,7 +9,8 @@
 #include <windef.h>
 #include <xboxkrnl/ntstatus.h>
 
-typedef struct _FILETIME {
+typedef struct _FILETIME
+{
     DWORD dwLowDateTime;
     DWORD dwHighDateTime;
 } FILETIME, *LPFILETIME;

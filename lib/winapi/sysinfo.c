@@ -4,9 +4,9 @@
 // SPDX-FileCopyrightText: 2020 Samuel Cuella
 // SPDX-FileCopyrightText: 2023 Ryan Wendland
 
+#include <assert.h>
 #include <sysinfoapi.h>
 #include <timezoneapi.h>
-#include <assert.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 void GetSystemTime (LPSYSTEMTIME lpSystemTime)

@@ -4,10 +4,10 @@
 // SPDX-FileCopyrightText: 2020 Jannik Vogel
 // SPDX-FileCopyrightText: 2022 Ryan Wendland
 
-#include <synchapi.h>
 #include <assert.h>
-#include <stdbool.h>
 #include <processthreadsapi.h>
+#include <stdbool.h>
+#include <synchapi.h>
 #include <winbase.h>
 #include <winerror.h>
 #include <xboxkrnl/xboxkrnl.h>
@@ -46,8 +46,8 @@ VOID LeaveCriticalSection (LPCRITICAL_SECTION lpCriticalSection)
     RtlLeaveCriticalSection(lpCriticalSection);
 }
 
-#define SRW_GLOBAL_LOCK_MASK ((uintptr_t)0x40000000)
-#define SRW_READER_LOCK_MASK ((uintptr_t)0x80000000)
+#define SRW_GLOBAL_LOCK_MASK  ((uintptr_t)0x40000000)
+#define SRW_READER_LOCK_MASK  ((uintptr_t)0x80000000)
 #define SRW_READER_COUNT_MASK ~(SRW_GLOBAL_LOCK_MASK | SRW_READER_LOCK_MASK)
 
 static bool TryAcquireLockMask (uintptr_t *lock, uintptr_t mask)
@@ -152,11 +152,11 @@ BOOLEAN TryAcquireSRWLockShared (PSRWLOCK SRWLock)
     return success;
 }
 
-#define INITONCE_MASK (((uintptr_t)1 << INIT_ONCE_CTX_RESERVED_BITS) - 1)
-#define INITONCE_UNINITIALIZED 0
-#define INITONCE_IN_PROGRESS 1
+#define INITONCE_MASK              (((uintptr_t)1 << INIT_ONCE_CTX_RESERVED_BITS) - 1)
+#define INITONCE_UNINITIALIZED     0
+#define INITONCE_IN_PROGRESS       1
 #define INITONCE_ASYNC_IN_PROGRESS 2
-#define INITONCE_DONE 3
+#define INITONCE_DONE              3
 
 BOOL InitOnceBeginInitialize (LPINIT_ONCE lpInitOnce, DWORD dwFlags, PBOOL fPending, LPVOID *lpContext)
 {
@@ -267,7 +267,7 @@ BOOL InitOnceComplete (LPINIT_ONCE lpInitOnce, DWORD dwFlags, LPVOID lpContext)
                 // init done, waiters continue because they were spinning in InitOnceBeginInitialize
                 return TRUE;
             case INITONCE_ASYNC_IN_PROGRESS:
-                if(!(dwFlags & INIT_ONCE_ASYNC)) {
+                if (!(dwFlags & INIT_ONCE_ASYNC)) {
                     SetLastError(ERROR_INVALID_PARAMETER);
                     return FALSE;
                 }
@@ -453,7 +453,9 @@ DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds, BOOL bAlertab
     while (true) {
         NTSTATUS status = NtWaitForSingleObjectEx(hHandle, UserMode, bAlertable, &duration);
 
-        if (status == STATUS_ALERTED) continue;
+        if (status == STATUS_ALERTED) {
+            continue;
+        }
 
         if (!NT_SUCCESS(status)) {
             SetLastError(RtlNtStatusToDosError(status));
@@ -477,7 +479,9 @@ DWORD WaitForMultipleObjectsEx (DWORD nCount, const HANDLE *lpHandles, BOOL bWai
     while (true) {
         NTSTATUS status = NtWaitForMultipleObjectsEx(nCount, lpHandles, bWaitAll ? WaitAll : WaitAny, UserMode, bAlertable, &duration);
 
-        if (status == STATUS_ALERTED) continue;
+        if (status == STATUS_ALERTED) {
+            continue;
+        }
 
         if (!NT_SUCCESS(status)) {
             SetLastError(RtlNtStatusToDosError(status));
