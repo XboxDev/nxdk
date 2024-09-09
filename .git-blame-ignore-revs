@@ -1,0 +1,3 @@
+# .git-blame-ignore-revs
+# winapi: Reformat with clang-format
+e3e9de54cb60e9fb5b798e11ac2ae4e2b27cd984
