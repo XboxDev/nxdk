@@ -1,4 +1,5 @@
 include $(NXDK_DIR)/lib/winapi/winmm/Makefile
+include $(NXDK_DIR)/lib/winapi/ws2_32/Makefile
 
 WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/badptr.c \
