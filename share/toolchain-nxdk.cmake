@@ -65,3 +65,8 @@ set(_CMAKE_C_IPO_MAY_BE_SUPPORTED_BY_COMPILER YES)
 set(CMAKE_C_COMPILE_OPTIONS_IPO -flto)
 
 set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path to pkg-config")
+
+# automount the D drive
+if(NOT DEFINED NXDK_DISABLE_AUTOMOUNT_D OR NOT NXDK_DISABLE_AUTOMOUNT_D STREQUAL "y")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -include:_automount_d_drive")
+endif()
