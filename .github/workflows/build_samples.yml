@@ -42,7 +42,7 @@ jobs:
           HOMEBREW_NO_ANALYTICS: 1
           HOMEBREW_NO_INSTALL_CLEANUP: 1
         run: |
-          brew install llvm coreutils
+          brew install lld llvm coreutils
       - name: Build
         run: ./.ci_build_samples.sh
   ubuntu:
