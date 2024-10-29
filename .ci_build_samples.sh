@@ -15,9 +15,15 @@ else
     NUMCORES=$(nproc)
 fi
 
+echo "::group::Building nxdk"
+make NXDK_ONLY=y -j${NUMCORES}
+echo "::endgroup::"
+
 for dir in samples/*/
 do
+    echo "::group::Building $dir"
     cd "$dir"
     make -j${NUMCORES}
     cd ../..
+    echo "::endgroup::"
 done
