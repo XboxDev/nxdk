@@ -202,7 +202,7 @@ sys_mbox_post(struct sys_mbox **mb, void *msg)
     sys_arch_sem_wait(&mbox->write_sem, 0);
 
     sys_arch_sem_wait(&mbox->mutex, 0);
-    mbox->msgs[mbox->last & SYS_MBOX_SIZE] = msg;
+    mbox->msgs[mbox->last % SYS_MBOX_SIZE] = msg;
     mbox->last++;
     sys_sem_signal(&mbox->mutex);
 
