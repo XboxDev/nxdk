@@ -200,6 +200,10 @@ void debugPrint(const char *format, ...)
 			nextRow += FONT_HEIGHT+1;
 			nextCol = MARGIN;
 		}
+		else if (*s == '\r')
+		{
+			nextCol = MARGIN;
+		}
 		else
 		{
 			drawChar( *s, nextCol, nextRow, fgColour, bgColour );
