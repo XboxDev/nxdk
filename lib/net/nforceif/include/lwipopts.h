@@ -178,7 +178,7 @@
  * a fragmented IP packet waits for all fragments to arrive. If not all fragments arrived
  * in this time, the whole packet is discarded.
  */
-#define IP_REASS_MAXAGE                 3
+#define IP_REASS_MAXAGE                 15
 
 /**
  * IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.
