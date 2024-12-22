@@ -639,15 +639,6 @@ void nvnetdrv_stop (void)
 
     KeDisconnectInterrupt(&g_interrupt);
 
-    // Disable DMA and wait for it to idle, re-checking every 50 microseconds
-    reg32(NvRegTxRxControl) = NVREG_TXRXCTL_DISABLE;
-    for (int i = 0; i < 10000; i++) {
-        if (reg32(NvRegTxRxControl) & NVREG_TXRXCTL_IDLE) {
-            break;
-        }
-        KeDelayExecutionThread(KernelMode, FALSE, FIFTY_MICRO);
-    }
-
     // Stop NIC processing rings
     nvnetdrv_stop_txrx();
 
@@ -714,6 +705,15 @@ void nvnetdrv_stop_txrx (void)
             break;
         }
         KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
+    }
+
+    // Disable DMA and wait for it to idle, re-checking every 50 microseconds
+    reg32(NvRegTxRxControl) = NVREG_TXRXCTL_DISABLE;
+    for (int i = 0; i < 10000; i++) {
+        if (reg32(NvRegTxRxControl) & NVREG_TXRXCTL_IDLE) {
+            break;
+        }
+        KeDelayExecutionThread(KernelMode, FALSE, FIFTY_MICRO);
     }
 
     reg32(NvRegLinkSpeed) = 0;
