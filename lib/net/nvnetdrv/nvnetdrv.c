@@ -498,22 +498,20 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
     KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
     reg32(NvRegTxRxControl) = 0;
     KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
-
-    // Disable interrupts while we initialise the NIC
-    reg32(NvRegIrqMask) = 0;
     reg32(NvRegMIIMask) = 0;
+    reg32(NvRegIrqMask) = 0;
+    reg32(NvRegWakeUpFlags) = 0;
+    reg32(NvRegPollingControl) = 0;
+    reg32(NvRegTxRingPhysAddr) = 0;
+    reg32(NvRegRxRingPhysAddr) = 0;
+    reg32(NvRegTransmitPoll) = 0;
+    reg32(NvRegLinkSpeed) = 0;
 
     // Acknowledge any existing interrupts status bits
     reg32(NvRegTransmitterStatus) = reg32(NvRegTransmitterStatus);
     reg32(NvRegReceiverStatus) = reg32(NvRegReceiverStatus);
     reg32(NvRegIrqStatus) = reg32(NvRegIrqStatus);
     reg32(NvRegMIIStatus) = reg32(NvRegMIIStatus);
-
-    // Clear latent registers
-    reg32(NvRegWakeUpFlags) = 0;
-    reg32(NvRegPollingControl) = 0;
-    reg32(NvRegTransmitPoll) = 0;
-    reg32(NvRegLinkSpeed) = 0;
 
     // Reset local ring tracking variables
     g_rxRingHead = 0;
