@@ -716,8 +716,7 @@ void nvnetdrv_stop_txrx (void)
         KeDelayExecutionThread(KernelMode, FALSE, FIFTY_MICRO);
     }
 
-    reg32(NvRegLinkSpeed) = 0;
-    reg32(NvRegTransmitPoll) = 0;
+    reg32(NvRegTxRxControl) = 0;
 }
 
 int nvnetdrv_acquire_tx_descriptors (size_t count)
