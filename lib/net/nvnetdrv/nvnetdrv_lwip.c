@@ -92,16 +92,6 @@ void rx_callback (void *buffer, uint16_t length)
  */
 static err_t low_level_init (struct netif *netif)
 {
-    if (nvnetdrv_init(RX_BUFF_CNT, rx_callback, PBUF_POOL_SIZE) < 0) {
-        return ERR_IF;
-    }
-
-    /* set MAC hardware address length */
-    netif->hwaddr_len = ETHARP_HWADDR_LEN;
-
-    /* set MAC hardware address */
-    memcpy(netif->hwaddr, nvnetdrv_get_ethernet_addr(), 6);
-
     /* maximum transfer unit */
     netif->mtu = 1500;
 
@@ -122,6 +112,16 @@ static err_t low_level_init (struct netif *netif)
     }
 #endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
     g_pnetif = netif;
+
+    if (nvnetdrv_init(RX_BUFF_CNT, rx_callback, PBUF_POOL_SIZE) < 0) {
+        return ERR_IF;
+    }
+
+    /* set MAC hardware address length */
+    netif->hwaddr_len = ETHARP_HWADDR_LEN;
+
+    /* set MAC hardware address */
+    memcpy(netif->hwaddr, nvnetdrv_get_ethernet_addr(), 6);
 
     return ERR_OK;
 }
