@@ -283,6 +283,7 @@ static void nvnetdrv_handle_tx_irq (void)
         // If registered, call the users tx complete callback funciton.
         if (g_txData[g_txRingHead].callback) {
             g_txData[g_txRingHead].callback(g_txData[g_txRingHead].userdata);
+            g_txData[g_txRingHead].callback = NULL;
         }
 
         freed_descriptors++;
@@ -652,7 +653,7 @@ void nvnetdrv_stop (void)
     NtClose(g_irqThread);
 
     // Pass back all TX buffers to user.
-    for (int i = 0; i < g_txRingSize; i++) {
+    for (size_t i = g_txRingTail; i != g_txRingHead; i = (i + 1) % g_txRingSize) {
         if (g_txData[i].callback) {
             g_txData[i].callback(g_txData[i].userdata);
         }
