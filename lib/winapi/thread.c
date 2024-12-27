@@ -172,3 +172,31 @@ BOOL SetThreadPriority (HANDLE hThread, int nPriority)
     ObfDereferenceObject(thread);
     return TRUE;
 }
+
+DWORD SuspendThread (HANDLE hThread)
+{
+    ULONG PreviousSuspendCount;
+    NTSTATUS status;
+
+    status = NtSuspendThread(hThread, &PreviousSuspendCount);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return -1;
+    }
+
+    return PreviousSuspendCount;
+}
+
+DWORD ResumeThread (HANDLE hThread)
+{
+    ULONG PreviousResumeCount;
+    NTSTATUS status;
+
+    status = NtResumeThread(hThread, &PreviousResumeCount);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return -1;
+    }
+
+    return PreviousResumeCount;
+}

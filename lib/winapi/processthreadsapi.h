@@ -23,6 +23,8 @@ DWORD GetThreadId (HANDLE Thread);
 BOOL SwitchToThread (VOID);
 
 BOOL SetThreadPriority (HANDLE hThread, int nPriority);
+DWORD SuspendThread (HANDLE hThread);
+DWORD ResumeThread (HANDLE hThread);
 
 DWORD TlsAlloc (void);
 BOOL TlsFree (DWORD dwTlsIndex);
