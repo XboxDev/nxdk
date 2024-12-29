@@ -659,16 +659,16 @@ void nvnetdrv_stop (void)
     }
 
     // Free all TX descriptors g_txRingFreeCount so nvnetdrv_acquire_tx_descriptors will return.
-    KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, g_txPendingCount, NULL);
+    KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, g_txPendingCount, FALSE);
 
     // End rxrequeue_thread
     nvnetdrv_rx_push(g_rxRingUserBuffers); // Just push a buffer into stack so we dont get stuck waiting for one
-    KeReleaseSemaphore(&g_rxRingFreeDescriptors, IO_NETWORK_INCREMENT, 1, NULL);
+    KeReleaseSemaphore(&g_rxRingFreeDescriptors, IO_NETWORK_INCREMENT, 1, FALSE);
     NtWaitForSingleObject(g_rxRingRequeueThread, FALSE, NULL);
     NtClose(g_rxRingRequeueThread);
 
     // End rxcallback_thread
-    KeReleaseSemaphore(&g_rxPendingCount, IO_NETWORK_INCREMENT, 1, NULL);
+    KeReleaseSemaphore(&g_rxPendingCount, IO_NETWORK_INCREMENT, 1, FALSE);
     NtWaitForSingleObject(g_rxCallbackThread, FALSE, NULL);
     NtClose(g_rxCallbackThread);
 
