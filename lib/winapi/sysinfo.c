@@ -28,6 +28,11 @@ void GetSystemTime (LPSYSTEMTIME lpSystemTime)
     lpSystemTime->wDayOfWeek = timeFields.Weekday;
 }
 
+void GetSystemTimeAsFileTime (LPFILETIME lpSystemTimeAsFileTime)
+{
+    GetSystemTimePreciseAsFileTime(lpSystemTimeAsFileTime);
+}
+
 void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime)
 {
     assert(lpSystemTimeAsFileTime != NULL);

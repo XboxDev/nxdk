@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 void GetSystemTime (LPSYSTEMTIME lpSystemTime);
+void GetSystemTimeAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
 void GetSystemTimePreciseAsFileTime (LPFILETIME lpSystemTimeAsFileTime);
 DWORD GetTickCount (void);
 void GetLocalTime (LPSYSTEMTIME lpSystemTime);
