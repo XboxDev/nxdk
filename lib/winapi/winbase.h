@@ -140,6 +140,19 @@ BOOL IsBadWritePtr (LPVOID lp, UINT_PTR ucb);
 
 BOOL GetOverlappedResult (HANDLE hFile, LPOVERLAPPED lpOverlapped, LPDWORD lpNumberOfBytesTransferred, BOOL bWait);
 
+static inline PVOID SecureZeroMemory (PVOID ptr, SIZE_T cnt)
+{
+    volatile char *cur_ptr = (volatile char *)ptr;
+    volatile char *end_ptr = (volatile char *)ptr + cnt;
+
+    while (cur_ptr < end_ptr) {
+        *cur_ptr = 0;
+        cur_ptr++;
+    }
+
+    return ptr;
+}
+
 #ifndef UNICODE
 #define OutputDebugString OutputDebugStringA
 #else
