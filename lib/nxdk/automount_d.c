@@ -32,4 +32,4 @@ __cdecl int automount_d_drive (void)
 
     return 0;
 }
-__attribute__((section(".CRT$XIT"))) int (__cdecl *const automount_d_drive_p)(void) = automount_d_drive;
+__attribute__((section(".CRT$XIT"), used)) int (__cdecl *const automount_d_drive_p)(void) = automount_d_drive;
