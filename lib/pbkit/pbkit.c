@@ -649,8 +649,16 @@ static DWORD pb_gr_handler(void)
                             if (nsource&NV_PGRAPH_NSOURCE_DATA_ERROR_PENDING) debugPrint("GPU Error : invalid data error!\n");
                             if (nsource&NV_PGRAPH_NSOURCE_PROTECTION_ERROR_PENDING) debugPrint("GPU Error : protection error!\n");
                             if (nsource&NV_PGRAPH_NSOURCE_RANGE_EXCEPTION_PENDING) debugPrint("GPU Error : range exception error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_COLOR_PENDING) debugPrint("GPU Error : color buffer limit error!\n");
-                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_ZETA_PENDING) debugPrint("GPU Error : zeta buffer limit error!\n");
+                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_COLOR_PENDING)
+                            {
+                                uint32_t limit_details = VIDEOREG(0x00400800);
+                                debugPrint("GPU Error : color buffer limit error! 0x%X\n", limit_details);
+                            }
+                            if (nsource&NV_PGRAPH_NSOURCE_LIMIT_ZETA_PENDING)
+                            {
+                                uint32_t limit_details = VIDEOREG(0x00400800);
+                                debugPrint("GPU Error : zeta buffer limit error! 0x%X\n", limit_details);
+                            }
                             if (nsource&NV_PGRAPH_NSOURCE_DMA_R_PROTECTION_PENDING) debugPrint("GPU Error : dma read protection error!\n");
                             if (nsource&NV_PGRAPH_NSOURCE_DMA_W_PROTECTION_PENDING) debugPrint("GPU Error : dma write protection error!\n");
                             if (nsource&NV_PGRAPH_NSOURCE_FORMAT_EXCEPTION_PENDING) debugPrint("GPU Error : format exception error!\n");
