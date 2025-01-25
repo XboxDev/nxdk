@@ -1892,8 +1892,7 @@ static void set_draw_buffer(DWORD buffer_addr)
 
     depth_stencil=1;
 
-    if (depth_stencil!=-1) //don't care
-    if (pb_DepthStencilLast!=depth_stencil) //changed?
+    if (depth_stencil != -1 && pb_DepthStencilLast != depth_stencil) // stencil changed?
     {
         //DMA channel 10 is used by GPU in order to render depth stencil
         if (depth_stencil)
