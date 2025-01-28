@@ -28,6 +28,11 @@ typedef struct nx_net_parameters_t_
     // ipv6 static ip fields
 } nx_net_parameters_t;
 
+/**
+ * Initializes the networking subsystem.
+ * @param parameters nx_net_parameters_t containing configuration data
+ * @return 0 on success, negative values indicate various errors.
+ */
 int nxNetInit(const nx_net_parameters_t *parameters);
 int nxNetShutdown();
 

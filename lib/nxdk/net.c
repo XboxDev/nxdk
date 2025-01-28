@@ -153,3 +153,8 @@ int nxNetInit(const nx_net_parameters_t *parameters)
 
     return 0;
 }
+
+int nxNetShutdown()
+{
+    return 0;
+}
