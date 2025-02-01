@@ -12,8 +12,7 @@
 #include <stdlib.h>
 #include <xboxkrnl/xboxkrnl.h>
 
-#define NVNET_MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define NVNET_RX_EMPTY  (NULL)
+#define NVNET_RX_EMPTY (NULL)
 
 struct __attribute__((packed)) descriptor_t
 {
@@ -91,7 +90,7 @@ static KSEMAPHORE g_rxPendingCount;
 static atomic_size_t g_rxRingTail;
 static atomic_size_t g_txRingTail;
 static KSEMAPHORE g_txRingFreeCount;
-struct tx_misc_t g_txData[TX_RING_SIZE];
+struct tx_misc_t *g_txData;
 static uint8_t *g_rxRingUserBuffers;
 static uint32_t g_rxRingBufferVtoP;
 
@@ -176,7 +175,7 @@ static inline uint32_t nvnetdrv_rx_vtop (uint32_t virt_address)
 
 static void nvnetdrv_rx_requeue (size_t buffer_index)
 {
-    assert(buffer_index < RX_RING_SIZE);
+    assert(buffer_index < g_rxRingSize);
     void *rx_buff = nvnetdrv_rx_pop();
     assert(rx_buff != NULL);
     g_rxRing[buffer_index].paddr = nvnetdrv_rx_vtop((uint32_t)rx_buff);
@@ -258,7 +257,7 @@ static void nvnetdrv_handle_rx_irq (void)
     next_packet:
         rx_packet->paddr = NVNET_RX_EMPTY;
         freed_descriptors++;
-        g_rxRingHead = (g_rxRingHead + 1) % RX_RING_SIZE;
+        g_rxRingHead = (g_rxRingHead + 1) % g_rxRingSize;
     }
     KeReleaseSemaphore(&g_rxRingFreeDescriptors, IO_NETWORK_INCREMENT, freed_descriptors, FALSE);
     INC_STAT(rx_interrupts, 1);
@@ -287,7 +286,7 @@ static void nvnetdrv_handle_tx_irq (void)
         }
 
         freed_descriptors++;
-        g_txRingHead = (g_txRingHead + 1) % TX_RING_SIZE;
+        g_txRingHead = (g_txRingHead + 1) % g_txRingSize;
         g_txPendingCount--;
     }
 
@@ -334,19 +333,25 @@ static void nvnetdrv_handle_irq (void)
             break;
         }
 
+        // We need to handle MII irq before acknowledging it to prevent link state IRQ occurring
+        // during polling of the link state register
+        if (irq & NVREG_IRQ_LINK) {
+            nvnetdrv_handle_mii_irq(mii, false);
+        }
+
         // Acknowledge interrupts
         reg32(NvRegMIIStatus) = mii;
         reg32(NvRegIrqStatus) = irq;
 
-        // Handle interrupts
+        // Handle TX/RX interrupts
         if (irq & NVREG_IRQ_RX_ALL) {
             nvnetdrv_handle_rx_irq();
         }
         if (irq & NVREG_IRQ_TX_ALL) {
             nvnetdrv_handle_tx_irq();
         }
-        if (irq & NVREG_IRQ_LINK) {
-            nvnetdrv_handle_mii_irq(mii, false);
+        if (irq & NVREG_IRQ_RX_NOBUF) {
+            reg32(NvRegTxRxControl) = NVREG_TXRXCTL_GET;
         }
     }
 }
@@ -386,7 +391,7 @@ static void NTAPI rxrequeue_thread (PKSTART_ROUTINE StartRoutine, PVOID StartCon
 
         do {
             nvnetdrv_rx_requeue(g_rxRingTail);
-            g_rxRingTail = (g_rxRingTail + 1) % RX_RING_SIZE;
+            g_rxRingTail = (g_rxRingTail + 1) % g_rxRingSize;
         } while (g_running && KeWaitForSingleObject(&g_rxRingFreeDescriptors, Executive, KernelMode, FALSE, NO_SLEEP) ==
                                   STATUS_SUCCESS);
     }
@@ -424,7 +429,7 @@ const uint8_t *nvnetdrv_get_ethernet_addr ()
     return g_ethAddr;
 }
 
-int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
+int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, size_t tx_queue_size)
 {
     assert(!g_running);
     assert(rx_callback);
@@ -432,6 +437,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
 
     g_rxCallback = rx_callback;
     g_rxRingSize = rx_buffer_count;
+    g_txRingSize = tx_queue_size;
 
     // Get Mac Address from EEPROM
     ULONG type;
@@ -441,9 +447,16 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
     }
 
     // Allocate memory for TX and RX ring descriptors.
-    void *descriptors = MmAllocateContiguousMemoryEx((RX_RING_SIZE + TX_RING_SIZE) * sizeof(struct descriptor_t), 0,
+    void *descriptors = MmAllocateContiguousMemoryEx((g_rxRingSize + g_txRingSize) * sizeof(struct descriptor_t), 0,
                                                      0xFFFFFFFF, 0, PAGE_READWRITE);
     if (!descriptors) {
+        return NVNET_NO_MEM;
+    }
+
+    // Allocate memory to store data associated with outgoing and incoming transfers
+    g_txData = malloc(g_txRingSize * sizeof(struct tx_misc_t));
+    if (!g_txData) {
+        MmFreeContiguousMemory(descriptors);
         return NVNET_NO_MEM;
     }
 
@@ -452,6 +465,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
         MmAllocateContiguousMemoryEx(g_rxRingSize * NVNET_RX_BUFF_LEN, 0, 0xFFFFFFFF, 0, PAGE_READWRITE);
     if (!g_rxRingUserBuffers) {
         MmFreeContiguousMemory(descriptors);
+        free(g_txData);
         return NVNET_NO_MEM;
     }
 
@@ -460,6 +474,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
     if (!g_rxBuffPool) {
         MmFreeContiguousMemory(descriptors);
         MmFreeContiguousMemory(g_rxRingUserBuffers);
+        free(g_txData);
         return NVNET_NO_MEM;
     }
 
@@ -469,10 +484,11 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
         MmFreeContiguousMemory(descriptors);
         MmFreeContiguousMemory(g_rxRingUserBuffers);
         free(g_rxBuffPool);
+        free(g_txData);
         return NVNET_NO_MEM;
     }
 
-    RtlZeroMemory(descriptors, (RX_RING_SIZE + TX_RING_SIZE) * sizeof(struct descriptor_t));
+    RtlZeroMemory(descriptors, (g_rxRingSize + g_txRingSize) * sizeof(struct descriptor_t));
     RtlZeroMemory(g_rxCallbackQueue, g_rxRingSize * sizeof(struct rx_misc_t));
     RtlZeroMemory(g_rxBuffPool, g_rxRingSize * sizeof(void *));
 
@@ -482,22 +498,20 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
     KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
     reg32(NvRegTxRxControl) = 0;
     KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
-
-    // Disable interrupts while we initialise the NIC
-    reg32(NvRegIrqMask) = 0;
     reg32(NvRegMIIMask) = 0;
+    reg32(NvRegIrqMask) = 0;
+    reg32(NvRegWakeUpFlags) = 0;
+    reg32(NvRegPollingControl) = 0;
+    reg32(NvRegTxRingPhysAddr) = 0;
+    reg32(NvRegRxRingPhysAddr) = 0;
+    reg32(NvRegTransmitPoll) = 0;
+    reg32(NvRegLinkSpeed) = 0;
 
     // Acknowledge any existing interrupts status bits
     reg32(NvRegTransmitterStatus) = reg32(NvRegTransmitterStatus);
     reg32(NvRegReceiverStatus) = reg32(NvRegReceiverStatus);
     reg32(NvRegIrqStatus) = reg32(NvRegIrqStatus);
     reg32(NvRegMIIStatus) = reg32(NvRegMIIStatus);
-
-    // Clear latent registers
-    reg32(NvRegWakeUpFlags) = 0;
-    reg32(NvRegPollingControl) = 0;
-    reg32(NvRegTransmitPoll) = 0;
-    reg32(NvRegLinkSpeed) = 0;
 
     // Reset local ring tracking variables
     g_rxRingHead = 0;
@@ -509,7 +523,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
 
     // Setup the TX and RX ring descriptor pointers
     g_rxRing = (volatile struct descriptor_t *)descriptors;
-    g_txRing = (volatile struct descriptor_t *)descriptors + RX_RING_SIZE;
+    g_txRing = (volatile struct descriptor_t *)descriptors + g_rxRingSize;
 
     // Remember the offset between virtual and physical address
     g_rxRingBufferVtoP = ((uint32_t)g_rxRingUserBuffers) - (uint32_t)MmGetPhysicalAddress(g_rxRingUserBuffers);
@@ -537,7 +551,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
     // Point the NIC to our TX and RX ring buffers. NIC expects Ring size as size-1.
     reg32(NvRegTxRingPhysAddr) = MmGetPhysicalAddress((void *)g_txRing);
     reg32(NvRegRxRingPhysAddr) = MmGetPhysicalAddress((void *)g_rxRing);
-    reg32(NvRegRingSizes) = ((RX_RING_SIZE - 1) << NVREG_RINGSZ_RXSHIFT) | ((TX_RING_SIZE - 1) << NVREG_RINGSZ_TXSHIFT);
+    reg32(NvRegRingSizes) = ((g_rxRingSize - 1) << NVREG_RINGSZ_RXSHIFT) | ((g_txRingSize - 1) << NVREG_RINGSZ_TXSHIFT);
 
     // Prepare for Phy Init
     reg32(NvRegAdapterControl) = (1 << NVREG_ADAPTCTL_PHYSHIFT) | NVREG_ADAPTCTL_PHYVALID;
@@ -566,8 +580,8 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
 
     // We use semaphores to track the number of free TX and RX ring descriptors, the number of free RX buffers
     // available to be queued in the RX ring and the number of pending rx callbacks.
-    KeInitializeSemaphore(&g_txRingFreeCount, TX_RING_SIZE, TX_RING_SIZE);
-    KeInitializeSemaphore(&g_rxRingFreeDescriptors, RX_RING_SIZE, RX_RING_SIZE);
+    KeInitializeSemaphore(&g_txRingFreeCount, g_txRingSize, g_txRingSize);
+    KeInitializeSemaphore(&g_rxRingFreeDescriptors, g_rxRingSize, g_rxRingSize);
     KeInitializeSemaphore(&g_rxFreeBuffers, 0, g_rxRingSize);
     KeInitializeSemaphore(&g_rxPendingCount, 0, g_rxRingSize);
 
@@ -581,13 +595,13 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback)
     }
 
     // Fill our rx ring descriptor. g_rxRingSize may be less than the ring size, so only fill what we can.
-    for (uint32_t i = 0; i < NVNET_MIN(g_rxRingSize, RX_RING_SIZE); i++) {
+    for (uint32_t i = 0; i < g_rxRingSize; i++) {
         KeWaitForSingleObject(&g_rxRingFreeDescriptors, Executive, KernelMode, FALSE, NULL);
         nvnetdrv_rx_requeue(i);
     }
 
     // g_rxRingTail stores the position in the RX ring that is empty or about to be empty on the next packet.
-    g_rxRingTail = NVNET_MIN(g_rxRingSize, RX_RING_SIZE) % RX_RING_SIZE;
+    g_rxRingTail = g_rxRingSize % g_rxRingSize;
 
     // Get link speed settings from Phy
     nvnetdrv_handle_mii_irq(0, true);
@@ -625,15 +639,6 @@ void nvnetdrv_stop (void)
 
     KeDisconnectInterrupt(&g_interrupt);
 
-    // Disable DMA and wait for it to idle, re-checking every 50 microseconds
-    reg32(NvRegTxRxControl) = NVREG_TXRXCTL_DISABLE;
-    for (int i = 0; i < 10000; i++) {
-        if (reg32(NvRegTxRxControl) & NVREG_TXRXCTL_IDLE) {
-            break;
-        }
-        KeDelayExecutionThread(KernelMode, FALSE, FIFTY_MICRO);
-    }
-
     // Stop NIC processing rings
     nvnetdrv_stop_txrx();
 
@@ -647,23 +652,23 @@ void nvnetdrv_stop (void)
     NtClose(g_irqThread);
 
     // Pass back all TX buffers to user.
-    for (int i = 0; i < TX_RING_SIZE; i++) {
+    for (int i = 0; i < g_txRingSize; i++) {
         if (g_txData[i].callback) {
             g_txData[i].callback(g_txData[i].userdata);
         }
     }
 
     // Free all TX descriptors g_txRingFreeCount so nvnetdrv_acquire_tx_descriptors will return.
-    KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, g_txPendingCount, NULL);
+    KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, g_txPendingCount, FALSE);
 
     // End rxrequeue_thread
     nvnetdrv_rx_push(g_rxRingUserBuffers); // Just push a buffer into stack so we dont get stuck waiting for one
-    KeReleaseSemaphore(&g_rxRingFreeDescriptors, IO_NETWORK_INCREMENT, 1, NULL);
+    KeReleaseSemaphore(&g_rxRingFreeDescriptors, IO_NETWORK_INCREMENT, 1, FALSE);
     NtWaitForSingleObject(g_rxRingRequeueThread, FALSE, NULL);
     NtClose(g_rxRingRequeueThread);
 
     // End rxcallback_thread
-    KeReleaseSemaphore(&g_rxPendingCount, IO_NETWORK_INCREMENT, 1, NULL);
+    KeReleaseSemaphore(&g_rxPendingCount, IO_NETWORK_INCREMENT, 1, FALSE);
     NtWaitForSingleObject(g_rxCallbackThread, FALSE, NULL);
     NtClose(g_rxCallbackThread);
 
@@ -702,14 +707,20 @@ void nvnetdrv_stop_txrx (void)
         KeDelayExecutionThread(KernelMode, FALSE, TEN_MICRO);
     }
 
-    reg32(NvRegLinkSpeed) = 0;
-    reg32(NvRegTransmitPoll) = 0;
+    // Disable DMA and wait for it to idle, re-checking every 50 microseconds
+    reg32(NvRegTxRxControl) = NVREG_TXRXCTL_DISABLE;
+    for (int i = 0; i < 10000; i++) {
+        if (reg32(NvRegTxRxControl) & NVREG_TXRXCTL_IDLE) {
+            break;
+        }
+        KeDelayExecutionThread(KernelMode, FALSE, FIFTY_MICRO);
+    }
+
+    reg32(NvRegTxRxControl) = 0;
 }
 
 int nvnetdrv_acquire_tx_descriptors (size_t count)
 {
-    NTSTATUS status;
-
     // Sanity check
     assert(count > 0);
     // Avoid excessive requests
@@ -719,40 +730,21 @@ int nvnetdrv_acquire_tx_descriptors (size_t count)
         return false;
     }
 
-    while (true) {
-        // Wait for TX descriptors to become available
-        KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, NULL);
-
-        if (!g_running) {
-            return false;
-        }
-
-        // We want to try claim all tx descriptors at once without sleeping.
-        size_t i = 0;
-        for (i = 0; i < count - 1; i++) {
-            // Try to acquire remaining descriptors without sleeping
-            status = KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, NO_SLEEP);
-            if (!NT_SUCCESS(status) || status == STATUS_TIMEOUT) {
-                // Couldn't acquire all at once, back off
-                KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, i + 1, NULL);
-                if (status == STATUS_TIMEOUT) {
-                    // Sleep for 10 microseconds to avoid immediate re-locking
-                    KeDelayExecutionThread(UserMode, FALSE, TEN_MICRO);
-                    // Retry
-                    break;
-                } else {
-                    return false;
-                }
+    // First let's try claim descriptors without sleeping, if that fails we sleep
+    PLARGE_INTEGER timeout = NO_SLEEP;
+    for (size_t i = 0; i < count; i++) {
+        NTSTATUS status = KeWaitForSingleObject(&g_txRingFreeCount, Executive, KernelMode, FALSE, timeout);
+        if (!NT_SUCCESS(status) || !g_running) {
+            if (i > 0) {
+                KeReleaseSemaphore(&g_txRingFreeCount, IO_NETWORK_INCREMENT, i, FALSE);
             }
-        }
-
-        if (!g_running) {
+            assert(!g_running);
             return false;
         }
-
-        // If we have claimed all the tx descriptors. We are done.
-        if (i == (count - 1)) {
-            break;
+        // Try again, but wait now
+        if (status == STATUS_TIMEOUT) {
+            i--;
+            timeout = NULL;
         }
     }
     return true;
@@ -778,11 +770,12 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
     // We don't check for buffer overrun here, because the Semaphore already protects us
     size_t descriptors_index = g_txRingTail;
     while (
-        !atomic_compare_exchange_weak(&g_txRingTail, &descriptors_index, (descriptors_index + count) % TX_RING_SIZE))
-        ;
+        !atomic_compare_exchange_weak(&g_txRingTail, &descriptors_index, (descriptors_index + count) % g_txRingSize)) {
+        descriptors_index = g_txRingTail;
+    }
 
     for (size_t i = 0; i < count; i++) {
-        size_t current_descriptor_index = (descriptors_index + i) % TX_RING_SIZE;
+        size_t current_descriptor_index = (descriptors_index + i) % g_txRingSize;
 
         g_txData[current_descriptor_index].bufAddr = buffers[i].addr;
         g_txData[current_descriptor_index].length = buffers[i].length;
@@ -797,13 +790,13 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
     }
 
     // Terminate descriptor chain
-    g_txRing[(descriptors_index + count - 1) % TX_RING_SIZE].flags |= NV_TX_LASTPACKET;
-
-    // Enable first descriptor last to keep the NIC from sending incomplete packets
-    g_txRing[descriptors_index].flags |= NV_TX_VALID;
+    g_txRing[(descriptors_index + count - 1) % g_txRingSize].flags |= NV_TX_LASTPACKET;
 
     // Keep track of how many descriptors are in use
     g_txPendingCount += count;
+
+    // Enable first descriptor last to keep the NIC from sending incomplete packets
+    g_txRing[descriptors_index].flags |= NV_TX_VALID;
 
     // Inform that NIC that we have TX packet waiting
     reg32(NvRegTxRxControl) = NVREG_TXRXCTL_KICK;
