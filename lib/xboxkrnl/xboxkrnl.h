@@ -184,7 +184,7 @@ typedef struct _TIME_FIELDS
     SHORT Hour; /**< Specifies a value from 0 to 23 */
     SHORT Minute; /**< Specifies a value from 0 to 59 */
     SHORT Second; /**< Specifies a value from 0 to 59 */
-    SHORT Millisecond; /**< Specifies a value from 0 to 999 */
+    SHORT Milliseconds; /**< Specifies a value from 0 to 999 */
     SHORT Weekday; /**< Specifies a value from 0 to 6 (Sunday to Saturday) */
 } TIME_FIELDS, *PTIME_FIELDS;
 

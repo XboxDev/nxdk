@@ -24,7 +24,7 @@ void GetSystemTime (LPSYSTEMTIME lpSystemTime)
     lpSystemTime->wHour = timeFields.Hour;
     lpSystemTime->wMinute = timeFields.Minute;
     lpSystemTime->wSecond = timeFields.Second;
-    lpSystemTime->wMilliseconds = timeFields.Millisecond;
+    lpSystemTime->wMilliseconds = timeFields.Milliseconds;
     lpSystemTime->wDayOfWeek = timeFields.Weekday;
 }
 
@@ -92,6 +92,6 @@ void GetLocalTime (LPSYSTEMTIME lpSystemTime)
     lpSystemTime->wHour = timeFields.Hour;
     lpSystemTime->wMinute = timeFields.Minute;
     lpSystemTime->wSecond = timeFields.Second;
-    lpSystemTime->wMilliseconds = timeFields.Millisecond;
+    lpSystemTime->wMilliseconds = timeFields.Milliseconds;
     lpSystemTime->wDayOfWeek = timeFields.Weekday;
 }
