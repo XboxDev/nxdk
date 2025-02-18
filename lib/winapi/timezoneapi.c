@@ -242,3 +242,30 @@ BOOL FileTimeToSystemTime (const FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime
 
     return TRUE;
 }
+
+BOOL SystemTimeToFileTime (const SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime)
+{
+    if (!lpSystemTime || !lpFileTime) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    TIME_FIELDS timefields;
+    timefields.Year = lpSystemTime->wYear;
+    timefields.Month = lpSystemTime->wMonth;
+    timefields.Day = lpSystemTime->wDay;
+    timefields.Hour = lpSystemTime->wHour;
+    timefields.Minute = lpSystemTime->wMinute;
+    timefields.Second = lpSystemTime->wSecond;
+    timefields.Milliseconds = lpSystemTime->wMilliseconds;
+
+    LARGE_INTEGER filetime;
+    if (!RtlTimeFieldsToTime(&timefields, &filetime)) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    lpFileTime->dwLowDateTime = filetime.LowPart;
+    lpFileTime->dwHighDateTime = filetime.HighPart;
+    return TRUE;
+}

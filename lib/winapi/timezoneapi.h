@@ -31,6 +31,7 @@ typedef struct _TIME_ZONE_INFORMATION
 DWORD GetTimeZoneInformation (LPTIME_ZONE_INFORMATION lpTimeZoneInformation);
 
 BOOL FileTimeToSystemTime (const FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime);
+BOOL SystemTimeToFileTime (const SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime);
 
 #ifdef __cplusplus
 }
