@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 // SPDX-FileCopyrightText: 2023 Ryan Wendland
+// SPDX-FileCopyrightText: 2025 Stefan Schmidt
 
 #ifndef __TIMEZONEAPI_H__
 #define __TIMEZONEAPI_H__
@@ -28,6 +29,8 @@ typedef struct _TIME_ZONE_INFORMATION
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
 DWORD GetTimeZoneInformation (LPTIME_ZONE_INFORMATION lpTimeZoneInformation);
+
+BOOL FileTimeToSystemTime (const FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime);
 
 #ifdef __cplusplus
 }
