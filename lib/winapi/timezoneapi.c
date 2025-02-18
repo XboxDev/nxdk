@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 
 // SPDX-FileCopyrightText: 2023 Ryan Wendland
+// SPDX-FileCopyrightText: 2025 Stefan Schmidt
 
 #include <assert.h>
 #include <string.h>
 #include <timezoneapi.h>
+#include <winerror.h>
 #include <winbase.h>
 #include <xboxkrnl/xboxkrnl.h>
 
@@ -209,4 +211,34 @@ DWORD GetTimeZoneInformation (LPTIME_ZONE_INFORMATION lpTimeZoneInformation)
     } else {
         return TIME_ZONE_ID_STANDARD;
     }
+}
+
+BOOL FileTimeToSystemTime (const FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime)
+{
+    if (!lpFileTime || !lpSystemTime) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    LARGE_INTEGER filetime;
+    filetime.LowPart = lpFileTime->dwLowDateTime;
+    filetime.HighPart = lpFileTime->dwHighDateTime;
+    if (filetime.QuadPart < 0) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    TIME_FIELDS timefields;
+    RtlTimeToTimeFields(&filetime, &timefields);
+
+    lpSystemTime->wYear = timefields.Year;
+    lpSystemTime->wMonth = timefields.Month;
+    lpSystemTime->wDay = timefields.Day;
+    lpSystemTime->wDayOfWeek = timefields.Weekday;
+    lpSystemTime->wHour = timefields.Hour;
+    lpSystemTime->wMinute = timefields.Minute;
+    lpSystemTime->wSecond = timefields.Second;
+    lpSystemTime->wMilliseconds = timefields.Milliseconds;
+
+    return TRUE;
 }
