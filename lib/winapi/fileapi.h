@@ -18,6 +18,7 @@ DWORD GetFileAttributesA (LPCSTR lpFileName);
 BOOL GetFileAttributesExA (LPCSTR lpFileName, GET_FILEEX_INFO_LEVELS fInfoLevelId, LPVOID lpFileInformation);
 BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes);
 
+LONG CompareFileTime (const FILETIME *lpFileTime1, const FILETIME *lpFileTime2);
 BOOL GetFileTime (HANDLE hFile, LPFILETIME lpCreationTime, LPFILETIME lpLastAccessTime, LPFILETIME lpLastWriteTime);
 BOOL SetFileTime (HANDLE hFile, const FILETIME *lpCreationTime, const FILETIME *lpLastAccessTime, const FILETIME *lpLastWriteTime);
 

@@ -106,6 +106,28 @@ BOOL SetFileAttributesA (LPCSTR lpFileName, DWORD dwFileAttributes)
     return TRUE;
 }
 
+LONG CompareFileTime (const FILETIME *lpFileTime1, const FILETIME *lpFileTime2)
+{
+    ULARGE_INTEGER filetime1;
+    ULARGE_INTEGER filetime2;
+
+    assert(lpFileTime1 != NULL);
+    assert(lpFileTime2 != NULL);
+
+    filetime1.LowPart = lpFileTime1->dwLowDateTime;
+    filetime1.HighPart = lpFileTime1->dwHighDateTime;
+    filetime2.LowPart = lpFileTime2->dwLowDateTime;
+    filetime2.HighPart = lpFileTime2->dwHighDateTime;
+
+    if (filetime1.QuadPart < filetime2.QuadPart) {
+        return -1;
+    }
+    if (filetime1.QuadPart > filetime2.QuadPart) {
+        return 1;
+    }
+    return 0;
+}
+
 BOOL GetFileTime (HANDLE hFile, LPFILETIME lpCreationTime, LPFILETIME lpLastAccessTime, LPFILETIME lpLastWriteTime)
 {
     NTSTATUS status;
