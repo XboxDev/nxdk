@@ -16,7 +16,7 @@ Notable features:
 
 Build Status
 ------
-![CI Status for "Build Samples"](https://github.com/XboxDev/nxdk/workflows/Build%20Samples/badge.svg?branch=master&event=push)
+![CI Status for "Build Samples"](https://github.com/XboxDev/nxdk/actions/workflows/build_samples.yml/badge.svg)
 
 Status
 ------
