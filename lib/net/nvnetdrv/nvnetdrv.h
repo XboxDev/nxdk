@@ -10,13 +10,6 @@
 #include <stdint.h>
 #include <xboxkrnl/xboxkrnl.h>
 
-#ifndef RX_RING_SIZE
-#define RX_RING_SIZE 64
-#endif
-#ifndef TX_RING_SIZE
-#define TX_RING_SIZE 64
-#endif
-
 // Must be greater than max ethernet frame size. A multiple of page size prevents page boundary crossing
 #define NVNET_RX_BUFF_LEN (PAGE_SIZE / 2)
 
@@ -50,12 +43,12 @@ void nvnetdrv_start_txrx (void);
 
 /**
  * Initialised the low level NIC hardware.
- * @param rx_buffer_count The number of receive buffers to reserve. This should be atleast two.
- * Recommend this this equal to or greater than RX_RING_SIZE.
+ * @param rx_buffer_count The number of receive buffers to reserve for network packets
  * @param rx_callback. Pointer to a callback function that is called when a new packet is received by the NIC.
+ * @param tx_queue_size. How many packets can be queued for transfer simultaneously.
  * @return NVNET_OK or the error.
  */
-int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback);
+int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, size_t tx_queue_size);
 
 /**
  * Stop the low level NIC hardware. Should be called after nvnetdrv_init() to shutdown the NIC hardware.
