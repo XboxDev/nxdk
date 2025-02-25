@@ -1,3 +1,8 @@
+#ifndef _NV_REGS_H_
+#define _NV_REGS_H_
+
+// clang-format off
+
 #define NV_KELVIN_PRIMITIVE                              0x0097
 #   define NV097_NO_OPERATION                                 0x00000100
 #   define NV097_WAIT_FOR_IDLE                                0x00000110
@@ -734,3 +739,5 @@
 #   define NV097_SET_TRANSFORM_PROGRAM_LOAD                   0x00001E9C
 #   define NV097_SET_TRANSFORM_PROGRAM_START                  0x00001EA0
 #   define NV097_SET_TRANSFORM_CONSTANT_LOAD                  0x00001EA4
+
+#endif // _NV_REGS_H_
