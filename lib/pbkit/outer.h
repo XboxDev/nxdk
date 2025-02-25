@@ -1,3 +1,8 @@
+#ifndef _PBKIT_OUTER_H_
+#define _PBKIT_OUTER_H_
+
+// clang-format off
+
 //based on nv10reg.h (rules) file
 
 //this part already exists in openxdk hal/video.h header (openxdk header)
@@ -520,3 +525,5 @@
 #define NV_PRAMIN						0x00700000
 
 #define NV_USER							0x00800000
+
+#endif // _PBKIT_OUTER_H_

@@ -1,0 +1,19 @@
+BasedOnStyle: Microsoft
+ColumnLimit: 0
+IndentCaseLabels: true
+AlignTrailingComments: true
+AlignConsecutiveMacros: true
+InsertBraces: true
+
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements: true
+  AfterFunctionDefinitionName: false
+  AfterFunctionDeclarationName: false
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: false
+  AfterExternBlock: false
+  BeforeElse: false
+  AfterUnion: true
