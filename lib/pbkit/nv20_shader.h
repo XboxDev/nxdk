@@ -1,3 +1,7 @@
+#ifndef _NV20_SHADER_H_
+#define _NV20_SHADER_H_
+
+// clang-format off
 
 /* NV20_TCL_PRIMITIVE_3D_0x0B00 */
 #define NV20_VP_INST_0B00	0x00000000 /* always 0 */
@@ -129,3 +133,5 @@
 #define NV20_VP_SRC_REG_TYPE_TEMP	1
 #define NV20_VP_SRC_REG_TYPE_INPUT	2
 #define NV20_VP_SRC_REG_TYPE_CONST	3
+
+#endif // _NV20_SHADER_H_

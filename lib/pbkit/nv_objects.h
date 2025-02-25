@@ -1,3 +1,8 @@
+#ifndef _NV_OBJECTS_H_
+#define _NV_OBJECTS_H_
+
+// clang-format off
+
 /* Data */
 #define STOP                        0x00000000
 #define POINTS                      0x00000001
@@ -1230,3 +1235,5 @@ NV20_TCL_PRIMITIVE_3D      [0x1d78/4] = 0x00000001 | UNKNOWN = 00000001
 #define NV20_TCL_PRIMITIVE_3D_VIEWPORT_ORIGIN_Y				0x00001f04
 #define NV20_TCL_PRIMITIVE_3D_VIEWPORT_ORIGIN_Z				0x00001f08
 #define NV20_TCL_PRIMITIVE_3D_VIEWPORT_ORIGIN_W				0x00001f0c
+
+#endif // _NV_OBJECTS_H_

@@ -1,3 +1,5 @@
+// clang-format off
+
 //pbKit header
 
 // SPDX-License-Identifier: MIT
@@ -26,6 +28,10 @@ extern "C"
 #include "outer.h"
 #include "nv_objects.h"
 #include "nv_regs.h"
+#include "pbkit_draw.h"
+#include "pbkit_framebuffer.h"
+#include "pbkit_print.h"
+#include "pbkit_pushbuffer.h"
 
 //4x4 matrices indexes
 #define _11                 0
@@ -73,32 +79,10 @@ int pb_finished(void);  //prepare screen swapping at VBlank (do it at frame end)
 void pb_wait_until_gr_not_busy(void);
 DWORD pb_wait_until_tiles_not_busy(void);
 
-uint32_t   *pb_begin(void);    //start a block with this (avoid more than 128 dwords per block)
-void    pb_push_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD nparam);
-uint32_t   *pb_push1_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1);
-uint32_t   *pb_push2_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2);
-uint32_t   *pb_push3_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-uint32_t   *pb_push4_to(DWORD subchannel, uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-uint32_t   *pb_push4f_to(DWORD subchannel, uint32_t *p, DWORD command, float param1, float param2, float param3, float param4);
-void    pb_push(uint32_t *p, DWORD command, DWORD nparam);
-uint32_t   *pb_push1(uint32_t *p, DWORD command, DWORD param1);
-uint32_t   *pb_push2(uint32_t *p, DWORD command, DWORD param1, DWORD param2);
-uint32_t   *pb_push3(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3);
-uint32_t   *pb_push4(uint32_t *p, DWORD command, DWORD param1, DWORD param2, DWORD param3, DWORD param4);
-uint32_t   *pb_push4f(uint32_t *p, DWORD command, float param1, float param2, float param3, float param4);
-uint32_t   *pb_push_transposed_matrix(uint32_t *p, DWORD command, float *m);
-void    pb_end(uint32_t *pEnd);    //end a block with this (triggers the data sending to GPU)
-
 void    pb_extra_buffers(int n);//requests additional back buffers (default is 0) (call it before pb_init)
 void    pb_size(DWORD size);    //sets push buffer size (default is 512Kb) (call it before pb_init)
-void    pb_set_color_format(unsigned int fmt, bool swizzled); // sets color surface format (call it before pb_init)
 int     pb_init(void);      //returns 0 if everything went well (starts Dma engine)
 void    pb_kill(void);      //stops Dma engine and releases push buffer
-
-void    pb_print(const char *format, ...);  //populates a text screen array
-void    pb_printat(int row, int col, char *format, ...);    //populates a text screen array
-void    pb_erase_text_screen(void); //clears array
-void    pb_draw_text_screen(void);  //converts array into drawing sequences
 
 void    pb_target_extra_buffer(int n);  //to have rendering made into a static extra buffer
 void    pb_target_back_buffer(void);    //to have rendering made into normal rotating back buffer
@@ -109,13 +93,9 @@ DWORD   pb_back_buffer_width(void);
 DWORD   pb_back_buffer_height(void);
 DWORD   pb_back_buffer_pitch(void);
 
-void    pb_fill(int x,int y,int w,int h, DWORD color);  //rectangle fill
-
 void    pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax);
 
 int pb_busy(void);
-
-void pb_print_char(char c);
 
 #ifdef __cplusplus
 }

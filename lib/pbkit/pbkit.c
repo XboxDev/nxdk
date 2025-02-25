@@ -1,3 +1,5 @@
+// clang-format off
+
 //pbKit core functions
 
 // SPDX-License-Identifier: MIT
@@ -26,11 +28,9 @@
 #include "nv20_shader.h" //(search "nouveau" on wiki)
 
 
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 //a macro used to build up a valid method
 #define EncodeMethod(subchannel,command,nparam) ((nparam<<18)+(subchannel<<13)+command)
@@ -78,7 +78,7 @@ struct s_CtxDma
     DWORD               isGr;
 };
 
-static unsigned int pb_ColorFmt = NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8;
+unsigned int pb_ColorFmt = NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8;
 static unsigned int pb_DepthFmt = NV097_SET_SURFACE_FORMAT_ZETA_Z24S8;
 
 static  int         pb_running=0;
@@ -113,7 +113,7 @@ static  DWORD           *pb_DmaBuffer8; //points at 32 contiguous bytes (Dma Cha
 static  DWORD           *pb_DmaBuffer2; //points at 32 contiguous bytes (Dma Channel ID 2 buffer)
 static  DWORD           *pb_DmaBuffer7; //points at 32 contiguous bytes (Dma Channel ID 7 buffer)
 
-static  DWORD           pb_Size=512*1024;//push buffer size, must be >64Kb and a power of 2
+static  DWORD           pb_Size=PBKIT_PUSHBUFFER_SIZE;//push buffer size, must be >64Kb and a power of 2
 static  uint32_t        *pb_Head;   //points at push buffer head
 static  uint32_t        *pb_Tail;   //points at push buffer tail
 static  uint32_t        *pb_Put=NULL;   //where next command+params are to be written
@@ -236,190 +236,6 @@ static HAL_SHUTDOWN_REGISTRATION pb_shutdown_registration;
 static void pb_load_gr_ctx(int ctx_id);
 static NTAPI VOID pb_shutdown_notification_routine (PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration);
 
-
-//private pb_text_screen functions
-
-#define ROWS    16
-#define COLS    60
-
-static  char        pb_text_screen[ROWS][COLS];
-
-static int      pb_next_row=0;
-static int      pb_next_col=0;
-
-static unsigned char systemFont[] =
-{
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,56,56,56,56,56,0,56,56,
-    108,108,0,0,0,0,0,0,0,108,254,254,108,254,254,108,
-    48,126,224,124,14,254,252,48,98,230,204,24,48,102,206,140,
-    120,220,252,120,250,222,252,118,28,28,56,0,0,0,0,0,
-    14,28,28,28,28,28,28,14,112,56,56,56,56,56,56,112,
-    0,0,0,230,124,56,124,206,0,0,28,28,127,127,28,28,
-    0,0,0,0,0,28,28,56,0,0,0,0,124,124,0,0,
-    0,0,0,0,0,0,56,56,28,28,56,56,112,112,224,224,
-    124,254,238,238,238,254,254,124,56,120,248,56,56,254,254,254,
-    252,254,14,60,112,254,254,254,252,254,14,60,14,254,254,252,
-    238,238,238,254,254,14,14,14,254,254,224,252,14,254,254,252,
-    124,252,224,252,238,254,254,124,252,254,14,14,28,28,56,56,
-    124,254,238,124,238,254,254,124,124,254,238,126,14,254,254,252,
-    0,0,28,28,0,28,28,28,0,0,28,28,0,28,28,56,
-    6,14,28,56,56,28,14,6,0,0,124,124,0,124,124,124,
-    112,56,28,14,14,28,56,112,124,254,206,28,56,0,56,56,
-    124,198,190,182,190,182,200,126,124,254,238,254,238,238,238,238,
-    252,254,206,252,206,254,254,252,124,254,238,224,238,254,254,124,
-    252,254,238,238,238,254,254,252,254,254,224,248,224,254,254,254,
-    126,254,224,248,224,224,224,224,126,254,224,238,238,254,254,124,
-    238,238,238,254,238,238,238,238,254,254,56,56,56,254,254,254,
-    254,254,14,14,238,254,254,124,238,238,252,248,252,238,238,238,
-    224,224,224,224,224,254,254,126,130,198,238,254,254,238,238,238,
-    206,238,254,254,254,254,238,230,124,254,238,238,238,254,254,124,
-    252,254,238,238,252,224,224,224,124,254,238,238,254,254,252,118,
-    252,254,238,238,252,238,238,238,126,254,224,124,14,254,254,252,
-    254,254,56,56,56,56,56,56,238,238,238,238,238,254,254,124,
-    238,238,238,238,238,238,124,56,238,238,238,254,254,238,198,130,
-    238,238,124,56,124,238,238,238,238,238,124,124,56,56,112,112,
-    254,254,28,56,112,254,254,254,124,124,112,112,112,124,124,124,
-    112,112,56,56,28,28,14,14,124,124,28,28,28,124,124,124,
-    56,124,238,198,0,0,0,0,0,0,0,0,0,254,254,254,
-    56,56,28,0,0,0,0,0,0,124,254,238,254,238,238,238,
-    0,252,254,206,252,206,254,252,0,124,254,238,224,238,254,124,
-    0,252,254,238,238,238,254,252,0,254,254,224,248,224,254,254,
-    0,126,254,224,248,224,224,224,0,126,254,224,238,238,254,124,
-    0,238,238,238,254,238,238,238,0,254,254,56,56,56,254,254,
-    0,254,254,14,14,238,254,124,0,238,238,252,248,252,238,238,
-    0,224,224,224,224,224,254,126,0,130,198,238,254,254,238,238,
-    0,206,238,254,254,254,238,230,0,124,254,238,238,238,254,124,
-    0,252,254,238,238,252,224,224,0,124,254,238,238,254,252,118,
-    0,252,254,238,238,252,238,238,0,126,254,224,124,14,254,252,
-    0,254,254,56,56,56,56,56,0,238,238,238,238,238,254,124,
-    0,238,238,238,238,238,124,56,0,238,238,238,254,238,198,130,
-    0,238,238,124,56,124,238,238,0,238,238,124,124,56,56,112,
-    0,254,254,28,56,112,254,254,60,124,112,112,112,124,124,60,
-    56,56,56,0,56,56,56,56,120,124,28,28,28,124,124,120,
-    236,254,118,0,0,0,0,0,0,16,56,124,254,254,254,254,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-};
-
-
-static void pb_scrollup(void)
-{
-    int i;
-    for(i=0;i<ROWS-1;i++)
-    memcpy(&pb_text_screen[i][0],&pb_text_screen[i+1][0],COLS);
-    memset(&pb_text_screen[ROWS-1][0],0,COLS);
-}
-
-void pb_print_char(char c)
-{
-    if (c=='\n')
-    {
-        pb_next_row++;
-        if (pb_next_row>=ROWS) { pb_next_row=ROWS-1; pb_scrollup(); }
-        pb_next_col=0;
-    }
-    else
-    if (c=='\r')
-    {
-        pb_next_col=0;
-    }
-    else
-    if (c==8)
-    {
-        pb_next_col--;
-        if (pb_next_col<0) pb_next_col=0;
-    }
-    else
-    if (c>=32)
-    {
-        pb_text_screen[pb_next_row][pb_next_col]=c;
-        pb_next_col++;
-        if (pb_next_col>=COLS)
-        {
-            pb_next_row++;
-            if (pb_next_row>=ROWS) { pb_next_row=ROWS-1; pb_scrollup(); }
-            pb_next_col=0;
-        }
-    }
-}
 
 
 
@@ -1984,92 +1800,6 @@ DWORD pb_wait_for_vbl(void)
 }
 
 
-void pb_print(const char *format, ...)
-{
-    char    buffer[512];
-    int     i;
-
-    va_list argList;
-    va_start(argList, format);
-    vsprintf(buffer, format, argList);
-    va_end(argList);
-
-    for(i=0;i<strlen(buffer);i++) pb_print_char(buffer[i]);
-}
-
-void pb_printat(int row, int col, char *format, ...)
-{
-    char    buffer[512];
-    int     i;
-
-    if ((row>=0)&&(row<ROWS)) pb_next_row=row;
-    if ((col>=0)&&(col<COLS)) pb_next_col=col;
-
-    va_list argList;
-    va_start(argList, format);
-    vsprintf(buffer, format, argList);
-    va_end(argList);
-
-    for(i=0;i<strlen(buffer);i++) pb_print_char(buffer[i]);
-}
-
-
-
-void pb_erase_text_screen(void)
-{
-    pb_next_row=0;
-    pb_next_col=0;
-    memset(pb_text_screen,0,sizeof(pb_text_screen));
-}
-
-void pb_draw_text_screen(void)
-{
-    int i,j,k,l,m,x1,x2,y;
-    unsigned char c;
-
-    for(i=0;i<ROWS;i++)
-    for(j=0;j<COLS;j++)
-    {
-        c=pb_text_screen[i][j];
-        if ((c==' ')||(c=='\t')) pb_text_screen[i][j]=0;
-    }
-
-    //convert pb_text_screen characters into push buffer commands
-    //TODO: replace rectangle fill with texture copy when available!
-    for(i=0;i<ROWS;i++)
-    for(j=0;j<COLS;j++)
-    {
-        c=pb_text_screen[i][j];
-        if (c)
-        {
-            for(l=0,x1=-1,x2=-1;l<8;l++,x1=-1,x2=-1)
-            for(k=0,m=0x80;k<8;k++,m>>=1)
-            if (systemFont[c*8+l]&m)
-            {
-                if (x1>=0)
-                    x2=20+j*10+k;
-                else
-                    x1=20+j*10+k;
-            }
-            else
-            {
-                if (x2>=0)
-                {
-                    y=25+i*25+l*2;
-                    pb_fill(x1,y,x2-x1+1,2,0xFFFFFF);
-                    x1=x2=-1;
-                }
-                else
-                if (x1>=0)
-                {
-                    y=25+i*25+l*2;
-                    pb_fill(x1,y,1,2,0xFFFFFF);
-                    x1=-1;
-                }
-            }
-        }
-    }
-}
 
 
 void pb_extra_buffers(int n)
@@ -2395,47 +2125,6 @@ void pb_set_viewport(int dwx,int dwy,int width,int height,float zmin,float zmax)
     p=pb_push2(p,NV20_TCL_PRIMITIVE_3D_DEPTH_RANGE_NEAR,dwzminscaled,dwzmaxscaled);
     pb_end(p);
 }
-
-
-
-void pb_fill(int x, int y, int w, int h, DWORD color)
-{
-    uint32_t    *p;
-
-    int     x1,y1,x2,y2;
-
-    x1=x;
-    y1=y;
-    x2=x+w;
-    y2=y+h;
-
-    switch(pb_ColorFmt) {
-    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_Z1R5G5B5:
-    case NV097_SET_SURFACE_FORMAT_COLOR_LE_X1R5G5B5_O1R5G5B5:
-        color=((color>>16)&0x8000)|((color>>7)&0x7C00)|((color>>5)&0x03E0)|((color>>3)&0x001F);
-        break;
-    case NV097_SET_SURFACE_FORMAT_COLOR_LE_R5G6B5:
-        color=((color>>8)&0xF800)|((color>>5)&0x07E0)|((color>>3)&0x001F);
-        break;
-    case NV097_SET_SURFACE_FORMAT_COLOR_LE_A8R8G8B8:
-        // Nothing to do, input is A8R8G8B8
-        break;
-    default:
-        assert(false);
-        break;
-    }
-
-    p=pb_begin();
-    pb_push(p++,NV20_TCL_PRIMITIVE_3D_CLEAR_VALUE_HORIZ,2);     //sets rectangle coordinates
-    *(p++)=((x2-1)<<16)|x1;
-    *(p++)=((y2-1)<<16)|y1;
-    pb_push(p++,NV20_TCL_PRIMITIVE_3D_CLEAR_VALUE_DEPTH,3);     //sets data used to fill in rectangle
-    *(p++)=0;           //(depth<<8)|stencil
-    *(p++)=color;           //color
-    *(p++)=0xF0;            //triggers the HW rectangle fill (0x03 for D&S)
-    pb_end(p);
-}
-
 
 
 
