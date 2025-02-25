@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 // Sets the framebuffer's color surface format (call it before pb_init).
-void pb_set_color_format(unsigned int fmt, bool swizzled);
+void pb_set_color_format (unsigned int fmt, bool swizzled);
 
 #if defined(__cplusplus)
 }
