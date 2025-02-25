@@ -160,7 +160,7 @@ static unsigned char systemFont[] =
 // clang-format on
 
 // Discards the first row of text and shifts all remaining text up by one.
-static void pb_scrollup(void)
+static void pb_scrollup (void)
 {
     for (int i = 0; i < ROWS - 1; ++i) {
         memcpy(&pb_text_screen[i][0], &pb_text_screen[i + 1][0], COLS);
@@ -168,7 +168,7 @@ static void pb_scrollup(void)
     memset(&pb_text_screen[ROWS - 1][0], 0, COLS);
 }
 
-static inline void goto_next_row()
+static inline void goto_next_row ()
 {
     if (++pb_next_row >= ROWS) {
         pb_next_row = ROWS - 1;
@@ -177,7 +177,7 @@ static inline void goto_next_row()
     pb_next_col = 0;
 }
 
-void pb_print_char(char c)
+void pb_print_char (char c)
 {
     if (c == '\n') {
         goto_next_row();
@@ -195,7 +195,7 @@ void pb_print_char(char c)
     }
 }
 
-void pb_print(const char *format, ...)
+void pb_print (const char *format, ...)
 {
     char buffer[512];
     int i;
@@ -210,7 +210,7 @@ void pb_print(const char *format, ...)
     }
 }
 
-void pb_printat(int row, int col, const char *format, ...)
+void pb_printat (int row, int col, const char *format, ...)
 {
     char buffer[512];
     int i;
@@ -232,14 +232,14 @@ void pb_printat(int row, int col, const char *format, ...)
     }
 }
 
-void pb_erase_text_screen(void)
+void pb_erase_text_screen (void)
 {
     pb_next_row = 0;
     pb_next_col = 0;
     memset(pb_text_screen, 0, sizeof(pb_text_screen));
 }
 
-void pb_draw_text_screen(void)
+void pb_draw_text_screen (void)
 {
     int i, j, k, l, m, x1, x2, y;
     unsigned char c;

@@ -3,6 +3,27 @@
 
 // clang-format off
 
+// Indicates that all values being pushed in a pb_push* invocation should be
+// sent to the same command.
+//
+// The default behavior is for pgraph commands that do not operate on fixed size
+// arrays to treat multiple parameters as invocations of subsequent pgraph
+// commands.
+// E.g., NV097_INLINE_ARRAY expects a single parameter which is added to the
+// inline array being built up in graphics memory. Rather than invoke pb_push1
+// many times over and waste time/space re-sending the NV097_INLINE_ARRAY
+// command, it is desirable to send multiple components (e.g., all 3 coordinates
+// for a vertex) in a single push. Setting bit 30 (e.g., via
+// NV2A_SUPPRESS_COMMAND_INCREMENT(NV097_INLINE_ARRAY)) instructs the pushbuffer
+// to treat all the parameters in the command packet as part of the
+// NV097_INLINE_ARRAY command.
+// Failure to set bit 30 would utilize the default behavior, so the first
+// parameter would go to NV097_INLINE_ARRAY, but the next would go to
+// NV097_SET_EYE_VECTOR (0x0000181C), which itself will expect 3 parameters and
+// will at best lead to unexpected behavior and potentially an exception being
+// raised by the hardware depending on how many parameters are sent.
+#define NV2A_SUPPRESS_COMMAND_INCREMENT(cmd) (0x40000000 | (cmd))
+
 #define NV_KELVIN_PRIMITIVE                              0x0097
 #   define NV097_NO_OPERATION                                 0x00000100
 #   define NV097_WAIT_FOR_IDLE                                0x00000110

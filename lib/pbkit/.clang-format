@@ -8,8 +8,8 @@ InsertBraces: true
 SpaceBeforeParens: Custom
 SpaceBeforeParensOptions:
   AfterControlStatements: true
-  AfterFunctionDefinitionName: false
-  AfterFunctionDeclarationName: false
+  AfterFunctionDefinitionName: true
+  AfterFunctionDeclarationName: true
 
 BreakBeforeBraces: Custom
 BraceWrapping:
@@ -17,3 +17,5 @@ BraceWrapping:
   AfterExternBlock: false
   BeforeElse: false
   AfterUnion: true
+
+TypeNames: [VOID, PVOID, LPVOID]
