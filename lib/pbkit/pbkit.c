@@ -2551,6 +2551,8 @@ void pb_kill(void)
     while(pb_BackBufferbReady[pb_BackBufferNxt]);
 
     pb_running=0;
+    pb_uninstall_gpu_interrupt();
+    KeRemoveQueueDpc(&pb_DPCObject);
 
     if (pb_ExtraBuffersCount) MmFreeContiguousMemory((PVOID)pb_EXAddr[0]);
     if (pb_DepthStencilAddr) MmFreeContiguousMemory((PVOID)pb_DepthStencilAddr);
@@ -2631,8 +2633,6 @@ void pb_kill(void)
     VIDEOREG(NV_PMC_ENABLE)=pb_OldMCEnable;
     VIDEOREG(NV_PMC_INTR_EN_0)=pb_OldMCInterrupt;
     VIDEOREG(PCRTC_START)=pb_OldVideoStart;
-
-    pb_uninstall_gpu_interrupt();
 
     NtClose(pb_VBlankEvent);
 }
