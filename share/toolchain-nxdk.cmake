@@ -67,3 +67,8 @@ set(_CMAKE_C_IPO_MAY_BE_SUPPORTED_BY_COMPILER YES)
 set(CMAKE_C_COMPILE_OPTIONS_IPO -flto)
 
 set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path to pkg-config")
+
+# Fix generation of ninja depfiles
+set(CMAKE_DEPFILE_FLAGS_C "-MD -MF <OBJECT>.d")
+set(CMAKE_DEPFILE_FLAGS_CXX "-MD -MF <OBJECT>.d")
+set(CMAKE_C_DEPFILE_FORMAT gcc)
