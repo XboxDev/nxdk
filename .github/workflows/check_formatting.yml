@@ -1,0 +1,36 @@
+name: Formatting checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  line_endings:
+    name: Check for CRLF line endings
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Clone Tree
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check each commit for CRLF line endings
+        env:
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch origin master
+          error_found=0
+          for commit in $(git log origin/master..$PR_SHA --pretty=format:"%H"); do
+            title=$(git log -1 --pretty=format:"%s" $commit)
+            echo "Checking commit $commit: $title"
+            if git show "$commit" | grep -qP '^\+.*\r$'; then
+              echo "CRLF line endings added in commit $commit"
+              error_found=1
+            fi
+          done
+          if [ $error_found -eq 1 ]; then
+            exit 1
+          fi
