@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2017-2023 Stefan Schmidt
 // SPDX-FileCopyrightText: 2018-2021 Jannik Vogel
 // SPDX-FileCopyrightText: 2018 Sean Koppenhafer
-// SPDX-FileCopyrightText: 2022 Erik Abair
+// SPDX-FileCopyrightText: 2022-2025 Erik Abair
 
 /**
  * @file xboxkrnl.h
@@ -699,6 +699,19 @@ typedef struct _LAUNCH_DATA_PAGE
 #define LDT_LAUNCH_DASHBOARD      1
 #define LDT_FROM_DASHBOARD        2
 #define LDT_NONE 0xFFFFFFFF
+
+#define LDT_LAUNCH_DASHBOARD_REASON_NONE                      0
+#define LDT_LAUNCH_DASHBOARD_REASON_ERROR                     1
+#define LDT_LAUNCH_DASHBOARD_REASON_SAVEDATA                  2
+#define LDT_LAUNCH_DASHBOARD_REASON_SETTINGS                  3
+#define LDT_LAUNCH_DASHBOARD_REASON_MUSIC                     4
+#define LDT_LAUNCH_DASHBOARD_REASON_NETWORK                   6
+#define LDT_LAUNCH_DASHBOARD_REASON_NEW_ACCOUNT               7
+#define LDT_LAUNCH_DASHBOARD_REASON_SERVER_INFO               8
+#define LDT_LAUNCH_DASHBOARD_REASON_SHOW_POLICIES             9
+#define LDT_LAUNCH_DASHBOARD_REASON_ONLINE_MENU               10
+#define LDT_LAUNCH_DASHBOARD_REASON_FORCE_ACCOUNT_NAME_CHANGE 11
+#define LDT_LAUNCH_DASHBOARD_REASON_FORCE_BILLING_CHANGE      12
 
 typedef struct _DISPATCHER_HEADER
 {
