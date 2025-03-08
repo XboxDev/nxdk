@@ -16,6 +16,3 @@ ccb981ff1e80bfa1947bcf604e8ee897c8d2f974
 
 # samples: Get rid of CRLF line endings
 d418615b94c91808d4b4d10a33a2d5f610ff2c70
-
-# ci: Add workflow that checks and flags added CRLF line endings
-2d3752a74707cdf9826974478bbdaa91f1e182fa
