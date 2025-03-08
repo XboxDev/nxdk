@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2017-2023 Stefan Schmidt
 // SPDX-FileCopyrightText: 2018-2021 Jannik Vogel
 // SPDX-FileCopyrightText: 2018 Sean Koppenhafer
-// SPDX-FileCopyrightText: 2022-2025 Erik Abair
+// SPDX-FileCopyrightText: 2022 Erik Abair
 
 /**
  * @file xboxkrnl.h

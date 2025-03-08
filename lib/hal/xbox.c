@@ -3,6 +3,7 @@
 // SPDX-FileCopyrightText: 2004 Craig Edwards
 // SPDX-FileCopyrightText: 2006 Richard Osborne
 // SPDX-FileCopyrightText: 2017-2020 Stefan Schmidt
+// SPDX-FileCopyrightText: 2022 Erik Abair
 
 #include <string.h>
 // #include <xboxrt/stat.h>
