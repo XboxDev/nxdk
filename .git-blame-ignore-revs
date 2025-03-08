@@ -1,3 +1,21 @@
 # .git-blame-ignore-revs
 # winapi: Reformat with clang-format
 e3e9de54cb60e9fb5b798e11ac2ae4e2b27cd984
+
+# nvnetdrv: Get rid of CRLF line endings
+66b77e676956cbd3aab3c49e2f06cfaef2a99a76
+
+# winapi: Get rid of CRLF line endings
+c6b6902467c41a1dfbff5e321a6d10b46f1eb7ea
+
+# usb: Get rid of CRLF line endings
+769e41f342d7b885eda0406788b7e8e613cf4dbe
+
+# fp20compiler: Get rid of CRLF line endings
+ccb981ff1e80bfa1947bcf604e8ee897c8d2f974
+
+# samples: Get rid of CRLF line endings
+d418615b94c91808d4b4d10a33a2d5f610ff2c70
+
+# ci: Add workflow that checks and flags added CRLF line endings
+2d3752a74707cdf9826974478bbdaa91f1e182fa
