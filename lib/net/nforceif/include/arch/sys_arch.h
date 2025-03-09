@@ -34,6 +34,10 @@
 #ifndef LWIP_ARCH_SYS_ARCH_H
 #define LWIP_ARCH_SYS_ARCH_H
 
+void *nxdk_lwip_malloc(size_t size);
+void *nxdk_lwip_calloc(size_t nmemb, size_t size);
+void nxdk_lwip_free(void *ptr);
+
 #define SYS_MBOX_NULL NULL
 #define SYS_SEM_NULL  NULL
 
@@ -43,21 +47,43 @@ extern unsigned char debug_flags;
 
 typedef unsigned char sys_prot_t;
 
-struct sys_sem;
-typedef struct sys_sem * sys_sem_t;
-#define sys_sem_valid(sem) (((sem) != NULL) && (*(sem) != NULL))
-#define sys_sem_set_invalid(sem) do { if((sem) != NULL) { *(sem) = NULL; }}while(0)
+/**
+ * The provided semaphores are KSEMAPHORE, but we don't want to pollute the
+ * namespace by including the kernel header, so we define an equivalent and
+ * check the size for correctness with a static_assert in sys_arch.c
+ */
+typedef struct {
+    struct {
+        struct {
+            unsigned char Type;
+            unsigned char Absolute;
+            unsigned char Size;
+            unsigned char Inserted;
+            long SignalState;
+            struct {
+                void *Flink;
+                void *Blink;
+            } WaitListHead;
+        } Header;
+        long LIMIT;
+    } sem;
+    int valid;
+} sys_sem_t;
 
 /* let sys.h use binary semaphores for mutexes */
 #define LWIP_COMPAT_MUTEX 1
 
-struct sys_mbox;
-typedef struct sys_mbox *sys_mbox_t;
-#define sys_mbox_valid(mbox) (((mbox) != NULL) && (*(mbox) != NULL))
-#define sys_mbox_set_invalid(mbox) do { if((mbox) != NULL) { *(mbox) = NULL; }}while(0)
+#define SYS_MBOX_SIZE 128
 
-struct sys_thread;
-typedef struct sys_thread * sys_thread_t;
+typedef struct {
+    volatile int first, last;
+    void * volatile msgs[SYS_MBOX_SIZE];
+    sys_sem_t read_sem;
+    sys_sem_t write_sem;
+    int valid;
+} sys_mbox_t;
+
+typedef void * sys_thread_t;
 
 #endif /* LWIP_ARCH_SYS_ARCH_H */
 
