@@ -68,8 +68,6 @@ static ULONG g_irq;
 static KIRQL g_irql;
 static KDPC g_dpcObj;
 static KINTERRUPT g_interrupt;
-static HANDLE g_irqThread;
-static KEVENT g_irqEvent;
 
 // Manage RX and TX rings
 static volatile struct descriptor_t *g_rxRing;
@@ -123,9 +121,12 @@ static BOOLEAN NTAPI nvnetdrv_isr (PKINTERRUPT Interrupt, PVOID ServiceContext)
     return TRUE;
 }
 
+static void nvnetdrv_handle_irq (void);
+
 static void NTAPI nvnetdrv_dpc (PKDPC Dpc, PVOID DeferredContext, PVOID arg1, PVOID arg2)
 {
-    KeSetEvent(&g_irqEvent, IO_NETWORK_INCREMENT, FALSE);
+    nvnetdrv_handle_irq();
+    nvnetdrv_irq_enable();
 }
 
 static inline uint32_t nvnetdrv_rx_ptov (uint32_t phys_address)
@@ -302,23 +303,6 @@ static void nvnetdrv_handle_irq (void)
     }
 }
 
-static void NTAPI irq_thread (PKSTART_ROUTINE StartRoutine, PVOID StartContext)
-{
-    (void)StartRoutine;
-    (void)StartContext;
-
-    while (true) {
-        KeWaitForSingleObject(&g_irqEvent, Executive, KernelMode, FALSE, NULL);
-        if (!g_running) {
-            break;
-        }
-
-        nvnetdrv_handle_irq();
-        nvnetdrv_irq_enable();
-    }
-
-    PsTerminateSystemThread(0);
-}
 
 const uint8_t *nvnetdrv_get_ethernet_addr ()
 {
@@ -450,7 +434,6 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
     g_irq = HalGetInterruptVector(4, &g_irql);
     KeInitializeInterrupt(&g_interrupt, &nvnetdrv_isr, NULL, g_irq, g_irql, LevelSensitive, TRUE);
     KeInitializeDpc(&g_dpcObj, nvnetdrv_dpc, NULL);
-    KeInitializeEvent(&g_irqEvent, SynchronizationEvent, FALSE);
 
     // We use semaphores to track the number of free TX ring descriptors.
     KeInitializeSemaphore(&g_txRingFreeCount, g_txRingSize, g_txRingSize);
@@ -466,9 +449,6 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
     for (uint32_t i = 0; i < g_rxRingSize; i++) {
         nvnetdrv_rx_release(g_rxRingUserBuffers + (i * NVNET_RX_BUFF_LEN));
     }
-
-    // Create a minimal stack, no TLS thread to handle NIC events
-    PsCreateSystemThreadEx(&g_irqThread, 0, 4096, 0, NULL, NULL, NULL, FALSE, FALSE, irq_thread);
 
     // Connect the NIC IRQ to the ISR
     status = KeConnectInterrupt(&g_interrupt);
@@ -496,11 +476,6 @@ void nvnetdrv_stop (void)
     // Clear the nvnet running flag so threads know to end
     bool prev_value = atomic_exchange(&g_running, false);
     assert(prev_value);
-
-    // End the IRQ event-handling thread
-    KeSetEvent(&g_irqEvent, IO_NETWORK_INCREMENT, FALSE);
-    NtWaitForSingleObject(g_irqThread, FALSE, NULL);
-    NtClose(g_irqThread);
 
     // Pass back all TX buffers to user.
     for (size_t i = g_txRingTail; i != g_txRingHead; i = (i + 1) % g_txRingSize) {
