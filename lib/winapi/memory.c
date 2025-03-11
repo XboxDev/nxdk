@@ -2,6 +2,8 @@
 
 // SPDX-FileCopyrightText: 2019-2020 Stefan Schmidt
 
+#include <assert.h>
+
 #include <memoryapi.h>
 #include <winbase.h>
 #include <winerror.h>
@@ -10,6 +12,8 @@
 LPVOID VirtualAlloc (LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
 {
     NTSTATUS status;
+
+    assert(KeGetCurrentIrql() < DISPATCH_LEVEL);
 
     status = NtAllocateVirtualMemory(&lpAddress, 0, &dwSize, flAllocationType, flProtect);
     if (!NT_SUCCESS(status)) {
