@@ -104,7 +104,20 @@
  * instead of the lwip internal allocator. Can save code size if you
  * already use it.
  */
-#define MEM_LIBC_MALLOC                 1
+#define MEM_LIBC_MALLOC                 0
+
+/**
+ * MEM_CUSTOM_ALLOCATOR==1: Use malloc/free/realloc provided by a custom
+ * implementation instead of the lwip internal allocator. Can save code size if
+ * you already use it. If enabled, you have to define those functions:
+ *  \#define MEM_CUSTOM_FREE   my_free
+ *  \#define MEM_CUSTOM_MALLOC my_malloc
+ *  \#define MEM_CUSTOM_CALLOC my_calloc
+ */
+#define MEM_CUSTOM_ALLOCATOR            1
+#define MEM_CUSTOM_FREE   nxdk_lwip_free
+#define MEM_CUSTOM_MALLOC nxdk_lwip_malloc
+#define MEM_CUSTOM_CALLOC nxdk_lwip_calloc
 
 /**
  * MEMP_MEM_MALLOC==1: Use mem_malloc/mem_free instead of the lwip pool allocator.

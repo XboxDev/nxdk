@@ -322,3 +322,24 @@ void sys_arch_unprotect(sys_prot_t lev)
 {
     KfLowerIrql(lev);
 }
+
+void *nxdk_lwip_malloc(size_t size)
+{
+    return ExAllocatePoolWithTag(size, 'PIwl');
+}
+
+void *nxdk_lwip_calloc(size_t nmemb, size_t size)
+{
+    void *ptr = nxdk_lwip_malloc(nmemb * size);
+    if (!ptr) {
+        return NULL;
+    }
+
+    RtlZeroMemory(ptr, nmemb * size);
+    return ptr;
+}
+
+void nxdk_lwip_free(void *ptr)
+{
+    ExFreePool(ptr);
+}
