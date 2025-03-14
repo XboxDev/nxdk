@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 #define NVNET_RX_EMPTY (NULL)
@@ -349,7 +350,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
         return NVNET_NO_MEM;
     }
 
-    RtlZeroMemory(descriptors, (g_rxRingSize + g_txRingSize) * sizeof(struct descriptor_t));
+    memset(descriptors, 0, (g_rxRingSize + g_txRingSize) * sizeof(struct descriptor_t));
 
     // Reset NIC. MSDash delays 10us here
     nvnetdrv_stop_txrx();
@@ -378,7 +379,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
     g_txRingHead = 0;
     g_txRingTail = 0;
     g_txPendingCount = 0;
-    RtlZeroMemory(g_txData, sizeof(g_txData));
+    memset(g_txData, 0, sizeof(g_txData));
 
     // Setup the TX and RX ring descriptor pointers
     g_rxRing = (volatile struct descriptor_t *)descriptors;
