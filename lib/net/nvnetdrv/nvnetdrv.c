@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 #define NVNET_RX_EMPTY (NULL)
