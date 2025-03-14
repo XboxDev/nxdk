@@ -162,6 +162,8 @@
 #       define NV097_SET_CONTROL0_Z_FORMAT_FIXED                  0
 #       define NV097_SET_CONTROL0_Z_FORMAT_FLOAT                  NV097_SET_CONTROL0_Z_FORMAT
 #       define NV097_SET_CONTROL0_Z_PERSPECTIVE_ENABLE            (1 << 16)
+        // Perspective corrected texture mapping (bit 20) is always enabled by DirectX
+#       define NV097_SET_CONTROL0_TEXTURE_PERSPECTIVE_ENABLE      (1 << 20)
 #       define NV097_SET_CONTROL0_COLOR_SPACE_CONVERT             0xF0000000
 #       define NV097_SET_CONTROL0_COLOR_SPACE_CONVERT_CRYCB_TO_RGB (0x10 << 24)
 #   define NV097_SET_COLOR_MATERIAL 0x298
