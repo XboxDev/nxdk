@@ -128,7 +128,7 @@ bool nxFormatVolume (const char *volumePath, uint32_t bytesPerCluster)
             goto close_and_return;
         }
 
-        RtlZeroMemory(buffer, sizeof(uint32_t) * 2);
+        memset(buffer, 0, sizeof(uint32_t) * 2);
     }
 
     // Following the cluster table, write an empty root directory cluster

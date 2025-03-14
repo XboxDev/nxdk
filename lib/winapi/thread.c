@@ -49,7 +49,7 @@ static VOID NTAPI WinapiThreadStartup (PKSTART_ROUTINE StartRoutine, PVOID Start
     memcpy(TlsData, (void *)_tls_used.StartAddressOfRawData, TlsDataSize);
 
     // Zero-initialize the rest
-    RtlZeroMemory((char *)TlsData + TlsDataSize, _tls_used.SizeOfZeroFill);
+    memset((char *)TlsData + TlsDataSize, 0, _tls_used.SizeOfZeroFill);
 
     // Register the thread for proper FLS destructor handling
     fls_register_thread();

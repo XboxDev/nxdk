@@ -335,7 +335,7 @@ void *nxdk_lwip_calloc(size_t nmemb, size_t size)
         return NULL;
     }
 
-    RtlZeroMemory(ptr, nmemb * size);
+    memset(ptr, 0, nmemb * size);
     return ptr;
 }
 
