@@ -1790,6 +1790,28 @@ XBAPI VOID NTAPI WRITE_PORT_BUFFER_UCHAR
     IN ULONG Count
 );
 
+#ifdef XBOXKRNL_PREFER_KERNEL_EXPORT
+
+/**
+ * Fills a specified memory area with a specified value
+ * @param Destination A pointer to the memory block which is to be filled
+ * @param Length The length of the memory block which is to be filled
+ * @param Fill The byte-value with which the memory block will be filled
+ */
+XBAPI VOID NTAPI RtlFillMemory
+(
+    PVOID Destination,
+    ULONG Length,
+    UCHAR Fill
+);
+
+XBAPI VOID NTAPI RtlMoveMemory
+(
+    PVOID Destination,
+    CONST PVOID Source,
+    ULONG Length
+);
+
 /**
  * Fills a specified memory area with zeroes
  * @param Destination A pointer to the memory block which is to be filled
@@ -1800,6 +1822,16 @@ XBAPI VOID NTAPI RtlZeroMemory
     IN VOID UNALIGNED *Destination,
     IN SIZE_T Length
 );
+
+#else
+
+#include <string.h>
+
+#define RtlFillMemory(Destination, Length, Fill) ((void)memset((Destination), (Fill), (Length)))
+#define RtlMoveMemory(Destination, Source, Length) ((void)memmove((Destination), (Source), (Length)))
+#define RtlZeroMemory(Destination, Length) ((void)memset((Destination), 0, (Length)))
+
+#endif
 
 XBAPI ULONG NTAPI RtlWalkFrameChain
 (
@@ -1993,13 +2025,6 @@ XBAPI NTSTATUS NTAPI RtlMultiByteToUnicodeN
     ULONG BytesInMultiByteString
 );
 
-XBAPI VOID NTAPI RtlMoveMemory
-(
-    PVOID Destination,
-    CONST PVOID Source,
-    ULONG Length
-);
-
 XBAPI VOID NTAPI RtlMapGenericMask
 (
     PACCESS_MASK AccessMask,
@@ -2113,19 +2138,6 @@ XBAPI VOID NTAPI RtlFillMemoryUlong
     PVOID Destination,
     SIZE_T Length,
     ULONG Pattern
-);
-
-/**
- * Fills a specified memory area with a specified value
- * @param Destination A pointer to the memory block which is to be filled
- * @param Length The length of the memory block which is to be filled
- * @param Fill The byte-value with which the memory block will be filled
- */
-XBAPI VOID NTAPI RtlFillMemory
-(
-    PVOID Destination,
-    ULONG Length,
-    UCHAR Fill
 );
 
 XBAPI LARGE_INTEGER NTAPI RtlExtendedMagicDivide
