@@ -420,7 +420,10 @@ void translate(const char* str)
             vsh_set_field(vsh_ins, FLD_ILU, ILU_LIT);
             ilu = true;
             break;
-
+        case OPCODE_ARL:
+            vsh_set_field(vsh_ins, FLD_MAC, MAC_ARL);
+            mac = true;
+            break;
         default:
             assert(false);
         }
@@ -463,6 +466,8 @@ void translate(const char* str)
                 vsh_set_field(vsh_ins, FLD_OUT_ORB, OUTPUT_C);
                 // TODO: the index needs ajustment?
                 vsh_set_field(vsh_ins, FLD_OUT_ADDRESS, ins.DstReg.Index);
+            } else if (ins.DstReg.File == PROGRAM_ADDRESS) {
+                // No need to do anything, setting the MAC_ARL is all that's necessary
             } else {
                 assert(false);
             }
@@ -499,7 +504,9 @@ void translate(const char* str)
             struct prog_src_register reg = ins.SrcReg[j];
             if (reg.File != PROGRAM_UNDEFINED) {
                 // printf(" - in %d\n", j);
-                assert(!reg.RelAddr); //TODO: A0 rel
+                if (reg.RelAddr) {
+                    vsh_set_field(vsh_ins, FLD_A0X, 1);
+                }
                 if (reg.File == PROGRAM_TEMPORARY) {
                     vsh_set_field(vsh_ins, mux_field[j], PARAM_R);
                     vsh_set_field(vsh_ins, reg_field[j], reg.Index);
