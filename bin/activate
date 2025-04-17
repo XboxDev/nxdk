@@ -2,7 +2,7 @@
 
 # SPDX-License-Identifier: CC0-1.0
 
-# SPDX-FileCopyrightText: 2021-2022 Stefan Schmidt
+# SPDX-FileCopyrightText: 2021-2025 Stefan Schmidt
 # SPDX-FileCopyrightText: 2021 Mike Davis
 
 readlink_cmd="readlink"
@@ -20,6 +20,8 @@ CLANG_VERSION_NUM=$(echo "$CLANG_VERSION" | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 
 
 if [ $CLANG_VERSION_NUM -lt 100000 ]; then
     echo You have clang $CLANG_VERSION installed, but nxdk requires at least version 10. You may experience breakage. >&2
+elif [ $CLANG_VERSION_NUM -ge 190000 -a $CLANG_VERSION_NUM -lt 200103 ]; then
+    echo You have clang $CLANG_VERSION installed. Versions in the 19.x.x-20.1.2 range are affected by a bug that can result in your code breaking when compiled with optimizations turned on. For details, see https://github.com/llvm/llvm-project/issues/134607 >&2
 fi
 
 if [ "$1" = "-s" ]; then cat <<- DONE
