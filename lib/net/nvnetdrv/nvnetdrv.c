@@ -378,7 +378,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
     g_txRingHead = 0;
     g_txRingTail = 0;
     g_txPendingCount = 0;
-    RtlZeroMemory(g_txData, sizeof(g_txData));
+    RtlZeroMemory(g_txData, g_txRingSize * sizeof(struct tx_misc_t));
 
     // Setup the TX and RX ring descriptor pointers
     g_rxRing = (volatile struct descriptor_t *)descriptors;
