@@ -37,7 +37,7 @@ _Static_assert(sizeof(nxdk_network_config_sector_t) == NXDK_CONFIG_DATA_SIZE, "n
 #define NXDK_NETWORK_CONFIG_HEADERV2 'XBV2'
 #define NXDK_NETWORK_CONFIG_FOOTER 'XBCP'
 
-HANDLE nxOpenConfigPartition ()
+HANDLE nxOpenConfigPartition(void)
 {
     ANSI_STRING str;
     RtlInitAnsiString(&str, "\\Device\\Harddisk0\\partition0");

@@ -304,7 +304,7 @@ static void nvnetdrv_handle_irq (void)
 }
 
 
-const uint8_t *nvnetdrv_get_ethernet_addr ()
+const uint8_t *nvnetdrv_get_ethernet_addr (void)
 {
     return g_ethAddr;
 }

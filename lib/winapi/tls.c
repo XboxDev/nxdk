@@ -4,7 +4,7 @@
 
 #include <windows.h>
 
-DWORD TlsAlloc ()
+DWORD TlsAlloc (void)
 {
     return FlsAlloc(NULL);
 }

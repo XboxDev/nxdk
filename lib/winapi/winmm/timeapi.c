@@ -16,7 +16,7 @@ MMRESULT timeEndPeriod (UINT uPeriod)
     return TIMERR_NOERROR;
 }
 
-DWORD timeGetTime ()
+DWORD timeGetTime (void)
 {
     return KeTickCount;
 }

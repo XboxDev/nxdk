@@ -34,7 +34,7 @@ typedef struct nx_net_parameters_t_
  * @return 0 on success, negative values indicate various errors.
  */
 int nxNetInit(const nx_net_parameters_t *parameters);
-int nxNetShutdown();
+int nxNetShutdown(void);
 
 #ifdef __cplusplus
 }
