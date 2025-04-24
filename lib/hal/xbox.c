@@ -18,7 +18,7 @@
 
 #define LaunchDataPageSize 0x1000
 
-void XReboot()
+void XReboot(void)
 {
     HalReturnToFirmware(HalRebootRoutine);
 }

@@ -154,7 +154,7 @@ int nxNetInit(const nx_net_parameters_t *parameters)
     return 0;
 }
 
-int nxNetShutdown()
+int nxNetShutdown(void)
 {
     return 0;
 }

@@ -468,7 +468,7 @@ void XVideoSetGammaRamp(unsigned int offset, const GAMMA_RAMP_ENTRY *entries, un
 }
 
 
-void XVideoWaitForVBlank()
+void XVideoWaitForVBlank(void)
 {
 	if (! IsrRegistered) {
 		if (InstallVBLInterrupt())
@@ -489,12 +489,12 @@ void XVideoWaitForVBlank()
 	VIDEOREG(PCRTC_INTR)=PCRTC_INTR_VBLANK_RESET;
 }
 
-unsigned char* XVideoGetVideoBase()
+unsigned char* XVideoGetVideoBase(void)
 {
 	return (unsigned char *)VIDEO_BASE;
 }
 
-int XVideoVideoMemorySize()
+int XVideoVideoMemorySize(void)
 {
 	// TODO Is this always the case?
 	// 4MB

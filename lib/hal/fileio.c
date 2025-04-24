@@ -62,7 +62,7 @@ static void setPartitionString(char c, char *string)
 		partitions[i] = string;
 }
 
-static char *getCurrentDirString()
+static char *getCurrentDirString(void)
 {
 	char *tmp;
 	if (currentDirString) {
