@@ -22,5 +22,6 @@ clang \
     -DNXDK \
     -D__STDC__=1 \
     -U__STDC_NO_THREADS__ \
+    -U__MMX__ \
     -fno-exceptions \
     "$@"
