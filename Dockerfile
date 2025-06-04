@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: CC0-1.0
 
-# SPDX-FileCopyrightText: 2020-2022 Stefan Schmidt
+# SPDX-FileCopyrightText: 2020-2025 Stefan Schmidt
 
-FROM ghcr.io/xboxdev/nxdk-buildbase:git-7c4eb218 AS builder
+FROM ghcr.io/xboxdev/nxdk-buildbase:git-3a71ed5f AS builder
 
 COPY ./ /usr/src/nxdk/
 ENV NXDK_DIR=/usr/src/nxdk
@@ -11,7 +11,7 @@ ARG buildparams
 RUN eval $(./usr/src/nxdk/bin/activate -s); cd /usr/src/nxdk && make NXDK_ONLY=y $buildparams -j`nproc`
 
 
-FROM ghcr.io/xboxdev/nxdk-runbase:git-7c4eb218
+FROM ghcr.io/xboxdev/nxdk-runbase:git-3a71ed5f
 
 COPY --from=builder /usr/src/nxdk/ /usr/src/nxdk/
 ENV NXDK_DIR=/usr/src/nxdk
