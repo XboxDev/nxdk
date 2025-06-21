@@ -264,6 +264,7 @@ static void nvnetdrv_handle_mii_irq (uint32_t miiStatus, bool init)
 
     if (miiStatus & NVREG_MIISTAT_LINKCHANGE) {
         nvnetdrv_start_txrx();
+        nvnetdrv_link_state_change_callback(linkState & XNET_ETHERNET_LINK_ACTIVE);
     }
 
     INC_STAT(phy_interrupts, 1);
@@ -653,4 +654,15 @@ void nvnetdrv_rx_release (void *buffer_virt)
     g_rxRing[index].length = NVNET_RX_BUFF_LEN;
     g_rxRing[index].flags = NV_RX_AVAIL;
     reg32(NvRegTxRxControl) = NVREG_TXRXCTL_GET;
+}
+
+bool nvnetdrv_is_link_up (void)
+{
+    uint32_t linkState = PhyGetLinkState(false);
+    return (linkState & XNET_ETHERNET_LINK_ACTIVE) != 0;
+}
+
+__attribute__((weak)) void nvnetdrv_link_state_change_callback (bool link_active)
+{
+    (void)link_active;
 }
