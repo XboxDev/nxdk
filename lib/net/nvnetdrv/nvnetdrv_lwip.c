@@ -14,6 +14,7 @@
 #include "lwip/snmp.h"
 #include "lwip/stats.h"
 #include "lwip/sys.h"
+#include "lwip/tcpip.h"
 #include "netif/etharp.h"
 #include "netif/ppp/pppoe.h"
 #include "nvnetdrv.h"
@@ -81,6 +82,17 @@ void rx_callback (void *buffer, uint16_t length)
     }
 }
 
+
+static void change_link_state(void *ctx)
+{
+    bool link_active = (bool)ctx;
+    if (link_active) {
+        netif_set_link_up(g_pnetif);
+    } else {
+        netif_set_link_down(g_pnetif);
+    }
+}
+
 /**
  * In this function, the hardware should be initialized.
  * Called from nforceif_init().
@@ -97,7 +109,7 @@ static err_t low_level_init (struct netif *netif)
 
     /* device capabilities */
     /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-    netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+    netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
 
 #if LWIP_IPV6 && LWIP_IPV6_MLD
     /*
@@ -122,6 +134,10 @@ static err_t low_level_init (struct netif *netif)
 
     /* set MAC hardware address */
     memcpy(netif->hwaddr, nvnetdrv_get_ethernet_addr(), 6);
+
+    // Let LWIP know if a ethernet cable is currently connected
+    bool link_up = nvnetdrv_is_link_up();
+    change_link_state((void *)link_up);
 
     return ERR_OK;
 }
@@ -277,4 +293,11 @@ err_t nvnetif_init (struct netif *netif)
 
     /* initialize the hardware */
     return low_level_init(netif);
+}
+
+void nvnetdrv_link_state_change_callback (bool link_active)
+{
+    // ISR safe mbox to tcpip thread. This is very unlikely to fail as the mbox is large and the messages
+    // are allocated from the kernel's pool allocator.
+    tcpip_try_callback(change_link_state, (void *)link_active);
 }

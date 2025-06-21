@@ -8,6 +8,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 // Must be greater than max ethernet frame size. A multiple of page size prevents page boundary crossing
@@ -87,4 +88,15 @@ void nvnetdrv_submit_tx_descriptors (nvnetdrv_descriptor_t *buffers, size_t coun
  */
 void nvnetdrv_rx_release (void *buffer_virt);
 
+/**
+ * @brief Check if the link is up.
+ * @return true if link connected, false if link is down.
+ */
+bool nvnetdrv_is_link_up (void);
+
+/**
+ * Called by the ISR when the link state changes.
+ * @param link_up True if the link is up, false if it is down.
+ */
+void nvnetdrv_link_state_change_callback (bool link_up);
 #endif
