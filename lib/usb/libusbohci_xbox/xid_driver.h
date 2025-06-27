@@ -24,7 +24,7 @@ extern "C"
 struct xid_dev;
 typedef void(XID_CONN_FUNC)(struct xid_dev *hdev, int param);
 
-typedef struct __attribute__((packed)) 
+typedef struct __attribute__((packed))
 {
     uint8_t bLength;
     uint8_t bDescriptorType;
@@ -36,7 +36,7 @@ typedef struct __attribute__((packed))
     uint16_t wAlternateProductIds[4];
 } xid_descriptor;
 
-typedef struct __attribute__((packed)) 
+typedef struct __attribute__((packed))
 {
     uint8_t startByte;
     uint8_t bLength;
@@ -62,6 +62,31 @@ typedef struct __attribute__((packed))
     uint16_t lValue;
     uint16_t hValue;
 } xid_gamepad_out;
+
+typedef struct __attribute__((packed))
+{
+    uint8_t  startByte;
+    uint8_t  bLength;
+    uint16_t buttons[3];
+    uint16_t aimingLeverX; // 0 = Left, 0xFFFF = Right
+    uint16_t aimingLeverY; // 0 = Top,  0xFFFF = Bottom
+    int16_t  turningLever;
+    int16_t  sightChangeX;
+    int16_t  sightChangeY;
+    uint16_t slidePedal;
+    uint16_t brakePedal;
+    uint16_t accelPedal;
+    uint8_t  tuner;   // 0-15 is from 9oclock, around clockwise
+    int8_t   shifter; // -2 = R, -1 = N, 0 = Error, 1 = 1st, 2 = 2nd, 3 = 3rnd, 4 = 4th, 5 = 5th
+} xid_steelbattlion_in;
+
+#define STEELBATTALION_LIGHT_COUNT 20
+typedef struct __attribute__((packed))
+{
+   uint8_t startByte;
+   uint8_t bLength;
+   uint8_t lights[STEELBATTALION_LIGHT_COUNT];
+} xid_steelbattalion_out;
 
 //Ref https://xboxdevwiki.net/Xbox_DVD_Movie_Playback_Kit
 typedef struct __attribute__((packed))
@@ -106,6 +131,7 @@ int32_t usbh_xid_read(xid_dev_t *xid_dev, uint8_t ep_addr, void *rx_complete_cal
 int32_t usbh_xid_write(xid_dev_t *xid_dev, uint8_t ep_addr, uint8_t *txbuff, uint32_t len, void *tx_complete_callback);
 xid_type usbh_xid_get_type(xid_dev_t *xid_dev);
 int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value);
+int32_t usbh_xid_sbc_lights(xid_dev_t *xid_dev, uint8_t lights[STEELBATTALION_LIGHT_COUNT]);
 
 #ifdef __cplusplus
 }
