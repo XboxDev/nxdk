@@ -15,16 +15,19 @@ include(FindPkgConfig)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
 include(XBEUtils REQUIRED)
-find_package(NXDK REQUIRED)
 
 pkg_check_modules(
         nxdk_packages
         REQUIRED
-        sdl2
         SDL2_image
         SDL2_ttf
         libjpeg
         libpng
+        nxdk_automount_d
+        nxdk_net
+        pbkit
+        sdl2
+        winmm
         zlib
 )
 
@@ -45,8 +48,6 @@ target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE
         ${nxdk_packages_LIBRARIES}
-        NXDK::NXDK
-        NXDK::NXDK_CXX
 )
 
 target_compile_options(
