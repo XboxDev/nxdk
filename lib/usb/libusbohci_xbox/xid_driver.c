@@ -372,7 +372,7 @@ int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value){
     return usbh_xid_write(xid_dev, 0, (uint8_t *)&command, sizeof(xid_gamepad_out), NULL);
 }
 
-int32_t usbh_xid_sbc_lights(xid_dev_t *xid_dev, uint8_t lights[STEELBATTALION_LIGHT_COUNT]) {
+int32_t usbh_xid_sbc_lights(xid_dev_t *xid_dev, uint8_t lights[STEELBATTALION_LIGHT_BYTES]) {
     if (xid_dev->xid_desc.bType != XID_TYPE_STEELBATTALION)
     {
         return USBH_ERR_NOT_SUPPORTED;
@@ -383,7 +383,7 @@ int32_t usbh_xid_sbc_lights(xid_dev_t *xid_dev, uint8_t lights[STEELBATTALION_LI
         .startByte = 0,
         .bLength = sizeof(xid_steelbattalion_out),
     };
-    memcpy(command.lights, lights, STEELBATTALION_LIGHT_COUNT);
+    memcpy(command.lights, lights, STEELBATTALION_LIGHT_BYTES);
     return usbh_xid_write(xid_dev, 0, (uint8_t *)&command, sizeof(xid_gamepad_out), NULL);
 }
 
