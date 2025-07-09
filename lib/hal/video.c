@@ -54,7 +54,7 @@ static DWORD			dwEncoderSettings 	= 0;
 static VIDEO_MODE		vmCurrent = { 0, 0, 0, 0 };
 static int			flickerLevel		= 5;
 static BOOL			flickerSet		= FALSE;
-static BOOL			softenFilter		= TRUE;
+static BOOL			softenFilter		= FALSE;
 static BOOL			softenSet		= FALSE;
 static GAMMA_RAMP_ENTRY	gammaRampEntries[256];
 
@@ -381,7 +381,7 @@ void XVideoInit(DWORD dwMode, int width, int height, int bpp)
 	_fb = framebufferMemory;
 
 	XVideoSetFlickerFilter(5);
-	XVideoSetSoftenFilter(TRUE);
+	XVideoSetSoftenFilter(FALSE);
 
 	for(i = 0; i < 256; i++) {
 		defaultGammaRampEntries[i].red = i;
