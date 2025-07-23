@@ -24,7 +24,7 @@ extern "C"
 struct xid_dev;
 typedef void(XID_CONN_FUNC)(struct xid_dev *hdev, int param);
 
-typedef struct __attribute__((packed)) 
+typedef struct __attribute__((packed))
 {
     uint8_t bLength;
     uint8_t bDescriptorType;
@@ -36,7 +36,24 @@ typedef struct __attribute__((packed))
     uint16_t wAlternateProductIds[4];
 } xid_descriptor;
 
-typedef struct __attribute__((packed)) 
+//XINPUT defines and struct format from
+//https://docs.microsoft.com/en-us/windows/win32/api/xinput/ns-xinput-xinput_gamepad
+#define XINPUT_GAMEPAD_DPAD_UP 0x0001
+#define XINPUT_GAMEPAD_DPAD_DOWN 0x0002
+#define XINPUT_GAMEPAD_DPAD_LEFT 0x0004
+#define XINPUT_GAMEPAD_DPAD_RIGHT 0x0008
+#define XINPUT_GAMEPAD_START 0x0010
+#define XINPUT_GAMEPAD_BACK 0x0020
+#define XINPUT_GAMEPAD_LEFT_THUMB 0x0040
+#define XINPUT_GAMEPAD_RIGHT_THUMB 0x0080
+#define XINPUT_GAMEPAD_LEFT_SHOULDER 0x0100
+#define XINPUT_GAMEPAD_RIGHT_SHOULDER 0x0200
+#define XINPUT_GAMEPAD_A 0x1000
+#define XINPUT_GAMEPAD_B 0x2000
+#define XINPUT_GAMEPAD_X 0x4000
+#define XINPUT_GAMEPAD_Y 0x8000
+
+typedef struct __attribute__((packed))
 {
     uint8_t startByte;
     uint8_t bLength;
@@ -47,8 +64,8 @@ typedef struct __attribute__((packed))
     uint8_t y;
     uint8_t black;
     uint8_t white;
-    uint8_t l;
-    uint8_t r;
+    uint8_t leftTrigger;
+    uint8_t rightTrigger;
     int16_t leftStickX;
     int16_t leftStickY;
     int16_t rightStickX;
@@ -62,6 +79,32 @@ typedef struct __attribute__((packed))
     uint16_t lValue;
     uint16_t hValue;
 } xid_gamepad_out;
+
+typedef struct __attribute__((packed))
+{
+    uint8_t  startByte;
+    uint8_t  bLength;
+    uint16_t buttons[3];
+    uint16_t aimingLeverX; // 0 = Left, 0xFFFF = Right
+    uint16_t aimingLeverY; // 0 = Top,  0xFFFF = Bottom
+    int16_t  turningLever;
+    int16_t  sightChangeX;
+    int16_t  sightChangeY;
+    uint16_t slidePedal;
+    uint16_t brakePedal;
+    uint16_t accelPedal;
+    uint8_t  tuner;   // 0-15 is from 9oclock, around clockwise
+    int8_t   shifter; // -2 = R, -1 = N, 0 = Error, 1 = 1st, 2 = 2nd, 3 = 3rnd, 4 = 4th, 5 = 5th
+} xid_steelbattalion_in;
+
+#define STEELBATTALION_LIGHT_COUNT 40
+#define STEELBATTALION_LIGHT_BYTES (STEELBATTALION_LIGHT_COUNT / 2) // Each nibble is 1 light
+typedef struct __attribute__((packed))
+{
+   uint8_t startByte;
+   uint8_t bLength;
+   uint8_t lights[STEELBATTALION_LIGHT_BYTES];
+} xid_steelbattalion_out;
 
 //Ref https://xboxdevwiki.net/Xbox_DVD_Movie_Playback_Kit
 typedef struct __attribute__((packed))
@@ -106,6 +149,7 @@ int32_t usbh_xid_read(xid_dev_t *xid_dev, uint8_t ep_addr, void *rx_complete_cal
 int32_t usbh_xid_write(xid_dev_t *xid_dev, uint8_t ep_addr, uint8_t *txbuff, uint32_t len, void *tx_complete_callback);
 xid_type usbh_xid_get_type(xid_dev_t *xid_dev);
 int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value);
+int32_t usbh_xid_sbc_lights(xid_dev_t *xid_dev, uint8_t lights[STEELBATTALION_LIGHT_BYTES]);
 
 #ifdef __cplusplus
 }
