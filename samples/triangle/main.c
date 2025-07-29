@@ -69,7 +69,7 @@ int main(void)
 
     /* Load constant rendering things (shaders, geometry) */
     init_shader();
-    alloc_vertices = MmAllocateContiguousMemoryEx(sizeof(verts), 0, 0x3ffb000, 0, 0x404);
+    alloc_vertices = MmAllocateContiguousMemoryEx(sizeof(verts), 0, 0x3ffb000, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
     memcpy(alloc_vertices, verts, sizeof(verts));
     num_vertices = sizeof(verts)/sizeof(verts[0]);
     matrix_viewport(m_viewport, 0, 0, width, height, 0, 65536.0f);

@@ -2300,17 +2300,15 @@ int pb_init(void)
     pb_FrameBuffersAddr=0;
 
 
-    pb_DmaBuffer8=MmAllocateContiguousMemoryEx(32,0,MAXRAM,0,4);
-    pb_DmaBuffer2=MmAllocateContiguousMemoryEx(32,0,MAXRAM,0,4);
-    pb_DmaBuffer7=MmAllocateContiguousMemoryEx(32,0,MAXRAM,0,4);
-        //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment,ProtectionType
+    pb_DmaBuffer8 = MmAllocateContiguousMemoryEx(32, 0, MAXRAM, 0, PAGE_READWRITE);
+    pb_DmaBuffer2 = MmAllocateContiguousMemoryEx(32, 0, MAXRAM, 0, PAGE_READWRITE);
+    pb_DmaBuffer7 = MmAllocateContiguousMemoryEx(32, 0, MAXRAM, 0, PAGE_READWRITE);
     if ((pb_DmaBuffer8==NULL)||(pb_DmaBuffer2==NULL)||(pb_DmaBuffer7==NULL)) return -2;
     memset(pb_DmaBuffer8,0,32);
     memset(pb_DmaBuffer2,0,32);
     memset(pb_DmaBuffer7,0,32);
 
-    pb_Head=MmAllocateContiguousMemoryEx(pb_Size+8*1024,0,MAXRAM,0,0x404);
-        //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment OPTIONAL,ProtectionType
+    pb_Head = MmAllocateContiguousMemoryEx(pb_Size+8*1024, 0, MAXRAM, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
     if (pb_Head==NULL) return -3;
 
     memset(pb_Head,0,pb_Size+8*1024);
@@ -2963,8 +2961,7 @@ int pb_init(void)
     //Huge alignment enforcement (16 Kb aligned!) for the global size
     FBSize=(FBSize+0x3FFF)&0xFFFFC000;
 
-    FBAddr=(DWORD)MmAllocateContiguousMemoryEx(FBSize,0,0x03FFB000,0x4000,0x404);
-        //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment OPTIONAL,ProtectionType
+    FBAddr = (DWORD)MmAllocateContiguousMemoryEx(FBSize, 0, 0x03FFB000, 0x4000, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
     pb_FBGlobalSize=FBSize;
 
@@ -3036,8 +3033,7 @@ int pb_init(void)
     //Huge alignment enforcement (16 Kb aligned!) for the global size
     DSSize=(DSSize+0x3FFF)&0xFFFFC000;
 
-    DSAddr=(DWORD)MmAllocateContiguousMemoryEx(DSSize,0,0x03FFB000,0x4000,0x404);
-        //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment OPTIONAL,ProtectionType
+    DSAddr = (DWORD)MmAllocateContiguousMemoryEx(DSSize, 0, 0x03FFB000, 0x4000, PAGE_READWRITE | PAGE_WRITECOMBINE);
 
     pb_DepthStencilAddr=DSAddr;
     if (!DSAddr)
@@ -3088,9 +3084,7 @@ int pb_init(void)
         //Huge alignment enforcement (16 Kb aligned!) for the global size
         EXSize=(EXSize+0x3FFF)&0xFFFFC000;
 
-        EXAddr=(DWORD)MmAllocateContiguousMemoryEx(EXSize,0,0x03FFB000,0x4000,0x404);
-        //NumberOfBytes,LowestAcceptableAddress,HighestAcceptableAddress,Alignment OPTIONAL,ProtectionType
-
+        EXAddr = (DWORD)MmAllocateContiguousMemoryEx(EXSize, 0, 0x03FFB000, 0x4000, PAGE_READWRITE | PAGE_WRITECOMBINE);
         if (!EXAddr)
         {
             pb_kill();

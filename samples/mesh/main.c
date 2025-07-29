@@ -91,7 +91,7 @@ int main(void)
     init_shader();
     init_textures();
 
-    alloc_vertices = MmAllocateContiguousMemoryEx(sizeof(vertices), 0, MAXRAM, 0, 0x404);
+    alloc_vertices = MmAllocateContiguousMemoryEx(sizeof(vertices), 0, MAXRAM, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
     memcpy(alloc_vertices, vertices, sizeof(vertices));
     num_vertices = sizeof(vertices)/sizeof(vertices[0]);
     num_indices = sizeof(indices)/sizeof(indices[0]);
@@ -221,11 +221,11 @@ int main(void)
         /* Set vertex position attribute */
         set_attrib_pointer(0, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(Vertex), &alloc_vertices[0]);
-        
+
         /* Set vertex normal attribute */
         set_attrib_pointer(2, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            3, sizeof(Vertex), &alloc_vertices[3]);
-        
+
         /* Set texture coordinate attribute */
         set_attrib_pointer(9, NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_F,
                            2, sizeof(Vertex), &alloc_vertices[6]);
@@ -332,7 +332,7 @@ static void init_textures(void)
     texture.width = texture_width;
     texture.height = texture_height;
     texture.pitch = texture.width*4;
-    texture.addr = MmAllocateContiguousMemoryEx(texture.pitch*texture.height, 0, MAXRAM, 0, 0x404);
+    texture.addr = MmAllocateContiguousMemoryEx(texture.pitch*texture.height, 0, MAXRAM, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
     memcpy(texture.addr, texture_rgba, sizeof(texture_rgba));
 }
 
