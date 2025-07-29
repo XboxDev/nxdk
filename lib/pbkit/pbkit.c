@@ -128,10 +128,6 @@ static  DWORD           pb_FifoBigInst;     //graphic contexts are stored there,
 
 static  DWORD           pb_FreeInst;        //next free space in PRAMIN area (addr=inst<<4+NV_PRAMIN)
 
-static  int         pb_GammaRampIdx=0;
-static  int         pb_GammaRampbReady[3]={0,0,0};
-static  BYTE            pb_GammaRamp[3][3][256];
-
 static  int         pb_BackBufferNxt=0;
 static  int         pb_BackBufferNxtVBL=0;
 static  int         pb_BackBufferbReady[3]={0,0,0};
@@ -230,32 +226,12 @@ static NTAPI VOID pb_shutdown_notification_routine (PHAL_SHUTDOWN_REGISTRATION S
 
 
 //private functions
-
-static void pb_set_gamma_ramp(BYTE *pGammaRamp)
-{
-    int         i;
-
-    VIDEOREG8(NV_USER_DAC_WRITE_MODE_ADDRESS)=0;    //&NV_USER_DAC_WRITE_MODE_ADDRESS_VALUE
-
-    for(i=0;i<256;i++)
-    {
-        VIDEOREG8(NV_USER_DAC_PALETTE_DATA)=pGammaRamp[i];  //&NV_USER_DAC_PALETTE_DATA_VALUE
-        VIDEOREG8(NV_USER_DAC_PALETTE_DATA)=pGammaRamp[i+256];  //&NV_USER_DAC_PALETTE_DATA_VALUE
-        VIDEOREG8(NV_USER_DAC_PALETTE_DATA)=pGammaRamp[i+512];  //&NV_USER_DAC_PALETTE_DATA_VALUE
-    }
-}
-
-
-
-
-
 static void pb_vbl_handler(void)
 {
     BYTE        old_color_addr; //important index to preserve if we are called from Dpc or Isr
 
     int     flag;
     int     next;
-    int     index;
 
     old_color_addr=VIDEOREG8(NV_PRMCIO_CRX__COLOR);
 
@@ -270,18 +246,9 @@ static void pb_vbl_handler(void)
         //screen swapping has been done already, theoretically, in ISR
         pb_BackBufferbReady[next]=0;
 
-        index=pb_GammaRampIdx;
-        if (pb_GammaRampbReady[index])
-        {
-            pb_set_gamma_ramp(&pb_GammaRamp[index][0][0]);
-            pb_GammaRampbReady[index]=0;
-            index=(index+1)%3;
-            pb_GammaRampIdx=index;
-        }
-
         VIDEOREG(NV_PGRAPH_INCREMENT)|=NV_PGRAPH_INCREMENT_READ_3D_TRIGGER;
 
-        //rotate next back buffer & gamma ramp index
+        //rotate next back buffer
         next=(next+1)%3;
         pb_BackBufferNxtVBL=next;
     }
@@ -2229,7 +2196,7 @@ int pb_init(void)
 
     uint32_t        baseaddr,baseaddr2;
 
-    int         i,j,k;
+    int         i;
 
     uint32_t        *p;
 
@@ -2315,9 +2282,13 @@ int pb_init(void)
     pb_FifoChannelsMode=NV_PFIFO_MODE_ALL_PIO;
     pb_FifoChannelID=0;
 
-    pb_GammaRampIdx=0;
-    for(i=0;i<3;i++) pb_GammaRampbReady[i]=0;
-    for(k=0;k<3;k++) for(i=0;i<3;i++) for(j=0;j<256;j++) pb_GammaRamp[k][i][j]=j;
+    PB_GAMMA_RAMP gammaRamp;
+    for (i = 0; i < 256; i++) {
+        gammaRamp.red[i] = i;
+        gammaRamp.green[i] = i;
+        gammaRamp.blue[i] = i;
+    }
+    pb_set_gamma_ramp(&gammaRamp);
 
     pb_BackBufferNxt=0;
     for(i=0;i<5;i++) pb_BackBufferbReady[i]=0;
