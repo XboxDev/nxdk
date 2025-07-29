@@ -1,5 +1,6 @@
 PBKIT_SRCS := \
 	$(NXDK_DIR)/lib/pbkit/pbkit.c \
+	$(NXDK_DIR)/lib/pbkit/pbkit_gamma.c \
 	$(NXDK_DIR)/lib/pbkit/pbkit_dma.c \
 	$(NXDK_DIR)/lib/pbkit/pbkit_draw.c \
 	$(NXDK_DIR)/lib/pbkit/pbkit_print.c \
