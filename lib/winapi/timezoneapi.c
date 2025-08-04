@@ -269,3 +269,30 @@ BOOL SystemTimeToFileTime (const SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime
     lpFileTime->dwHighDateTime = filetime.HighPart;
     return TRUE;
 }
+
+BOOL FileTimeToLocalFileTime (const FILETIME *lpFileTime, LPFILETIME lpLocalFileTime)
+{
+    if (!lpFileTime || !lpLocalFileTime) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    TIME_ZONE_INFORMATION timeZoneInformation;
+    GetTimeZoneInformation(&timeZoneInformation);
+
+    // Get the timezone offset bias in 100-nanosecond intervals
+    LARGE_INTEGER offset;
+    offset.QuadPart = timeZoneInformation.Bias;
+    offset.QuadPart *= 60LL * 10000000LL;
+
+    LARGE_INTEGER fileTime;
+    fileTime.LowPart = lpFileTime->dwLowDateTime;
+    fileTime.HighPart = lpFileTime->dwHighDateTime;
+
+    // Adjust the file time by the timezone offset. This function does not account for DST.
+    fileTime.QuadPart -= offset.QuadPart;
+
+    lpLocalFileTime->dwLowDateTime = fileTime.LowPart;
+    lpLocalFileTime->dwHighDateTime = fileTime.HighPart;
+    return TRUE;
+}

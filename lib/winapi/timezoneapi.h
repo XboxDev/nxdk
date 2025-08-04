@@ -32,6 +32,7 @@ DWORD GetTimeZoneInformation (LPTIME_ZONE_INFORMATION lpTimeZoneInformation);
 
 BOOL FileTimeToSystemTime (const FILETIME *lpFileTime, LPSYSTEMTIME lpSystemTime);
 BOOL SystemTimeToFileTime (const SYSTEMTIME *lpSystemTime, LPFILETIME lpFileTime);
+BOOL FileTimeToLocalFileTime (const FILETIME *lpFileTime, LPFILETIME lpLocalFileTime);
 
 #ifdef __cplusplus
 }
