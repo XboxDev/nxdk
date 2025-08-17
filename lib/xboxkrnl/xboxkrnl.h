@@ -1629,7 +1629,7 @@ XBAPI VOID NTAPI XcUpdateCrypto
  * Updates the internal state of the SHA-1 algorithm by hashing some input data.
  * @param pbSHAContext A pointer to the buffer holding the internal state of the algorithm
  * @param pbInput A pointer to the bytes which are to get hashed
- * @oaram dwInputLength The number of bytes in the buffer given in the pbInput parameter
+ * @param dwInputLength The number of bytes in the buffer given in the pbInput parameter
  */
 XBAPI VOID NTAPI XcSHAUpdate
 (
@@ -3082,7 +3082,7 @@ XBAPI NTSTATUS NTAPI NtCreateSemaphore
  * Creates a mutant object (mutex), sets its initial count to one (which means "signaled"), and opens a handle to the object.
  * @param MutantHandle A pointer to a variable that receives the mutant object handle.
  * @param ObjectAttributes A pointer to a OBJECT_ATTRIBUTES-structure that specifies object attributes.
- * @pararm InitialOwner A boolean value that specifies whether the creator of the mutant object wants immediate ownership.
+ * @param InitialOwner A boolean value that specifies whether the creator of the mutant object wants immediate ownership.
  * @return The status of the operation.
  */
 XBAPI NTSTATUS NTAPI NtCreateMutant
@@ -4325,7 +4325,7 @@ XBAPI OBJECT_TYPE ExEventObjectType;
 
 /**
  * Allocates pool memory and returns a pointer to the allocated block.
- * @oaram NumberOfBytes The number of bytes to allocate.
+ * @param NumberOfBytes The number of bytes to allocate.
  * @param Tag The pool tag to use for the allocated memory. Specify the pool tag as a character literal of up to four characters delimited by single quotation marks (for example, 'Tag1'). The string is usually specified in reverse order (for example, '1gaT'). Each ASCII character in the tag must be a value in the range 0x20 (space) to 0x126 (tilde). Each allocation code path should use a unique pool tag to help debuggers and verifiers identify the code path.
  * @return NULL if there is insufficient memory in the free pool to satisfy the request. Otherwise, the routine returns a pointer to the allocated memory.
  */
@@ -4337,7 +4337,7 @@ XBAPI PVOID NTAPI ExAllocatePoolWithTag
 
 /**
  * Allocates pool memory and returns a pointer to the allocated block.
- * @oaram NumberOfBytes The number of bytes to allocate.
+ * @param NumberOfBytes The number of bytes to allocate.
  * @return NULL if there is insufficient memory in the free pool to satisfy the request. Otherwise, the routine returns a pointer to the allocated memory.
  */
 XBAPI PVOID NTAPI ExAllocatePool
