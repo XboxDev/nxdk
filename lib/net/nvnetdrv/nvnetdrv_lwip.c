@@ -82,7 +82,6 @@ void rx_callback (void *buffer, uint16_t length)
 
     if (g_pnetif->input(p, g_pnetif) != ERR_OK) {
         pbuf_free(p);
-        nvnetdrv_rx_release(buffer);
     }
 }
 
