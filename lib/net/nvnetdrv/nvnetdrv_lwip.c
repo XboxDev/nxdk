@@ -182,15 +182,15 @@ static err_t low_level_output (struct netif *netif, struct pbuf *p)
     nvnetdrv_descriptor_t descriptors[4];
     size_t pbufCount = 0;
     for (struct pbuf *q = p; q != NULL; q = q->next) {
-        assert(p->len < 4096);
+        assert(q->len < 4096);
+        if (pbufCount > 3) {
+            return ERR_MEM;
+        }
         descriptors[pbufCount].addr = q->payload;
         descriptors[pbufCount].length = q->len;
         descriptors[pbufCount].callback = NULL;
 
         pbufCount++;
-        if (pbufCount > 4) {
-            return ERR_MEM;
-        }
 
         const uint32_t addr_start = (uint32_t)q->payload;
         const uint32_t addr_end = ((uint32_t)q->payload + q->len);
@@ -205,6 +205,10 @@ static err_t low_level_output (struct netif *netif, struct pbuf *p)
                 continue;
             }
 
+            if (pbufCount > 3) {
+                return ERR_MEM;
+            }
+
             // Fixup the descriptor
             descriptors[pbufCount - 1].length = length_a;
 
@@ -214,9 +218,6 @@ static err_t low_level_output (struct netif *netif, struct pbuf *p)
             descriptors[pbufCount].callback = NULL;
 
             pbufCount++;
-            if (pbufCount > 4) {
-                return ERR_MEM;
-            }
         }
     }
 
