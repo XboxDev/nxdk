@@ -421,6 +421,7 @@ int nvnetdrv_init (size_t rx_buffer_count, nvnetdrv_rx_callback_t rx_callback, s
 
     // Initialise the transceiver
     if (PhyInitialize(FALSE, NULL) != STATUS_SUCCESS) {
+        free(g_txData);
         MmFreeContiguousMemory(descriptors);
         MmFreeContiguousMemory(g_rxRingUserBuffers);
         return NVNET_PHY_ERR;
