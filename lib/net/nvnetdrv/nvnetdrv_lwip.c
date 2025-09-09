@@ -28,6 +28,10 @@
 #define RX_BUFF_CNT (64)
 #endif
 
+#if RX_BUFF_CNT < TCP_WND / TCP_MSS
+#error "RX_BUFF_CNT must be large enough to contain at least one full TCP window"
+#endif
+
 #define LINK_SPEED_OF_YOUR_NETIF_IN_BPS 100 * 1000 * 1000 /* 100 Mbps */
 
 static struct netif *g_pnetif;
