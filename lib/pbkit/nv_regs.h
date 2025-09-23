@@ -592,6 +592,7 @@
 #   define NV097_SET_TEXTURE_CONTROL0                         0x00001B0C
 #       define NV097_SET_TEXTURE_CONTROL0_ALPHA_KILL_ENABLE      (1 << 2)
 #       define NV097_SET_TEXTURE_CONTROL0_COLOR_KEY_MODE         0x3
+#       define NV097_SET_TEXTURE_CONTROL0_ANISOTROPY             0x30
 #       define NV097_SET_TEXTURE_CONTROL0_ENABLE                 (1 << 30)
 #       define NV097_SET_TEXTURE_CONTROL0_MIN_LOD_CLAMP           0x3FFC0000
 #       define NV097_SET_TEXTURE_CONTROL0_MAX_LOD_CLAMP           0x0003FFC0
