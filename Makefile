@@ -10,6 +10,20 @@ ifeq ($(OUTPUT_DIR),)
 OUTPUT_DIR = bin
 endif
 
+# set the variable named in the parameter depending on its value
+#   if it has a value:
+#     substitute ON/Y/y with 1, OFF/N/n with 0
+#   else
+#     if the variable is not defined (origin is 'undefined')
+#       set it to 0
+#     else
+#       set it to 1
+bool_arg = $(subst y,1,$(subst n,0,$(subst Y,1,$(subst N,0,$(subst OFF,0,$(subst ON,1,$(if $($(1)),$($(1)),$(shell echo $(origin $(1))|sed 's/undefined/0/g'|sed 's/[^0].*/1/g'))))))))
+
+override NXDK_ONLY := $(call bool_arg,NXDK_ONLY)
+override DEBUG := $(call bool_arg,DEBUG)
+override LTO := $(call bool_arg,LTO)
+
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
 
@@ -43,14 +57,14 @@ FP20COMPILER = $(NXDK_DIR)/tools/fp20compiler/fp20compiler
 EXTRACT_XISO = $(NXDK_DIR)/tools/extract-xiso/build/extract-xiso
 TOOLS        = cxbe vp20compiler fp20compiler extract-xiso
 
-ifeq ($(DEBUG),y)
+ifneq ($(DEBUG),0)
 NXDK_ASFLAGS += -g -gdwarf-4
 NXDK_CFLAGS += -g -gdwarf-4
 NXDK_CXXFLAGS += -g -gdwarf-4
 NXDK_LDFLAGS += -debug
 endif
 
-ifeq ($(LTO),y)
+ifneq ($(LTO),0)
 NXDK_ASFLAGS += -flto
 NXDK_CFLAGS += -flto
 NXDK_CXXFLAGS += -flto
@@ -60,7 +74,7 @@ ifneq ($(GEN_XISO),)
 TARGET += $(GEN_XISO)
 endif
 
-ifneq ($(NXDK_ONLY),)
+ifneq ($(NXDK_ONLY),1)
 NXDK_CXX = y
 NXDK_SDL = y
 TARGET = main.exe
