@@ -651,3 +651,94 @@ DWORD GetLogicalDriveStringsA (DWORD nBufferLength, LPSTR lpBuffer)
     *lpBuffer = '\0';
     return requiredBufLength;
 }
+
+BOOL SetFileInformationByHandle (HANDLE hFile, FILE_INFO_BY_HANDLE_CLASS FileInformationClass, LPVOID lpFileInformation, DWORD dwBufferSize)
+{
+    FILE_INFORMATION_CLASS infoClass;
+
+    // Convert Windows API file information class to the corresponding kernel file information class.
+    switch (FileInformationClass) {
+        case FileBasicInfo:
+            infoClass = FileBasicInformation;
+            break;
+        case FileDispositionInfo:
+            infoClass = FileDispositionInformation;
+            break;
+        case FileAllocationInfo:
+            infoClass = FileAllocationInformation;
+            break;
+        case FileEndOfFileInfo:
+            infoClass = FileEndOfFileInformation;
+            break;
+        case FileIoPriorityHintInfo:
+        case FileRenameInfo:
+            // These should be supported by SetFileInformationByHandle however they are not implemented here for the following reasons:
+            // FileIoPriorityHintInfo: No corresponding kernel file information class
+            // FileRenameInfo: FILE_RENAME_INFO expects WCHAR file names which we do not support
+            assert(0 && "Specified File Information Class not implemented");
+            // fall through
+        default:
+            infoClass = -1;
+    }
+
+    if (infoClass == -1) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    IO_STATUS_BLOCK ioStatusBlock;
+    NTSTATUS status = NtSetInformationFile(hFile, &ioStatusBlock, lpFileInformation, dwBufferSize, infoClass);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+BOOL GetFileInformationByHandle (HANDLE hFile, LPBY_HANDLE_FILE_INFORMATION lpFileInformation)
+{
+    NTSTATUS status;
+    IO_STATUS_BLOCK ioStatusBlock;
+    FILE_NETWORK_OPEN_INFORMATION network;
+    FILE_FS_VOLUME_INFORMATION volume;
+    FILE_INTERNAL_INFORMATION internal;
+
+    assert(lpFileInformation != NULL);
+
+    status = NtQueryInformationFile(hFile, &ioStatusBlock, &network, sizeof(network), FileNetworkOpenInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtQueryVolumeInformationFile(hFile, &ioStatusBlock, &volume, sizeof(volume), FileFsVolumeInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    status = NtQueryInformationFile(hFile, &ioStatusBlock, &internal, sizeof(internal), FileInternalInformation);
+    if (!NT_SUCCESS(status)) {
+        SetLastError(RtlNtStatusToDosError(status));
+        return FALSE;
+    }
+
+    lpFileInformation->dwFileAttributes = network.FileAttributes;
+    lpFileInformation->ftCreationTime.dwHighDateTime = network.CreationTime.HighPart;
+    lpFileInformation->ftCreationTime.dwLowDateTime = network.CreationTime.LowPart;
+    lpFileInformation->ftLastAccessTime.dwHighDateTime = network.LastAccessTime.HighPart;
+    lpFileInformation->ftLastAccessTime.dwLowDateTime = network.LastAccessTime.LowPart;
+    lpFileInformation->ftLastWriteTime.dwHighDateTime = network.LastWriteTime.HighPart;
+    lpFileInformation->ftLastWriteTime.dwLowDateTime = network.LastWriteTime.LowPart;
+    lpFileInformation->dwVolumeSerialNumber = volume.VolumeSerialNumber;
+    lpFileInformation->nFileSizeHigh = network.EndOfFile.HighPart;
+    lpFileInformation->nFileSizeLow = network.EndOfFile.LowPart;
+    lpFileInformation->nFileIndexHigh = internal.IndexNumber.HighPart;
+    lpFileInformation->nFileIndexLow = internal.IndexNumber.LowPart;
+
+    // For the FAT file system this member is always 1
+    lpFileInformation->nNumberOfLinks = 1;
+
+    return TRUE;
+}
