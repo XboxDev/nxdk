@@ -32,7 +32,8 @@ static size_t BasenameOffset(const std::string &path)
 }
 
 // construct via Exe file object
-Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vector<uint08> *logo,
+Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
+         uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo,
          const char *x_szDebugPath)
 {
     ConstructorInit();
@@ -125,8 +126,16 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
             {
                 uint32 s = 0;
 
-                while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
-                    s++;
+                if(x_Exe->m_SectionHeader_longname[v].m_longname)
+                {
+                    while(s < 255 && x_Exe->m_SectionHeader_longname[v].m_longname[s] != '\0')
+                        s++;
+                }
+                else
+                {
+                    while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                        s++;
+                }
 
                 mrc += s + 1;
             }
@@ -271,8 +280,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
             m_Certificate.dwTimeDate = CurrentTime;
 
-            // TODO: generate in the form CX-9999
-            m_Certificate.dwTitleId = 0xFFFF0002;
+            m_Certificate.dwTitleId = x_dwTitleID;
 
             // title name
             memset(m_Certificate.wszTitleName, 0, sizeof(m_Certificate.wszTitleName));
@@ -297,10 +305,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                 XBEIMAGE_MEDIA_TYPE_MEDIA_BOARD | XBEIMAGE_MEDIA_TYPE_NONSECURE_HARD_DISK |
                 XBEIMAGE_MEDIA_TYPE_NONSECURE_MODE;
 
-            // TODO: allow configuration
-            m_Certificate.dwGameRegion = XBEIMAGE_GAME_REGION_MANUFACTURING |
-                                         XBEIMAGE_GAME_REGION_NA | XBEIMAGE_GAME_REGION_JAPAN |
-                                         XBEIMAGE_GAME_REGION_RESTOFWORLD;
+            m_Certificate.dwGameRegion = x_dwRegions;
 
             // TODO: allow configuration
             m_Certificate.dwGameRatings = 0xFFFFFFFF;
@@ -308,8 +313,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
             // always disk 0, AFAIK
             m_Certificate.dwDiskNumber = 0;
 
-            // TODO: allow configuration
-            m_Certificate.dwVersion = 0;
+            m_Certificate.dwVersion = x_dwVersion;
 
             // generate blank LAN, signature, and alternate signature keys
             {
@@ -345,7 +349,7 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
         // write section headers / section names
         {
-            m_szSectionName = new char[m_Header.dwSections][9];
+            m_szSectionName = new char[m_Header.dwSections][256];
 
             m_SectionHeader = new SectionHeader[m_Header.dwSections];
 
@@ -373,14 +377,31 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
 
                 memset(&m_SectionHeader[v].dwFlags, 0, sizeof(m_SectionHeader->dwFlags));
 
-                if(characteristics & IMAGE_SCN_MEM_WRITE)
-                    m_SectionHeader[v].dwFlags.bWritable = true;
+                // check for $$XTIMAGE or $$XSIMAGE and set the correct flags
+                if(x_Exe->m_SectionHeader_longname[v].m_longname &&
+                   (!strcmp(x_Exe->m_SectionHeader_longname[v].m_longname, "$$XTIMAGE") ||
+                    !strcmp(x_Exe->m_SectionHeader_longname[v].m_longname, "$$XSIMAGE")))
+                {
+                    m_SectionHeader[v].dwFlags.bInsertedFile = true;
+                    m_SectionHeader[v].dwFlags.bHeadPageRO = true;
+                    m_SectionHeader[v].dwFlags.bTailPageRO = true;
+                }
+                else
+                {
+                    if(characteristics & IMAGE_SCN_MEM_WRITE)
+                        m_SectionHeader[v].dwFlags.bWritable = true;
 
-                if((characteristics & IMAGE_SCN_MEM_EXECUTE) ||
-                   (characteristics & IMAGE_SCN_CNT_CODE))
-                    m_SectionHeader[v].dwFlags.bExecutable = true;
+                    if((characteristics & IMAGE_SCN_MEM_EXECUTE) ||
+                       (characteristics & IMAGE_SCN_CNT_CODE))
+                        m_SectionHeader[v].dwFlags.bExecutable = true;
 
-                m_SectionHeader[v].dwFlags.bPreload = true;
+                    char *name = (x_Exe->m_SectionHeader_longname[v].m_longname)
+                                     ? x_Exe->m_SectionHeader_longname[v].m_longname
+                                     : (char *)x_Exe->m_SectionHeader[v].m_name;
+                    m_SectionHeader[v].dwFlags.bPreload =
+                        (strcmp(name, ".debug") && strncmp(name, ".debug_", 7));
+                }
+
                 m_SectionHeader[v].dwVirtualAddr =
                     x_Exe->m_SectionHeader[v].m_virtual_addr + m_Header.dwPeBaseAddr;
 
@@ -437,10 +458,21 @@ Xbe::Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail, const std::vec
                     memset(secn, 0, 8);
 
                     m_SectionHeader[v].dwSectionNameAddr = hwc_secn;
-                    while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                    if(x_Exe->m_SectionHeader_longname[v].m_longname)
                     {
-                        m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader[v].m_name[s];
-                        s++;
+                        while(s < 255 && x_Exe->m_SectionHeader_longname[v].m_longname[s] != '\0')
+                        {
+                            m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader_longname[v].m_longname[s];
+                            s++;
+                        }
+                    }
+                    else
+                    {
+                        while(s < 8 && x_Exe->m_SectionHeader[v].m_name[s] != '\0')
+                        {
+                            m_szSectionName[v][s] = secn[s] = x_Exe->m_SectionHeader[v].m_name[s];
+                            s++;
+                        }
                     }
 
                     m_szSectionName[v][s] = '\0';

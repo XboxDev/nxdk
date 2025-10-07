@@ -129,6 +129,13 @@ class Exe : public Error
         uint32 m_characteristics;  // characteristics for this segment
     } __attribute((packed)) * m_SectionHeader;
 
+    // array to store long section names
+    struct SectionHeader_longname
+    {
+        char *m_longname;
+        uint32 m_offset;
+    } __attribute((packed)) * m_SectionHeader_longname;
+
     // array of section data
     uint08 **m_bzSection;
 

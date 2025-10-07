@@ -98,7 +98,8 @@ DEPS += $(filter %.cpp.d, $(SRCS:.cpp=.cpp.d))
 
 $(OUTPUT_DIR)/default.xbe: main.exe $(OUTPUT_DIR) $(CXBE)
 	@echo "[ CXBE     ] $@"
-	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) $< $(QUIET)
+	$(VE)$(CXBE) -OUT:$@ -TITLE:$(XBE_TITLE) -TITLEID:$(XBE_TITLEID) \
+	    -REGION:$(XBE_REGION) -VERSION:$(XBE_VERSION) $< $(QUIET)
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR);
