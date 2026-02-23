@@ -296,3 +296,29 @@ BOOL FileTimeToLocalFileTime (const FILETIME *lpFileTime, LPFILETIME lpLocalFile
     lpLocalFileTime->dwHighDateTime = fileTime.HighPart;
     return TRUE;
 }
+
+BOOL LocalFileTimeToFileTime (const FILETIME *lpLocalFileTime, LPFILETIME lpFileTime)
+{
+    if (!lpLocalFileTime || !lpFileTime) {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
+
+    TIME_ZONE_INFORMATION timeZoneInformation;
+    GetTimeZoneInformation(&timeZoneInformation);
+
+    // Get the timezone offset bias in 100-nanosecond intervals
+    LARGE_INTEGER offset;
+    offset.QuadPart = timeZoneInformation.Bias;
+    offset.QuadPart *= 60LL * 10000000LL;
+
+    LARGE_INTEGER localFileTime;
+    localFileTime.LowPart = lpLocalFileTime->dwLowDateTime;
+    localFileTime.HighPart = lpLocalFileTime->dwHighDateTime;
+
+    localFileTime.QuadPart += offset.QuadPart;
+
+    lpFileTime->dwLowDateTime = localFileTime.LowPart;
+    lpFileTime->dwHighDateTime = localFileTime.HighPart;
+    return TRUE;
+}
