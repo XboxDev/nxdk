@@ -8,3 +8,7 @@
 #define _PDCLIB_ERRNO_T_DEFINED _PDCLIB_ERRNO_T_DEFINED
 typedef int errno_t;
 #endif
+
+#ifndef EHOSTDOWN
+#define EHOSTDOWN EHOSTUNREACH
+#endif
