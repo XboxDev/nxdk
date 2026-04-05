@@ -7,6 +7,7 @@ extern "C" {
 #endif
 
 char *strdup (const char *s);
+char *strtok_r(char *str, const char *delim, char **saveptr);
 
 static char *_strdup (const char *s)
 {
