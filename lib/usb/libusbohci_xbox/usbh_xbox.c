@@ -3,14 +3,24 @@
 #include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
 #include <hal/debug.h>
+#include <usb.h>
 #include "usbh_config_xbox.h"
 
 extern void OHCI_IRQHandler(void);
 static KINTERRUPT InterruptObject;
+static KDPC DpcObject;
+
 static BOOLEAN __stdcall ISR(PKINTERRUPT Interrupt, PVOID ServiceContext)
 {
-    OHCI_IRQHandler();
+    DISABLE_OHCI_IRQ();
+    KeInsertQueueDpc(&DpcObject, NULL, NULL);
     return TRUE;
+}
+
+static VOID NTAPI dpcRoutine(PKDPC dpc, PVOID deferredContext, PVOID arg1, PVOID arg2)
+{
+    OHCI_IRQHandler();
+    ENABLE_OHCI_IRQ();
 }
 
 //Initialise the systems ohci irq and irq handler.
@@ -25,11 +35,13 @@ void usbh_ohci_irq_init() {
                           irql,
                           LevelSensitive,
                           FALSE);
+    KeInitializeDpc(&DpcObject, dpcRoutine, NULL);
     KeConnectInterrupt(&InterruptObject);
 }
 
 void usbh_ohci_irq_deinit() {
     KeDisconnectInterrupt(&InterruptObject);
+    KeRemoveQueueDpc(&DpcObject);
 }
 
 //Allocate a contiguous memory pool that the ohci hardware can access.
