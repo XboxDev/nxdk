@@ -1,0 +1,7 @@
+Name: nxdk_automount_d
+Description: Automatic mounting of the "D:" for nxdk XBEs.
+Version: 1.0.0
+Requires:
+Conflicts:
+Libs: -l${NXDK_DIR}/lib/libnxdk_automount_d.lib
+Cflags:
