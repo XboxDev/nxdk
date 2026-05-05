@@ -10,12 +10,16 @@ int main(void)
 {
     XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
 
+    DWORD error;
+
     // Mount C:
     BOOL ret = nxMountDrive('C', "\\Device\\Harddisk0\\Partition2\\");
+
     if (!ret) {
-        debugPrint("Failed to mount C: drive!\n");
-        Sleep(5000);
-        return 1;
+        // There was an error. We can get more information about an error from WinAPI code using GetLastError()
+        error = GetLastError();
+        debugPrint("Failed to mount C: drive! Error code: %x\n", error);
+        goto sleepForever;
     }
 
     debugPrint("Content of C:\\\n");
@@ -27,9 +31,9 @@ int main(void)
     // no matter whether they contain a dot or not
     hFind = FindFirstFile("C:\\*.*", &findFileData);
     if (hFind == INVALID_HANDLE_VALUE) {
-        debugPrint("FindFirstHandle() failed!\n");
-        Sleep(5000);
-        return 1;
+        error = GetLastError();
+        debugPrint("FindFirstHandle() failed! Error code: %x\n", error);
+        goto cleanup;
     }
 
     do {
@@ -38,21 +42,28 @@ int main(void)
         } else {
             debugPrint("File     : ");
         }
-
         debugPrint("%s\n", findFileData.cFileName);
     } while (FindNextFile(hFind, &findFileData) != 0);
 
     debugPrint("\n");
 
-    DWORD error = GetLastError();
+    error = GetLastError();
     if (error == ERROR_NO_MORE_FILES) {
         debugPrint("Done!\n");
     } else {
-        debugPrint("error: %lx\n", error);
+        debugPrint("Error: %lx\n", error);
     }
 
     FindClose(hFind);
 
+cleanup:
+    ret = nxUnmountDrive('C');
+    // If there was an error while unmounting
+    if (!ret) {
+        error = GetLastError();
+        debugPrint("Failed to unmount C: drive! Error code: %x", error);
+    }
+sleepForever:
     while (1) {
         Sleep(2000);
     }
