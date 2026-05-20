@@ -721,6 +721,17 @@ typedef struct _LAUNCH_DATA_PAGE
 #define LDT_LAUNCH_DASHBOARD_REASON_FORCE_ACCOUNT_NAME_CHANGE 11
 #define LDT_LAUNCH_DASHBOARD_REASON_FORCE_BILLING_CHANGE      12
 
+typedef enum _KOBJECTS {
+    EventNotificationObject = 0,
+    EventSynchronizationObject = 1,
+    MutantObject = 2,
+    QueueObject = 4,
+    SemaphoreObject = 5,
+    ThreadObject = 6,
+    TimerNotificationObject = 8,
+    TimerSynchronizationObject = 9,
+} KOBJECTS;
+
 typedef struct _DISPATCHER_HEADER
 {
     UCHAR Type;
