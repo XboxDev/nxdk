@@ -1961,7 +1961,7 @@ XBAPI NTSTATUS NTAPI RtlUnicodeToMultiByteN
     ULONG BytesInUnicodeString
 );
 
-XBAPI NTSTATUS XBAPI RtlUnicodeStringToInteger
+XBAPI NTSTATUS NTAPI RtlUnicodeStringToInteger
 (
     PUNICODE_STRING String,
     ULONG Base,
@@ -3076,7 +3076,7 @@ XBAPI NTSTATUS NTAPI NtDeviceIoControlFile
 );
 
 
-XBAPI BOOLEAN NTAPI NtDeleteFile
+XBAPI NTSTATUS NTAPI NtDeleteFile
 (
     IN POBJECT_ATTRIBUTES ObjectAttributes
 );
@@ -3663,7 +3663,7 @@ XBAPI PLIST_ENTRY NTAPI KeRemoveQueue
 XBAPI BOOLEAN NTAPI KeRemoveEntryDeviceQueue
 (
     IN PKDEVICE_QUEUE DeviceQueue,
-    IN PKDEVICE_QUEUE DeviceQueueEntry
+    IN PKDEVICE_QUEUE_ENTRY DeviceQueueEntry
 );
 
 XBAPI PKDEVICE_QUEUE_ENTRY NTAPI KeRemoveDeviceQueue
@@ -3729,7 +3729,7 @@ XBAPI VOID NTAPI KeLeaveCriticalRegion (void);
  * Checks whether the code is executed in a DPC context
  * @return TRUE if the code is running in a DPC context, FALSE otherwise
  **/
-XBAPI BOOLEAN NTAPI KeIsExecutingDpc (void);
+XBAPI ULONG NTAPI KeIsExecutingDpc (void);
 
 XBAPI volatile KSYSTEM_TIME KeInterruptTime;
 
