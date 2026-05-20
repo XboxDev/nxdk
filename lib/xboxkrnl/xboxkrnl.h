@@ -1853,14 +1853,14 @@ XBAPI ULONG NTAPI RtlWalkFrameChain
     IN ULONG Flags
 );
 
-XBAPI VOID CDECL RtlVsprintf
+XBAPI INT CDECL RtlVsprintf
 (
     CHAR *,
     CONST CHAR*,
     ...
 );
 
-XBAPI VOID CDECL RtlVsnprintf
+XBAPI INT CDECL RtlVsnprintf
 (
     CHAR *,
     SIZE_T,
@@ -1985,14 +1985,14 @@ XBAPI BOOLEAN NTAPI RtlTimeFieldsToTime
     OUT PLARGE_INTEGER Time
 );
 
-XBAPI VOID CDECL RtlSprintf
+XBAPI INT CDECL RtlSprintf
 (
     CHAR *,
     CONST CHAR *,
     ...
 );
 
-XBAPI VOID CDECL RtlSnprintf
+XBAPI INT CDECL RtlSnprintf
 (
     CHAR *,
     SIZE_T,
