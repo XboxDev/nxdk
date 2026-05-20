@@ -2996,6 +2996,8 @@ XBAPI NTSTATUS NTAPI NtFlushBuffersFile
     OUT PIO_STATUS_BLOCK IoStatusBlock
 );
 
+#define DUPLICATE_CLOSE_SOURCE 0x00000001
+
 XBAPI NTSTATUS NTAPI NtDuplicateObject
 (
     IN HANDLE SourceHandle,
