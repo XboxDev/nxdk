@@ -8,7 +8,7 @@ Notable features:
 - No complicated cross-compiling or big library dependencies! Builds with `make` and just needs standard tools and llvm.
 - Modern C / C++ standards and compiler features.
 - Supports popular APIs like Windows API and BSD sockets.
-- SDL2 support for input, audio and 2D graphics.
+- SDL2 support for input, audio, audio mixing, and 2D graphics.
 - Custom API for 3D graphics using NVIDIA-designed shader-languages (with additional Xbox extensions).
 - Open-Source drivers which can be modified to get the most out of the hardware.
 - Modifiable startup code, for as much system control as necessary.
@@ -64,7 +64,7 @@ Code Overview
 * `lib/net` - Network stack for the Xbox based on lwIP.
 * `lib/pdclib` - Xbox port of PDCLib, a CC0-licensed C standard library.
 * `lib/pbkit` - A low level library for interfacing with the Xbox GPU.
-* `lib/sdl` - Xbox ports of SDL2 and SDL_ttf.
+* `lib/sdl` - Xbox ports of SDL2, SDL_image, SDL_mixer, and SDL_ttf.
 * `lib/usb` - USB support from OpenXDK. Hacked together parts of an old Linux OHCI stack.
 * `lib/winapi` - Xbox specific implementations of common useful WinAPI-functions.
 * `lib/xboxkrnl` - Header and import library for interfacing with the Xbox kernel.

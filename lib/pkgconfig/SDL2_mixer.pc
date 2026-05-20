@@ -1,0 +1,6 @@
+Name: SDL2_mixer
+Description: audio mixer library for Simple DirectMedia Layer
+Version: 2.0.4
+Requires: sdl2 >= 2.0.9
+Libs: -l${NXDK_DIR}/lib/libSDL2_mixer.lib
+Cflags: -I${NXDK_DIR}/lib/sdl/SDL_mixer

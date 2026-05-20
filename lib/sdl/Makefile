@@ -74,3 +74,29 @@ CLEANRULES += clean-libsdlimage
 .PHONY: clean-libsdlimage
 clean-libsdlimage:
 	$(VE)rm -f $(LIBSDLIMAGE_OBJS) $(NXDK_DIR)/lib/libSDL2_image.lib
+
+SDLMIXER_DIR = $(NXDK_DIR)/lib/sdl/SDL_mixer
+
+SDLMIXER_SRCS = $(SDLMIXER_DIR)/effect_position.c \
+                $(SDLMIXER_DIR)/effect_stereoreverse.c \
+                $(SDLMIXER_DIR)/effects_internal.c \
+                $(SDLMIXER_DIR)/load_aiff.c \
+                $(SDLMIXER_DIR)/load_voc.c \
+                $(SDLMIXER_DIR)/mixer.c \
+                $(SDLMIXER_DIR)/music.c \
+                $(SDLMIXER_DIR)/music_wav.c
+
+SDLMIXER_OBJS = $(addsuffix .obj, $(basename $(SDLMIXER_SRCS)))
+
+NXDK_CFLAGS += -I$(SDLMIXER_DIR) -DMUSIC_WAV
+NXDK_CXXFLAGS += -I$(SDLMIXER_DIR) -DMUSIC_WAV
+
+$(NXDK_DIR)/lib/libSDL2_mixer.lib: $(SDLMIXER_OBJS)
+
+main.exe: $(NXDK_DIR)/lib/libSDL2_mixer.lib
+
+CLEANRULES += clean-sdlmixer
+
+.PHONY: clean-sdlmixer
+clean-sdlmixer:
+	$(VE)rm -f $(SDLMIXER_OBJS) $(NXDK_DIR)/lib/libSDL2_mixer.lib
