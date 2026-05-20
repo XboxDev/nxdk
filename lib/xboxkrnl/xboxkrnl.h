@@ -1095,6 +1095,8 @@ typedef struct _SINGLE_LIST_ENTRY
     struct _SINGLE_LIST_ENTRY *Next; /**< Pointer to the next (or first, if this is a header) entry in the singly linked list (NULL if there is none) */
 } SINGLE_LIST_ENTRY, *PSINGLE_LIST_ENTRY;
 
+typedef SINGLE_LIST_ENTRY SLIST_ENTRY, *PSLIST_ENTRY;
+
 /**
  * Serves as a header for a singly linked list. Initialized by ExInitializeSListHead
  */
