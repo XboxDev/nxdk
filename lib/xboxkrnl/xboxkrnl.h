@@ -1857,7 +1857,7 @@ XBAPI INT CDECL RtlVsprintf
 (
     CHAR *,
     CONST CHAR*,
-    ...
+    VA_LIST
 );
 
 XBAPI INT CDECL RtlVsnprintf
@@ -1865,7 +1865,7 @@ XBAPI INT CDECL RtlVsnprintf
     CHAR *,
     SIZE_T,
     CONST CHAR*,
-    ...
+    VA_LIST
 );
 
 XBAPI VOID NTAPI RtlUpperString
