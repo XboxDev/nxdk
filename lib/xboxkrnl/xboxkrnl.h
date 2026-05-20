@@ -4240,6 +4240,16 @@ XBAPI PFN_COUNT NTAPI FscGetCacheSize (void);
 XBAPI OBJECT_TYPE ExTimerObjectType;
 XBAPI OBJECT_TYPE ExSemaphoreObjectType;
 
+/* Registry value types */
+#define REG_NONE 0
+#define REG_SZ 1
+#define REG_EXPAND_SZ 2
+#define REG_BINARY 3
+#define REG_DWORD 4
+#define REG_DWORD_LITTLE_ENDIAN 4
+#define REG_DWORD_BIG_ENDIAN 5
+#define REG_MULTI_SZ 7
+
 /* Offsets for ExSaveNonVolatileSetting / ExQueryNonVolatileSetting */
 #define XC_TIMEZONE_BIAS                  0x0000
 #define XC_TZ_STD_NAME                    0x0001
