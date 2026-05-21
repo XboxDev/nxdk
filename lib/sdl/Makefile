@@ -77,6 +77,8 @@ clean-libsdlimage:
 
 SDLMIXER_DIR = $(NXDK_DIR)/lib/sdl/SDL_mixer
 
+ifneq ($(NXDK_SDL_MIXER),)
+
 SDLMIXER_SRCS = $(SDLMIXER_DIR)/effect_position.c \
                 $(SDLMIXER_DIR)/effect_stereoreverse.c \
                 $(SDLMIXER_DIR)/effects_internal.c \
@@ -100,3 +102,5 @@ CLEANRULES += clean-sdlmixer
 .PHONY: clean-sdlmixer
 clean-sdlmixer:
 	$(VE)rm -f $(SDLMIXER_OBJS) $(NXDK_DIR)/lib/libSDL2_mixer.lib
+
+endif
