@@ -113,7 +113,7 @@ $(SRCS): $(SHADER_OBJS)
 
 ifneq ($(NXDK_ONLY),)
 .PHONY: main.exe
-main.exe: $(OBJS)
+main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 else
 main.exe: $(OBJS) $(NXDK_DIR)/lib/xboxkrnl/libxboxkrnl.lib
 	@echo "[ LD       ] $@"
