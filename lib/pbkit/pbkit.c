@@ -2180,10 +2180,38 @@ void pb_set_color_format(unsigned int fmt, bool swizzled)
     assert(swizzled == false);
 }
 
+/**
+ * Helper function to calculate numerator and denominator for PTIMER
+ *
+ * It takes nvclk as input and scales the 31.25MHz/nvclk fraction down into
+ * the 16 bit value range of PTIMER parameters. It's not a perfect approach,
+ * but more accurate than the hardcoded values of the XDK, while properly
+ * scaling with overclocking.
+ *
+ * PTIMER is just a wall clock used for timestamps anyway.
+ */
+static inline void pb_calc_ptimer_param (uint32_t nvclk, uint32_t *denominator, uint32_t *numerator)
+{
+    uint32_t num = nvclk;
+    uint32_t den = 31250000;
+
+    const uint32_t max_val = 1 << 16;
+    const uint32_t scale_num = (num + max_val - 1) / max_val;
+    const uint32_t scale_den = (den + max_val - 1) / max_val;
+    const uint32_t scale = (scale_num > scale_den) ? scale_num : scale_den;
+
+    if (scale > 1) {
+        num = (num + scale - 1) / scale;
+        den = (den + scale - 1) / scale;
+    }
+
+    *numerator = num;
+    *denominator = den;
+}
+
 int pb_init(void)
 {
     DWORD           old;
-    DWORD           mdiv,ndiv,odiv,pdiv,result;
 
     BYTE            old_color_31;
     BYTE            old_color_82;
@@ -2350,33 +2378,23 @@ int pb_init(void)
     VIDEOREG(NV_PMC_ENABLE)=NV_PMC_ENABLE_ALL_ENABLE;
     VIDEOREG(NV_PMC_INTR_EN_0)=NV_PMC_INTR_EN_0_INTA_HARDWARE;
 
-    mdiv=(VIDEOREG(NV_PRAMDAC_NVPLL_COEFF)&NV_PRAMDAC_NVPLL_COEFF_MDIV);
-    ndiv=(VIDEOREG(NV_PRAMDAC_NVPLL_COEFF)&NV_PRAMDAC_NVPLL_COEFF_NDIV)>>8;
-    odiv=1;
-    pdiv=(VIDEOREG(NV_PRAMDAC_NVPLL_COEFF)&NV_PRAMDAC_NVPLL_COEFF_PDIV)>>16;
-
-    if (mdiv)
+    // Configure PTIMER to 31.25MHz
     {
-        //Xtal in Xbox is at 16.666 Mhz but we want 31.25Mhz for GPU...
-        if (((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv!=233333324)
-        {
-            //This PLL configuration doesn't create a 233.33 Mhz freq from Xtal
-            //Have this issure reported so we can update source for that case
-            debugPrint("PLL=%lu\n",((DW_XTAL_16MHZ*ndiv)/(odiv<<pdiv))/mdiv);
-            return -5;
+        uint32_t mdiv = (VIDEOREG(NV_PRAMDAC_NVPLL_COEFF) & NV_PRAMDAC_NVPLL_COEFF_MDIV);
+        uint32_t ndiv = (VIDEOREG(NV_PRAMDAC_NVPLL_COEFF) & NV_PRAMDAC_NVPLL_COEFF_NDIV) >> 8;
+        uint32_t pdiv = (VIDEOREG(NV_PRAMDAC_NVPLL_COEFF) & NV_PRAMDAC_NVPLL_COEFF_PDIV) >> 16;
+
+        if (!mdiv) {
+            pb_kill();
+            return -5; //invalid GPU internal PLL (Phase Locked Loop=GPU freq generator)
         }
-    }
-    else
-    {
-        pb_kill();
-        return -5; //invalid GPU internal PLL (Phase Locked Loop=GPU freq generator)
-    }
 
-    //program GPU timer in order to obtain 31.25Mhz (we assume PLL creates 233.33Mhz)
-    VIDEOREG(NV_PTIMER_NUMERATOR)=56968; //233333324/56968*7629=31247365 (31.25Mhz)
-    VIDEOREG(NV_PTIMER_DENOMINATOR)=7629;
-
-    VIDEOREG(NV_PTIMER_ALARM_0)=0xFFFFFFFF;
+        uint32_t num, den;
+        pb_calc_ptimer_param(((DW_XTAL_16MHZ * ndiv) / (1 << pdiv)) / mdiv, &den, &num);
+        VIDEOREG(NV_PTIMER_NUMERATOR) = num - 1;
+        VIDEOREG(NV_PTIMER_DENOMINATOR) = den - 1;
+        VIDEOREG(NV_PTIMER_ALARM_0) = 0xFFFFFFFF;
+    }
 
 
     //The Gpu instance memory is a special place in PRAMIN area (VRAM attached to RAM?)
