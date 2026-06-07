@@ -71,6 +71,8 @@ typedef UCHAR KIRQL, *PKIRQL;
 #define PASSIVE_LEVEL 0
 #define APC_LEVEL 1
 #define DISPATCH_LEVEL 2
+#define PROFILE_LEVEL 27
+#define HIGH_LEVEL 31
 
 typedef ULONG PFN_COUNT;
 typedef ULONG PFN_NUMBER, *PPFN_NUMBER;
@@ -719,6 +721,17 @@ typedef struct _LAUNCH_DATA_PAGE
 #define LDT_LAUNCH_DASHBOARD_REASON_FORCE_ACCOUNT_NAME_CHANGE 11
 #define LDT_LAUNCH_DASHBOARD_REASON_FORCE_BILLING_CHANGE      12
 
+typedef enum _KOBJECTS {
+    EventNotificationObject = 0,
+    EventSynchronizationObject = 1,
+    MutantObject = 2,
+    QueueObject = 4,
+    SemaphoreObject = 5,
+    ThreadObject = 6,
+    TimerNotificationObject = 8,
+    TimerSynchronizationObject = 9,
+} KOBJECTS;
+
 typedef struct _DISPATCHER_HEADER
 {
     UCHAR Type;
@@ -1082,6 +1095,8 @@ typedef struct _SINGLE_LIST_ENTRY
     struct _SINGLE_LIST_ENTRY *Next; /**< Pointer to the next (or first, if this is a header) entry in the singly linked list (NULL if there is none) */
 } SINGLE_LIST_ENTRY, *PSINGLE_LIST_ENTRY;
 
+typedef SINGLE_LIST_ENTRY SLIST_ENTRY, *PSLIST_ENTRY;
+
 /**
  * Serves as a header for a singly linked list. Initialized by ExInitializeSListHead
  */
@@ -1237,12 +1252,21 @@ typedef NTSTATUS (NTAPI *PDRIVER_DISPATCH) (
     IN struct _IRP *Irp
 );
 
+#define IRP_MJ_CREATE 0x00
+#define IRP_MJ_CLOSE 0x01
+#define IRP_MJ_READ 0x02
+#define IRP_MJ_WRITE 0x03
+#define IRP_MJ_FLUSH_BUFFERS 0x06
+#define IRP_MJ_DEVICE_CONTROL 0x0A
+#define IRP_MJ_INTERNAL_DEVICE_CONTROL 0x0B
+#define IRP_MJ_MAXIMUM_FUNCTION 0x0D
+
 typedef struct _DRIVER_OBJECT
 {
     PDRIVER_STARTIO DriverStartIo;
     PDRIVER_DELETEDEVICE DriverDeleteDevice;
     PDRIVER_DISMOUNTVOLUME DriverDismountVolume;
-    PDRIVER_DISPATCH MajorFunction[0x0E];
+    PDRIVER_DISPATCH MajorFunction[IRP_MJ_MAXIMUM_FUNCTION + 1];
 } DRIVER_OBJECT, *PDRIVER_OBJECT;
 
 typedef struct _DEVICE_OBJECT
@@ -1853,19 +1877,19 @@ XBAPI ULONG NTAPI RtlWalkFrameChain
     IN ULONG Flags
 );
 
-XBAPI VOID CDECL RtlVsprintf
+XBAPI INT CDECL RtlVsprintf
 (
     CHAR *,
     CONST CHAR*,
-    ...
+    VA_LIST
 );
 
-XBAPI VOID CDECL RtlVsnprintf
+XBAPI INT CDECL RtlVsnprintf
 (
     CHAR *,
     SIZE_T,
     CONST CHAR*,
-    ...
+    VA_LIST
 );
 
 XBAPI VOID NTAPI RtlUpperString
@@ -1937,7 +1961,7 @@ XBAPI NTSTATUS NTAPI RtlUnicodeToMultiByteN
     ULONG BytesInUnicodeString
 );
 
-XBAPI NTSTATUS XBAPI RtlUnicodeStringToInteger
+XBAPI NTSTATUS NTAPI RtlUnicodeStringToInteger
 (
     PUNICODE_STRING String,
     ULONG Base,
@@ -1985,14 +2009,14 @@ XBAPI BOOLEAN NTAPI RtlTimeFieldsToTime
     OUT PLARGE_INTEGER Time
 );
 
-XBAPI VOID CDECL RtlSprintf
+XBAPI INT CDECL RtlSprintf
 (
     CHAR *,
     CONST CHAR *,
     ...
 );
 
-XBAPI VOID CDECL RtlSnprintf
+XBAPI INT CDECL RtlSnprintf
 (
     CHAR *,
     SIZE_T,
@@ -2972,6 +2996,8 @@ XBAPI NTSTATUS NTAPI NtFlushBuffersFile
     OUT PIO_STATUS_BLOCK IoStatusBlock
 );
 
+#define DUPLICATE_CLOSE_SOURCE 0x00000001
+
 XBAPI NTSTATUS NTAPI NtDuplicateObject
 (
     IN HANDLE SourceHandle,
@@ -3050,7 +3076,7 @@ XBAPI NTSTATUS NTAPI NtDeviceIoControlFile
 );
 
 
-XBAPI BOOLEAN NTAPI NtDeleteFile
+XBAPI NTSTATUS NTAPI NtDeleteFile
 (
     IN POBJECT_ATTRIBUTES ObjectAttributes
 );
@@ -3637,7 +3663,7 @@ XBAPI PLIST_ENTRY NTAPI KeRemoveQueue
 XBAPI BOOLEAN NTAPI KeRemoveEntryDeviceQueue
 (
     IN PKDEVICE_QUEUE DeviceQueue,
-    IN PKDEVICE_QUEUE DeviceQueueEntry
+    IN PKDEVICE_QUEUE_ENTRY DeviceQueueEntry
 );
 
 XBAPI PKDEVICE_QUEUE_ENTRY NTAPI KeRemoveDeviceQueue
@@ -3703,7 +3729,7 @@ XBAPI VOID NTAPI KeLeaveCriticalRegion (void);
  * Checks whether the code is executed in a DPC context
  * @return TRUE if the code is running in a DPC context, FALSE otherwise
  **/
-XBAPI BOOLEAN NTAPI KeIsExecutingDpc (void);
+XBAPI ULONG NTAPI KeIsExecutingDpc (void);
 
 XBAPI volatile KSYSTEM_TIME KeInterruptTime;
 
@@ -4215,6 +4241,16 @@ XBAPI PFN_COUNT NTAPI FscGetCacheSize (void);
 
 XBAPI OBJECT_TYPE ExTimerObjectType;
 XBAPI OBJECT_TYPE ExSemaphoreObjectType;
+
+/* Registry value types */
+#define REG_NONE 0
+#define REG_SZ 1
+#define REG_EXPAND_SZ 2
+#define REG_BINARY 3
+#define REG_DWORD 4
+#define REG_DWORD_LITTLE_ENDIAN 4
+#define REG_DWORD_BIG_ENDIAN 5
+#define REG_MULTI_SZ 7
 
 /* Offsets for ExSaveNonVolatileSetting / ExQueryNonVolatileSetting */
 #define XC_TIMEZONE_BIAS                  0x0000

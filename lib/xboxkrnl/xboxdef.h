@@ -48,6 +48,8 @@ typedef ULONGLONG QUAD;
 typedef ULONG ULONG_PTR;
 typedef LONG LONG_PTR;
 
+typedef __builtin_va_list VA_LIST;
+
 typedef ULONG_PTR DWORD_PTR;
 
 typedef struct _FLOATING_SAVE_AREA
