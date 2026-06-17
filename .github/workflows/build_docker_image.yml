@@ -10,17 +10,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image-name: [nxdk, nxdk-debug, nxdk-lto]
+        image-name: [nxdk, nxdk-debug]
         include:
           - image-name: nxdk
-            build-args: buildparams=CFLAGS=-O2 CXXFLAGS=-O2
+            build-args: buildparams=CFLAGS="-O2 -flto -ffat-lto-objects" CXXFLAGS="-O2 -flto -ffat-lto-objects" ASFLAGS="-O2 -flto -ffat-lto-objects"
             tag: latest
           - image-name: nxdk-debug
             build-args: buildparams=DEBUG=y
             tag: debug
-          - image-name: nxdk-lto
-            build-args: buildparams=LTO=y CFLAGS=-O2 CXXFLAGS=-O2
-            tag: lto
     steps:
       - name: Clone Tree
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -47,6 +44,17 @@ jobs:
           do
             cd "$dir"
             docker run --rm -v `pwd`:/usr/src/app -t "${DOCKER_TAG}" make -j`nproc`
+            cd ..
+          done
+      - name: Test Docker image with LTO
+        if: matrix.tag == 'latest'
+        run: |
+          cd samples
+          sudo git clean -xf . >/dev/null
+          for dir in */
+          do
+            cd "$dir"
+            docker run --rm -v `pwd`:/usr/src/app -t "${DOCKER_TAG}" make -j`nproc` CFLAGS="-O2 -flto -ffat-lto-objects" CXXFLAGS="-O2 -flto -ffat-lto-objects" LDFLAGS="-fat-lto-objects"
             cd ..
           done
 
