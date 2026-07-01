@@ -5,6 +5,7 @@
 # SPDX-FileCopyrightText: 2021 Stefan Schmidt
 
 lld -flavor link \
+    -machine:X86 \
     -subsystem:windows \
     -fixed \
     -base:0x00010000 \
