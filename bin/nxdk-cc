@@ -7,7 +7,7 @@
 clang \
     -target i386-pc-win32 \
     -march=pentium3 \
-    -fuse-ld=nxdk-link \
+    -fuse-ld=lld-link-nxdk \
     -ffreestanding \
     -nostdlib \
     -fno-builtin \
