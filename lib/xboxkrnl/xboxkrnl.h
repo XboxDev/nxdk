@@ -3049,8 +3049,7 @@ XBAPI NTSTATUS NTAPI NtDeviceIoControlFile
     IN ULONG OutputBufferLength
 );
 
-
-XBAPI BOOLEAN NTAPI NtDeleteFile
+XBAPI NTSTATUS NTAPI NtDeleteFile
 (
     IN POBJECT_ATTRIBUTES ObjectAttributes
 );
