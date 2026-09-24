@@ -3700,9 +3700,9 @@ XBAPI VOID NTAPI KeLeaveCriticalRegion (void);
 
 /**
  * Checks whether the code is executed in a DPC context
- * @return TRUE if the code is running in a DPC context, FALSE otherwise
+ * @return A non-zero value if the code is running in a DPC context, zero otherwise
  **/
-XBAPI BOOLEAN NTAPI KeIsExecutingDpc (void);
+XBAPI LOGICAL NTAPI KeIsExecutingDpc (void);
 
 XBAPI volatile KSYSTEM_TIME KeInterruptTime;
 
