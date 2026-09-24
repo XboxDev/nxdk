@@ -1937,7 +1937,7 @@ XBAPI NTSTATUS NTAPI RtlUnicodeToMultiByteN
     ULONG BytesInUnicodeString
 );
 
-XBAPI NTSTATUS XBAPI RtlUnicodeStringToInteger
+XBAPI NTSTATUS NTAPI RtlUnicodeStringToInteger
 (
     PUNICODE_STRING String,
     ULONG Base,
