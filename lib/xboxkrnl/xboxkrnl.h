@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC0-1.0
 
-// SPDX-FileCopyrightText: 2017-2023 Stefan Schmidt
+// SPDX-FileCopyrightText: 2017-2026 Stefan Schmidt
 // SPDX-FileCopyrightText: 2018-2021 Jannik Vogel
 // SPDX-FileCopyrightText: 2018 Sean Koppenhafer
 // SPDX-FileCopyrightText: 2022-2025 Erik Abair
@@ -1100,6 +1100,8 @@ typedef struct _KEVENT
 {
     DISPATCHER_HEADER Header;
 } KEVENT, *PKEVENT, *RESTRICTED_POINTER PRKEVENT;
+
+typedef ULONG KSPIN_LOCK, *PKSPIN_LOCK;
 
 typedef struct _KDEVICE_QUEUE_ENTRY
 {
@@ -4303,7 +4305,8 @@ XBAPI OBJECT_TYPE ExMutantObjectType;
 XBAPI LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 (
     IN OUT PLARGE_INTEGER Addend,
-    IN LARGE_INTEGER Increment
+    IN LARGE_INTEGER Increment,
+    IN OUT PKSPIN_LOCK Lock
 );
 
 XBAPI VOID NTAPI ExInitializeReadWriteLock
