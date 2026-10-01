@@ -42,3 +42,7 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/sdl/SDL_mixer"]
+	path = lib/sdl/SDL_mixer
+	url = https://github.com/PaulMDemers/SDL_mixer.git
+	branch = nxdk-sdl-mixer
