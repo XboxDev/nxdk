@@ -22,6 +22,37 @@ char *strdup (const char *s)
     return new_s;
 }
 
+char *strtok_r(char *str, const char *delim, char **saveptr)
+{
+    char *token;
+    char *end;
+
+    if (str != NULL) {
+        *saveptr = str;
+    }
+
+    if (*saveptr == NULL) {
+        return NULL;
+    }
+
+    *saveptr += strspn(*saveptr, delim);
+    if (**saveptr == '\0') {
+        *saveptr = NULL;
+        return NULL;
+    }
+
+    token = *saveptr;
+    end = token + strcspn(token, delim);
+    if (*end == '\0') {
+        *saveptr = NULL;
+    } else {
+        *end = '\0';
+        *saveptr = end + 1;
+    }
+
+    return token;
+}
+
 int _strnicmp (const char *s1, const char *s2, size_t n)
 {
     assert(s1);
