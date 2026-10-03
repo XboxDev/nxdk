@@ -25,7 +25,7 @@
 #define IFNAME0     'x'
 #define IFNAME1     'b'
 #ifndef RX_BUFF_CNT
-#define RX_BUFF_CNT (64)
+#define RX_BUFF_CNT (PBUF_POOL_SIZE)
 #endif
 
 #if RX_BUFF_CNT < TCP_WND / TCP_MSS
@@ -70,7 +70,13 @@ void rx_pbuf_free_callback (struct pbuf *p)
 void rx_callback (void *buffer, uint16_t length)
 {
     rx_pbuf_t *rx_pbuf = (rx_pbuf_t *)LWIP_MEMPOOL_ALLOC(RX_POOL);
-    LWIP_ASSERT("RX_POOL full\n", rx_pbuf != NULL);
+    if (rx_pbuf == NULL) {
+        LINK_STATS_INC(link.memerr);
+        LINK_STATS_INC(link.drop);
+        nvnetdrv_rx_release(buffer);
+        return;
+    }
+
     rx_pbuf->p.custom_free_function = rx_pbuf_free_callback;
     rx_pbuf->buff = buffer;
     struct pbuf *p = pbuf_alloced_custom(PBUF_RAW,
@@ -81,6 +87,8 @@ void rx_callback (void *buffer, uint16_t length)
                                          NVNET_RX_BUFF_LEN - ETH_PAD_SIZE);
 
     if (g_pnetif->input(p, g_pnetif) != ERR_OK) {
+        LINK_STATS_INC(link.memerr);
+        LINK_STATS_INC(link.drop);
         pbuf_free(p);
     }
 }

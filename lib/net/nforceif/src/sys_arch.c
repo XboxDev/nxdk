@@ -40,6 +40,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#include <windows.h>
 #include <xboxkrnl/xboxkrnl.h>
 
 #if LWIP_DEBUG
@@ -68,9 +69,13 @@ sys_thread_t
 sys_thread_new(const char *name, lwip_thread_fn function, void *arg, int stacksize, int prio)
 {
     LWIP_UNUSED_ARG(name);
-    LWIP_UNUSED_ARG(prio);
 
-    return CreateThread(NULL, stacksize, (void *)function, arg, 0, NULL);
+    HANDLE thread = CreateThread(NULL, stacksize, (void *)function, arg, 0, NULL);
+    if ((thread != NULL) && (prio != 0)) {
+        SetThreadPriority(thread, prio);
+    }
+
+    return thread;
 }
 
 err_t

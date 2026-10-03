@@ -43,6 +43,9 @@
 #define LWIP_IPV4 1
 #define LWIP_IPV6 1
 #define LWIP_IPV6_DHCP6 1
+#define LWIP_MDNS_RESPONDER 1
+#define LWIP_MDNS_SEARCH 1
+#define LWIP_NUM_NETIF_CLIENT_DATA LWIP_MDNS_RESPONDER
 #define LWIP_DEBUG 1
 #define LWIP_ERRNO_STDINCLUDE 1
 #define LWIP_COMPAT_MUTEX_ALLOWED
@@ -142,6 +145,15 @@
  * a lot of data that needs to be copied, this should be set high.
  */
 #define MEM_SIZE                        16000
+
+/**
+ * MEMP_NUM_PBUF: the number of pbuf reference structures that can be queued
+ * at once.
+ *
+ * This provides enough socket-layer bookkeeping entries for applications that
+ * receive short bursts of UDP packets.
+ */
+#define MEMP_NUM_PBUF                   128
 
 /*
    ---------------------------------
@@ -280,7 +292,7 @@
 /**
  * LWIP_IGMP==1: Turn on IGMP module.
  */
-#define LWIP_IGMP                       0
+#define LWIP_IGMP                       1
 
 /*
    ----------------------------------
@@ -361,6 +373,14 @@
  */
 #define PBUF_LINK_HLEN                  16
 
+/**
+ * PBUF_POOL_SIZE: the number of packet buffers in the receive pool.
+ *
+ * This provides enough packet buffers for sustained UDP traffic while
+ * applications drain their receive sockets.
+ */
+#define PBUF_POOL_SIZE                  128
+
 /*
    ------------------------------------------------
    ---------- Network Interfaces options ----------
@@ -402,11 +422,27 @@
 #define TCPIP_THREAD_STACKSIZE          4096
 
 /**
+ * TCPIP_THREAD_PRIO: The priority assigned to the main tcpip thread.
+ *
+ * Running the tcpip thread above the platform default helps it drain lwIP
+ * mailboxes before transient packet bursts turn into packet loss.
+ */
+#define TCPIP_THREAD_PRIO               2
+
+/**
  * DEFAULT_THREAD_STACKSIZE: The stack size used by any other lwIP thread.
  * The stack size value itself is platform-dependent, but is passed to
  * sys_thread_new() when the thread is created.
  */
 #define DEFAULT_THREAD_STACKSIZE        4096
+
+/**
+ * DEFAULT_THREAD_PRIO: The priority assigned to auxiliary lwIP threads.
+ *
+ * Auxiliary lwIP threads also run above the platform default so they keep up
+ * while the system is under application and network load.
+ */
+#define DEFAULT_THREAD_PRIO             1
 
 /*
    ----------------------------------------------
@@ -428,6 +464,22 @@
  * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c)
  */
 #define LWIP_SOCKET                     1
+
+/**
+ * LWIP_SO_RCVTIMEO==1: enable SO_RCVTIMEO support.
+ *
+ * Socket users can set receive timeouts instead of relying only on blocking
+ * receive calls.
+ */
+#define LWIP_SO_RCVTIMEO                1
+
+/**
+ * LWIP_SO_RCVBUF==1: enable SO_RCVBUF support.
+ *
+ * Socket users can tune receive buffer sizes for workloads with high-rate or
+ * bursty traffic.
+ */
+#define LWIP_SO_RCVBUF                  1
 
 /*
    ----------------------------------------

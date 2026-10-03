@@ -73,7 +73,16 @@ typedef struct {
 /* let sys.h use binary semaphores for mutexes */
 #define LWIP_COMPAT_MUTEX 1
 
-#define SYS_MBOX_SIZE 128
+/**
+ * @brief Fixed mailbox capacity used by the nxdk lwIP sys_arch backend.
+ *
+ * This port backs every lwIP mailbox with a statically sized ring rather than
+ * honoring per-mailbox size requests. This larger shared depth absorbs
+ * transient backlog from short UDP bursts, especially through xemu user-mode
+ * NAT. This value is capped at 255 because lwIP's sys_sem_new() API only
+ * accepts an 8-bit initial semaphore count.
+ */
+#define SYS_MBOX_SIZE 255
 
 typedef struct {
     volatile int first, last;
