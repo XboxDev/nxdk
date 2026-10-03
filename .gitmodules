@@ -42,3 +42,7 @@
 [submodule "lib/usb/libusbohci"]
 	path = lib/usb/libusbohci
 	url = https://github.com/XboxDev/libusbohci.git
+[submodule "lib/sdl/SDL_net"]
+	path = lib/sdl/SDL_net
+	url = https://github.com/PaulMDemers/SDL_net.git
+	branch = nxdk-sdl-net
