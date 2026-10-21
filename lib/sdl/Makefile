@@ -74,3 +74,25 @@ CLEANRULES += clean-libsdlimage
 .PHONY: clean-libsdlimage
 clean-libsdlimage:
 	$(VE)rm -f $(LIBSDLIMAGE_OBJS) $(NXDK_DIR)/lib/libSDL2_image.lib
+
+SDLNET_DIR = $(NXDK_DIR)/lib/sdl/SDL_net
+
+SDLNET_SRCS = $(SDLNET_DIR)/SDLnet.c \
+              $(SDLNET_DIR)/SDLnetselect.c \
+              $(SDLNET_DIR)/SDLnetTCP.c \
+              $(SDLNET_DIR)/SDLnetUDP.c
+
+SDLNET_OBJS = $(addsuffix .obj, $(basename $(SDLNET_SRCS)))
+
+NXDK_CFLAGS += -I$(SDLNET_DIR)
+NXDK_CXXFLAGS += -I$(SDLNET_DIR)
+
+$(NXDK_DIR)/lib/libSDL2_net.lib: $(SDLNET_OBJS)
+
+main.exe: $(NXDK_DIR)/lib/libSDL2_net.lib
+
+CLEANRULES += clean-sdlnet
+
+.PHONY: clean-sdlnet
+clean-sdlnet:
+	$(VE)rm -f $(SDLNET_OBJS) $(NXDK_DIR)/lib/libSDL2_net.lib
