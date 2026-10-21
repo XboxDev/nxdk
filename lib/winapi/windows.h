@@ -21,5 +21,6 @@
 #include <timezoneapi.h>
 #include <winbase.h>
 #include <winerror.h>
+#include <winnls.h>
 
 #endif

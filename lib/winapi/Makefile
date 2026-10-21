@@ -20,7 +20,8 @@ WINAPI_SRCS := \
 	$(NXDK_DIR)/lib/winapi/thread.c \
 	${NXDK_DIR}/lib/winapi/timezoneapi.c \
 	$(NXDK_DIR)/lib/winapi/tls.c \
-	$(NXDK_DIR)/lib/winapi/winnt.c
+	$(NXDK_DIR)/lib/winapi/winnt.c \
+	$(NXDK_DIR)/lib/winapi/winnls.c
 
 WINAPI_OBJS = $(addsuffix .obj, $(basename $(WINAPI_SRCS)))
 
