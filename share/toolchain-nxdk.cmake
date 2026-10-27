@@ -1,8 +1,8 @@
-if(DEFINED ENV{NXDK_DIR})
-    set(NXDK_DIR $ENV{NXDK_DIR})
-else()
-    message(FATAL_ERROR "The environment variable NXDK_DIR needs to be defined.")
-endif()
+get_filename_component(NXDK_ROOT_DIR "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+set(NXDK_DIR "${NXDK_ROOT_DIR}" CACHE PATH "Path to the nxdk root directory.")
+message(STATUS "Using NXDK from: ${NXDK_DIR}")
+
+set(ENV{NXDK_DIR} "${NXDK_DIR}")
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_VERSION 1)
@@ -17,6 +17,8 @@ endif()
 set(WIN32 1)
 
 set(NXDK 1)
+
+set(CMAKE_ASM_COMPILER "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-as")
 
 set(CMAKE_C_COMPILER "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-cc")
 set(CMAKE_C_COMPILER_AR "llvm-ar")
@@ -66,7 +68,7 @@ set(_CMAKE_C_IPO_SUPPORTED_BY_CMAKE YES)
 set(_CMAKE_C_IPO_MAY_BE_SUPPORTED_BY_COMPILER YES)
 set(CMAKE_C_COMPILE_OPTIONS_IPO -flto)
 
-set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path to pkg-config")
+set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-pkg-config" CACHE STRING "Path to pkg-config")
 
 # Fix generation of ninja depfiles
 set(CMAKE_DEPFILE_FLAGS_C "-MD -MF <OBJECT>.d")
