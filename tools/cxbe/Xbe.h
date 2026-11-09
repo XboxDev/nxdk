@@ -26,8 +26,9 @@ class Xbe : public Error
 {
   public:
     // construct via Exe file object
-    Xbe(class Exe *x_Exe, const char *x_szTitle, bool x_bRetail,
-        const std::vector<uint08> *logo = nullptr, const char *x_szDebugPath = nullptr);
+    Xbe(class Exe *x_Exe, const char *x_szTitle, uint32 x_dwTitleID, uint32 x_dwRegions,
+        uint32 x_dwVersion, bool x_bRetail, const std::vector<uint08> *logo = nullptr,
+        const char *x_szDebugPath = nullptr);
 
     // deconstructor
     ~Xbe();
@@ -170,8 +171,8 @@ class Xbe : public Error
         uint32 dwCharacteristics; // characteristics
     } __attribute((packed)) * m_TLS;
 
-    // Xbe section names, each 8 bytes max and null terminated
-    char (*m_szSectionName)[9];
+    // Xbe section names, each 255 bytes max and null terminated
+    char (*m_szSectionName)[256];
 
     // Xbe sections
     uint08 **m_bzSection;
