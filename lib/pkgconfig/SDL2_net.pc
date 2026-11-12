@@ -1,0 +1,6 @@
+Name: SDL2_net
+Description: networking library for Simple DirectMedia Layer
+Version: 2.0.1
+Requires: sdl2 >= 2.0.9
+Libs: -l${NXDK_DIR}/lib/libSDL2_net.lib
+Cflags: -I${NXDK_DIR}/lib/sdl/SDL_net
