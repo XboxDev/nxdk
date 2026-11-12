@@ -34,12 +34,12 @@ XBOXRT_OBJS = $(addsuffix .obj, $(basename $(XBOXRT_SRCS)))
 # reference from type_info to its own vftable.
 $(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.obj: NXDK_CXXFLAGS += -fno-rtti
 
-$(NXDK_DIR)/lib/libxboxrt.lib: $(XBOXRT_OBJS)
+$(NXDK_DIR)/lib/xboxrt.lib: $(XBOXRT_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libxboxrt.lib
+main.exe: $(NXDK_DIR)/lib/xboxrt.lib
 
 CLEANRULES += clean-xboxrt
 
 .PHONY: clean-xboxrt
 clean-xboxrt:
-	$(VE)rm -f $(XBOXRT_OBJS) $(NXDK_DIR)/lib/libxboxrt.lib
+	$(VE)rm -f $(XBOXRT_OBJS) $(NXDK_DIR)/lib/xboxrt.lib

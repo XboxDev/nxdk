@@ -60,12 +60,12 @@ LIBJPEG_TURBO_OBJS = $(addsuffix .obj, $(basename $(LIBJPEG_TURBO_SRCS)))
 NXDK_CFLAGS += -isystem $(LIBJPEG_TURBO_DIR) -I$(NXDK_DIR)/lib/libjpeg
 NXDK_CXXFLAGS += -isystem $(LIBJPEG_TURBO_DIR) -I$(NXDK_DIR)/lib/libjpeg
 
-$(NXDK_DIR)/lib/libjpeg.lib: $(LIBJPEG_TURBO_OBJS)
+$(NXDK_DIR)/lib/jpeg.lib: $(LIBJPEG_TURBO_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libjpeg.lib
+main.exe: $(NXDK_DIR)/lib/jpeg.lib
 
 CLEANRULES += clean-libjpeg
 
 .PHONY: clean-libjpeg
 clean-libjpeg:
-	$(VE)rm -f $(LIBJPEG_OBJS) $(NXDK_DIR)/lib/libjpeg.lib
+	$(VE)rm -f $(LIBJPEG_OBJS) $(NXDK_DIR)/lib/jpeg.lib

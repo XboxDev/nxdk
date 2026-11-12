@@ -5,12 +5,12 @@ PDCLIB_SRCS := \
 
 PDCLIB_OBJS = $(addsuffix .obj, $(basename $(PDCLIB_SRCS)))
 
-$(NXDK_DIR)/lib/libpdclib.lib: $(PDCLIB_OBJS)
+$(NXDK_DIR)/lib/pdclib.lib: $(PDCLIB_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libpdclib.lib
+main.exe: $(NXDK_DIR)/lib/pdclib.lib
 
 CLEANRULES += clean-pdclib
 
 .PHONY: clean-pdclib
 clean-pdclib:
-	$(VE)rm -f $(PDCLIB_OBJS) $(NXDK_DIR)/lib/libpdclib.lib
+	$(VE)rm -f $(PDCLIB_OBJS) $(NXDK_DIR)/lib/pdclib.lib

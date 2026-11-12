@@ -14,12 +14,12 @@ ZLIB_OBJS = $(addsuffix .obj, $(basename $(ZLIB_SRCS)))
 NXDK_CFLAGS += -I $(ZLIB_DIR) -DZ_SOLO
 NXDK_CXXFLAGS += -I $(ZLIB_DIR) -DZ_SOLO
 
-$(NXDK_DIR)/lib/libzlib.lib: $(ZLIB_OBJS)
+$(NXDK_DIR)/lib/zlib.lib: $(ZLIB_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libzlib.lib
+main.exe: $(NXDK_DIR)/lib/zlib.lib
 
 CLEANRULES += clean-zlib
 
 .PHONY: clean-zlib
 clean-zlib:
-	$(VE)rm -f $(ZLIB_OBJS) $(NXDK_DIR)/lib/libzlib.lib
+	$(VE)rm -f $(ZLIB_OBJS) $(NXDK_DIR)/lib/zlib.lib

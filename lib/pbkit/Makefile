@@ -8,12 +8,12 @@ PBKIT_SRCS := \
 
 PBKIT_OBJS = $(addsuffix .obj, $(basename $(PBKIT_SRCS)))
 
-$(NXDK_DIR)/lib/libpbkit.lib: $(PBKIT_OBJS)
+$(NXDK_DIR)/lib/pbkit.lib: $(PBKIT_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libpbkit.lib
+main.exe: $(NXDK_DIR)/lib/pbkit.lib
 
 CLEANRULES += clean-pbkit
 
 .PHONY: clean-pbkit
 clean-pbkit:
-	$(VE)rm -f $(PBKIT_OBJS) $(NXDK_DIR)/lib/libpbkit.lib
+	$(VE)rm -f $(PBKIT_OBJS) $(NXDK_DIR)/lib/pbkit.lib
