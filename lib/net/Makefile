@@ -26,12 +26,12 @@ NXDK_CXXFLAGS += -I$(LWIPDIR)/include
 NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/net/nforceif/include
 NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/net/nvnetdrv
 
-$(NXDK_DIR)/lib/libnxdk_net.lib: $(NET_OBJS)
+$(NXDK_DIR)/lib/nxdk_net.lib: $(NET_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libnxdk_net.lib
+main.exe: $(NXDK_DIR)/lib/nxdk_net.lib
 
 CLEANRULES += clean-net
 
 .PHONY: clean-net
 clean-net:
-	$(VE)rm -f $(NET_OBJS) $(NXDK_DIR)/lib/libnxdk_net.lib
+	$(VE)rm -f $(NET_OBJS) $(NXDK_DIR)/lib/nxdk_net.lib

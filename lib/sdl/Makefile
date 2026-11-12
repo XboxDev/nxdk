@@ -2,7 +2,7 @@ SDL_TTF_DIR = $(NXDK_DIR)/lib/sdl/SDL_ttf
 SDL_TTF_SRCS += $(SDL_TTF_DIR)/SDL_ttf.c
 SDL_TTF_OBJS = $(addsuffix .obj, $(basename $(SDL_TTF_SRCS)))
 
-$(NXDK_DIR)/lib/libSDL_ttf.lib: $(SDL_TTF_OBJS)
+$(NXDK_DIR)/lib/SDL_ttf.lib: $(SDL_TTF_OBJS)
 
 FREETYPE_DIR = $(NXDK_DIR)/lib/sdl/SDL_ttf/external/freetype-2.4.12
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/base/ftbase.c
@@ -18,7 +18,7 @@ FREETYPE_SRCS += $(FREETYPE_DIR)/src/autofit/autofit.c
 FREETYPE_SRCS += $(FREETYPE_DIR)/src/sfnt/sfnt.c
 FREETYPE_OBJS = $(addsuffix .obj, $(basename $(FREETYPE_SRCS)))
 
-$(NXDK_DIR)/lib/libfreetype.lib: $(FREETYPE_OBJS)
+$(NXDK_DIR)/lib/freetype.lib: $(FREETYPE_OBJS)
 
 NXDK_CFLAGS += -I$(NXDK_DIR)/lib/sdl \
                -I$(SDL_TTF_DIR) \
@@ -30,7 +30,7 @@ NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/sdl \
                  -I$(FREETYPE_DIR)/include \
                  -DXBOX
 
-main.exe: $(NXDK_DIR)/lib/libSDL_ttf.lib $(NXDK_DIR)/lib/libfreetype.lib
+main.exe: $(NXDK_DIR)/lib/SDL_ttf.lib $(NXDK_DIR)/lib/freetype.lib
 
 CLEANRULES += clean-sdl_ttf
 
@@ -38,8 +38,8 @@ CLEANRULES += clean-sdl_ttf
 clean-sdl_ttf:
 	$(VE)rm -f $(SDL_TTF_OBJS) \
 	           $(FREETYPE_OBJS) \
-	           $(NXDK_DIR)/lib/libSDL_ttf.lib \
-	           $(NXDK_DIR)/lib/libfreetype.lib
+	           $(NXDK_DIR)/lib/SDL_ttf.lib \
+	           $(NXDK_DIR)/lib/freetype.lib
 
 LIBSDLIMAGE_DIR = $(NXDK_DIR)/lib/sdl/SDL2_image
 
@@ -65,12 +65,12 @@ LIBSDLIMAGE_OBJS = $(addsuffix .obj, $(basename $(LIBSDLIMAGE_SRCS)))
 NXDK_CFLAGS += -I$(NXDK_DIR)/lib/sdl/SDL2_image -DLOAD_BMP -DLOAD_GIF -DLOAD_JPG -DLOAD_LBM -DLOAD_PCX -DLOAD_PNG -DLOAD_PNM -DLOAD_SVG -DLOAD_TGA -DLOAD_XCF -DLOAD_XPM -DLOAD_XV -DLOAD_XXX
 NXDK_CXXFLAGS += -I$(NXDK_DIR)/lib/sdl/SDL2_image -DLOAD_BMP -DLOAD_GIF -DLOAD_JPG -DLOAD_LBM -DLOAD_PCX -DLOAD_PNG -DLOAD_PNM -DLOAD_SVG -DLOAD_TGA -DLOAD_XCF -DLOAD_XPM -DLOAD_XV -DLOAD_XXX
 
-$(NXDK_DIR)/lib/libSDL2_image.lib: $(LIBSDLIMAGE_OBJS)
+$(NXDK_DIR)/lib/SDL2_image.lib: $(LIBSDLIMAGE_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libSDL2_image.lib
+main.exe: $(NXDK_DIR)/lib/SDL2_image.lib
 
 CLEANRULES += clean-libsdlimage
 
 .PHONY: clean-libsdlimage
 clean-libsdlimage:
-	$(VE)rm -f $(LIBSDLIMAGE_OBJS) $(NXDK_DIR)/lib/libSDL2_image.lib
+	$(VE)rm -f $(LIBSDLIMAGE_OBJS) $(NXDK_DIR)/lib/SDL2_image.lib

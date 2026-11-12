@@ -20,12 +20,12 @@ LIBPNG_OBJS = $(addsuffix .obj, $(basename $(LIBPNG_SRCS)))
 
 NXDK_CFLAGS += -I$(LIBPNG_DIR) -I$(NXDK_DIR)/lib/libpng
 
-$(NXDK_DIR)/lib/libpng.lib: $(LIBPNG_OBJS)
+$(NXDK_DIR)/lib/png.lib: $(LIBPNG_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libpng.lib
+main.exe: $(NXDK_DIR)/lib/png.lib
 
 CLEANRULES += clean-libpng
 
 .PHONY: clean-libpng
 clean-libpng:
-	$(VE)rm -f $(LIBPNG_OBJS) $(NXDK_DIR)/lib/libpng.lib
+	$(VE)rm -f $(LIBPNG_OBJS) $(NXDK_DIR)/lib/png.lib

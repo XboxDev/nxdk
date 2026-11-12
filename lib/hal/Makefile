@@ -8,12 +8,12 @@ HAL_SRCS := \
 
 HAL_OBJS = $(addsuffix .obj, $(basename $(HAL_SRCS)))
 
-$(NXDK_DIR)/lib/libnxdk_hal.lib: $(HAL_OBJS)
+$(NXDK_DIR)/lib/nxdk_hal.lib: $(HAL_OBJS)
 
-main.exe: $(NXDK_DIR)/lib/libnxdk_hal.lib
+main.exe: $(NXDK_DIR)/lib/nxdk_hal.lib
 
 CLEANRULES += clean-hal
 
 .PHONY: clean-hal
 clean-hal:
-	$(VE)rm -f $(HAL_OBJS) $(NXDK_DIR)/lib/libnxdk_hal.lib
+	$(VE)rm -f $(HAL_OBJS) $(NXDK_DIR)/lib/nxdk_hal.lib

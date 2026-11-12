@@ -21,7 +21,7 @@ set(NXDK 1)
 set(CMAKE_C_COMPILER "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-cc")
 set(CMAKE_C_COMPILER_AR "llvm-ar")
 set(CMAKE_C_COMPILER_RANLIB "llvm-ranlib")
-set(CMAKE_C_STANDARD_LIBRARIES "${NXDK_DIR}/lib/libwinapi.lib ${NXDK_DIR}/lib/xboxkrnl/libxboxkrnl.lib ${NXDK_DIR}/lib/libxboxrt.lib  ${NXDK_DIR}/lib/libpdclib.lib ${NXDK_DIR}/lib/libnxdk_hal.lib ${NXDK_DIR}/lib/libnxdk.lib ${NXDK_DIR}/lib/nxdk_usb.lib") #"${CMAKE_CXX_STANDARD_LIBRARIES_INIT}"
+set(CMAKE_C_STANDARD_LIBRARIES "${NXDK_DIR}/lib/winapi.lib ${NXDK_DIR}/lib/xboxkrnl.lib ${NXDK_DIR}/lib/xboxrt.lib ${NXDK_DIR}/lib/pdclib.lib ${NXDK_DIR}/lib/nxdk_hal.lib ${NXDK_DIR}/lib/nxdk.lib ${NXDK_DIR}/lib/nxdk_usb.lib") #"${CMAKE_CXX_STANDARD_LIBRARIES_INIT}"
 set(CMAKE_C_LINK_EXECUTABLE "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-link <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -out:<TARGET> <LINK_LIBRARIES>")
 # Keep in sync with include paths in bin/nxdk-cc
 set(CMAKE_C_STANDARD_INCLUDE_DIRECTORIES
@@ -52,6 +52,9 @@ set(CMAKE_ASM_NASM_OBJECT_FORMAT win32)
 set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
 set(CMAKE_STATIC_LIBRARY_SUFFIX_C ".lib")
 set(CMAKE_STATIC_LIBRARY_SUFFIX_CXX ".lib")
+set(CMAKE_STATIC_LIBRARY_PREFIX "")
+set(CMAKE_STATIC_LIBRARY_PREFIX_C "")
+set(CMAKE_STATIC_LIBRARY_PREFIX_CXX "")
 
 # Despite this, ABI detection fails due to https://gitlab.kitware.com/cmake/cmake/-/issues/20163
 set(CMAKE_EXECUTABLE_SUFFIX ".exe")
@@ -74,3 +77,5 @@ set(PKG_CONFIG_EXECUTABLE "${NXDK_DIR}/bin/nxdk-pkg-config" CACHE STRING "Path t
 set(CMAKE_DEPFILE_FLAGS_C "-MD -MF <OBJECT>.d")
 set(CMAKE_DEPFILE_FLAGS_CXX "-MD -MF <OBJECT>.d")
 set(CMAKE_C_DEPFILE_FORMAT gcc)
+
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "${NXDK_DIR}/share/nxdk-rules-override.cmake")
