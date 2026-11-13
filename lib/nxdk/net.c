@@ -6,6 +6,8 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <fd_internal.h>
+#include <lwip/sockets.h>
 
 #include <nxdk/configsector.h>
 #include <netif/etharp.h>
@@ -31,6 +33,9 @@ static void tcpip_init_done(void *arg)
 
 int nxNetInit(const nx_net_parameters_t *parameters)
 {
+    static const struct nxdk_socket_io socket_operations = {
+        lwip_read, lwip_write, lwip_close, lwip_fcntl
+    };
     ip4_addr_t ipaddr, netmask, gateway;
     bool ipv4_dhcp;
     ip_addr_t dns[2];
@@ -151,6 +156,7 @@ int nxNetInit(const nx_net_parameters_t *parameters)
         dns_setserver(1, &dns[1]);
     }
 
+    nxdk_fd_set_socket_io(&socket_operations);
     return 0;
 }
 

@@ -2,13 +2,9 @@
 
 #pragma once
 
-/*
- * Provide a standalone POSIX-style sys/time.h for nxdk builds.
- *
- * lwIP can define timeval from its socket headers, but many third-party
- * libraries include sys/time.h directly before they include any socket header.
- * Setting LWIP_TIMEVAL_PRIVATE to 0 keeps later lwIP includes from defining a
- * second timeval.
+/**
+ * @file lib/xboxrt/libc_extensions/sys/time.h
+ * @brief Declare wall-clock time with microsecond units, shared with lwIP.
  */
 
 #include <time.h>
@@ -21,32 +17,26 @@
 extern "C" {
 #endif
 
-struct timezone {
-    int tz_minuteswest;
-    int tz_dsttime;
-};
-
 #ifndef LWIP_HDR_SOCKETS_H
-struct timeval {
-    time_t tv_sec;
-    long tv_usec;
+/**
+ * @brief Unix-epoch timestamp with a normalized fractional part.
+ */
+struct timeval
+{
+    time_t tv_sec; ///< Seconds since 1970-01-01 UTC.
+    long tv_usec;  ///< Microseconds in the range 0 through 999999.
 };
 #endif
 
-static inline int gettimeofday(struct timeval *timeValue, struct timezone *timeZone)
-{
-    if (timeValue != NULL) {
-        timeValue->tv_sec = time(NULL);
-        timeValue->tv_usec = 0;
-    }
-
-    if (timeZone != NULL) {
-        timeZone->tz_minuteswest = 0;
-        timeZone->tz_dsttime = 0;
-    }
-
-    return 0;
-}
+/**
+ * @brief Read the Xbox wall clock without discarding subsecond precision.
+ *
+ * @param timeValue Destination timestamp.
+ * @param timeZone Obsolete timezone argument, ignored.
+ * @return Zero on success, or -1 with errno set to EINVAL for a null destination
+ * or EOVERFLOW when the timestamp does not fit nxdk's time_t.
+ */
+int gettimeofday (struct timeval *timeValue, void *timeZone);
 
 #ifdef __cplusplus
 }

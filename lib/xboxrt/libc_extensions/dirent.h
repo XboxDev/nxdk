@@ -1,40 +1,37 @@
 // SPDX-License-Identifier: MIT
-
-#pragma once
-
-/*
- * Provide a minimal dirent surface for code that is compiled as part of a
- * third-party build but does not enumerate Xbox directories at runtime.
+/**
+ * @file lib/xboxrt/libc_extensions/dirent.h
+ * @brief Declare directory streams backed by Xbox filesystem searches.
  */
-
+#pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-struct dirent {
-    char d_name[256];
+/** @brief One entry in a directory stream. */
+struct dirent
+{
+    char d_name[260]; ///< Null-terminated filename, valid until the next readdir call.
 };
-
-typedef struct nxdk_dir_stub DIR;
-
-static inline DIR *opendir(const char *path)
-{
-    (void) path;
-    return 0;
-}
-
-static inline int closedir(DIR *directory)
-{
-    (void) directory;
-    return -1;
-}
-
-static inline struct dirent *readdir(DIR *directory)
-{
-    (void) directory;
-    return 0;
-}
-
+/** @brief Opaque, independently owned directory enumeration. */
+typedef struct nxdk_directory DIR;
+/**
+ * @brief Open a directory using nxdk paths, resolving relative paths against D:\\.
+ * @param path Directory to enumerate.
+ * @return Owned stream, or NULL with errno set on failure.
+ */
+DIR *opendir (const char *path);
+/**
+ * @brief Read the next directory entry.
+ * @param directory Open directory stream.
+ * @return Entry, or NULL at end or on failure; errno is unchanged at normal end.
+ */
+struct dirent *readdir (DIR *directory);
+/**
+ * @brief Release a directory stream and its search handle.
+ * @param directory Stream to close.
+ * @return Zero on success, or -1 with errno set on failure.
+ */
+int closedir (DIR *directory);
 #ifdef __cplusplus
 }
 #endif

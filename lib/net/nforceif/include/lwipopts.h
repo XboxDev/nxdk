@@ -45,6 +45,10 @@
 #define LWIP_IPV6_DHCP6 1
 #define LWIP_DEBUG 1
 #define LWIP_ERRNO_STDINCLUDE 1
+/* Standard descriptor I/O is dispatched by libc for both files and sockets. */
+#include <fd_internal.h>
+#define LWIP_SOCKET_OFFSET NXDK_SOCKET_FD_OFFSET
+#define LWIP_POSIX_SOCKETS_IO_NAMES 0
 #define LWIP_COMPAT_MUTEX_ALLOWED
 
 /*

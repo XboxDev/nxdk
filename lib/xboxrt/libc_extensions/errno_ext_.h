@@ -10,5 +10,6 @@ typedef int errno_t;
 #endif
 
 #ifndef EHOSTDOWN
+/** @brief Map unavailable host-down errors to lwIP's host-unreachable category. */
 #define EHOSTDOWN EHOSTUNREACH
 #endif

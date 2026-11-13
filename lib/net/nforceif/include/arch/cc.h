@@ -40,6 +40,13 @@
 #include <string.h>
 #include <hal/debug.h>
 #include <windows.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+/* Keep vector I/O and ioctl socket-only; scalar I/O is dispatched by libc. */
+#define readv(s, iov, count) lwip_readv(s, iov, count)
+#define writev(s, iov, count) lwip_writev(s, iov, count)
+#define ioctl(s, command, argument) lwip_ioctl(s, command, argument)
 
 //#define MEM_ALIGNMENT 4
 

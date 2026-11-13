@@ -2,8 +2,9 @@
 
 #pragma once
 
-/*
- * Provide the BSD netinet/tcp.h include path expected by Unix-oriented
+/**
+ * @file lib/net/netinet/tcp.h
+ * @brief Provide the BSD netinet/tcp.h include path expected by Unix-oriented
  * third-party libraries while reusing nxdk's lwIP socket compatibility layer.
  */
 

@@ -1,4 +1,8 @@
 XBOXRT_SRCS := \
+	$(NXDK_DIR)/lib/xboxrt/libc_extensions/fileio.c \
+	$(NXDK_DIR)/lib/xboxrt/libc_extensions/dirent.c \
+	$(NXDK_DIR)/lib/xboxrt/libc_extensions/gettimeofday.c \
+	$(NXDK_DIR)/lib/xboxrt/libc_extensions/strtok_r.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/stat.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/direct.c \
 	$(NXDK_DIR)/lib/xboxrt/libc_extensions/strings.c \
@@ -35,6 +39,14 @@ XBOXRT_OBJS = $(addsuffix .obj, $(basename $(XBOXRT_SRCS)))
 $(NXDK_DIR)/lib/xboxrt/vcruntime/vcruntime_typeinfo.obj: NXDK_CXXFLAGS += -fno-rtti
 
 $(NXDK_DIR)/lib/libxboxrt.lib: $(XBOXRT_OBJS)
+
+# Keep the new libc modules current when their public or shared headers change.
+# Explicit paths also avoid MSYS /c/... versus compiler C:/... depfile aliases.
+$(NXDK_DIR)/lib/xboxrt/libc_extensions/dirent.obj: $(NXDK_DIR)/lib/xboxrt/libc_extensions/dirent.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/fs_internal.h
+$(NXDK_DIR)/lib/xboxrt/libc_extensions/stat.obj: $(NXDK_DIR)/lib/xboxrt/libc_extensions/sys/stat.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/sys/types.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/fs_internal.h
+$(NXDK_DIR)/lib/xboxrt/libc_extensions/fileio.obj: $(NXDK_DIR)/lib/xboxrt/libc_extensions/fd_internal.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/fs_internal.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/fcntl.h $(NXDK_DIR)/lib/xboxrt/libc_extensions/unistd.h
+$(NXDK_DIR)/lib/xboxrt/libc_extensions/gettimeofday.obj: $(NXDK_DIR)/lib/xboxrt/libc_extensions/sys/time.h
+$(NXDK_DIR)/lib/xboxrt/libc_extensions/strtok_r.obj: $(NXDK_DIR)/lib/xboxrt/libc_extensions/string_ext_.h
 
 main.exe: $(NXDK_DIR)/lib/libxboxrt.lib
 

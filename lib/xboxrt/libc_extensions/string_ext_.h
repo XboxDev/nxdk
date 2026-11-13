@@ -7,7 +7,15 @@ extern "C" {
 #endif
 
 char *strdup (const char *s);
-char *strtok_r(char *str, const char *delim, char **saveptr);
+/**
+ * @brief Split a string into nonempty tokens using caller-owned state.
+ *
+ * @param str String to modify on the first call, or NULL to continue.
+ * @param delim Set of delimiter characters, which may change between calls.
+ * @param saveptr Storage for the next position; must not be NULL.
+ * @return Next token within str, or NULL when no tokens remain.
+ */
+char *strtok_r (char *str, const char *delim, char **saveptr);
 
 static char *_strdup (const char *s)
 {
