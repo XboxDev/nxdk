@@ -511,9 +511,12 @@ static void pb_load_gr_ctx(int ctx_id)
 
     pb_wait_until_gr_not_busy();
 
-    if ((ctx_id!=pb_GrCtxID)&&(ctx_id!=NONE))
+    if ((ctx_id!=pb_GrCtxID)&&(pb_GrCtxID!=NONE))
     {
-        VIDEOREG(NV_PGRAPH_CHANNEL_CTX_POINTER)=pb_GrCtxInst[ctx_id]&NV_PGRAPH_CHANNEL_CTX_POINTER_INST;
+        //unload (save) the outgoing context into its own instance. When no context is loaded yet (NONE), there is
+        //nothing to save: saving then would overwrite the incoming context's freshly initialized instance with the
+        //graphics engine's power-on state.
+        VIDEOREG(NV_PGRAPH_CHANNEL_CTX_POINTER)=pb_GrCtxInst[pb_GrCtxID]&NV_PGRAPH_CHANNEL_CTX_POINTER_INST;
         VIDEOREG(NV_PGRAPH_CHANNEL_CTX_STATUS)=NV_PGRAPH_CHANNEL_CTX_STATUS_UNLOADED;
 
         pb_wait_until_gr_not_busy();
