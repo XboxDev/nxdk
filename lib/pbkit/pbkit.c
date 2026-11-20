@@ -233,14 +233,20 @@ static void pb_vbl_handler(void)
     //Is the next back buffer to show up is ready?
     if (pb_BackBufferbReady[next]==1)
     {
-        //screen swapping has been done already, theoretically, in ISR
-        pb_BackBufferbReady[next]=0;
+        DWORD next_frame=pb_FBAddr[pb_BackBufferIndex[next]]&0x03FFFFFF;
 
-        VIDEOREG(NV_PGRAPH_INCREMENT)|=NV_PGRAPH_INCREMENT_READ_3D_TRIGGER;
+        //The DPC may observe another VBlank with INTA disabled before the ISR
+        //updates scanout. Only retire a frame the ISR actually selected.
+        if ((VIDEOREG(PCRTC_START)&0x03FFFFFF)==next_frame)
+        {
+            pb_BackBufferbReady[next]=0;
 
-        //rotate next back buffer
-        next=(next+1)%3;
-        pb_BackBufferNxtVBL=next;
+            VIDEOREG(NV_PGRAPH_INCREMENT)|=NV_PGRAPH_INCREMENT_READ_3D_TRIGGER;
+
+            //rotate next back buffer
+            next=(next+1)%3;
+            pb_BackBufferNxtVBL=next;
+        }
     }
 
     do
