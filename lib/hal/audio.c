@@ -134,6 +134,22 @@ void XDumpAudioStatus(void)
 	}
 }
 
+// Writes a codec (mixer) register, once the codec access semaphore
+// (bit 0 of +0x134, taken by reading it) is free; gives up after about 20 ms.
+static void ac97WriteCodec(unsigned int reg, unsigned short value)
+{
+	AC97_DEVICE *pac97device = &ac97Device;
+	volatile unsigned char *pb = (unsigned char *)pac97device->mmio;
+
+	for (int i = 0; i < 1000; i++) {
+		if (!(pb[0x134] & 1)) {
+			*(volatile unsigned short *)(pb + reg) = value;
+			return;
+		}
+		KeStallExecutionProcessor(20);
+	}
+}
+
 // Initialises the audio subsystem.  This *must* be done before
 // audio will work.  You can pass NULL as the callback, but if you
 // do that, it is your responsibility to keep feeding the data to
@@ -172,26 +188,45 @@ void XAudioInit(int sampleSizeInBits, int numChannels, XAudioCallback callback, 
 		pac97device->pcmOutDescriptor[i].bufferControl = 0;
 	}
 
-	// perform cold reset
-	pac97device->mmio[0x12C>>2] &= ~2;
-	LARGE_INTEGER Interval;
-	Interval.QuadPart = -10;
-	KeDelayExecutionThread(KernelMode, FALSE, &Interval);
-	pac97device->mmio[0x12C>>2] |= 2;
-	
-	// wait until the chip is finished resetting...
-	while(!(pac97device->mmio[0x130>>2]&0x100))
-		;
+	// Bring the codec up. Only release the cold reset (GLOB_CNT bit 1) when it
+	// is still held: cold-resetting a codec that is already running is not
+	// seen at once. The primary codec ready bit (GLOB_STA bit 8) still reads
+	// set right after such a reset, the codec drops out a few milliseconds
+	// later, and the codec register writes made in between are lost (or the
+	// codec stays not ready, and the next title's audio fails to start).
+	unsigned int globalControl = pac97device->mmio[0x12C>>2];
+	if (!(globalControl & 2)) {
+		pac97device->mmio[0x12C>>2] = globalControl | 2;
+	} else if (!(pac97device->mmio[0x130>>2] & 0x100)) {
+		// Released but not ready (e.g. the AC-link was shut off): warm reset
+		pac97device->mmio[0x12C>>2] = (globalControl | 4) & ~8;
+		KeStallExecutionProcessor(10);
+		pac97device->mmio[0x12C>>2] = globalControl & ~(4 | 8);
+	}
+
+	// wait until the codec is ready (at most 500 ms)
+	for (int i = 0; i < 25000 && !(pac97device->mmio[0x130>>2] & 0x100); i++) {
+		KeStallExecutionProcessor(20);
+	}
+
+	// power up all codec sections and set master and PCM out volume to 0 dB
+	// (unmuted): after a cold reset, codecs that implement these registers
+	// start muted
+	ac97WriteCodec(0x26, 0x0000);
+	ac97WriteCodec(0x02, 0x0000);
+	ac97WriteCodec(0x18, 0x0808);
 
 	// reset bus master registers for analog output
 	pb[0x11B] = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
-	while(pb[0x11B] & (1 << 1))
-		;
+	for (int i = 0; i < 1000 && (pb[0x11B] & (1 << 1)); i++) {
+		KeStallExecutionProcessor(1);
+	}
 
 	// reset bus master registers for digital output
 	pb[0x17B] = (1 << 4) | (1 << 3) | (1 << 2) | (1 << 1);
-	while(pb[0x17B] & (1 << 1))
-		;
+	for (int i = 0; i < 1000 && (pb[0x17B] & (1 << 1)); i++) {
+		KeStallExecutionProcessor(1);
+	}
 
 	// clear all interrupts
 	pb[0x116] = 0xFF;
